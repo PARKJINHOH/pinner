@@ -1,0 +1,12 @@
+.register_btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.login_btn {
+    position: absolute;
+    right: 110px;
+    top: 10px;
+}
+
