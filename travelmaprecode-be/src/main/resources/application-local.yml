@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url:  jdbc:h2:~/TravelMapRecode
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      # 개발(validate , none) 운영 : none
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
