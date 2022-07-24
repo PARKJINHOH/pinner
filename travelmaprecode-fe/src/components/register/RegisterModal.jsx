@@ -100,7 +100,7 @@ const RegisterModal = ({show, onHide}) => {
                             <Form.Control value={confirmPassword} onChange={onConfirmPasswordHandler} type="password" placeholder="Confirm Password"/>
                         </Form.Group>
                         <br/>
-                        <Button onClick={onSubmit} block="true" variant="info" type="button" className="my-3">
+                        <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             회원가입
                         </Button>
                     </Form>

@@ -29,7 +29,7 @@ const LoginModal = ({show, onHide}) => {
                             <Form.Control type="password" placeholder="Password"/>
                         </Form.Group>
                         <br/>
-                        <Button block variant="info" type="button" className="my-3">
+                        <Button variant="info" type="button" className="my-3">
                             로그인
                         </Button>
                     </Form>
