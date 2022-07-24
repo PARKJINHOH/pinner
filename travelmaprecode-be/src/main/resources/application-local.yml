@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
       # 개발(validate , none) 운영 : none
     properties:
       hibernate:
