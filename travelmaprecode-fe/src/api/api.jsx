@@ -1,18 +1,21 @@
-// 2022-07-16 테스트 해야함.
 import axios from "axios";
 
 export function sendPostApi(url, data) {
-    return fetch(
-        url,
-        {
-            body: data,
-            method: 'POST',
-            headers: {"Content-Type": "application/json"},
-        },
-    )
+    return axios
+        .post(url, data, {
+            headers: {
+                "Content-Type": `application/json`,
+            }
+        })
+        .then((Response) => {
+            return Response.data;
+        })
+        .catch((Error) => {
+            console.log(Error);
+        });
 }
 
-export function sendGetApi(url, data) {
+export function  sendGetApi(url, data) {
     return axios
         .get(url + "/" + data)
         .then((Response) => {

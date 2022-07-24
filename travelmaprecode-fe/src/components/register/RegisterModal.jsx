@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
-import {sendGetApi} from '../../api/api';
+import {sendGetApi, sendPostApi} from '../../api/api';
 
 import './RegisterModal.css'
-import axios from "axios";
 
 const RegisterModal = ({show, onHide}) => {
     const [nickname, setNickname] = useState("")
@@ -49,11 +48,17 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        let isDuplicateEmail = await sendGetApi('/api/duplicate/email', email);
+        let isDuplicateEmail = await sendGetApi('/api/identities/email', email);
         if (!isDuplicateEmail) {
             return alert('이메일이 중복입니다.');
         } else {
-            return alert('사용가능한 이메일 입니다.');
+            let data = JSON.stringify({
+                    email: email,
+                    password: password
+                }
+            );
+            await sendPostApi('/api/email', data);
+            return alert('회원가입에 성공했습니다.');
         }
 
         // post 요청
