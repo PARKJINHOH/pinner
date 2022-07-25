@@ -1,8 +1,5 @@
-package com.example.travelmaprecodebe.domain.traveler.service;
+package com.example.travelmaprecodebe.domain.traveler;
 
-import com.example.travelmaprecodebe.domain.traveler.TravelerDto;
-import com.example.travelmaprecodebe.domain.traveler.TravelerEntity;
-import com.example.travelmaprecodebe.domain.traveler.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

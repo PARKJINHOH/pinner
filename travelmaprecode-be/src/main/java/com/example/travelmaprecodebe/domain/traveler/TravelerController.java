@@ -1,7 +1,5 @@
-package com.example.travelmaprecodebe.domain.traveler.controller;
+package com.example.travelmaprecodebe.domain.traveler;
 
-import com.example.travelmaprecodebe.domain.traveler.TravelerDto;
-import com.example.travelmaprecodebe.domain.traveler.service.TravelerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +33,5 @@ public class TravelerController {
 
         return new ResponseEntity<>(resultEmail, HttpStatus.CREATED);
     }
-    
+
 }
