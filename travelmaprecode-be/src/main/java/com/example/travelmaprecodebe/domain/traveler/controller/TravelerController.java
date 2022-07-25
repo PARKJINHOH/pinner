@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class TravelerController {
 
@@ -34,10 +34,6 @@ public class TravelerController {
         }
 
         return new ResponseEntity<>(resultEmail, HttpStatus.CREATED);
-
-
-
     }
-
-
+    
 }
