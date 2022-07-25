@@ -5,24 +5,24 @@ import {sendGetApi, sendPostApi} from '../../api/api';
 import './RegisterModal.css'
 
 const RegisterModal = ({show, onHide}) => {
-    const [nickname, setNickname] = useState("")
+    const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const onNicknameHandler = (event) => {
-        setNickname(event.currentTarget.value)
+        setNickname(event.currentTarget.value);
     }
     const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value)
+        setEmail(event.currentTarget.value);
     }
 
     const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value)
+        setPassword(event.currentTarget.value);
     }
 
     const onConfirmPasswordHandler = (event) => {
-        setConfirmPassword(event.currentTarget.value)
+        setConfirmPassword(event.currentTarget.value);
     }
 
     const onSubmit = async (event) => {
@@ -48,7 +48,7 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        let isDuplicateEmail = await sendGetApi('/api/identities/email', email);
+        let isDuplicateEmail = await sendGetApi('/api/v1/identities/email', email);
         if (!isDuplicateEmail) {
             return alert('이메일이 중복입니다.');
         } else {
@@ -60,10 +60,6 @@ const RegisterModal = ({show, onHide}) => {
             await sendPostApi('/api/email', data);
             return alert('회원가입에 성공했습니다.');
         }
-
-        // post 요청
-
-
     }
 
     return (
