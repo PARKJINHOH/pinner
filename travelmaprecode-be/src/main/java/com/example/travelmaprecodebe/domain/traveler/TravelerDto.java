@@ -8,8 +8,8 @@ public class TravelerDto {
     private String email;
     private String password;
 
-    public TravelerEntity toEntity() {
-        return TravelerEntity.builder()
+    public Traveler toEntity() {
+        return Traveler.builder()
                 .email(email)
                 .password(password)
                 .state("U")

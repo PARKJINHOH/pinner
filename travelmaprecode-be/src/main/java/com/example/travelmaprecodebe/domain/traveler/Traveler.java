@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "tbl_travel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelerEntity {
+public class Traveler {
 
     @Id
     @Column(name = "id")
@@ -34,7 +34,7 @@ public class TravelerEntity {
     private String roleCd;
 
     @Builder
-    public TravelerEntity(String email, String password, String state, String roleCd) {
+    public Traveler(String email, String password, String state, String roleCd) {
         this.email = email;
         this.password = password;
         this.state = state;

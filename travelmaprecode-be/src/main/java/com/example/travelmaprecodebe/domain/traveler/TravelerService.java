@@ -14,7 +14,7 @@ public class TravelerService {
     private final TravelerRepository travelerRepository;
 
     public boolean emailCheck(String email) {
-        final Optional<TravelerEntity> byEmail = travelerRepository.findByEmail(email);
+        final Optional<Traveler> byEmail = travelerRepository.findByEmail(email);
         if (byEmail.isPresent()) {
             log.info("Duplicate Email : {}", byEmail.get().getEmail());
             return false;
