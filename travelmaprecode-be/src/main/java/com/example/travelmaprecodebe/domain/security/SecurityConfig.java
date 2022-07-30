@@ -2,6 +2,7 @@ package com.example.travelmaprecodebe.domain.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,17 +22,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        System.out.println("1234567890");
         http
                 .authorizeRequests(
                         registry -> registry
-                                .antMatchers("/", "/login/oauth2/**").permitAll()
+                                .antMatchers(HttpMethod.POST, "/api/login/**").permitAll() // To avoid security,
+                                .antMatchers("/", "/login/oauth2/**", "/login/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(
                         oauth -> oauth
-                                .userInfoEndpoint(
-                                        userInfo -> userInfo.userService(travelerService)
-                                )
+                                .userInfoEndpoint(userInfo -> userInfo.userService(travelerService))
                                 .defaultSuccessUrl("/", true)
                 );
 

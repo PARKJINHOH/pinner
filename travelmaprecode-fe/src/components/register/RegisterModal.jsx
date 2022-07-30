@@ -48,8 +48,9 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        let isDuplicateEmail = await sendGetApi('/api/v1/identities/email', email);
-        if (!isDuplicateEmail) {
+        // let isDuplicateEmail = await sendGetApi('/api/v1/identities/email', email);
+        // if (!isDuplicateEmail) {
+        if (false) {
             return alert('이메일이 중복입니다.');
         } else {
             let data = JSON.stringify({
@@ -57,7 +58,7 @@ const RegisterModal = ({show, onHide}) => {
                     password: password
                 }
             );
-            await sendPostApi('/api/email', data);
+            await sendPostApi('/api/login/email', data);
             return alert('회원가입에 성공했습니다.');
         }
     }
