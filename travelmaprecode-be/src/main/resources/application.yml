@@ -1,3 +1,9 @@
 spring:
   profiles:
     active: local
+
+travel-map:
+  token-manager:
+    time-to-leave: 600
+    allow-over-write: true
+    delete-after-get: true

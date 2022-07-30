@@ -3,6 +3,8 @@ package com.example.travelmaprecodebe.domain.traveler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,6 +13,12 @@ import org.springframework.web.bind.annotation.*;
 public class TravelerController {
 
     private final TravelerService travelerService;
+
+    @GetMapping("/member/echo")
+    public String echo(@AuthenticationPrincipal OAuth2User principal) {
+        System.out.println("principal = " + principal);
+        return "hello " + principal.getAttribute("email");
+    }
 
     @GetMapping("/identities/email/{email}")
     public ResponseEntity<Boolean> getDuplicateEmail(@PathVariable String email) {
@@ -27,7 +35,7 @@ public class TravelerController {
     public ResponseEntity<String> postEmail(@RequestBody TravelerDto travelerDto) {
         final String resultEmail = travelerService.register(travelerDto);
 
-        if(resultEmail == "fail"){
+        if (resultEmail == "fail") {
             return ResponseEntity.badRequest().body("회원가입에 실패했습니다.");
         }
 

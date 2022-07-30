@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import com.example.travelmaprecodebe.domain.global.Role;
 
 import javax.persistence.*;
 
@@ -15,29 +16,33 @@ import javax.persistence.*;
 public class Traveler {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(name = "email")
     private String email;
 
     @NotNull
-    @Column(name = "password")
+    private String name;
+
+    @NotNull
     private String password;
 
-    @Column(name = "state")
     private String state;
 
-    @Column(name = "roleCd")
-    private String roleCd;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder
-    public Traveler(String email, String password, String state, String roleCd) {
+    public Traveler(String email, String password, String name, Role role) {
         this.email = email;
+        this.name = name;
         this.password = password;
-        this.state = state;
-        this.roleCd = roleCd;
+        this.role = role;
+    }
+
+    public String getRoleKey() {
+        return role.getKey();
     }
 }

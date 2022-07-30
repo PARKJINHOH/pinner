@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal, Button, Form, Container} from "react-bootstrap";
+import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
 import {sendGetApi, sendPostApi} from '../../api/api';
 
 import './RegisterModal.css'
@@ -99,6 +99,14 @@ const RegisterModal = ({show, onHide}) => {
                         <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             회원가입
                         </Button>
+                        <Stack>
+                            <a href="/oauth2/authorization/github">
+                                <Button block="true" variant="info" type="button" className="my-3">
+                                    GitHub으로 시작하기
+                                </Button>
+                            </a>
+                            {/* TODO: 후에 추가 될 수도 있음 */}
+                        </Stack>
                     </Form>
                 </Modal.Body>
             </Container>

@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface TravelerRepository extends JpaRepository<Traveler, Long> {
     Optional<Traveler> findByEmail(String email);
 
+    Traveler findMemberByEmail(String email);
 }

@@ -12,8 +12,7 @@ public class TravelerDto {
         return Traveler.builder()
                 .email(email)
                 .password(password)
-                .state("U")
-                .roleCd("USER")
+                .name(email)
                 .build();
     }
 }
