@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
 import './LoginModal.css'
-import {useState} from "@types/react";
-import {sendGetApi, sendPostApi} from "../../api/api";
+import {sendPostApi} from "../../api/api";
 
 const LoginModal = ({show, onHide}) => {
 
