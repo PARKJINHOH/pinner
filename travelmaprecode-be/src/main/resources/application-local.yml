@@ -1,5 +1,3 @@
-server.forward-headers-strategy: FRAMEWORK
-
 spring:
   datasource:
     url:  jdbc:h2:~/TravelMapRecode

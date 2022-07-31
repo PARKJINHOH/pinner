@@ -15,26 +15,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuthTravelerService travelerService;
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
-                .antMatchers("/static/**");
+                .antMatchers("/static/**", "/h2-console/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("1234567890");
         http
-                .authorizeRequests(
-                        registry -> registry
-                                .antMatchers(HttpMethod.POST, "/api/login/**").permitAll() // To avoid security,
-                                .antMatchers("/", "/login/oauth2/**", "/login/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .oauth2Login(
-                        oauth -> oauth
-                                .userInfoEndpoint(userInfo -> userInfo.userService(travelerService))
-                                .defaultSuccessUrl("/", true)
-                );
-
+                .csrf().disable()
+                .authorizeRequests()
+                    .antMatchers(HttpMethod.POST, "/api/login/**").permitAll() // To avoid security,
+                    .antMatchers("/", "/login/oauth2/**", "/login/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                    .oauth2Login()
+                    .userInfoEndpoint(userInfo -> userInfo.userService(travelerService))
+                    .defaultSuccessUrl("/", true);
     }
 }

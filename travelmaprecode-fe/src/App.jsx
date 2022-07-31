@@ -1,5 +1,5 @@
 import './style/globals.css'
-import GoogleMapApi from "./components/google/GoogleMapApi";
+import GoogleMapApi from "./pages/google/GoogleMapApi";
 
 function App() {
     return (

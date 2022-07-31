@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
 import './LoginModal.css'
-import {sendPostApi} from "../../api/api";
+import {sendPostApi} from "../../apis/api";
 
 const LoginModal = ({show, onHide}) => {
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -24,6 +25,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthTravelerService implements OAuth2UserService {
@@ -34,14 +36,12 @@ public class OAuthTravelerService implements OAuth2UserService {
         OAuth2UserService delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-
-        System.out.println("userRequest.getAdditionalParameters() = " + userRequest.getAdditionalParameters());
-        System.out.println("userRequest.getClientRegistration() = " + userRequest.getClientRegistration());
-
-        System.out.println("oAuth2User = " + oAuth2User);
-        System.out.println("oAuth2User.getName() = " + oAuth2User.getName());
-        System.out.println("oAuth2User.getAttributes() = " + oAuth2User.getAttributes());
-
+        log.info("===== loadUser =====");
+        log.info("userRequest.getAdditionalParameters() : {}", userRequest.getAdditionalParameters());
+        log.info("userRequest.getClientRegistration() : {}", userRequest.getClientRegistration());
+        log.info("oAuth2User : {}", oAuth2User);
+        log.info("oAuth2User.getName() : {}", oAuth2User.getName());
+        log.info("oAuth2User.getAttributes() : {}", oAuth2User.getAttributes());
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
@@ -49,12 +49,12 @@ public class OAuthTravelerService implements OAuth2UserService {
         String email = (String) attributes.get("email");
         if (email == null) {
             try {
-                switch (userRequest.getClientRegistration().getClientName()) {
+                switch(userRequest.getClientRegistration().getClientName()) {
                     case "GitHub":
                         email = fetchEmailFromGitHub(userRequest.getAccessToken().getTokenValue());
                 }
             } catch (Exception e) {
-                System.out.println("failed to fetch detail:" + e);
+                log.error("failed to fetch detail:" + e);
                 return null;
             }
         }
@@ -96,7 +96,7 @@ public class OAuthTravelerService implements OAuth2UserService {
     @Transactional
     public Traveler saveOrUpdate(String email) {
         Traveler traveler = travelerRepository.findMemberByEmail(email);
-        if (traveler != null) {
+        if(traveler != null) {
             // TODO: 정보 업데이트
         } else {
             traveler = travelerRepository.save(new Traveler(email, email, email, Role.USER));
