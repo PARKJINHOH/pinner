@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class ResponseReturnBody {
-    Map<String, Object> responseData = new HashMap<>();
+public class ResponseDto {
+    Map<String, Object> data = new HashMap<>();
     String message;
 }
