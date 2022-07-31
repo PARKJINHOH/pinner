@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.global.Role;
 import lombok.Data;
 
 @Data
@@ -11,8 +12,9 @@ public class TravelerDto {
     public Traveler toEntity() {
         return Traveler.builder()
                 .email(email)
-                .password(password)
                 .name(email)
+                .password(password)
+                .role(Role.USER)
                 .build();
     }
 }

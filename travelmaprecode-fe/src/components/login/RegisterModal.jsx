@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
 import {sendPostApi} from '../../apis/api';
 
-import './RegisterModal.css'
-
 const RegisterModal = ({show, onHide}) => {
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
