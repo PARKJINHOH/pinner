@@ -22,7 +22,7 @@ export default function GoogleMapApi() {
         fullscreenControl: false,
     };
 
-    // register
+    // Modal
     const [registerModalOn, setRegisterModalOn] = useState(false);
     const [LoginModalOn, setLoginModalOn] = useState(false);
 
