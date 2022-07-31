@@ -79,12 +79,12 @@ public class OAuthTravelerService implements OAuth2UserService {
                 .connectTimeout(Duration.ofSeconds(5))
                 .build();
 
-        var request = HttpRequest.newBuilder(URI.create("https://api.github.com/user/emails"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create("https://api.github.com/user/emails"))
                 .setHeader(HttpHeaders.ACCEPT, "application/vnd.github+json")
                 .setHeader(HttpHeaders.AUTHORIZATION, String.format("token " + accessToken))
                 .build();
 
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         ObjectMapper mapper = new ObjectMapper();
         List<GitHubEmailResponse> myObjects = mapper.readValue(response.body(), new TypeReference<>() {
