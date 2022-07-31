@@ -1,31 +1,29 @@
 import React, {useState} from 'react';
-import {Modal, Button, Form, Container} from "react-bootstrap";
-import {sendGetApi} from '../../api/api';
-
-import './RegisterModal.css'
+import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
+import {sendPostApi} from '../../apis/api';
 
 const RegisterModal = ({show, onHide}) => {
-    const [nickname, setNickname] = useState("")
+    const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const onNicknameHandler = (event) => {
-        setNickname(event.currentTarget.value)
+        setNickname(event.currentTarget.value);
     }
     const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value)
+        setEmail(event.currentTarget.value);
     }
 
     const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value)
+        setPassword(event.currentTarget.value);
     }
 
     const onConfirmPasswordHandler = (event) => {
-        setConfirmPassword(event.currentTarget.value)
+        setConfirmPassword(event.currentTarget.value);
     }
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
         event.preventDefault();
 
         if (nickname == null || nickname.length < 3) {
@@ -48,21 +46,19 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        // 이메일 중복확인
-        const data = async () => {
-            JSON.stringify({
-                email: email
-            });
-        }
-
-        let isDuplicateEmail = sendGetApi('/api/duplicate/email', data);
-        if (isDuplicateEmail) {
+        // let isDuplicateEmail = await sendGetApi('/api/v1/identities/email', email);
+        // if (!isDuplicateEmail) {
+        if (false) {
             return alert('이메일이 중복입니다.');
+        } else {
+            let data = JSON.stringify({
+                    email: email,
+                    password: password
+                }
+            );
+            await sendPostApi('/api/login/email', data);
+            return alert('회원가입에 성공했습니다.');
         }
-
-        // post 요청
-
-
     }
 
     return (
@@ -99,9 +95,17 @@ const RegisterModal = ({show, onHide}) => {
                             <Form.Control value={confirmPassword} onChange={onConfirmPasswordHandler} type="password" placeholder="Confirm Password"/>
                         </Form.Group>
                         <br/>
-                        <Button onClick={onSubmit} block="true" variant="info" type="button" className="my-3">
+                        <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             회원가입
                         </Button>
+                        <Stack>
+                            <a href="/oauth2/authorization/github">
+                                <Button block="true" variant="info" type="button" className="my-3">
+                                    GitHub으로 시작하기
+                                </Button>
+                            </a>
+                            {/* TODO: 후에 추가 될 수도 있음 */}
+                        </Stack>
                     </Form>
                 </Modal.Body>
             </Container>

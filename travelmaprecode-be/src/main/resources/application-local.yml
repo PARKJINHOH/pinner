@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url:  jdbc:h2:~/TravelMapRecode
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      # 개발(validate , none) 운영 : none
+    properties:
+      hibernate.format_sql: true
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ed7266644a777b8a6e02
+            clientSecret: 1d9c1e5a7fad1f9528cc4e3faf83043f9a102641
+            scope:
+              - user:email
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+    org.springframework.security: DEBUG

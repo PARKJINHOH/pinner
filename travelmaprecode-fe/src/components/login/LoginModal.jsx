@@ -1,9 +1,40 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
-import './LoginModal.css'
+import {sendPostApi} from "../../apis/api";
 
 const LoginModal = ({show, onHide}) => {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const onEmailHandler = (event) => {
+        setEmail(event.currentTarget.value);
+    }
+
+    const onPasswordHandler = (event) => {
+        setPassword(event.currentTarget.value);
+    }
+
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        if (email == null) {
+            return alert('이메일 확인해주세요.');
+        }
+
+        if (password == null) {
+            return alert('비밀번호 확인해주세요.');
+        }
+
+        let data = JSON.stringify({
+                email: email,
+                password: password
+            }
+        );
+        await sendPostApi('/api/v1/login', data);
+
+    }
+
 
     return (
         <Modal
@@ -21,15 +52,15 @@ const LoginModal = ({show, onHide}) => {
                     <Form>
                         <Form.Group>
                             <Form.Label>이메일</Form.Label>
-                            <Form.Control type="email" placeholder="Email"/>
+                            <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email"/>
                         </Form.Group>
                         <br/>
                         <Form.Group>
                             <Form.Label>비밀번호</Form.Label>
-                            <Form.Control type="password" placeholder="Password"/>
+                            <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password"/>
                         </Form.Group>
                         <br/>
-                        <Button block variant="info" type="button" className="my-3">
+                        <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             로그인
                         </Button>
                     </Form>

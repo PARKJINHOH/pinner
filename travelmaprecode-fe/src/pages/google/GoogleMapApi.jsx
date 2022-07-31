@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {useMemo} from "react";
 import {GoogleMap, LoadScript} from '@react-google-maps/api';
 
-import RegisterModal from "../register/RegisterModal";
-import LoginModal from "../login/LoginModal";
+import RegisterModal from "../../components/login/RegisterModal";
+import LoginModal from "../../components/login/LoginModal";
 
 import './GoogleMapApi.css';
 import {Button} from "react-bootstrap";
