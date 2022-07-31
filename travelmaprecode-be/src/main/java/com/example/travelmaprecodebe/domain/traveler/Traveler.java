@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.global.AuditEntity;
 import com.example.travelmaprecodebe.domain.global.Role;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Table(name = "tbl_travel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Traveler {
+public class Traveler extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
