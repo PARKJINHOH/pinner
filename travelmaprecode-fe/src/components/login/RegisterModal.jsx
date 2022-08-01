@@ -52,7 +52,8 @@ const RegisterModal = ({show, onHide}) => {
 
         let registerResult = await sendPostApi('/api/login/email', data);
         if (registerResult.status === 201) {
-            alert(registerResult.data.data.email + '님 ' + registerResult.data.message);
+            alert(registerResult.data.message);
+            // Todo : 모달창 숨기기
         } else {
             alert(registerResult.data.message);
         }
