@@ -6,22 +6,10 @@ export function sendPostApi(url, data) {
             headers: {
                 "Content-Type": `application/json`,
             }
-        })
-        .then((Response) => {
-            return Response.data;
-        })
-        .catch((Error) => {
-            console.log(Error);
         });
-}
+};
 
 export function sendGetApi(url, data) {
     return axios
-        .get(url + "/" + data)
-        .then((Response) => {
-            return Response.data;
-        })
-        .catch((Error) => {
-            console.log(Error);
-        });
-}
+        .get(url + "/" + data);
+};
