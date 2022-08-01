@@ -46,23 +46,19 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        // let isDuplicateEmail = await sendGetApi('/api/v1/identities/email', email);
-        // if (!isDuplicateEmail) {
-        if (false) {
-            return alert('이메일이 중복입니다.');
+        let data = JSON.stringify({
+            email: email, password: password
+        });
+
+        let registerResult = await sendPostApi('/api/login/email', data);
+        if (registerResult.status === 201) {
+            alert(registerResult.data.data.email + '님 ' + registerResult.data.message);
         } else {
-            let data = JSON.stringify({
-                    email: email,
-                    password: password
-                }
-            );
-            await sendPostApi('/api/login/email', data);
-            return alert('회원가입에 성공했습니다.');
+            alert(registerResult.data.message);
         }
     }
 
-    return (
-        <Modal
+    return (<Modal
             show={show}
             onHide={onHide}
             size="lg"
@@ -109,8 +105,7 @@ const RegisterModal = ({show, onHide}) => {
                     </Form>
                 </Modal.Body>
             </Container>
-        </Modal>
-    );
+        </Modal>);
 };
 
 export default RegisterModal;
