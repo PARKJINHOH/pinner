@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.domain.traveler;
+package com.example.travelmaprecodebe.domain.global;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
