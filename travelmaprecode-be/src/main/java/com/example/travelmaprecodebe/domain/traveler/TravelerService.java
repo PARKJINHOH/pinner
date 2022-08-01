@@ -26,6 +26,12 @@ public class TravelerService implements UserDetailsService {
         }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Traveler getTraveler = travelerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
+        log.info("Attempt Login Traveler : {}", getTraveler.getEmail());
+
+        return getTraveler;
     }
 }

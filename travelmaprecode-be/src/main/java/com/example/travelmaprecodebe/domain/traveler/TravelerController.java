@@ -44,4 +44,16 @@ public class TravelerController {
         }
     }
 
+    @GetMapping("/login/success")
+    public ResponseEntity<ResponseDto> loginSuccess() {
+        log.info("로그인 성공");
+        return new ResponseEntity<>(new ResponseDto("로그인에 성공했습니다."), HttpStatus.OK);
+    }
+
+    @GetMapping("/login/fail")
+    public ResponseEntity<ResponseDto> loginFail() {
+        log.info("로그인 실패");
+        return new ResponseEntity<>(new ResponseDto("로그인에 실패했습니다."), HttpStatus.UNAUTHORIZED);
+    }
+
 }

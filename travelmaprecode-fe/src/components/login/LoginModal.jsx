@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
-import {sendPostApi, sendPostLoginApi} from "../../apis/api";
+import {sendPostLoginApi} from "../../apis/api";
 
 const LoginModal = ({show, onHide}) => {
 
@@ -26,18 +26,18 @@ const LoginModal = ({show, onHide}) => {
             return alert('비밀번호 확인해주세요.');
         }
 
-        let data = JSON.stringify({
-                email: email,
-                password: password
-            }
-        );
-        let registerResult = await sendPostLoginApi('/login', data);
-        if (registerResult.status === 200) {
-            alert(registerResult.data.message);
-            // Todo : 모달창 숨기기
-        } else {
-            alert(registerResult.data.message);
-        }
+        const data = new URLSearchParams()
+        data.append("email", email);
+        data.append("password", password);
+
+        sendPostLoginApi('/login', data)
+            .then(response => {
+                console.log("response : ", response);
+            })
+            .catch(error => {
+                console.log("error : ", error);
+            });
+
     }
 
 

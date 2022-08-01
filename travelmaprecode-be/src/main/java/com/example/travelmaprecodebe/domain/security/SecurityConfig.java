@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuthTravelerService travelerService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Override
     public void configure(WebSecurity web) {
@@ -28,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/traveler/**", "/traveler/**").permitAll() // To avoid security,
-                    .antMatchers("/", "/login/oauth2/**").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/traveler/**").permitAll() // To avoid security,
+                    .antMatchers("/", "/login/oauth2/**", "/api/traveler/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .oauth2Login()
@@ -39,7 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login").permitAll()
                     .usernameParameter("email")
-                    .passwordParameter("password");
+                    .successHandler(customAuthenticationSuccessHandler)
+                    .failureHandler(customAuthenticationFailureHandler);
     }
 
     @Bean

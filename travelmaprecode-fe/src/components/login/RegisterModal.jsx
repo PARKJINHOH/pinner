@@ -46,11 +46,11 @@ const RegisterModal = ({show, onHide}) => {
             return alert('비밀번호와 비밀번호확인은 같아야 합니다.');
         }
 
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             email: email, password: password
         });
 
-        await sendPostApi('/api/traveler/register', data)
+        sendPostApi('/api/traveler/register', data)
             .then(response => {
                 if (response.status === 201) {
                     alert(response.data.message);
