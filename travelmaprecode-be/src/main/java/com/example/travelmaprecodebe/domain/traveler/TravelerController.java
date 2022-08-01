@@ -13,20 +13,20 @@ import java.util.HashMap;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/traveler")
 @RequiredArgsConstructor
 public class TravelerController {
 
     private final TravelerService travelerService;
 
-    @GetMapping("/member/echo")
+    @GetMapping("/echo")
     public String echo(@AuthenticationPrincipal OAuth2User principal) {
         log.info("principal : {}", principal);
         return "hello " + principal.getAttribute("email");
     }
 
     // 회원가입
-    @PostMapping("/email")
+    @PostMapping("/register")
     public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto travelerDto) {
         String getResult = travelerService.register(travelerDto);
         ResponseDto responseDto = new ResponseDto();

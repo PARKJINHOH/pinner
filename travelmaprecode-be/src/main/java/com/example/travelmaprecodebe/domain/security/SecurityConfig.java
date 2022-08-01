@@ -1,12 +1,14 @@
 package com.example.travelmaprecodebe.domain.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,14 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .httpBasic().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/login/**").permitAll() // To avoid security,
-                    .antMatchers("/", "/login/oauth2/**", "/login/**").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/traveler/**", "/traveler/**").permitAll() // To avoid security,
+                    .antMatchers("/", "/login/oauth2/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .oauth2Login()
                     .userInfoEndpoint(userInfo -> userInfo.userService(travelerService))
-                    .defaultSuccessUrl("/", true);
+                    .defaultSuccessUrl("/", true)
+                .and()
+                    .formLogin()
+                    .loginPage("/login").permitAll()
+                    .usernameParameter("email")
+                    .passwordParameter("password");
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encodePassword() {
+        return new BCryptPasswordEncoder();
     }
 }

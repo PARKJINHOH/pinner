@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
-import {sendPostApi} from "../../apis/api";
+import {sendPostApi, sendPostLoginApi} from "../../apis/api";
 
 const LoginModal = ({show, onHide}) => {
 
@@ -31,8 +31,13 @@ const LoginModal = ({show, onHide}) => {
                 password: password
             }
         );
-        await sendPostApi('/api/v1/login', data);
-
+        let registerResult = await sendPostLoginApi('/login', data);
+        if (registerResult.status === 200) {
+            alert(registerResult.data.message);
+            // Todo : 모달창 숨기기
+        } else {
+            alert(registerResult.data.message);
+        }
     }
 
 
