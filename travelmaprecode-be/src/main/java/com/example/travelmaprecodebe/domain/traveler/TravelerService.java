@@ -27,12 +27,10 @@ public class TravelerService {
     public String register(TravelerDto travelerDto) {
         if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null){
             return travelerRepository.save(travelerDto.toEntity()).getEmail();
+        }else{
+            return "fail";
         }
-        return "fail";
-//        todo
-//        else {
-//            throw new EmailSignupFailedException();
-//        }
+
 
     }
 }

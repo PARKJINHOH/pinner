@@ -2,11 +2,13 @@ package com.example.travelmaprecodebe.domain.global;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseDto {
     Map<String, Object> data = new HashMap<>();

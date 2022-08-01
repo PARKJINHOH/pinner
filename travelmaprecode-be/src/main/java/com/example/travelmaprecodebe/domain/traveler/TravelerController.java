@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.global.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @Slf4j
 @RestController
@@ -22,27 +25,23 @@ public class TravelerController {
         return "hello " + principal.getAttribute("email");
     }
 
-    @GetMapping("/identities/email/{email}")
-    public ResponseEntity<Boolean> getDuplicateEmail(@PathVariable String email) {
-        final boolean checkEmail = travelerService.emailCheck(email);
-        log.info("중복검사 : {}", email);
-
-        if (checkEmail) { // 중복이 아닐 때 (409)
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } else { // 중복
-            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
-        }
-    }
-
+    // 회원가입
     @PostMapping("/email")
-    public ResponseEntity<String> postEmail(@RequestBody TravelerDto travelerDto) {
-        final String resultEmail = travelerService.register(travelerDto);
+    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto travelerDto) {
+        String getResult = travelerService.register(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
 
-        if (resultEmail.equals("fail")) {
-            return ResponseEntity.badRequest().body("회원가입에 실패했습니다.");
+        if (getResult.equals("fail")) {
+            responseDto.setMessage("회원가입에 실패했습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
+        } else {
+            responseDto.setMessage("회원가입에 성공했습니다.");
+            responseDto.setData(new HashMap<>() {{
+                put("email", getResult);
+            }});
+
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         }
-
-        return new ResponseEntity<>(resultEmail, HttpStatus.CREATED);
     }
 
 }
