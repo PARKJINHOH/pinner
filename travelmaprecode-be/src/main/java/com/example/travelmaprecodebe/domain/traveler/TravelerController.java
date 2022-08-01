@@ -35,7 +35,7 @@ public class TravelerController {
             responseDto.setMessage("회원가입에 실패했습니다.");
             return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
         } else {
-            responseDto.setMessage("회원가입에 성공했습니다.");
+            responseDto.setMessage(getResult + "님 회원가입에 성공했습니다.");
             responseDto.setData(new HashMap<>() {{
                 put("email", getResult);
             }});
