@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.domain.image;
 
-import com.example.travelmaprecodebe.domain.traveler.ResponseDto;
+import com.example.travelmaprecodebe.domain.global.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ImageController {
             final String imageLink = imageService.save(file.getBytes());
             return new ResponseEntity<>(Map.of("links", imageLink), HttpStatus.CREATED);
         } catch (IOException e) {
-            log.error("failed to save image" + e.toString());
+            log.error("failed to save image" + e);
             return new ResponseEntity<>(new ResponseDto("something wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
