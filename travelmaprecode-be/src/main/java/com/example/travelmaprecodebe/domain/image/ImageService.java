@@ -10,11 +10,11 @@ public class ImageService {
 
 
     public String save(byte[] image) {
-        return imageProvider.save(image);
+        return imageProvider.save(new SimpleImageHolder(image));
     }
 
     public byte[] load(String s) {
-        return  imageProvider.load(s);
+        return  imageProvider.load(s).getData();
     }
 
 }
