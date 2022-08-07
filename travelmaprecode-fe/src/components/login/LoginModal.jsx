@@ -2,11 +2,15 @@ import React, {useState} from 'react';
 import {Modal, Button, Form, Container} from "react-bootstrap";
 
 import {sendPostLoginApi} from "../../apis/api";
+import {useRecoilState} from "recoil";
+import {loginStatus} from "../../_states/login";
 
 const LoginModal = ({show, onHide}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
@@ -33,6 +37,7 @@ const LoginModal = ({show, onHide}) => {
         sendPostLoginApi('/login', data)
             .then(response => {
                 console.log("response : ", response);
+                setLoginModalOn(false);
             })
             .catch(error => {
                 console.log("error : ", error);

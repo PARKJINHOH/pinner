@@ -1,12 +1,18 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
 import {sendPostApi} from '../../apis/api';
+import {useRecoilState} from "recoil";
+import {registerStatus} from "../../_states/register";
+import {loginStatus} from "../../_states/login";
 
 const RegisterModal = ({show, onHide}) => {
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
+    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
 
     const onNicknameHandler = (event) => {
         setNickname(event.currentTarget.value);
@@ -54,7 +60,8 @@ const RegisterModal = ({show, onHide}) => {
             .then(response => {
                 if (response.status === 201) {
                     alert(response.data.message);
-                    // Todo : 모달창 숨기기
+                    setRegisterModalOn(false);
+                    setLoginModalOn(true);
                 }
             })
             .catch(error => {

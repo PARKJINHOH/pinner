@@ -7,6 +7,9 @@ import LoginModal from "../../components/login/LoginModal";
 
 import './GoogleMapApi.css';
 import {Button} from "react-bootstrap";
+import {useRecoilState} from "recoil";
+import {registerStatus} from "../../_states/register";
+import {loginStatus} from "../../_states/login";
 
 export default function GoogleMapApi() {
     const containerStyle = {
@@ -23,8 +26,8 @@ export default function GoogleMapApi() {
     };
 
     // Modal
-    const [registerModalOn, setRegisterModalOn] = useState(false);
-    const [LoginModalOn, setLoginModalOn] = useState(false);
+    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
+    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
 
     return (
         <div>
