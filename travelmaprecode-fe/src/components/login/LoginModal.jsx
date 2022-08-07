@@ -3,7 +3,10 @@ import {Modal, Button, Form, Container} from "react-bootstrap";
 
 import {sendPostLoginApi} from "../../apis/api";
 import {useRecoilState} from "recoil";
-import {loginStatus} from "../../_states/login";
+
+import {loginStatus, showLoginStatus} from "../../_states/login";
+import {showLogoutStatus} from "../../_states/logout";
+import {showRegisterStatus} from "../../_states/register";
 
 const LoginModal = ({show, onHide}) => {
 
@@ -11,6 +14,9 @@ const LoginModal = ({show, onHide}) => {
     const [password, setPassword] = useState("");
 
     const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
+    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
+    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
+    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
@@ -38,6 +44,10 @@ const LoginModal = ({show, onHide}) => {
             .then(response => {
                 console.log("response : ", response);
                 setLoginModalOn(false);
+
+                setShowLogout(true);
+                setShowRegister(false);
+                setShowLogin(false);
             })
             .catch(error => {
                 console.log("error : ", error);

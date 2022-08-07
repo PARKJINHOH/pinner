@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
+
 import {sendPostApi} from '../../apis/api';
 import {useRecoilState} from "recoil";
-import {registerStatus} from "../../_states/register";
-import {loginStatus} from "../../_states/login";
+
+import {registerStatus, showRegisterStatus} from "../../_states/register";
+import {loginStatus, showLoginStatus} from "../../_states/login";
+import {showLogoutStatus} from "../../_states/logout";
 
 const RegisterModal = ({show, onHide}) => {
     const [nickname, setNickname] = useState("");
@@ -13,6 +16,9 @@ const RegisterModal = ({show, onHide}) => {
 
     const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
     const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
+    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
+    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
+    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
 
     const onNicknameHandler = (event) => {
         setNickname(event.currentTarget.value);
@@ -62,6 +68,10 @@ const RegisterModal = ({show, onHide}) => {
                     alert(response.data.message);
                     setRegisterModalOn(false);
                     setLoginModalOn(true);
+
+                    setShowLogout(true);
+                    setShowRegister(false);
+                    setShowLogin(false);
                 }
             })
             .catch(error => {

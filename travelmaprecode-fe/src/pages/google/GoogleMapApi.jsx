@@ -1,17 +1,27 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useMemo} from "react";
+import {useRecoilState} from "recoil";
 import {GoogleMap, LoadScript} from '@react-google-maps/api';
+import {Button} from "react-bootstrap";
 
 import RegisterModal from "../../components/login/RegisterModal";
 import LoginModal from "../../components/login/LoginModal";
 
 import './GoogleMapApi.css';
-import {Button} from "react-bootstrap";
-import {useRecoilState} from "recoil";
-import {registerStatus} from "../../_states/register";
-import {loginStatus} from "../../_states/login";
+
+import {registerStatus, showRegisterStatus} from "../../_states/register";
+import {loginStatus, showLoginStatus} from "../../_states/login";
+import {showLogoutStatus} from "../../_states/logout";
 
 export default function GoogleMapApi() {
+    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
+    const [loginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
+
+    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
+    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
+    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
+
+
     const containerStyle = {
         width: '100%',
         height: '100vh'
@@ -25,9 +35,13 @@ export default function GoogleMapApi() {
         fullscreenControl: false,
     };
 
-    // Modal
-    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
-    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
+    const onSubmit = () => {
+        setShowLogout(false);
+        setShowRegister(true);
+        setShowLogin(true);
+    }
+
+
 
     return (
         <div>
@@ -36,7 +50,7 @@ export default function GoogleMapApi() {
                 onHide={() => setRegisterModalOn(false)}
             />
             <LoginModal
-                show={LoginModalOn}
+                show={loginModalOn}
                 onHide={() => setLoginModalOn(false)}
             />
 
@@ -50,12 +64,28 @@ export default function GoogleMapApi() {
                     options={mapOptions}>
                     { /* Child components, such as markers, info windows, etc. */}
                 </GoogleMap>
-                <Button className="login_btn" variant="primary" onClick={() => setLoginModalOn(true)}>
-                    로그인
-                </Button>
-                <Button className="register_btn" variant="secondary" onClick={() => setRegisterModalOn(true)}>
-                    회원가입
-                </Button>
+                {
+                    showLogin ?
+                    <Button className="login_btn" variant="primary" onClick={() => setLoginModalOn(true)}>
+                        로그인
+                    </Button>
+                    : null
+                }
+                {
+                    showRegister ?
+                    <Button className="register_btn" variant="secondary" onClick={() => setRegisterModalOn(true)}>
+                        회원가입
+                    </Button>
+                    : null
+                }
+                {
+                    showLogout ?
+                    <Button className="logout_btn" variant="info" onClick={onSubmit}>
+                        로그아웃
+                    </Button>
+                    : null
+                }
+
             </LoadScript>
         </div>
     );
