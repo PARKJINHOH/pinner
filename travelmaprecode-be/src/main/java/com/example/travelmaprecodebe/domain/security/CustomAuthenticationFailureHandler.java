@@ -15,8 +15,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        // CORS plugin 사용 : https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en
-        response.sendRedirect("http://localhost:8080/api/traveler/login/fail");
+        response.sendRedirect("/api/traveler/login/fail");
     }
 
 }

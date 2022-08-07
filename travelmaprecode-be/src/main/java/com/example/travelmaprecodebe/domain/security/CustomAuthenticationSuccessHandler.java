@@ -19,8 +19,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(60);
-        // CORS plugin 사용 : https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf/related?hl=en
-        response.sendRedirect("http://localhost:8080/api/traveler/login/success");
+
+        response.sendRedirect("/api/traveler/login/success");
     }
 
 }
