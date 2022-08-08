@@ -1,24 +1,20 @@
-import React, {useState} from 'react';
-import {Modal, Button, Form, Container, Stack} from "react-bootstrap";
+import React, { useState } from 'react';
+import { Modal, Button, Form, Container, Stack } from "react-bootstrap";
 
-import {sendPostApi} from '../../apis/api';
-import {useRecoilState} from "recoil";
+import { sendPostApi } from '../../apis/api';
+import { useRecoilState } from "recoil";
 
-import {registerStatus, showRegisterStatus} from "../../_states/register";
-import {loginStatus, showLoginStatus} from "../../_states/login";
-import {showLogoutStatus} from "../../_states/logout";
+import { loginState, ModalVisibility, modalVisibilityState } from "../../_states/login";
 
-const RegisterModal = ({show, onHide}) => {
+const RegisterModal = () => {
     const [nickname, setNickname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
-    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
-    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
-    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
-    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
+
+    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onNicknameHandler = (event) => {
         setNickname(event.currentTarget.value);
@@ -66,12 +62,9 @@ const RegisterModal = ({show, onHide}) => {
             .then(response => {
                 if (response.status === 201) {
                     alert(response.data.message);
-                    setRegisterModalOn(false);
-                    setLoginModalOn(true);
 
-                    setShowLogout(true);
-                    setShowRegister(false);
-                    setShowLogin(false);
+                    setModalVisibility(ModalVisibility.LOGIN);
+                    setLoginState(true);
                 }
             })
             .catch(error => {
@@ -80,8 +73,8 @@ const RegisterModal = ({show, onHide}) => {
     }
 
     return (<Modal
-        show={show}
-        onHide={onHide}
+        show={modalVisibility == ModalVisibility.REGISTER}
+        onHide={() => setModalVisibility(ModalVisibility.HIDE)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -94,24 +87,24 @@ const RegisterModal = ({show, onHide}) => {
                 <Form>
                     <Form.Group>
                         <Form.Label>닉네임</Form.Label>
-                        <Form.Control value={nickname} onChange={onNicknameHandler} placeholder="Nickname"/>
+                        <Form.Control value={nickname} onChange={onNicknameHandler} placeholder="Nickname" />
                     </Form.Group>
-                    <br/>
+                    <br />
                     <Form.Group>
                         <Form.Label>이메일</Form.Label>
-                        <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email"/>
+                        <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                     </Form.Group>
-                    <br/>
+                    <br />
                     <Form.Group>
                         <Form.Label>비밀번호</Form.Label>
-                        <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password"/>
+                        <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
                     </Form.Group>
-                    <br/>
+                    <br />
                     <Form.Group>
                         <Form.Label>비밀번호 확인</Form.Label>
-                        <Form.Control value={confirmPassword} onChange={onConfirmPasswordHandler} type="password" placeholder="Confirm Password"/>
+                        <Form.Control value={confirmPassword} onChange={onConfirmPasswordHandler} type="password" placeholder="Confirm Password" />
                     </Form.Group>
-                    <br/>
+                    <br />
                     <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                         회원가입
                     </Button>

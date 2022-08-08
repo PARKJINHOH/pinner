@@ -1,22 +1,18 @@
-import React, {useState} from 'react';
-import {Modal, Button, Form, Container} from "react-bootstrap";
+import React, { useState } from 'react';
+import { Modal, Button, Form, Container } from "react-bootstrap";
 
-import {sendPostLoginApi} from "../../apis/api";
-import {useRecoilState} from "recoil";
+import { sendPostLoginApi } from "../../apis/api";
+import { useRecoilState } from "recoil";
 
-import {loginStatus, showLoginStatus} from "../../_states/login";
-import {showLogoutStatus} from "../../_states/logout";
-import {showRegisterStatus} from "../../_states/register";
+import { loginState, ModalVisibility, modalVisibilityState } from "../../_states/login";
 
-const LoginModal = ({show, onHide}) => {
+const LoginModal = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [LoginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
-    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
-    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
-    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
+    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
@@ -43,11 +39,9 @@ const LoginModal = ({show, onHide}) => {
         sendPostLoginApi('/login', data)
             .then(response => {
                 console.log("response : ", response);
-                setLoginModalOn(false);
-
-                setShowLogout(true);
-                setShowRegister(false);
-                setShowLogin(false);
+                // 로그인 모달 감춤
+                setModalVisibility(ModalVisibility.HIDE)
+                setLoginState(true);
             })
             .catch(error => {
                 console.log("error : ", error);
@@ -58,8 +52,8 @@ const LoginModal = ({show, onHide}) => {
 
     return (
         <Modal
-            show={show}
-            onHide={onHide}
+            show={modalVisibility == ModalVisibility.LOGIN}
+            onHide={() => setModalVisibility(ModalVisibility.HIDE)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -72,14 +66,14 @@ const LoginModal = ({show, onHide}) => {
                     <Form>
                         <Form.Group>
                             <Form.Label>이메일</Form.Label>
-                            <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email"/>
+                            <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         </Form.Group>
-                        <br/>
+                        <br />
                         <Form.Group>
                             <Form.Label>비밀번호</Form.Label>
-                            <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password"/>
+                            <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
                         </Form.Group>
-                        <br/>
+                        <br />
                         <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             로그인
                         </Button>

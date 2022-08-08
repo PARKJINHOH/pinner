@@ -1,25 +1,19 @@
 import React from 'react';
-import {useMemo} from "react";
-import {useRecoilState} from "recoil";
-import {GoogleMap, LoadScript} from '@react-google-maps/api';
-import {Button} from "react-bootstrap";
+import { useMemo } from "react";
+import { useRecoilState } from "recoil";
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { Button } from "react-bootstrap";
 
 import RegisterModal from "../../components/login/RegisterModal";
 import LoginModal from "../../components/login/LoginModal";
 
 import './GoogleMapApi.css';
-
-import {registerStatus, showRegisterStatus} from "../../_states/register";
-import {loginStatus, showLoginStatus} from "../../_states/login";
-import {showLogoutStatus} from "../../_states/logout";
+import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
 
 export default function GoogleMapApi() {
-    const [registerModalOn, setRegisterModalOn] = useRecoilState(registerStatus);
-    const [loginModalOn, setLoginModalOn] = useRecoilState(loginStatus);
 
-    const [showLogin, setShowLogin] = useRecoilState(showLoginStatus);
-    const [showRegister, setShowRegister] = useRecoilState(showRegisterStatus);
-    const [showLogout, setShowLogout] = useRecoilState(showLogoutStatus);
+    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
 
     const containerStyle = {
@@ -35,24 +29,11 @@ export default function GoogleMapApi() {
         fullscreenControl: false,
     };
 
-    const onSubmit = () => {
-        setShowLogout(false);
-        setShowRegister(true);
-        setShowLogin(true);
-    }
-
-
 
     return (
         <div>
-            <RegisterModal
-                show={registerModalOn}
-                onHide={() => setRegisterModalOn(false)}
-            />
-            <LoginModal
-                show={loginModalOn}
-                onHide={() => setLoginModalOn(false)}
-            />
+            <RegisterModal />
+            <LoginModal />
 
             <LoadScript
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
@@ -65,25 +46,20 @@ export default function GoogleMapApi() {
                     { /* Child components, such as markers, info windows, etc. */}
                 </GoogleMap>
                 {
-                    showLogin ?
-                    <Button className="login_btn" variant="primary" onClick={() => setLoginModalOn(true)}>
-                        로그인
-                    </Button>
-                    : null
-                }
-                {
-                    showRegister ?
-                    <Button className="register_btn" variant="secondary" onClick={() => setRegisterModalOn(true)}>
-                        회원가입
-                    </Button>
-                    : null
-                }
-                {
-                    showLogout ?
-                    <Button className="logout_btn" variant="info" onClick={onSubmit}>
-                        로그아웃
-                    </Button>
-                    : null
+                    isLoggedIn
+                        ?
+                        <Button className="logout_btn" variant="info" onClick={() => setLoginState(false)}>
+                            로그아웃
+                        </Button>
+                        :
+                        <>
+                            <Button className="login_btn" variant="primary" onClick={() => setModalVisibility(ModalVisibility.LOGIN)}>
+                                로그인
+                            </Button>
+                            <Button className="register_btn" variant="secondary" onClick={() => setModalVisibility(ModalVisibility.REGISTER)}>
+                                회원가입
+                            </Button>
+                        </>
                 }
 
             </LoadScript>
