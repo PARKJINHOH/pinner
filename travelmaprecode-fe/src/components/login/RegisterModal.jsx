@@ -4,7 +4,7 @@ import { Modal, Button, Form, Container, Stack } from "react-bootstrap";
 import { sendPostApi } from '../../apis/api';
 import { useRecoilState } from "recoil";
 
-import { loginState, ModalVisibility, modalVisibilityState } from "../../_states/login";
+import { ModalVisibility, modalVisibilityState } from "../../_states/login";
 
 const RegisterModal = () => {
     const [nickname, setNickname] = useState("");
@@ -12,8 +12,6 @@ const RegisterModal = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-
-    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onNicknameHandler = (event) => {
@@ -64,7 +62,6 @@ const RegisterModal = () => {
                     alert(response.data.message);
 
                     setModalVisibility(ModalVisibility.LOGIN);
-                    setLoginState(true);
                 }
             })
             .catch(error => {
@@ -73,7 +70,7 @@ const RegisterModal = () => {
     }
 
     return (<Modal
-        show={modalVisibility == ModalVisibility.REGISTER}
+        show={modalVisibility === ModalVisibility.REGISTER}
         onHide={() => setModalVisibility(ModalVisibility.HIDE)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"

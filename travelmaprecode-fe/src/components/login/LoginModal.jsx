@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Form, Container } from "react-bootstrap";
 
 import { sendPostLoginApi } from "../../apis/api";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { loginState, ModalVisibility, modalVisibilityState } from "../../_states/login";
 
@@ -11,7 +11,7 @@ const LoginModal = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
+    const setLoginState = useSetRecoilState(loginState);
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onEmailHandler = (event) => {
@@ -52,7 +52,7 @@ const LoginModal = () => {
 
     return (
         <Modal
-            show={modalVisibility == ModalVisibility.LOGIN}
+            show={modalVisibility === ModalVisibility.LOGIN}
             onHide={() => setModalVisibility(ModalVisibility.HIDE)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"

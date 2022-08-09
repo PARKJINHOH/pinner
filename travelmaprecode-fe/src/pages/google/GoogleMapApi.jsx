@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMemo } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { Button } from "react-bootstrap";
 
@@ -13,7 +13,7 @@ import { loginState, ModalVisibility, modalVisibilityState } from '../../_states
 export default function GoogleMapApi() {
 
     const [isLoggedIn, setLoginState] = useRecoilState(loginState);
-    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
+    const setModalVisibility = useSetRecoilState(modalVisibilityState);
 
 
     const containerStyle = {
