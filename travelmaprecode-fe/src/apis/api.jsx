@@ -13,7 +13,7 @@ export function sendPostLoginApi(url, data) {
     return axios
         .post(url, data, {
             headers: {
-                'Content-Type' : 'application/x-www-form-urlencoded',
+                'Content-Type' : 'application/json',
             }
         });
 }

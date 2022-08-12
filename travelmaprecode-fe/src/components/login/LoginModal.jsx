@@ -32,11 +32,11 @@ const LoginModal = () => {
             return alert('비밀번호 확인해주세요.');
         }
 
-        const data = new URLSearchParams()
-        data.append("email", email);
-        data.append("password", password);
+        const data = JSON.stringify({
+            email: email, password: password
+        });
 
-        sendPostLoginApi('/login', data)
+        sendPostLoginApi('/api/traveler/login', data)
             .then(response => {
                 console.log("response : ", response);
                 // 로그인 모달 감춤
