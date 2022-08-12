@@ -1,19 +1,21 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TravelerService implements UserDetailsService {
+public class TravelerService{
+
     private final TravelerRepository travelerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public String register(TravelerDto travelerDto) {
@@ -22,16 +24,25 @@ public class TravelerService implements UserDetailsService {
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
             return travelerRepository.save(travelerDto.toEntity()).getEmail();
         } else {
-            return "fail";
+            return null;
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Traveler getTraveler = travelerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    public TravelerDto doLogin(TravelerDto travelerDto) {
+        Traveler traveler = travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null);
+        if (!passwordEncoder.matches(travelerDto.getPassword(), traveler.getPassword())) {
+//            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+            return null;
+        }
+        String token = jwtTokenProvider.createToken(String.valueOf(traveler.getEmail()), traveler.getRole());
 
-        log.info("Attempt Login Traveler : {}", getTraveler.getEmail());
+        TravelerDto responseTraveler = new TravelerDto();
+        responseTraveler.setEmail(traveler.getEmail());
+        responseTraveler.setToken(token);
 
-        return getTraveler;
+        return responseTraveler;
     }
+
+
+
 }

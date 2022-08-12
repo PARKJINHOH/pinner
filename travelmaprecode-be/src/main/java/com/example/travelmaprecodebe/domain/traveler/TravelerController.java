@@ -31,7 +31,7 @@ public class TravelerController {
         String getResult = travelerService.register(travelerDto);
         ResponseDto responseDto = new ResponseDto();
 
-        if (getResult.equals("fail")) {
+        if (getResult == null) {
             responseDto.setMessage("회원가입에 실패했습니다.");
             return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
         } else {
@@ -44,16 +44,22 @@ public class TravelerController {
         }
     }
 
-    @GetMapping("/login/success")
-    public ResponseEntity<ResponseDto> loginSuccess() {
-        log.info("로그인 성공");
-        return new ResponseEntity<>(new ResponseDto("로그인에 성공했습니다."), HttpStatus.OK);
-    }
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto travelerDto) {
+        TravelerDto getResult = travelerService.doLogin(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
 
-    @GetMapping("/login/fail")
-    public ResponseEntity<ResponseDto> loginFail() {
-        log.info("로그인 실패");
-        return new ResponseEntity<>(new ResponseDto("로그인에 실패했습니다."), HttpStatus.UNAUTHORIZED);
+        if (getResult == null) {
+            responseDto.setMessage("로그인에 실패했습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        } else {
+            responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
+            responseDto.setData(new HashMap<>() {{
+                put("payload", getResult);
+            }});
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        }
     }
 
 }

@@ -9,12 +9,14 @@ public class TravelerDto {
     private String email;
     private String password;
 
+    private String token;
+
     public Traveler toEntity() {
         return Traveler.builder()
                 .email(email)
                 .name(email)
                 .password(password)
-                .role(Role.USER)
+                .role(Role.USER) // Default User
                 .build();
     }
 }

@@ -99,7 +99,7 @@ public class OAuthTravelerService implements OAuth2UserService {
         if(traveler != null) {
             // TODO: 정보 업데이트
         } else {
-            traveler = travelerRepository.save(new Traveler(email, email, email, Role.USER));
+            traveler = travelerRepository.save(new Traveler(traveler.getEmail(), traveler.getPassword(), traveler.getEmail(), Role.USER));
         }
 
         return traveler;
