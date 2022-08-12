@@ -1,6 +1,7 @@
-import './style/globals.css'
-import GoogleMapApi from "./pages/google/GoogleMapApi";
-import { RecoilRoot } from "recoil";
+import './style/globals.css';
+import { RecoilRoot } from 'recoil';
+import React from 'react';
+import GoogleMapApi from './pages/google/GoogleMapApi';
 
 function App() {
     return (

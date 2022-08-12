@@ -1,54 +1,53 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Container } from "react-bootstrap";
+import {
+    Modal, Button, Form, Container,
+} from 'react-bootstrap';
 
-import { sendPostLoginApi } from "../../apis/api";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { sendPostLoginApi } from '../../apis/api';
 
-import { loginState, ModalVisibility, modalVisibilityState } from "../../_states/login";
+import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
 
-const LoginModal = () => {
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+function LoginModal() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const setLoginState = useSetRecoilState(loginState);
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
-    }
+    };
 
     const onPasswordHandler = (event) => {
         setPassword(event.currentTarget.value);
-    }
+    };
 
     const onSubmit = async (event) => {
         event.preventDefault();
         if (email == null) {
-            return alert('이메일 확인해주세요.');
+            alert('이메일 확인해주세요.');
         }
 
         if (password == null) {
-            return alert('비밀번호 확인해주세요.');
+            alert('비밀번호 확인해주세요.');
         }
 
         const data = JSON.stringify({
-            email: email, password: password
+            email, password,
         });
 
         sendPostLoginApi('/api/traveler/login', data)
-            .then(response => {
-                console.log("response : ", response);
+            .then((response) => {
+                console.log('response : ', response);
                 // 로그인 모달 감춤
-                setModalVisibility(ModalVisibility.HIDE)
+                setModalVisibility(ModalVisibility.HIDE);
                 setLoginState(true);
             })
-            .catch(error => {
-                console.log("error : ", error);
+            .catch((error) => {
+                console.log('error : ', error);
             });
-
-    }
-
+    };
 
     return (
         <Modal
@@ -82,6 +81,6 @@ const LoginModal = () => {
             </Container>
         </Modal>
     );
-};
+}
 
 export default LoginModal;
