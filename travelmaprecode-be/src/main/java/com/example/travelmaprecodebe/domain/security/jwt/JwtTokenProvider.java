@@ -1,7 +1,7 @@
 package com.example.travelmaprecodebe.domain.security.jwt;
 
 import com.example.travelmaprecodebe.domain.global.Role;
-import com.example.travelmaprecodebe.domain.security.UserDetailServiceImpl;
+import com.example.travelmaprecodebe.domain.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -24,7 +24,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserDetailServiceImpl userDetailService;
+    private final UserDetailsServiceImpl userDetailService;
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
