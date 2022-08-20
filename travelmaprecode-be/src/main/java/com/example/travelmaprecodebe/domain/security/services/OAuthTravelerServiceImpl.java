@@ -1,6 +1,7 @@
-package com.example.travelmaprecodebe.domain.security;
+package com.example.travelmaprecodebe.domain.security.services;
 
 import com.example.travelmaprecodebe.domain.global.Role;
+import com.example.travelmaprecodebe.domain.security.GitHubUser;
 import com.example.travelmaprecodebe.domain.traveler.Traveler;
 import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,7 +29,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OAuthTravelerService implements OAuth2UserService {
+public class OAuthTravelerServiceImpl implements OAuth2UserService {
     private final TravelerRepository travelerRepository;
 
     @Override

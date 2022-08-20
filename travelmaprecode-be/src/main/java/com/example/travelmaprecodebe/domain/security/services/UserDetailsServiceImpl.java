@@ -1,6 +1,5 @@
-package com.example.travelmaprecodebe.domain.security;
+package com.example.travelmaprecodebe.domain.security.services;
 
-import com.example.travelmaprecodebe.domain.traveler.Traveler;
 import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Traveler getTraveler = travelerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        com.example.travelmaprecodebe.domain.traveler.Traveler getTraveler = travelerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
         log.info("Attempt Login Traveler : {}", getTraveler.getEmail());
 

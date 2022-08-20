@@ -29,16 +29,18 @@ public class Traveler extends AuditEntity implements UserDetails {
     private String email;
 
     @NotNull
-    private String name;
-
-    @NotNull
     private String password;
 
-    private boolean state;
+    @NotNull
+    private String name;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private boolean state;
+
+
 
     @Builder
     public Traveler(String email, String password, String name, Role role) {

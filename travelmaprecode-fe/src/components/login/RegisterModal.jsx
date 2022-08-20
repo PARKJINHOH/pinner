@@ -9,15 +9,15 @@ import { sendPostApi } from '../../apis/api';
 import { ModalVisibility, modalVisibilityState } from '../../_states/login';
 
 function RegisterModal() {
-    const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
     const onNicknameHandler = (event) => {
-        setNickname(event.currentTarget.value);
+        setName(event.currentTarget.value);
     };
 
     const onEmailHandler = (event) => {
@@ -35,7 +35,7 @@ function RegisterModal() {
     const onSubmit = async (event) => {
         event.preventDefault();
 
-        if (nickname == null || nickname.length < 3) {
+        if (name == null || name.length < 3) {
             alert('닉네임은 3글자 이상 적어주세요.');
         }
 
@@ -56,7 +56,7 @@ function RegisterModal() {
         }
 
         const data = JSON.stringify({
-            email, password,
+            email, password, name
         });
 
         sendPostApi('/api/traveler/register', data)
@@ -88,7 +88,7 @@ function RegisterModal() {
                     <Form>
                         <Form.Group>
                             <Form.Label>닉네임</Form.Label>
-                            <Form.Control value={nickname} onChange={onNicknameHandler} placeholder="Nickname" />
+                            <Form.Control value={name} onChange={onNicknameHandler} placeholder="Nickname" />
                         </Form.Group>
                         <br />
                         <Form.Group>

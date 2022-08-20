@@ -1,12 +1,15 @@
 package com.example.travelmaprecodebe.domain.security;
 
-import com.example.travelmaprecodebe.domain.security.jwt.JwtAuthenticationFilter;
-import com.example.travelmaprecodebe.domain.security.jwt.JwtTokenProvider;
+import com.example.travelmaprecodebe.domain.security.jwt.AuthEntryPointJwt;
+import com.example.travelmaprecodebe.domain.security.jwt.AuthTokenFilter;
+import com.example.travelmaprecodebe.domain.security.services.OAuthTravelerServiceImpl;
+import com.example.travelmaprecodebe.domain.security.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +23,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final OAuthTravelerService oAuthTravelerService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(encodePassword());
+    }
 
     @Override
     public void configure(WebSecurity web) {
@@ -36,6 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .formLogin().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	// 세션 비활성화
 
                 .and()
@@ -46,11 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                     .oauth2Login()
-                    .userInfoEndpoint(userInfo -> userInfo.userService(oAuthTravelerService))
+                    .userInfoEndpoint(userInfo -> userInfo.userService(oAuthTravelerServiceImpl))
                     .defaultSuccessUrl("/", true)
 
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         ;
     }
 
@@ -63,5 +73,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
     }
 }

@@ -37,7 +37,7 @@ public class GitHubUser implements OAuth2User {
         return attributes;
     }
 
-    static GitHubUser fromTraveler(Traveler traveler) {
+    public static GitHubUser fromTraveler(Traveler traveler) {
         GitHubUser gitHubUser = new GitHubUser();
         gitHubUser.setId(traveler.getId());
         gitHubUser.setName(traveler.getName());

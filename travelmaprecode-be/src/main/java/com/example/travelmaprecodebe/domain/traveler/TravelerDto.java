@@ -7,14 +7,16 @@ import lombok.Data;
 public class TravelerDto {
 
     private String email;
+    private String name;
     private String password;
 
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
     public Traveler toEntity() {
         return Traveler.builder()
                 .email(email)
-                .name(email)
+                .name(name)
                 .password(password)
                 .role(Role.USER) // Default User
                 .build();

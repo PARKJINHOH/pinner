@@ -62,4 +62,11 @@ public class TravelerController {
         }
     }
 
+    // 로그아웃 todo
+    @PostMapping("/logout")
+    public ResponseEntity.BodyBuilder logoutUser(@RequestBody TravelerDto travelerDto) {
+        travelerService.doLogout(travelerDto);
+        return ResponseEntity.ok();
+    }
+
 }

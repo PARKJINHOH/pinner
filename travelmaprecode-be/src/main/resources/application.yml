@@ -1,5 +1,9 @@
 spring:
   profiles:
     active: local
-  jwt:
-    secret: "testToken"
+
+token:
+  app:
+    jwtSecret: travelSecretKey
+    jwtExpirationMs: 3600000
+    jwtRefreshExpirationMs: 86400000
