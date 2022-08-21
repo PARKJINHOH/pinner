@@ -45,7 +45,7 @@ function LoginModal() {
                 setLoginState(true);
             })
             .catch((error) => {
-                console.log('error : ', error);
+                alert(error.response.data.message);
             });
     };
 

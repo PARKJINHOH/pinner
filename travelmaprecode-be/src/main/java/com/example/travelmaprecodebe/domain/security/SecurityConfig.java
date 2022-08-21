@@ -2,6 +2,7 @@ package com.example.travelmaprecodebe.domain.security;
 
 import com.example.travelmaprecodebe.domain.security.jwt.AuthEntryPointJwt;
 import com.example.travelmaprecodebe.domain.security.jwt.AuthTokenFilter;
+import com.example.travelmaprecodebe.domain.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.domain.security.services.OAuthTravelerServiceImpl;
 import com.example.travelmaprecodebe.domain.security.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtUtils jwtUtils;
     private final AuthEntryPointJwt unauthorizedHandler;
 
     @Override
@@ -44,8 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .formLogin().disable()
-//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-//                .and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	// 세션 비활성화
 
                 .and()
@@ -60,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/", true)
 
                 .and()
-                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new AuthTokenFilter(jwtUtils, userDetailsService), UsernamePasswordAuthenticationFilter.class);
         ;
     }
 
@@ -73,10 +75,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
     }
 }
