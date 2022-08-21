@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { sendPostLoginApi } from '../../apis/api';
+import { postLogin } from '../../apis/api_jwt';
 
 import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
 
@@ -37,7 +37,7 @@ function LoginModal() {
             email, password,
         });
 
-        sendPostLoginApi('/api/traveler/login', data)
+        postLogin(data)
             .then((response) => {
                 console.log('response : ', response);
                 // 로그인 모달 감춤
@@ -45,6 +45,7 @@ function LoginModal() {
                 setLoginState(true);
             })
             .catch((error) => {
+                console.log(error)
                 alert(error.response.data.message);
             });
     };

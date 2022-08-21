@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 
 import { useRecoilState } from 'recoil';
-import { sendPostApi } from '../../apis/api';
+import {postRegister} from '../../apis/api_jwt';
 
 import { ModalVisibility, modalVisibilityState } from '../../_states/login';
 
@@ -59,7 +59,7 @@ function RegisterModal() {
             email, password, name
         });
 
-        sendPostApi('/api/traveler/register', data)
+        postRegister(data)
             .then((response) => {
                 if (response.status === 201) {
                     alert(response.data.message);
