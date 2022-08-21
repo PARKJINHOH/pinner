@@ -60,6 +60,7 @@ public class TravelerService {
         TravelerDto responseTraveler = new TravelerDto();
         responseTraveler.setAccessToken(accessToken);
         responseTraveler.setRefreshToken(refreshToken.getToken());
+        responseTraveler.setName(traveler.getName());
         responseTraveler.setEmail(traveler.getEmail());
 
         return responseTraveler;
