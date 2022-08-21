@@ -1,7 +1,8 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
-import com.example.travelmaprecodebe.domain.security.jwt.RefreshToken;
+import com.example.travelmaprecodebe.domain.exceprion.TokenRefreshException;
 import com.example.travelmaprecodebe.domain.security.jwt.JwtUtils;
+import com.example.travelmaprecodebe.domain.security.jwt.RefreshToken;
 import com.example.travelmaprecodebe.domain.security.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,5 +63,18 @@ public class TravelerService {
 
     public void doLogout(TravelerDto travelerDto) {
         int result = refreshTokenService.deleteByEmail(travelerDto.getEmail());
+    }
+
+    public TravelerDto getRefreshToken(TravelerDto travelerDto) {
+        String requestRefreshToken = travelerDto.getRefreshToken();
+
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+        Traveler traveler = refreshTokenService.verifyExpiration(refreshToken).getTraveler();
+        String token = jwtUtils.generateTokenFromUsername(traveler.getEmail());
+
+        travelerDto.setRefreshToken(token);
+
+        return travelerDto;
+
     }
 }

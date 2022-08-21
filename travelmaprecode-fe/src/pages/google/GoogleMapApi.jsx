@@ -8,6 +8,7 @@ import LoginModal from '../../components/login/LoginModal';
 
 import './GoogleMapApi.css';
 import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
+import {postLogout} from "../../apis/api_jwt";
 
 export default function GoogleMapApi() {
     const [isLoggedIn, setLoginState] = useRecoilState(loginState);
@@ -25,6 +26,23 @@ export default function GoogleMapApi() {
     const mapOptions = {
         fullscreenControl: false,
     };
+
+    const onLogout = async (event) => {
+        // Todo : 전역으로 구현하기
+        const data = JSON.stringify({
+            // email, password, name
+        });
+
+        postLogout(data)
+            .then((response) => {
+                if (response.status === 200) {
+                    alert(response.data.message);
+                }
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            });
+    }
 
     return (
         <div>
@@ -46,7 +64,10 @@ export default function GoogleMapApi() {
                 {
                     isLoggedIn
                         ? (
-                            <Button className="logout_btn" variant="info" onClick={() => setLoginState(false)}>
+                            <Button className="logout_btn" variant="info" onClick={() => {
+                                setLoginState(false)
+                                onLogout()
+                            }}>
                                 로그아웃
                             </Button>
                         )

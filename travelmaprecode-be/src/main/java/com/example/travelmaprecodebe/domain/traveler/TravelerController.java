@@ -62,6 +62,12 @@ public class TravelerController {
         }
     }
 
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@RequestBody TravelerDto travelerDto) {
+        TravelerDto responseDto = travelerService.getRefreshToken(travelerDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
     // 로그아웃 todo
     @PostMapping("/logout")
     public ResponseEntity.BodyBuilder logoutUser(@RequestBody TravelerDto travelerDto) {
