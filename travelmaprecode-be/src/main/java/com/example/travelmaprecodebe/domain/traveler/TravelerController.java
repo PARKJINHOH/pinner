@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.global.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,41 +9,70 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/traveler")
 @RequiredArgsConstructor
 public class TravelerController {
 
     private final TravelerService travelerService;
 
-    @GetMapping("/member/echo")
+    @GetMapping("/echo")
     public String echo(@AuthenticationPrincipal OAuth2User principal) {
         log.info("principal : {}", principal);
         return "hello " + principal.getAttribute("email");
     }
 
-    @GetMapping("/identities/email/{email}")
-    public ResponseEntity<Boolean> getDuplicateEmail(@PathVariable String email) {
-        final boolean checkEmail = travelerService.emailCheck(email);
-        log.info("중복검사 : {}", email);
+    // 회원가입
+    @PostMapping("/register")
+    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto travelerDto) {
+        String getResult = travelerService.register(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
 
-        if (checkEmail) { // 중복이 아닐 때 (409)
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } else { // 중복
-            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+        if (getResult == null) {
+            responseDto.setMessage("회원가입에 실패했습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
+        } else {
+            responseDto.setMessage(getResult + "님 회원가입에 성공했습니다.");
+            responseDto.setData(new HashMap<>() {{
+                put("email", getResult);
+            }});
+
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
         }
     }
 
-    @PostMapping("/email")
-    public ResponseEntity<String> postEmail(@RequestBody TravelerDto travelerDto) {
-        final String resultEmail = travelerService.register(travelerDto);
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto travelerDto) {
+        TravelerDto getResult = travelerService.doLogin(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
 
-        if (resultEmail.equals("fail")) {
-            return ResponseEntity.badRequest().body("회원가입에 실패했습니다.");
+        if (getResult == null) {
+            responseDto.setMessage("로그인에 실패했습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        } else {
+            responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
+            responseDto.setData(new HashMap<>() {{
+                put("payload", getResult);
+            }});
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
+    }
 
-        return new ResponseEntity<>(resultEmail, HttpStatus.CREATED);
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@RequestBody TravelerDto travelerDto) {
+        TravelerDto responseDto = travelerService.getRefreshToken(travelerDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    // 로그아웃 todo
+    @PostMapping("/logout")
+    public ResponseEntity.BodyBuilder logoutUser(@RequestBody TravelerDto travelerDto) {
+        travelerService.doLogout(travelerDto);
+        return ResponseEntity.ok();
     }
 
 }

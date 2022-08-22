@@ -1,6 +1,7 @@
-package com.example.travelmaprecodebe.domain.security;
+package com.example.travelmaprecodebe.domain.security.services;
 
 import com.example.travelmaprecodebe.domain.global.Role;
+import com.example.travelmaprecodebe.domain.security.GitHubUser;
 import com.example.travelmaprecodebe.domain.traveler.Traveler;
 import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,7 +29,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OAuthTravelerService implements OAuth2UserService {
+public class OAuthTravelerServiceImpl implements OAuth2UserService {
     private final TravelerRepository travelerRepository;
 
     @Override
@@ -99,7 +100,7 @@ public class OAuthTravelerService implements OAuth2UserService {
         if(traveler != null) {
             // TODO: 정보 업데이트
         } else {
-            traveler = travelerRepository.save(new Traveler(email, email, email, Role.USER));
+            traveler = travelerRepository.save(new Traveler(traveler.getEmail(), traveler.getPassword(), traveler.getEmail(), Role.USER));
         }
 
         return traveler;

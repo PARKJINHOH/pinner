@@ -1,38 +1,80 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
+import com.example.travelmaprecodebe.domain.exceprion.TokenRefreshException;
+import com.example.travelmaprecodebe.domain.security.jwt.JwtUtils;
+import com.example.travelmaprecodebe.domain.security.jwt.RefreshToken;
+import com.example.travelmaprecodebe.domain.security.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TravelerService {
-    private final TravelerRepository travelerRepository;
 
-    public boolean emailCheck(String email) {
-        final Optional<Traveler> byEmail = travelerRepository.findByEmail(email);
-        if (byEmail.isPresent()) {
-            log.info("Duplicate Email : {}", byEmail.get().getEmail());
-            return false;
-        } else {
-            return true;
-        }
-    }
+    private final TravelerRepository travelerRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public String register(TravelerDto travelerDto) {
-        if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null){
+        if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
             return travelerRepository.save(travelerDto.toEntity()).getEmail();
+        } else {
+            return null;
         }
-        return "fail";
-//        todo
-//        else {
-//            throw new EmailSignupFailedException();
-//        }
+    }
+
+    public TravelerDto doLogin(TravelerDto travelerDto) {
+        TravelerDto responseTraveler = null;
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Traveler traveler = (Traveler) authentication.getPrincipal();
+
+            String accessToken = jwtUtils.generateJwtToken(traveler);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
+
+            responseTraveler = new TravelerDto();
+            responseTraveler.setAccessToken(accessToken);
+            responseTraveler.setRefreshToken(refreshToken.getToken());
+            responseTraveler.setName(traveler.getName());
+            responseTraveler.setEmail(traveler.getEmail());
+
+        } catch (Exception e) {
+            log.error("로그인 실패 : {}", e.getMessage());
+        }
+
+        return responseTraveler;
+
+    }
+
+
+    public void doLogout(TravelerDto travelerDto) {
+        int result = refreshTokenService.deleteByEmail(travelerDto.getEmail());
+    }
+
+    public TravelerDto getRefreshToken(TravelerDto travelerDto) {
+        String requestRefreshToken = travelerDto.getRefreshToken();
+
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+        Traveler traveler = refreshTokenService.verifyExpiration(refreshToken).getTraveler();
+        String token = jwtUtils.generateTokenFromUsername(traveler.getEmail());
+
+        travelerDto.setRefreshToken(token);
+
+        return travelerDto;
 
     }
 }
