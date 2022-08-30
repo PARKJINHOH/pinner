@@ -36,7 +36,7 @@ public class TravelerService {
     }
 
     public TravelerDto doLogin(TravelerDto travelerDto) {
-        TravelerDto responseTraveler = null;
+
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
 
@@ -46,18 +46,17 @@ public class TravelerService {
             String accessToken = jwtUtils.generateJwtToken(traveler);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
 
-            responseTraveler = new TravelerDto();
+            TravelerDto responseTraveler = new TravelerDto();
             responseTraveler.setAccessToken(accessToken);
             responseTraveler.setRefreshToken(refreshToken.getToken());
             responseTraveler.setName(traveler.getName());
             responseTraveler.setEmail(traveler.getEmail());
+            return responseTraveler;
 
         } catch (Exception e) {
             log.error("로그인 실패 : {}", e.getMessage());
+            return null;
         }
-
-        return responseTraveler;
-
     }
 
 
