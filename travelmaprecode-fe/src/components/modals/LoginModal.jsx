@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import {
-    Modal, Button, Form, Container,
-} from 'react-bootstrap';
+import { Button, Container, Form, Modal } from 'react-bootstrap';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { postLogin } from '../../apis/api_jwt';
+import { postLogin } from '../../apis/auth';
+import { ModalVisibility, modalVisibilityState } from '../../states/modal';
 
-import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
+import { useDoLogin } from '../../states/traveler';
 
 function LoginModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const setLoginState = useSetRecoilState(loginState);
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
+
+    const doLogin = useDoLogin();
 
     const onEmailHandler = (event) => {
         setEmail(event.currentTarget.value);
@@ -39,10 +39,17 @@ function LoginModal() {
 
         postLogin(data)
             .then((response) => {
-                console.log('response : ', response);
+                const payload = response.data.data.payload;
+                console.log({ payload });
+
+                doLogin({
+                    email: payload.email,
+                    accessToken: payload.accessToken,
+                    refreshToken: payload.refreshToken,
+                });
+
                 // 로그인 모달 감춤
-                setModalVisibility(ModalVisibility.HIDE);
-                setLoginState(true);
+                setModalVisibility(ModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
                 console.log(error)
@@ -52,8 +59,8 @@ function LoginModal() {
 
     return (
         <Modal
-            show={modalVisibility === ModalVisibility.LOGIN}
-            onHide={() => setModalVisibility(ModalVisibility.HIDE)}
+            show={modalVisibility === ModalVisibility.SHOW_LOGIN}
+            onHide={() => setModalVisibility(ModalVisibility.HIDE_ALL)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered

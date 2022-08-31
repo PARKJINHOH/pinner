@@ -1,11 +1,11 @@
 import axios from "axios";
 
 function getLocalAccessToken() {
-    return window.localStorage.getItem("accessToken");
+    return window.sessionStorage.getItem("accessToken");
 }
 
 function getLocalRefreshToken() {
-    return window.localStorage.getItem("refreshToken");
+    return window.sessionStorage.getItem("refreshToken");
 }
 
 const instance = axios.create({
@@ -18,7 +18,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
     (config) => {
         const token = getLocalAccessToken();
-        if(token) {
+        if (token) {
             config.headers["x-access-token"] = token;
         }
         return config;
@@ -42,7 +42,7 @@ instance.interceptors.request.use(
 //                 try {
 //                     const rs = await refreshToken();
 //                     const {accessToken} = rs.data;
-//                     window.localStorage.setItem("accessToken", accessToken);
+//                     window.sessionStorage.setItem("accessToken", accessToken);
 //                     instance.defaults.headers.common["x-access-token"] = accessToken;
 //                     return instance(originalConfig);
 //                 } catch (_error) {
@@ -64,9 +64,9 @@ instance.interceptors.request.use(
 // 로그인
 export async function postLogin(data) {
     let res = await instance.post("/api/traveler/login", data);
-    const {accessToken, refreshToken} = res.data.data.payload;
-    window.localStorage.setItem("accessToken", accessToken);
-    window.localStorage.setItem("refreshToken", refreshToken);
+    const { accessToken, refreshToken } = res.data.data.payload;
+    window.sessionStorage.setItem("accessToken", accessToken);
+    window.sessionStorage.setItem("refreshToken", refreshToken);
     return res;
 }
 

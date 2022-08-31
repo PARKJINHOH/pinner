@@ -1,18 +1,23 @@
-import React, { useMemo } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import React, { useMemo } from 'react';
 import { Button } from 'react-bootstrap';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import RegisterModal from '../../components/login/RegisterModal';
-import LoginModal from '../../components/login/LoginModal';
+import LoginModal from '../components/modals/LoginModal';
+import RegisterModal from '../components/modals/RegisterModal';
 
-import './GoogleMapApi.css';
-import { loginState, ModalVisibility, modalVisibilityState } from '../../_states/login';
-import {postLogout} from "../../apis/api_jwt";
+import './BasePage.css';
 
-export default function GoogleMapApi() {
-    const [isLoggedIn, setLoginState] = useRecoilState(loginState);
+import { ModalVisibility, modalVisibilityState } from '../states/modal';
+import { isLoggedInState, useDoLogout } from '../states/traveler';
+
+
+export default function BasePage() {
+    const isLoggedIn = useRecoilValue(isLoggedInState);
+    const doLogout = useDoLogout();
+
     const setModalVisibility = useSetRecoilState(modalVisibilityState);
+
 
     const containerStyle = {
         width: '100%',
@@ -26,23 +31,6 @@ export default function GoogleMapApi() {
     const mapOptions = {
         fullscreenControl: false,
     };
-
-    const onLogout = async (event) => {
-        // Todo : 전역으로 구현하기
-        const data = JSON.stringify({
-            // email, password, name
-        });
-
-        postLogout(data)
-            .then((response) => {
-                if (response.status === 200) {
-                    alert(response.data.message);
-                }
-            })
-            .catch((error) => {
-                alert(error.response.data.message);
-            });
-    }
 
     return (
         <div>
@@ -64,19 +52,16 @@ export default function GoogleMapApi() {
                 {
                     isLoggedIn
                         ? (
-                            <Button className="logout_btn" variant="info" onClick={() => {
-                                setLoginState(false)
-                                onLogout()
-                            }}>
+                            <Button className="logout_btn" variant="info" onClick={doLogout}>
                                 로그아웃
                             </Button>
                         )
                         : (
                             <>
-                                <Button className="login_btn" variant="primary" onClick={() => setModalVisibility(ModalVisibility.LOGIN)}>
+                                <Button className="login_btn" variant="primary" onClick={() => setModalVisibility(ModalVisibility.SHOW_LOGIN)}>
                                     로그인
                                 </Button>
-                                <Button className="register_btn" variant="secondary" onClick={() => setModalVisibility(ModalVisibility.REGISTER)}>
+                                <Button className="register_btn" variant="secondary" onClick={() => setModalVisibility(ModalVisibility.SHOW_REGISTER)}>
                                     회원가입
                                 </Button>
                             </>

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import {
-    Modal, Button, Form, Container, Stack,
-} from 'react-bootstrap';
+import { Button, Container, Form, Modal } from 'react-bootstrap';
 
 import { useRecoilState } from 'recoil';
-import {postRegister} from '../../apis/api_jwt';
+import { postRegister } from '../../apis/auth';
 
-import { ModalVisibility, modalVisibilityState } from '../../_states/login';
+import { ModalVisibility, modalVisibilityState } from '../../states/modal';
 
 function RegisterModal() {
     const [email, setEmail] = useState('');
@@ -64,7 +62,7 @@ function RegisterModal() {
                 if (response.status === 201) {
                     alert(response.data.message);
 
-                    setModalVisibility(ModalVisibility.LOGIN);
+                    setModalVisibility(ModalVisibility.SHOW_LOGIN);
                 }
             })
             .catch((error) => {
@@ -72,10 +70,12 @@ function RegisterModal() {
             });
     };
 
+    const willShow = modalVisibility === ModalVisibility.SHOW_REGISTER;
+
     return (
         <Modal
-            show={modalVisibility === ModalVisibility.REGISTER}
-            onHide={() => setModalVisibility(ModalVisibility.HIDE)}
+            show={willShow}
+            onHide={() => setModalVisibility(ModalVisibility.HIDE_ALL)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -109,14 +109,6 @@ function RegisterModal() {
                         <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             회원가입
                         </Button>
-                        <Stack>
-                            <a href="/oauth2/authorization/github">
-                                <Button block="true" variant="info" type="button" className="my-3">
-                                    GitHub으로 시작하기
-                                </Button>
-                            </a>
-                            {/* TODO: 후에 추가 될 수도 있음 */}
-                        </Stack>
                     </Form>
                 </Modal.Body>
             </Container>

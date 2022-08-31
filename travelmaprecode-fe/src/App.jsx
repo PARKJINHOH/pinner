@@ -1,12 +1,12 @@
 import './style/globals.css';
 import { RecoilRoot } from 'recoil';
 import React from 'react';
-import GoogleMapApi from './pages/google/GoogleMapApi';
+import BasePage from './pages/BasePage';
 
 function App() {
     return (
         <RecoilRoot>
-            <GoogleMapApi />
+            <BasePage />
         </RecoilRoot>
     );
 }
