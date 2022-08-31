@@ -1,33 +1,18 @@
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil';
-
-const accessTokenKey = "accessToken";
-const refreshTokenKey = "refreshToken";
+import { clearTraveler, loadTraveler, saveTraveler } from './webstore';
 
 
-// Load tokens from Local storeage.
-// Use to initialize travelerState.
-const loadTokensFromsessionStorage = selector({
-    key: "loadTokensFromsessionStorage",
-    get: ({ get }) => {
-        const accessToken = window.sessionStorage.getItem(accessTokenKey);
-        const refreshToken = window.sessionStorage.getItem(refreshTokenKey);
-
-        if (accessToken === null || refreshToken === null) {
-            // TODO: clean up local storage
-            return null;
-        }
-
-        return {
-            accessToken,
-            refreshToken,
-        };
-    },
-})
+// Load Traveler from Web storage.
+// Used to initialize travelerState.
+const loadTravelerFromWebStorage = selector({
+    key: "loadTravelerFromWebStorage",
+    get: ({ get }) => loadTraveler(),
+});
 
 
-const travelerState = atom({
+export const travelerState = atom({
     key: 'travelerState',
-    default: loadTokensFromsessionStorage,
+    default: loadTravelerFromWebStorage,
 });
 
 export const isLoggedInState = selector({
@@ -59,8 +44,7 @@ export function useDoLogout() {
 
         setTraveler(null);
 
-        window.sessionStorage.removeItem(accessTokenKey);
-        window.sessionStorage.removeItem(refreshTokenKey);
+        clearTraveler();
     }
 }
 
@@ -70,7 +54,6 @@ export function useDoLogin() {
     return function doLogin(traveler) {
         setTraveler(traveler);
 
-        window.sessionStorage.setItem(accessTokenKey, traveler.accessToken);
-        window.sessionStorage.setItem(refreshTokenKey, traveler.refreshToken);
+        saveTraveler(traveler);
     }
 }
