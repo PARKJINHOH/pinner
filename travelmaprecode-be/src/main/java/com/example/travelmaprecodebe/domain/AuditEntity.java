@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.domain.global;
+package com.example.travelmaprecodebe.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

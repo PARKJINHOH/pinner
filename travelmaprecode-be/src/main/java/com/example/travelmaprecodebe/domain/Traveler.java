@@ -1,7 +1,6 @@
-package com.example.travelmaprecodebe.domain.traveler;
+package com.example.travelmaprecodebe.domain;
 
-import com.example.travelmaprecodebe.domain.global.AuditEntity;
-import com.example.travelmaprecodebe.domain.global.Role;
+import com.example.travelmaprecodebe.global.Role;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

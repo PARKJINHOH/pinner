@@ -1,7 +1,7 @@
-package com.example.travelmaprecodebe.domain.security.services;
+package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.traveler.Traveler;
-import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
+import com.example.travelmaprecodebe.domain.Traveler;
+import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,7 @@
-package com.example.travelmaprecodebe.domain.traveler;
+package com.example.travelmaprecodebe.repository;
 
 
+import com.example.travelmaprecodebe.domain.Traveler;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

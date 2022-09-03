@@ -1,10 +1,6 @@
-package com.example.travelmaprecodebe.domain.security;
+package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.security.jwt.AuthEntryPointJwt;
-import com.example.travelmaprecodebe.domain.security.jwt.AuthTokenFilter;
-import com.example.travelmaprecodebe.domain.security.jwt.JwtUtils;
-import com.example.travelmaprecodebe.domain.security.services.OAuthTravelerServiceImpl;
-import com.example.travelmaprecodebe.domain.security.services.UserDetailsServiceImpl;
+import com.example.travelmaprecodebe.domain.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final AuthenticationEntryPointImpl unauthorizedHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {

@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.domain.global;
+package com.example.travelmaprecodebe.global;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

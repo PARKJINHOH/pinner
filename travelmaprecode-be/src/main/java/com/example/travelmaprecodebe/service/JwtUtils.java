@@ -1,6 +1,6 @@
-package com.example.travelmaprecodebe.domain.security.jwt;
+package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.traveler.Traveler;
+import com.example.travelmaprecodebe.domain.Traveler;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

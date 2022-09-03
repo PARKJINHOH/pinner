@@ -1,6 +1,5 @@
-package com.example.travelmaprecodebe.domain.security.jwt;
+package com.example.travelmaprecodebe.domain;
 
-import com.example.travelmaprecodebe.domain.traveler.Traveler;
 import lombok.Data;
 
 import javax.persistence.*;

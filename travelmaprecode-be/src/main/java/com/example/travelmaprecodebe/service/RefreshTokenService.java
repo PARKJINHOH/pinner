@@ -1,9 +1,9 @@
-package com.example.travelmaprecodebe.domain.security.services;
+package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.exceprion.TokenRefreshException;
-import com.example.travelmaprecodebe.domain.security.jwt.RefreshToken;
-import com.example.travelmaprecodebe.domain.security.jwt.RefreshTokenRepository;
-import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
+import com.example.travelmaprecodebe.exceprion.TokenRefreshException;
+import com.example.travelmaprecodebe.domain.RefreshToken;
+import com.example.travelmaprecodebe.repository.RefreshTokenRepository;
+import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

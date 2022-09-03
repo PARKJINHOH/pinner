@@ -1,9 +1,9 @@
-package com.example.travelmaprecodebe.domain.security.services;
+package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.global.Role;
-import com.example.travelmaprecodebe.domain.security.GitHubUser;
-import com.example.travelmaprecodebe.domain.traveler.Traveler;
-import com.example.travelmaprecodebe.domain.traveler.TravelerRepository;
+import com.example.travelmaprecodebe.global.Role;
+import com.example.travelmaprecodebe.domain.GitHubUser;
+import com.example.travelmaprecodebe.domain.Traveler;
+import com.example.travelmaprecodebe.repository.TravelerRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;

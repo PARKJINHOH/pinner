@@ -1,6 +1,7 @@
-package com.example.travelmaprecodebe.domain.security.jwt;
+package com.example.travelmaprecodebe.domain;
 
-import com.example.travelmaprecodebe.domain.security.services.UserDetailsServiceImpl;
+import com.example.travelmaprecodebe.service.JwtUtils;
+import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.domain.exceprion;
+package com.example.travelmaprecodebe.exceprion;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

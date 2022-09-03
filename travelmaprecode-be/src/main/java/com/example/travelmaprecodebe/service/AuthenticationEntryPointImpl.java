@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.domain.security.jwt;
+package com.example.travelmaprecodebe.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
