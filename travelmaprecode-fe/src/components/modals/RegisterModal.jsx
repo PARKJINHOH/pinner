@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Container, Form, Modal, Stack } from 'react-bootstrap';
 
 import { useRecoilState } from 'recoil';
 import { postRegister } from '../../apis/auth';
@@ -14,45 +14,45 @@ function RegisterModal() {
 
     const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
 
-    const onNicknameHandler = (event) => {
-        setName(event.currentTarget.value);
-    };
+    const [errorMessage, setErrorMessage] = useState(null);
 
-    const onEmailHandler = (event) => {
-        setEmail(event.currentTarget.value);
-    };
 
-    const onPasswordHandler = (event) => {
-        setPassword(event.currentTarget.value);
-    };
+    function validInputs() {
+        if (!name || name.length < 3) {
+            return '닉네임은 3글자 이상 적어주세요.';
+        }
 
-    const onConfirmPasswordHandler = (event) => {
-        setConfirmPassword(event.currentTarget.value);
-    };
+        if (!email) {
+            return '이메일을 확인해주세요.';
+        }
+
+        if (!password || !confirmPassword) {
+            return '비밀번호 확인해주세요.';
+        }
+
+        if (password !== confirmPassword) {
+            return '비밀번호와 비밀번호확인은 같아야 합니다.';
+        }
+    }
+
+    function clearInputs() {
+        setEmail('');
+        setPassword('');
+        setName('');
+        setConfirmPassword('');
+    }
 
     const onSubmit = async (event) => {
         event.preventDefault();
 
-        if (name == null || name.length < 3) {
-            alert('닉네임은 3글자 이상 적어주세요.');
+        // validation
+        const errorMessage = validInputs();
+        setErrorMessage(errorMessage);
+        if (errorMessage) {
+            return;
         }
 
-        if (email == null) {
-            alert('이메일 확인해주세요.');
-        }
-
-        if (password == null) {
-            alert('비밀번호 확인해주세요.');
-        }
-
-        if (confirmPassword == null) {
-            alert('비밀번호 확인해주세요.');
-        }
-
-        if (password !== confirmPassword) {
-            alert('비밀번호와 비밀번호확인은 같아야 합니다.');
-        }
-
+        // prepare data and send request
         const data = JSON.stringify({
             email, password, name
         });
@@ -63,11 +63,10 @@ function RegisterModal() {
                     alert(response.data.message);
 
                     setModalVisibility(ModalVisibility.SHOW_LOGIN);
+                    setErrorMessage(null);
                 }
             })
-            .catch((error) => {
-                alert(error.response.data.message);
-            });
+            .catch((error) => setErrorMessage(error.response.data ? error.response.data.message : error.message));
     };
 
     const willShow = modalVisibility === ModalVisibility.SHOW_REGISTER;
@@ -75,7 +74,11 @@ function RegisterModal() {
     return (
         <Modal
             show={willShow}
-            onHide={() => setModalVisibility(ModalVisibility.HIDE_ALL)}
+            onHide={() => {
+                setModalVisibility(ModalVisibility.HIDE_ALL);
+                setErrorMessage(null);
+                clearInputs();
+            }}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -86,30 +89,38 @@ function RegisterModal() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group>
-                            <Form.Label>닉네임</Form.Label>
-                            <Form.Control value={name} onChange={onNicknameHandler} placeholder="Nickname" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label>이메일</Form.Label>
-                            <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label>비밀번호</Form.Label>
-                            <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label>비밀번호 확인</Form.Label>
-                            <Form.Control value={confirmPassword} onChange={onConfirmPasswordHandler} type="password" placeholder="Confirm Password" />
-                        </Form.Group>
-                        <br />
-                        <Button onClick={onSubmit} variant="info" type="button" className="my-3">
-                            회원가입
-                        </Button>
+                        <Stack className='gap-3'>
+                            <Form.Group>
+                                <Form.Label>닉네임</Form.Label>
+                                <Form.Control value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="John Doe" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>이메일</Form.Label>
+                                <Form.Control value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>비밀번호</Form.Label>
+                                <Form.Control value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="********" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>비밀번호 확인</Form.Label>
+                                <Form.Control value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password" placeholder="********" />
+                            </Form.Group>
+
+                            {
+                                errorMessage && <Alert variant='danger'> {errorMessage} </Alert>
+                            }
+
+                            <Button onClick={onSubmit} type="button" className="mb-3">
+                                회원가입
+                            </Button>
+                        </Stack>
+
                     </Form>
+
                 </Modal.Body>
             </Container>
         </Modal>
