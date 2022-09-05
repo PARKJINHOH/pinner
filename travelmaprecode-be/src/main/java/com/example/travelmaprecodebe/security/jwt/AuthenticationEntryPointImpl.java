@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.service;
+package com.example.travelmaprecodebe.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

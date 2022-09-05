@@ -1,5 +1,6 @@
-package com.example.travelmaprecodebe.domain;
+package com.example.travelmaprecodebe.domain.dto;
 
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.global.Role;
 import lombok.Data;
 

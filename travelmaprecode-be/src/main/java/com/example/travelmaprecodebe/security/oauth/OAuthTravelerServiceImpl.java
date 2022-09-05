@@ -1,8 +1,7 @@
-package com.example.travelmaprecodebe.service;
+package com.example.travelmaprecodebe.security.oauth;
 
 import com.example.travelmaprecodebe.global.Role;
-import com.example.travelmaprecodebe.domain.GitHubUser;
-import com.example.travelmaprecodebe.domain.Traveler;
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
