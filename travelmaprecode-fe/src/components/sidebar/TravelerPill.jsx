@@ -15,6 +15,7 @@ export default function TravelerPill() {
 
     return (
         <Dropdown>
+            <hr></hr>
             <Dropdown.Toggle id='traveler-dropdown-toggle' className="align-items-center e-caret-hide">
                 {isLoggedIn && <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2" />}
                 <strong>{isLoggedIn ? traveler.email : "시작하기"} </strong>

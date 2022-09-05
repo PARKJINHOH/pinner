@@ -10,7 +10,7 @@ export default function Sidebar() {
                 {/* <svg className="bi me-2" width="30" height="24"><use xlink:href="#bootstrap" /></svg> */}
                 <span className="fs-5 fw-semibold">Travel Map Record</span>
             </a>
-            
+
             <TravelListView></TravelListView>
 
             <TravelerPill></TravelerPill>

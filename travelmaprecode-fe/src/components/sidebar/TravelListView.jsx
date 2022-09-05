@@ -1,39 +1,74 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
+import { useRecoilValue } from 'recoil'
+import { isLoggedInState } from '../../states/traveler'
+import TravelLogPill from './TravelLogPill'
+
+const dummyData = [
+    {
+        id: 123,
+        title: "2022년 유럽여행",
+        travels: [
+            {
+                id: 1234,
+                title: "영국 1일차 런던"
+            },
+            {
+                id: 1235,
+                title: '영국 2일차 세븐 시스터',
+            },
+            {
+                id: 1236,
+                title: '영국 3일차 옥스포드',
+            },
+        ],
+    },
+
+    {
+        id: 124,
+        title: "2013년 일본 여행",
+        travels: [
+            {
+                id: 1244,
+                title: "오사카"
+            },
+            {
+                id: 1245,
+                title: '교토',
+            },
+            {
+                id: 1246,
+                title: '우지 녹차마을',
+            },
+        ],
+    },
+];
 
 export default function TravelListView() {
+    const isLoggedIn = useRecoilValue(isLoggedInState);
+
+    const travelData = dummyData;
+
     return (
         <ul id='sidebar-list-div' className="flex-column mb-auto list-unstyled ps-0">
-            <div id='sidebar-travel-div'>
-                <li className="mb-1">
-                    <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
-                        2022년 유럽여행
-                    </button>
-                    <div className="collapse show" id="home-collapse">
-                        <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="#" className="link-dark rounded">영국 1일차 런던</a></li>
-                            <li><a href="#" className="link-dark rounded">영국 2일차 세븐 시스터즈</a></li>
-                            <li><a href="#" className="link-dark rounded">영국 3일차 옥스포드</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li className="mb-1">
-                    <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
-                        2013년 일본 여행
-                    </button>
-                    <div className="collapse" id="dashboard-collapse">
-                        <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a href="#" className="link-dark rounded">오사카</a></li>
-                            <li><a href="#" className="link-dark rounded">교토</a></li>
-                            <li><a href="#" className="link-dark rounded">우지 녹차마을</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li className="mb-1">
-                    <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
-                        2044년 미국 여행
-                    </button>
-                </li>
-            </div>
+            {
+                isLoggedIn ?
+                    <>
+
+                        <Button className='mb-3'>
+                            새로운 여행
+                        </Button>
+                        <div id='sidebar-travel-div'>
+                            {
+                                travelData.map(t => <TravelLogPill travelLog={t} />)
+                            }
+                        </div>
+                    </>
+                    :
+                    <strong className='text-center fw-bold text-secondary'>
+                        Join us and start your travel ✈
+                    </strong>
+            }
         </ul>
     )
 }
