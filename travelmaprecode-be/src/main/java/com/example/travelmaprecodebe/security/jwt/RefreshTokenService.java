@@ -1,7 +1,6 @@
-package com.example.travelmaprecodebe.service;
+package com.example.travelmaprecodebe.security.jwt;
 
 import com.example.travelmaprecodebe.exceprion.TokenRefreshException;
-import com.example.travelmaprecodebe.domain.RefreshToken;
 import com.example.travelmaprecodebe.repository.RefreshTokenRepository;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;

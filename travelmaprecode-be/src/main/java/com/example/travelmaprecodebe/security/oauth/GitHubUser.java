@@ -1,5 +1,6 @@
-package com.example.travelmaprecodebe.domain;
+package com.example.travelmaprecodebe.security.oauth;
 
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

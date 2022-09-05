@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.Traveler;
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.TravelerDto;
+import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.service.TravelerService;
 import com.example.travelmaprecodebe.global.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +62,13 @@ public class TravelerController {
             }});
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
+    }
+
+    // github Login
+    @PostMapping("/github")
+    public ResponseEntity<ResponseDto> githubLogin(@RequestBody TravelerDto travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping("/refreshtoken")

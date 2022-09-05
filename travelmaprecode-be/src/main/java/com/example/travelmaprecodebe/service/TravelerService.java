@@ -1,10 +1,12 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.RefreshToken;
-import com.example.travelmaprecodebe.domain.Traveler;
-import com.example.travelmaprecodebe.domain.TravelerDto;
+import com.example.travelmaprecodebe.security.jwt.RefreshToken;
+import com.example.travelmaprecodebe.domain.entity.Traveler;
+import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.exceprion.TokenRefreshException;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
+import com.example.travelmaprecodebe.security.jwt.JwtUtils;
+import com.example.travelmaprecodebe.security.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

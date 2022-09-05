@@ -1,6 +1,10 @@
-package com.example.travelmaprecodebe.service;
+package com.example.travelmaprecodebe.config;
 
-import com.example.travelmaprecodebe.domain.AuthTokenFilter;
+import com.example.travelmaprecodebe.security.jwt.AuthTokenFilter;
+import com.example.travelmaprecodebe.security.jwt.JwtUtils;
+import com.example.travelmaprecodebe.security.oauth.OAuthTravelerServiceImpl;
+import com.example.travelmaprecodebe.security.jwt.AuthenticationEntryPointImpl;
+import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .formLogin().disable()
+                .logout().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	// 세션 비활성화

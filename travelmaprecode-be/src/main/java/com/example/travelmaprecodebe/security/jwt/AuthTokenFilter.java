@@ -1,6 +1,5 @@
-package com.example.travelmaprecodebe.domain;
+package com.example.travelmaprecodebe.security.jwt;
 
-import com.example.travelmaprecodebe.service.JwtUtils;
 import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
