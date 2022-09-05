@@ -3,7 +3,7 @@ import { Button, Container, Form, Modal } from 'react-bootstrap';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { postLogin } from '../../apis/auth';
-import { ModalVisibility, modalVisibilityState } from '../../states/modal';
+import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 import { useDoLogin } from '../../states/traveler';
 
@@ -11,7 +11,7 @@ function LoginModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
     const doLogin = useDoLogin();
 
@@ -49,7 +49,7 @@ function LoginModal() {
                 });
 
                 // 로그인 모달 감춤
-                setModalVisibility(ModalVisibility.HIDE_ALL);
+                setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
                 console.log(error)
@@ -59,8 +59,8 @@ function LoginModal() {
 
     return (
         <Modal
-            show={modalVisibility === ModalVisibility.SHOW_LOGIN}
-            onHide={() => setModalVisibility(ModalVisibility.HIDE_ALL)}
+            show={modalVisibility === AuthModalVisibility.SHOW_LOGIN}
+            onHide={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered

@@ -4,7 +4,7 @@ import { Button, Container, Form, Modal } from 'react-bootstrap';
 import { useRecoilState } from 'recoil';
 import { postRegister } from '../../apis/auth';
 
-import { ModalVisibility, modalVisibilityState } from '../../states/modal';
+import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 function RegisterModal() {
     const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ function RegisterModal() {
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
     const onNicknameHandler = (event) => {
         setName(event.currentTarget.value);
@@ -62,7 +62,7 @@ function RegisterModal() {
                 if (response.status === 201) {
                     alert(response.data.message);
 
-                    setModalVisibility(ModalVisibility.SHOW_LOGIN);
+                    setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
                 }
             })
             .catch((error) => {
@@ -70,12 +70,12 @@ function RegisterModal() {
             });
     };
 
-    const willShow = modalVisibility === ModalVisibility.SHOW_REGISTER;
+    const willShow = modalVisibility === AuthModalVisibility.SHOW_REGISTER;
 
     return (
         <Modal
             show={willShow}
-            onHide={() => setModalVisibility(ModalVisibility.HIDE_ALL)}
+            onHide={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered

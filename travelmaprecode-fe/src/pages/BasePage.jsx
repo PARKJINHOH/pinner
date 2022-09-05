@@ -1,13 +1,8 @@
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
-import { Button } from 'react-bootstrap';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
-
-import { ModalVisibility, modalVisibilityState } from '../states/modal';
-import { isLoggedInState, useDoLogout } from '../states/traveler';
 
 
 export default function BasePage() {

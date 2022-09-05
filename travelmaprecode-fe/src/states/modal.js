@@ -1,16 +1,16 @@
 import { atom } from "recoil";
 
-export const ModalVisibility = {
+export const AuthModalVisibility = {
     HIDE_ALL: 'hide',
     SHOW_LOGIN: 'login',
     SHOW_REGISTER: 'register',
 };
 
 // ModalVisibility 수정 못하게 봉인
-Object.freeze(ModalVisibility);
+Object.freeze(AuthModalVisibility);
 
 
-export const modalVisibilityState = atom({
+export const authModalVisibilityState = atom({
     key: 'modalVisibilityState',
-    default: ModalVisibility.HIDE_ALL,
+    default: AuthModalVisibility.HIDE_ALL,
 });
