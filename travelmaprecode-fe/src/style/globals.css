@@ -4,3 +4,6 @@ html, body {
     margin: 0;
 }
 /* Google Map Api end */
+.hide-after::after {
+    display: none !important; 
+}

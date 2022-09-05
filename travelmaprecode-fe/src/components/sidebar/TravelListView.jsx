@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { useRecoilValue } from 'recoil'
 import { isLoggedInState } from '../../states/traveler'
-import TravelLogPill from './TravelLogPill'
+import TravelPill from './TravelPill'
 
 const dummyData = [
     {
@@ -54,15 +54,12 @@ export default function TravelListView() {
             {
                 isLoggedIn ?
                     <>
-
                         <Button className='mb-3'>
                             새로운 여행
                         </Button>
-                        <div id='sidebar-travel-div'>
-                            {
-                                travelData.map(t => <TravelLogPill travelLog={t} />)
-                            }
-                        </div>
+                        {
+                            travelData.map(t => <TravelPill travelLog={t} />)
+                        }
                     </>
                     :
                     <strong className='text-center fw-bold text-secondary'>
