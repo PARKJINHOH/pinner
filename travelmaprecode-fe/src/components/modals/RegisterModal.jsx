@@ -4,7 +4,7 @@ import { Alert, Button, Container, Form, Modal, Stack } from 'react-bootstrap';
 import { useRecoilState } from 'recoil';
 import { postRegister } from '../../apis/auth';
 
-import { ModalVisibility, modalVisibilityState } from '../../states/modal';
+import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 function RegisterModal() {
     const [email, setEmail] = useState('');
@@ -12,9 +12,9 @@ function RegisterModal() {
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [modalVisibility, setModalVisibility] = useRecoilState(modalVisibilityState);
+    const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
     function validInputs() {
@@ -62,21 +62,19 @@ function RegisterModal() {
                 if (response.status === 201) {
                     alert(response.data.message);
 
-                    setModalVisibility(ModalVisibility.SHOW_LOGIN);
-                    setErrorMessage(null);
+                    setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
+                    setErrorMessage("");
                 }
             })
             .catch((error) => setErrorMessage(error.response.data ? error.response.data.message : error.message));
     };
 
-    const willShow = modalVisibility === ModalVisibility.SHOW_REGISTER;
-
     return (
         <Modal
-            show={willShow}
+            show={modalVisibility === AuthModalVisibility.SHOW_REGISTER}
             onHide={() => {
-                setModalVisibility(ModalVisibility.HIDE_ALL);
-                setErrorMessage(null);
+                setModalVisibility(AuthModalVisibility.HIDE_ALL);
+                setErrorMessage("");
                 clearInputs();
             }}
             size="lg"

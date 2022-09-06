@@ -1,7 +1,7 @@
 import React from 'react'
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { ModalVisibility, modalVisibilityState } from '../../states/modal';
+import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 import { isLoggedInState, travelerState, useDoLogout } from '../../states/traveler';
 import './TravelerPill.css'
 
@@ -11,7 +11,7 @@ export default function TravelerPill() {
     const isLoggedIn = useRecoilValue(isLoggedInState);
     const doLogout = useDoLogout();
 
-    const setModalVisibility = useSetRecoilState(modalVisibilityState);
+    const setModalVisibility = useSetRecoilState(authModalVisibilityState);
 
     return (
         <Dropdown>
@@ -27,8 +27,8 @@ export default function TravelerPill() {
                         <Dropdown.Item onClick={doLogout} > 로그아웃</Dropdown.Item>
                         :
                         <>
-                            <Dropdown.Item onClick={() => setModalVisibility(ModalVisibility.SHOW_LOGIN)}>로그인</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setModalVisibility(ModalVisibility.SHOW_REGISTER)}>회원가입</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setModalVisibility(AuthModalVisibility.SHOW_LOGIN)}>로그인</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setModalVisibility(AuthModalVisibility.SHOW_REGISTER)}>회원가입</Dropdown.Item>
                         </>
                 }
             </Dropdown.Menu>
