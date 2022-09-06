@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Button, Dropdown, Stack } from 'react-bootstrap'
+import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-bootstrap'
 import JourneyPill from './JourneyPill';
 import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
@@ -22,35 +22,55 @@ export default function TravelPill({ travelLog }) {
         // TODO:
     }
 
+    /**
+     * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
+     * @param {KeyboardEvent} e
+     */
+    function onKeyDownRename(e) {
+        const isEsc = e.key === "Escape";
+        const isEnter = e.key === "Enter";
+
+        if (isEsc || isEnter) {
+            e.preventDefault();
+            if (isEnter) {
+                // TODO: apply rename
+                console.log("apply rename");
+            }
+            setIsRenaming(false);
+        }
+    }
+
+    function applyRename(e) {
+
+    }
+
     return (
         <li className="mb-2 d-grid space-between">
-            <Button onClick={() => setCollapse(!collapse)}>
-                <Stack direction="horizontal" gap={1}>
+            <ButtonGroup>
+                <Button onClick={() => setCollapse(!collapse)}>
                     <Stack direction="horizontal" className='me-auto'>
-                    {
-                        isRenaming ?
-                            <input type="text" autoFocus={true}></input>
-                            :
-                            <>
-                                {collapse ? <FiChevronRight /> : <FiChevronDown />}
-                                <div>{travelLog.title}</div>
-                            </>
-                    }
+                        {
+                            isRenaming ?
+                                <input type="text" autoFocus={true} onKeyDown={onKeyDownRename} onBlur={() => setIsRenaming(false)}></input>
+                                :
+                                <>
+                                    {collapse ? <FiChevronRight /> : <FiChevronDown />}
+                                    <div>{travelLog.title}</div>
+                                </>
+                        }
                     </Stack>
 
-                    <Dropdown onClick={e => e.stopPropagation()}>
-                        <Dropdown.Toggle className='e-caret-hide hide-after p-0'>
-                            <BsThreeDots />
-                        </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
-                            <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                </Button>
 
-                </Stack>
-            </Button>
+
+                <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
+                    <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
+                    <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
+                    <Dropdown.Item onClick={onDeleteClick}>Add journey</Dropdown.Item>
+                </DropdownButton>
+            </ButtonGroup>
+
 
             {
                 collapse ||
