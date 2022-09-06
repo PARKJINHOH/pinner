@@ -58,7 +58,12 @@ export default function TravelListView() {
                             새로운 여행
                         </Button>
                         {
-                            travelData.map(t => <TravelPill travelLog={t} />)
+                            travelData ?
+                                travelData.map(t => <TravelPill travelLog={t} />)
+                                :
+                                <strong className='text-center fw-bold text-secondary'>
+                                    Add your first travel.
+                                </strong>
                         }
                     </>
                     :
