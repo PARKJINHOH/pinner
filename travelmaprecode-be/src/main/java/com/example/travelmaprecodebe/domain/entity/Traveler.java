@@ -17,11 +17,12 @@ import java.util.Collection;
 
 @Entity
 @Getter
-@Table(name = "tbl_travel")
+@Table(name = "tbl_traveler")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Traveler extends AuditEntity implements UserDetails {
 
     @Id
+    @JoinColumn(name = "traveler_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
