@@ -3,8 +3,10 @@ package com.example.travelmaprecodebe.domain.dto;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.global.Role;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class TravelerDto {
 
     private String email;

@@ -16,31 +16,33 @@ public class TravelDto {
 
     private int orderKey;
     private String title;
-    private List<JourneyDto> journeyDtoList;
+    private List<JourneyDto> journeys;
 
     public TravelDto(Travel travel) {
         this.orderKey = travel.getOrderKey();
         this.title = travel.getTitle();
-        this.journeyDtoList = travel.getJourney().stream()
+        this.journeys = travel.getJourney().stream()
                 .map(journey -> new JourneyDto(journey))
                 .collect(Collectors.toList());
     }
 
     @Data
+    @NoArgsConstructor
     public static class JourneyDto {
         private int orderKey;
         private Date date;
-        private List<HashTagDto> hashTagDtoList;
+        private List<HashTagDto> hashtags;
 
         public JourneyDto(Journey journey) {
             this.orderKey = journey.getOrderKey();
             this.date = journey.getDate();
-            this.hashTagDtoList = journey.getHashtag().stream()
-                    .map(hashTag -> new HashTagDto(hashTag))
+            this.hashtags = journey.getHashtag().stream()
+                    .map(HashTagDto::new)
                     .collect(Collectors.toList());
         }
 
         @Data
+        @NoArgsConstructor
         public static class HashTagDto {
             private String tag;
 

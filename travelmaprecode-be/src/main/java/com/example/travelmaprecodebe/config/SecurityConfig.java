@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/api/traveler/**").permitAll() // To avoid security,
-                    .antMatchers("/", "/login/oauth2/**", "/api/traveler/**", "/h2-console/**").permitAll()
+                    .antMatchers("/", "/login/oauth2/**", "/api/traveler/**", "/h2-console/**", "/v1/api/travel/**").permitAll()
                     .anyRequest().authenticated()
 
                 .and()
