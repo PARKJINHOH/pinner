@@ -38,7 +38,7 @@ public class Journey extends AuditEntity {
 //    @OneToOne
 //    private GoogleMapApi googleMapApi;
 
-    @OneToMany(mappedBy = "hashtag")
+    @OneToMany(mappedBy = "journey")
     private List<HashTag> hashtag = new ArrayList<>();
 
     @Builder

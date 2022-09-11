@@ -23,11 +23,11 @@ public class HashTag extends AuditEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOURNEY_ID")
-    private HashTag hashTag;
+    private Journey journey;
 
     @Builder
-    public HashTag(String tag, HashTag hashTag) {
+    public HashTag(String tag, Journey journey) {
         this.tag = tag;
-        this.hashTag = hashTag;
+        this.journey = journey;
     }
 }
