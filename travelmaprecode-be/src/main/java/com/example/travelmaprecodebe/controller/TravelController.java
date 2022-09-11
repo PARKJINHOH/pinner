@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.dto.TravelDto;
+import com.example.travelmaprecodebe.domain.dto.ResponseTravelDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +18,14 @@ public class TravelController {
 
 
     @PostMapping("/api/test")
-    public void getTravelList(@RequestBody List<TravelDto> travelDto) {
-        for (TravelDto dto : travelDto) {
+    public void getTravelList(@RequestBody List<ResponseTravelDto> responseTravelDto) {
+        for (ResponseTravelDto dto : responseTravelDto) {
             System.out.println("dto.getOrderKey() = " + dto.getOrderKey());
             System.out.println("dto.getTitle() = " + dto.getTitle());
-            for (TravelDto.JourneyDto journey : dto.getJourneys()) {
+            for (ResponseTravelDto.JourneyDto journey : dto.getJourneys()) {
                 System.out.println("journey.getOrderKey() = " + journey.getOrderKey());
                 System.out.println("journey.getDate() = " + journey.getDate());
-                for (TravelDto.JourneyDto.HashTagDto hashtag : journey.getHashtags()) {
+                for (ResponseTravelDto.JourneyDto.HashTagDto hashtag : journey.getHashtags()) {
                     System.out.println("hashtag.getTag() = " + hashtag.getTag());
                 }
             }

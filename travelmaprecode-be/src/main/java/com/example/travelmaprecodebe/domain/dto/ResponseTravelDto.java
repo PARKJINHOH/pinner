@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class TravelDto {
+public class ResponseTravelDto {
 
     private int orderKey;
     private String title;
     private List<JourneyDto> journeys;
 
-    public TravelDto(Travel travel) {
+    public ResponseTravelDto(Travel travel) {
         this.orderKey = travel.getOrderKey();
         this.title = travel.getTitle();
         this.journeys = travel.getJourney().stream()
