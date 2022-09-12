@@ -1,6 +1,7 @@
 package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.ResponseTravelDto;
+import com.example.travelmaprecodebe.service.TravelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TravelController {
 
+    private final TravelService travelService;
 
-    @PostMapping("/api/test")
+
+    @PostMapping("/test")
     public void getTravelList(@RequestBody List<ResponseTravelDto> responseTravelDto) {
         for (ResponseTravelDto dto : responseTravelDto) {
             System.out.println("dto.getOrderKey() = " + dto.getOrderKey());
@@ -31,8 +34,13 @@ public class TravelController {
             }
             System.out.println(" ================== ");
         }
+    }
 
 
+    @PostMapping()
+    public void postTravel(@RequestBody List<ResponseTravelDto> responseTravelDto) {
+        System.out.println("===============================");
+        travelService.postTravelList(responseTravelDto);
     }
 
 }

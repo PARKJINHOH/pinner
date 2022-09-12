@@ -28,7 +28,7 @@ public class Travel extends AuditEntity {
     @NotNull
     private String title;
 
-    @OneToMany(mappedBy = "travel")
+    @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
     private List<Journey> journey = new ArrayList<>();
 
     @Builder

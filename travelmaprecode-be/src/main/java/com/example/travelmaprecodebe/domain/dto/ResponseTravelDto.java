@@ -22,7 +22,7 @@ public class ResponseTravelDto {
         this.orderKey = travel.getOrderKey();
         this.title = travel.getTitle();
         this.journeys = travel.getJourney().stream()
-                .map(journey -> new JourneyDto(journey))
+                .map(JourneyDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -41,6 +41,16 @@ public class ResponseTravelDto {
                     .collect(Collectors.toList());
         }
 
+        public Journey toEntity() {
+            return Journey.builder()
+                    .orderKey(orderKey)
+                    .date(date)
+                    .hashtag(hashtags.stream()
+                            .map(HashTagDto::toEntity)
+                            .collect(Collectors.toList()))
+                    .build();
+        }
+
         @Data
         @NoArgsConstructor
         public static class HashTagDto {
@@ -49,6 +59,22 @@ public class ResponseTravelDto {
             public HashTagDto(HashTag hashTag) {
                 this.tag = hashTag.getTag();
             }
+
+            public HashTag toEntity() {
+                return HashTag.builder()
+                        .tag(tag)
+                        .build();
+            }
         }
+    }
+
+    public Travel toEntity() {
+        return Travel.builder()
+                .orderKey(orderKey)
+                .title(title)
+                .journey(journeys.stream()
+                        .map(JourneyDto::toEntity)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

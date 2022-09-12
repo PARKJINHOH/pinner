@@ -38,13 +38,14 @@ public class Journey extends AuditEntity {
 //    @OneToOne
 //    private GoogleMapApi googleMapApi;
 
-    @OneToMany(mappedBy = "journey")
+    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL)
     private List<HashTag> hashtag = new ArrayList<>();
 
     @Builder
-    public Journey(int orderKey, Date date, Travel travel) {
+    public Journey(int orderKey, Date date, Travel travel, List<HashTag> hashtag) {
         this.orderKey = orderKey;
         this.date = date;
         this.travel = travel;
+        this.hashtag = hashtag;
     }
 }
