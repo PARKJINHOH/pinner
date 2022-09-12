@@ -1,46 +1,40 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.dto.ResponseTravelDto;
+import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
+import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.service.TravelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/api/travel")
+@RequestMapping("/api/v1/travel")
 @RequiredArgsConstructor
 public class TravelController {
 
     private final TravelService travelService;
 
 
-    @PostMapping("/test")
-    public void getTravelList(@RequestBody List<ResponseTravelDto> responseTravelDto) {
-        for (ResponseTravelDto dto : responseTravelDto) {
-            System.out.println("dto.getOrderKey() = " + dto.getOrderKey());
-            System.out.println("dto.getTitle() = " + dto.getTitle());
-            for (ResponseTravelDto.JourneyDto journey : dto.getJourneys()) {
-                System.out.println("journey.getOrderKey() = " + journey.getOrderKey());
-                System.out.println("journey.getDate() = " + journey.getDate());
-                for (ResponseTravelDto.JourneyDto.HashTagDto hashtag : journey.getHashtags()) {
-                    System.out.println("hashtag.getTag() = " + hashtag.getTag());
-                }
-            }
-            System.out.println(" ================== ");
-        }
-    }
-
-
     @PostMapping()
-    public void postTravel(@RequestBody List<ResponseTravelDto> responseTravelDto) {
-        System.out.println("===============================");
-        travelService.postTravelList(responseTravelDto);
+    public ResponseEntity<?> postTravel(
+            @AuthenticationPrincipal Traveler traveler,
+            @RequestBody @Valid NewTravelRequestDto newTravel
+    ) {
+        return ResponseEntity.ok(travelService.postTravel(traveler.getId(), newTravel));
     }
 
+    @PostMapping("/{travelId}/journey")
+    public ResponseEntity<?> postJourney(
+            @AuthenticationPrincipal Traveler traveler,
+            @PathVariable Long travelId,
+            @RequestBody @Valid NewJourneyRequestDto newJourney
+    ) {
+        return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
+    }
 }

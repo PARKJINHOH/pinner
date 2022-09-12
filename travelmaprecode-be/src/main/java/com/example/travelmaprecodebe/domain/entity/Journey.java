@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -38,14 +36,21 @@ public class Journey extends AuditEntity {
 //    @OneToOne
 //    private GoogleMapApi googleMapApi;
 
-    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL)
-    private List<HashTag> hashtag = new ArrayList<>();
+    @ElementCollection
+    private Set<String> hashtags = new HashSet<>();
 
     @Builder
-    public Journey(int orderKey, Date date, Travel travel, List<HashTag> hashtag) {
+    public Journey(int orderKey, Date date, Travel travel, Set<String> hashtags) {
         this.orderKey = orderKey;
         this.date = date;
         this.travel = travel;
-        this.hashtag = hashtag;
+        this.hashtags = hashtags;
+    }
+
+    public Journey(Travel travel, Date date, Set<String> hashtags, int orderKey) {
+        this.travel = travel;
+        this.date = date;
+        this.hashtags = hashtags;
+        this.orderKey = orderKey;
     }
 }

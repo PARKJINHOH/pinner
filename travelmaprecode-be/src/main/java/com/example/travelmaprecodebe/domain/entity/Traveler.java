@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,6 +42,16 @@ public class Traveler extends AuditEntity implements UserDetails {
 
     private boolean state;
 
+
+    @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Travel> travels = new ArrayList<>();
+
+    public Travel addTravel(String title) {
+        int newOrder = travels.size() + 1;
+        Travel travel = new Travel(this, title, newOrder);
+        travels.add(travel);
+        return travel;
+    }
 
 
     @Builder
