@@ -4,7 +4,7 @@ import JourneyPill from './JourneyPill';
 import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
 
-export default function TravelPill({ travelLog }) {
+export default function TravelPill({ travel }) {
 
     const [isRenaming, setIsRenaming] = useState(false);
     const renameRef = useRef(null);
@@ -55,7 +55,7 @@ export default function TravelPill({ travelLog }) {
                                 :
                                 <>
                                     {collapse ? <FiChevronRight /> : <FiChevronDown />}
-                                    <div>{travelLog.title}</div>
+                                    <div>{travel.title}</div>
                                 </>
                         }
                     </Stack>
@@ -76,7 +76,7 @@ export default function TravelPill({ travelLog }) {
                 collapse ||
                 <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {
-                        travelLog.travels.map(travel => <JourneyPill travel={travel} />)
+                        travel.journeys.map(journey => <JourneyPill key={journey.id} journey={journey} />)
                     }
                 </ul>
             }

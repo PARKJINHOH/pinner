@@ -1,47 +1,64 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useRecoilValue } from 'recoil'
 import { isLoggedInState } from '../../states/traveler'
+import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 
 const dummyData = [
     {
-        id: 123,
-        title: "2022년 유럽여행",
-        travels: [
+        "id": 1,
+        "orderKey": 1,
+        "title": "2022년 강원도 여행",
+        "journeys": [
             {
-                id: 1234,
-                title: "영국 1일차 런던"
+                "id": 1,
+                "orderKey": 1,
+                "date": "2022-08-14",
+                "hashtags": [
+                    "알파카월드",
+                    "피자매장",
+                    "그린티까페"
+                ]
             },
             {
-                id: 1235,
-                title: '영국 2일차 세븐 시스터',
+                "id": 3,
+                "orderKey": 2,
+                "date": "2022-08-15",
+                "hashtags": [
+                    "바베큐",
+                    "팬션",
+                    "초당순두부",
+                    "두부아이스크림"
+                ]
             },
             {
-                id: 1236,
-                title: '영국 3일차 옥스포드',
-            },
-        ],
+                "id": 2,
+                "orderKey": 3,
+                "date": "2022-08-16",
+                "hashtags": [
+                    "레일바이크"
+                ]
+            }
+        ]
     },
-
     {
-        id: 124,
-        title: "2013년 일본 여행",
-        travels: [
+        "id": 2,
+        "orderKey": 2,
+        "title": "2023년 하루 여행",
+        "journeys": [
             {
-                id: 1244,
-                title: "오사카"
-            },
-            {
-                id: 1245,
-                title: '교토',
-            },
-            {
-                id: 1246,
-                title: '우지 녹차마을',
-            },
-        ],
-    },
+                "id": 1237,
+                "orderKey": 1,
+                "date": "2023-01-05",
+                "hashtags": [
+                    "제주공항",
+                    "제주랜트",
+                    "일출봉"
+                ]
+            }
+        ]
+    }
 ];
 
 export default function TravelListView() {
@@ -49,17 +66,23 @@ export default function TravelListView() {
 
     const travelData = dummyData;
 
+    const [isEdittingNewTravel, setIsEdittingNewTravel] = useState(false);
+
     return (
         <ul id='sidebar-list-div' className="flex-column mb-auto list-unstyled ps-0">
             {
                 isLoggedIn ?
                     <>
-                        <Button className='mb-3'>
+                        <Button className='mb-3' onClick={(e) => setIsEdittingNewTravel(!isEdittingNewTravel)}>
                             새로운 여행
                         </Button>
                         {
+                            isEdittingNewTravel && <NewTravelPill onCancle={() => setIsEdittingNewTravel(false)} />
+                        }
+
+                        {
                             travelData ?
-                                travelData.map(t => <TravelPill travelLog={t} />)
+                                travelData.map(t => <TravelPill key={t.id} travel={t} />)
                                 :
                                 <strong className='text-center fw-bold text-secondary'>
                                     Add your first travel.
