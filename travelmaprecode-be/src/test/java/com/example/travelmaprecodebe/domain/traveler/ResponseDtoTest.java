@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.domain.traveler;
 
-import com.example.travelmaprecodebe.domain.global.ResponseDto;
+import com.example.travelmaprecodebe.global.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
