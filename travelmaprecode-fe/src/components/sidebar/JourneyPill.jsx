@@ -1,5 +1,5 @@
-import React from 'react'
-import { Anchor, Badge } from 'react-bootstrap';
+import React from 'react';
+import { Badge } from 'react-bootstrap';
 
 export default function JourneyPill({ journey }) {
 
