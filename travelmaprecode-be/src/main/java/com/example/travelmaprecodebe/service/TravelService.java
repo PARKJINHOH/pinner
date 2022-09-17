@@ -1,7 +1,7 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.dto.NewJourneyResponseDto;
 import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
+import com.example.travelmaprecodebe.domain.dto.NewJourneyResponseDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,6 +35,14 @@ public class TravelService {
         em.flush();
         em.clear();
         return new NewTravelResponseDto(travel);
+    }
+
+    public List<NewTravelResponseDto> getTravel(Long travelerId) {
+        Traveler traveler = getTraveler(travelerId);
+        return travelRepository.findAllTravel(travelerId)
+                .stream()
+                .map(NewTravelResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     private Traveler getTraveler(Long travelerId) {

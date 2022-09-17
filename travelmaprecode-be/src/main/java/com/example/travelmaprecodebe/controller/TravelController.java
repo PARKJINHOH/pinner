@@ -29,6 +29,11 @@ public class TravelController {
         return ResponseEntity.ok(travelService.postTravel(traveler.getId(), newTravel));
     }
 
+    @GetMapping()
+    public ResponseEntity<?> getTravel(@AuthenticationPrincipal Traveler traveler) {
+        return ResponseEntity.ok(travelService.getTravel(traveler.getId()));
+    }
+
     @PostMapping("/{travelId}/journey")
     public ResponseEntity<?> postJourney(
             @AuthenticationPrincipal Traveler traveler,
