@@ -38,7 +38,6 @@ public class TravelService {
     }
 
     public List<NewTravelResponseDto> getTravel(Long travelerId) {
-        Traveler traveler = getTraveler(travelerId);
         return travelRepository.findAllTravel(travelerId)
                 .stream()
                 .map(NewTravelResponseDto::new)
