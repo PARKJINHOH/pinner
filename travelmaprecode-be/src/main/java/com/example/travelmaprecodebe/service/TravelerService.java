@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,10 @@ public class TravelerService {
 
 
     public void doLogout(TravelerDto travelerDto) {
-        int result = refreshTokenService.deleteByEmail(travelerDto.getEmail());
+        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
+        if (refreshToken.isPresent()) {
+            refreshTokenService.deleteByEmail(refreshToken.get().getTraveler().getEmail());
+        }
     }
 
     public TravelerDto getRefreshToken(TravelerDto travelerDto) {

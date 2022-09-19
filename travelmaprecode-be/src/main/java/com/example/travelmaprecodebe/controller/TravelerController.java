@@ -77,11 +77,18 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 로그아웃 todo
     @PostMapping("/logout")
-    public ResponseEntity.BodyBuilder logoutUser(@RequestBody TravelerDto travelerDto) {
-        travelerService.doLogout(travelerDto);
-        return ResponseEntity.ok();
+    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        try {
+            travelerService.doLogout(travelerDto);
+            responseDto.setMessage("로그아웃 되었습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            responseDto.setMessage("관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
     }
 
 }
