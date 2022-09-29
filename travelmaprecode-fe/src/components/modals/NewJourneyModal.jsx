@@ -1,8 +1,9 @@
-import { Image, SimpleGrid, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import React from 'react';
 import { useState } from 'react';
 import { Container, Modal } from 'react-bootstrap';
+import PhotoAlbum from 'react-photo-album';
 
 import { atom, useRecoilState } from 'recoil';
 import { useAPIv1 } from '../../apis/apiv1';
@@ -48,6 +49,15 @@ function useNewJourneyData() {
     };
 }
 
+function asyncImageLoad(src) {
+    return new Promise((resolve, reject) => {
+        let img = new Image()
+        img.onload = () => resolve(img)
+        img.onerror = reject
+        img.src = src
+    })
+}
+
 /**
  * 1. 사진 업로드
  * 2. 데이터 입력
@@ -61,16 +71,20 @@ function NewJourneyModal({ travelId }) {
     const [files, setFiles] = useState([]);
     const useJourneyData = useNewJourneyData();
 
-    const previews = files.map((file, index) => {
+    const previews =  files.map(async (file, index) => {
         console.log(file);
         const imageUrl = URL.createObjectURL(file);
         console.log(imageUrl);
+
+        const image = await asyncImageLoad(imageUrl);
+        console.log(image.width, image.height);
+
         return (
-            <Image
-                key={index}
-                src={imageUrl}
-                imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-            />
+            {
+                src: imageUrl,
+                width: image.width,
+                height: image.height,
+            }
         );
     });
 
@@ -79,16 +93,23 @@ function NewJourneyModal({ travelId }) {
     /**
      * @param {File} file
      */
-    async function uploadPhoto(file) {
+    async function upload(file) {
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append("image", file);
 
-        // NOTE: does it needed? See https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects#sending_files_using_a_formdata_object
-        const config = { headers: { 'content-type': 'multipart/form-data' } };
+        try {
+            const resp = (await fetch("/images", {
+                method: "post",
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            }));
 
-        const body = await apiv1.post(`/photos`, formData, config);
-        const imageId = body; // TODO: extract image id from response body
-        return imageId;
+            const imageId = resp.links;
+            return imageId;
+        } catch (error) {
+            alert(error);
+        }
     }
 
     /**
@@ -130,13 +151,14 @@ function NewJourneyModal({ travelId }) {
                     <Dropzone accept={IMAGE_MIME_TYPE} onDrop={setFiles}>
                         <Text align="center">Drop images here</Text>
                     </Dropzone>
-                    <SimpleGrid
+                    <PhotoAlbum layout="rows" photos={previews} />
+                    {/* <SimpleGrid
                         cols={5}
                         breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
                         mt={previews.length > 0 ? 'xl' : 0}
                     >
                         {previews}
-                    </SimpleGrid>
+                    </SimpleGrid> */}
 
                     {/* Hash tags */}
                     <h3>태그</h3>
