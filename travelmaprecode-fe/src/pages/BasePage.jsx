@@ -2,6 +2,7 @@ import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
 
 import LoginModal from '../components/modals/LoginModal';
+import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
 
 
@@ -23,6 +24,7 @@ export default function BasePage() {
         <div>
             <RegisterModal />
             <LoginModal />
+            <NewJourneyModal />
 
             <LoadScript
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}

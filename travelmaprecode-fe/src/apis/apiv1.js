@@ -93,10 +93,10 @@ export const useAPIv1 = function () {
     // TODO: add method
     // TODO: purge duplications
     return {
-        get: async (url)  => {
+        get: async (url) => {
             try {
                 return (await rawAxiosInstance.get(url)).data;
-                
+
             } catch (error) {
                 if (error.response.status === status.UNAUTHORIZED) {
                     console.log({ "API 오류, 토큰 갱신 시도": error.toJSON() });
@@ -114,9 +114,9 @@ export const useAPIv1 = function () {
             }
 
         },
-        post: async (url, data) => {
+        post: async (url, data, config) => {
             try {
-                return (await rawAxiosInstance.post(url, data)).data;
+                return (await rawAxiosInstance.post(url, data, config)).data;
             } catch (error) {
                 if (error.response.status === status.UNAUTHORIZED) {
                     console.log({ "API 오류, 토큰 갱신 시도": error.toJSON() });
