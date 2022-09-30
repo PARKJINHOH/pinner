@@ -30,7 +30,7 @@ public class TravelRepository {
         return queryFactory
                 .select(travel)
                 .from(travel)
-                .join(travel.journeys).fetchJoin()
+                .leftJoin(travel.journeys).fetchJoin()
                 .where(travel.traveler.id.eq(travelerId))
                 .fetch();
     }
