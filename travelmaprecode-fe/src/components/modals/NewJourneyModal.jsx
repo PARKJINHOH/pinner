@@ -45,14 +45,16 @@ function NewJourneyModal({ travelId }) {
         async function toPreview(file, index) {
             const tmpPhotoUrl = URL.createObjectURL(file);
             const hoverBtnStyle = {
-                position: "relative",
-                top: -40,
-                left: 10,
+                position: "absolute",
+                top: 5,
+                left: 5,
+                zIndex: 1,
+                opacity: 0.7,
             };
 
-            return <div key={tmpPhotoUrl}>
-                <Image src={tmpPhotoUrl} />
+            return <div key={tmpPhotoUrl} style={{ position: "relative" }}>
                 <Button style={hoverBtnStyle} variant="danger" size="sm" onClick={() => removePhoto(index)}>삭제</Button>
+                <Image src={tmpPhotoUrl} />
             </div>;
         }
 
@@ -129,12 +131,11 @@ function NewJourneyModal({ travelId }) {
                             <SimpleGrid
                                 cols={4}
                                 breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
-                                mt={previews.length > 0 ? 'xl' : 0}
                             >
                                 {[
                                     ...previews,
-                                    <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
-                                        <Text align="center">사진 추가</Text>
+                                    <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                        <Text>사진 추가</Text>
                                     </Dropzone>
                                 ]}
                             </SimpleGrid>
