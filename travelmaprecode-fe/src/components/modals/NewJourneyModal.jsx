@@ -1,10 +1,12 @@
 import { Image, SimpleGrid, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Modal, Stack } from 'react-bootstrap';
+import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
 import PhotoAlbum from 'react-photo-album';
+import { useRecoilState } from 'recoil';
 
 import { useAPIv1 } from '../../apis/apiv1';
+import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
 
 import './NewJourneyModal.css'
 
@@ -32,6 +34,9 @@ function NewJourneyModal({ travelId }) {
 
     const now = formatDate(new Date())
 
+
+    // 훅 및 상태
+    const [visibility, setVisibility] = useRecoilState(newJourneyStepState);
     const apiv1 = useAPIv1();
 
     // 이미지 포스팅
@@ -71,6 +76,8 @@ function NewJourneyModal({ travelId }) {
 
     // Journey 데이터
     const [date, setDate] = useState(now);
+    const [locationName, setLocationName] = useRecoilState(newLocationState);
+
 
 
 
@@ -89,7 +96,7 @@ function NewJourneyModal({ travelId }) {
 
     return (
         <Modal
-            show={true}
+            show={visibility === NewJourneyStep.EDITTING}
             onHide={() => { }}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
@@ -103,12 +110,21 @@ function NewJourneyModal({ travelId }) {
                 <Modal.Body>
                     <Stack gap={5}>
                         {/* Location Name */}
-                        <div></div>
+                        <div>
+                            <h3>위치</h3>
+                            <Row>
+                                <Col xs={10}>
+                                    <Form.Control type="text" className='md-3' value={locationName} onChange={e => setLocationName(e.target.value)} />
+                                </Col>
+                                <Col>
+                                    <Button onClick={() => setVisibility(NewJourneyStep.LOCATING)}>위치 선택</Button>
+                                </Col>
+                            </Row>
+                        </div>
 
 
                         {/* Date Picker */}
                         <div>
-
                             <h3>날짜</h3>
                             <input type="date" max={now} value={date} onChange={e => {
                                 const dateStr = e.target.value;

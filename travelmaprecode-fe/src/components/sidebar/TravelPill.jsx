@@ -3,6 +3,8 @@ import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-boot
 import JourneyPill from './JourneyPill';
 import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
+import { useSetRecoilState } from 'recoil';
+import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 
 export default function TravelPill({ travel }) {
 
@@ -10,6 +12,9 @@ export default function TravelPill({ travel }) {
     const renameRef = useRef(null);
 
     const [collapse, setCollapse] = useState(true);
+
+    const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
+
 
     function onDeleteClick(e) {
         e.stopPropagation();
@@ -67,7 +72,7 @@ export default function TravelPill({ travel }) {
                 <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
                     <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
                     <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
-                    <Dropdown.Item onClick={onDeleteClick}>Add journey</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setNewJourneyStep(NewJourneyStep.EDITTING)}>Add journey</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
 
