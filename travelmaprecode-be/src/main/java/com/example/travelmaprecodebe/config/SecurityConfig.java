@@ -53,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/traveler/**", "/images").permitAll() // To avoid security,
-                    .antMatchers("/", "/login/oauth2/**", "/api/traveler/**", "/h2-console/**", "/v1/api/travel/**", "/images/*").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/traveler/**", "/photo").permitAll() // To avoid security,
+                    .antMatchers("/", "/login/oauth2/**", "/api/traveler/**", "/h2-console/**", "/v1/api/travel/**", "/photo/*").permitAll()
                     .anyRequest().authenticated()
 
                 .and()

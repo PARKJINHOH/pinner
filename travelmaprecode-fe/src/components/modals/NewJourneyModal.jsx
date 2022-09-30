@@ -35,38 +35,38 @@ function NewJourneyModal({ travelId }) {
     const apiv1 = useAPIv1();
 
     // 이미지 포스팅
-    const [images, _setImages] = useState([]);
-    const addImages = (imgs) => _setImages([...images, ...imgs]);
-    const removeImages = (idx) => _setImages([...images.slice(0, idx), ...images.slice(idx + 1, images.length)]);
+    const [photos, _setPhotos] = useState([]);
+    const addPhotos = (newPhotos) => _setPhotos([...photos, ...newPhotos]);
+    const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     const [previews, setPreviews] = useState([]);
 
     useEffect(() => {
-        async function imageToPreview(file, index) {
-            const imageUrl = URL.createObjectURL(file);
+        async function toPreview(file, index) {
+            const tmpPhotoUrl = URL.createObjectURL(file);
             const hoverBtnStyle = {
                 position: "relative",
                 top: -40,
                 left: 10,
             };
 
-            return <div key={imageUrl}>
-                <Image src={imageUrl} />
-                <Button style={hoverBtnStyle} variant="danger" size="sm" onClick={() => removeImages(index)}>삭제</Button>
+            return <div key={tmpPhotoUrl}>
+                <Image src={tmpPhotoUrl} />
+                <Button style={hoverBtnStyle} variant="danger" size="sm" onClick={() => removePhoto(index)}>삭제</Button>
             </div>;
         }
 
-        Promise.all(images.map(imageToPreview)).then(setPreviews);
-    }, [images]);
+        Promise.all(photos.map(toPreview)).then(setPreviews);
+    }, [photos]);
 
     /**
      * @param {File} file
      */
     async function uploadImage(file) {
         const formData = new FormData();
-        formData.append("image", file);
+        formData.append("photo", file);
 
-        const resp = await fetch("/images", {
+        const resp = await fetch("/photo", {
             method: "POST",
             body: formData,
         });
@@ -85,7 +85,7 @@ function NewJourneyModal({ travelId }) {
      */
     async function onCreate() {
         // 사진 업로드
-        const photoIds = await Promise.all(images.map(uploadImage));
+        const photoIds = await Promise.all(photos.map(uploadImage));
 
         // FIXME: 데이터 맞게 변환
         // await apiv1.post(`/travel/${travelId}/journey`, journeyData);
@@ -125,7 +125,7 @@ function NewJourneyModal({ travelId }) {
                         {/* Photos */}
                         <div>
                             <h3>사진</h3>
-                            <PhotoAlbum layout="rows" photos={addImages} />
+                            <PhotoAlbum layout="rows" photos={addPhotos} />
                             <SimpleGrid
                                 cols={4}
                                 breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
@@ -133,8 +133,8 @@ function NewJourneyModal({ travelId }) {
                             >
                                 {[
                                     ...previews,
-                                    <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addImages}>
-                                        <Text align="center">Drop images here</Text>
+                                    <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
+                                        <Text align="center">사진 추가</Text>
                                     </Dropzone>
                                 ]}
                             </SimpleGrid>

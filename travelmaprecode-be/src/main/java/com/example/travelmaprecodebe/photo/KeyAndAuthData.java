@@ -1,4 +1,4 @@
-package com.example.travelmaprecodebe.image;
+package com.example.travelmaprecodebe.photo;
 
 import lombok.Getter;
 

@@ -1,13 +1,13 @@
-package com.example.travelmaprecodebe.image;
+package com.example.travelmaprecodebe.photo;
 
 import lombok.Getter;
 
 @Getter
-public class ImageAndAuthHolder implements ImageHolder {
+public class PhotoAndAuthHolder implements PhotoHolder {
     private final byte[] data;
     private final String owner;
 
-    public ImageAndAuthHolder(byte[] data, String owner) {
+    public PhotoAndAuthHolder(byte[] data, String owner) {
         this.data = data;
         this.owner = owner;
     }
