@@ -6,7 +6,7 @@ import PhotoAlbum from 'react-photo-album';
 
 import { useAPIv1 } from '../../apis/apiv1';
 
-
+import './NewJourneyModal.css'
 
 
 
@@ -44,16 +44,9 @@ function NewJourneyModal({ travelId }) {
     useEffect(() => {
         async function toPreview(file, index) {
             const tmpPhotoUrl = URL.createObjectURL(file);
-            const hoverBtnStyle = {
-                position: "absolute",
-                top: 5,
-                left: 5,
-                zIndex: 1,
-                opacity: 0.7,
-            };
 
-            return <div key={tmpPhotoUrl} style={{ position: "relative" }}>
-                <Button style={hoverBtnStyle} variant="danger" size="sm" onClick={() => removePhoto(index)}>삭제</Button>
+            return <div key={tmpPhotoUrl} className="photoContainer">
+                <Button variant="danger" size="sm" onClick={() => removePhoto(index)}>삭제</Button>
                 <Image src={tmpPhotoUrl} />
             </div>;
         }
