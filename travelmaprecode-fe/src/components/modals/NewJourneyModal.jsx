@@ -17,8 +17,8 @@ import './NewJourneyModal.css'
  * 2. 데이터 입력
  * 3. POST 요청
  *
- * @param {*} travelId 
- * @returns 
+ * @param {*} travelId
+ * @returns
  */
 function NewJourneyModal({ travelId }) {
     // Utils
@@ -36,7 +36,7 @@ function NewJourneyModal({ travelId }) {
 
 
     // 훅 및 상태
-    const [visibility, setVisibility] = useRecoilState(newJourneyStepState);
+    const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const apiv1 = useAPIv1();
 
     // 이미지 포스팅
@@ -76,7 +76,7 @@ function NewJourneyModal({ travelId }) {
 
     // Journey 데이터
     const [date, setDate] = useState(now);
-    const [locationName, setLocationName] = useRecoilState(newLocationState);
+    const [newLocation, setNewLocation] = useRecoilState(newLocationState);
 
 
 
@@ -96,8 +96,8 @@ function NewJourneyModal({ travelId }) {
 
     return (
         <Modal
-            show={visibility === NewJourneyStep.EDITTING}
-            onHide={() => { }}
+            show={newJourneyStep === NewJourneyStep.EDITTING}
+            onHide={() => setNewJourneyStep(NewJourneyStep.NONE)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             backdrop="static"
@@ -114,10 +114,10 @@ function NewJourneyModal({ travelId }) {
                             <h3>위치</h3>
                             <Row>
                                 <Col xs={10}>
-                                    <Form.Control type="text" className='md-3' value={locationName} onChange={e => setLocationName(e.target.value)} />
+                                    <Form.Control type="text" className='md-3' value={newLocation.name} onChange={e => setNewLocation({ ...newLocation, name: e.target.value })} />
                                 </Col>
                                 <Col>
-                                    <Button onClick={() => setVisibility(NewJourneyStep.LOCATING)}>위치 선택</Button>
+                                    <Button onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}>위치 선택</Button>
                                 </Col>
                             </Row>
                         </div>
@@ -162,7 +162,7 @@ function NewJourneyModal({ travelId }) {
                 </Modal.Body>
                 {/* 저장/취소 */}
                 <Modal.Footer>
-                    <Button variant='outline-primary'>취소</Button>
+                    <Button variant='outline-primary' onClick={() => setNewJourneyStep(NewJourneyStep.NONE)}>취소</Button>
                     <Button variant='primary' onClick={onCreate}>저장</Button>
                 </Modal.Footer>
             </Container>

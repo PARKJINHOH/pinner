@@ -21,6 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -54,7 +55,7 @@ public class Geocoding {
                 return ResponseEntity.badRequest().body("this api only accept reverse geocoding");
             }
 
-            return ResponseEntity.ok(reverseGeocoding(lat, lng));
+            return ResponseEntity.ok(Map.of("name", reverseGeocoding(lat, lng)));
         } catch (Exception e) {
             log.error("something wrong: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();

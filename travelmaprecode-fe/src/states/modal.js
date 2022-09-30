@@ -1,4 +1,4 @@
-import { atom, RecoilState } from "recoil";
+import { atom } from "recoil";
 
 ///
 /// 로그인/회원가입 상태
@@ -59,7 +59,7 @@ export const newJourneyStepState = atom({
  * Journey 생성에 필요한 장소 상태
  */
 export const newLocationState = atom({
-    key: 'locationName',
+    key: 'newLocationState',
     default: {
         lat: 0,
         lng: 0,

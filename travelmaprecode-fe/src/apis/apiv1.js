@@ -126,9 +126,9 @@ export const useAPIv1 = function () {
                 }
             }
         },
-        get: async (url) => {
+        get: async (url, config) => {
             try {
-                return (await rawAxiosInstance.get(url)).data;
+                return (await rawAxiosInstance.get(url, config)).data;
             } catch (error) {
                 if (error.response.status === status.UNAUTHORIZED) {
                     return await handleTokenExpired(
