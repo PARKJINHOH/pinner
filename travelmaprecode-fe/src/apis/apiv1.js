@@ -70,6 +70,7 @@ Object.freeze(status);
 export const rawAxiosInstance = axios.create({ baseURL: 'http://localhost:3000/api/v1' });
 
 
+// 모든 요청에 액세스 토큰을 포함하도록 구성
 rawAxiosInstance.interceptors.request.use(
     (config) => {
         const traveler = loadTraveler();
@@ -86,50 +87,64 @@ rawAxiosInstance.interceptors.request.use(
 
 export const useAPIv1 = function () {
     const traveler = useRecoilValue(travelerState);
-
     const doLogOut = useDoLogout();
 
+    // 토큰 갱신 후 재시도 하는 함수
+    async function handleTokenExpired(retryFunction) {
+        try {
+            console.log("API 오류, 토큰 갱신 시도");
+            // TODO: do refresh token
 
-    // TODO: add method
-    // TODO: purge duplications
+            return retryFunction();
+        } catch (error) {
+            console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
+            doLogOut();
+            // TODO: need to announce to user that logged out by unexpected error.
+        }
+    }
+
     return {
+        put: async (url, data) => {
+            try {
+                return (await rawAxiosInstance.put(url, data)).data;
+            } catch (error) {
+                if (error.response.status === status.UNAUTHORIZED) {
+                    return await handleTokenExpired(
+                        async () => (await rawAxiosInstance.put(url, data)).data,
+                    );
+                }
+            }
+        },
+        delete: async (url) => {
+            try {
+                return (await rawAxiosInstance.delete(url)).data;
+            } catch (error) {
+                if (error.response.status === status.UNAUTHORIZED) {
+                    return await handleTokenExpired(
+                        async () => (await rawAxiosInstance.delete(url)).data,
+                    );
+                }
+            }
+        },
         get: async (url) => {
             try {
                 return (await rawAxiosInstance.get(url)).data;
-
             } catch (error) {
                 if (error.response.status === status.UNAUTHORIZED) {
-                    console.log({ "API 오류, 토큰 갱신 시도": error.toJSON() });
-                    try {
-                        // TODO: do refresh token
-
-                        // retry
-                        return (await rawAxiosInstance.get(url)).data;
-                    } catch (error) {
-                        console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
-                        doLogOut();
-                        // TODO: need to announce to user that logged out by unexpected error.
-                    }
+                    return await handleTokenExpired(
+                        async () => (await rawAxiosInstance.get(url)).data,
+                    );
                 }
             }
-
         },
         post: async (url, data, config) => {
             try {
                 return (await rawAxiosInstance.post(url, data, config)).data;
             } catch (error) {
                 if (error.response.status === status.UNAUTHORIZED) {
-                    console.log({ "API 오류, 토큰 갱신 시도": error.toJSON() });
-                    try {
-                        // TODO: do refresh token
-
-                        // retry
-                        return (await rawAxiosInstance.post(url, data)).data;
-                    } catch (error) {
-                        console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
-                        doLogOut();
-                        // TODO: need to announce to user that logged out by unexpected error.
-                    }
+                    return await handleTokenExpired(
+                        async () => (await rawAxiosInstance.post(url, data)).data,
+                    );
                 }
             }
         },

@@ -66,15 +66,12 @@ function NewJourneyModal({ travelId }) {
         const formData = new FormData();
         formData.append("image", file);
 
-        const resp = (await fetch("/images", {
-            method: "post",
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        }));
+        const resp = await fetch("/images", {
+            method: "POST",
+            body: formData,
+        });
 
-        const imageId = resp.links;
-        return imageId;
+        return (await resp.json()).link;
     }
 
     // Journey 데이터

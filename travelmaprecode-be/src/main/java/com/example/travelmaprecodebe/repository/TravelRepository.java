@@ -1,6 +1,8 @@
 package com.example.travelmaprecodebe.repository;
 
+import com.example.travelmaprecodebe.domain.entity.QTravel;
 import com.example.travelmaprecodebe.domain.entity.Travel;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,9 +24,14 @@ public class TravelRepository {
     }
 
     public List<Travel> findAllTravel(Long travelerId) {
-        TypedQuery<Travel> query = em.createQuery("select t from Travel t join fetch t.traveler o where o.id = :travelerId", Travel.class);
-        query.setParameter("travelerId", travelerId);
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QTravel travel = QTravel.travel;
 
-        return query.getResultList();
+        return queryFactory
+                .select(travel)
+                .from(travel)
+                .join(travel.journeys).fetchJoin()
+                .where(travel.traveler.id.eq(travelerId))
+                .fetch();
     }
 }
