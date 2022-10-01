@@ -16,18 +16,18 @@ spring:
       hibernate.format_sql: true
     show-sql: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            clientId: ed7266644a777b8a6e02
-            clientSecret: 1987af909208a2f4e6b83a681ebb96ef195e714f
-            scope:
-              - user:email
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          github:
+#            clientId:
+#            clientSecret:
+#            scope:
+#              - user:email
 
 logging:
   level:
-    org.hibernate.SQL: debug
+#    org.hibernate.SQL: debug
     org.hibernate.type: trace
     org.springframework.security: DEBUG
