@@ -1,5 +1,6 @@
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil';
 import { clearTraveler, loadTraveler, saveTraveler } from './webstore';
+import {postLogout} from "../apis/auth";
 
 
 // Load Traveler from Web storage.
@@ -27,23 +28,19 @@ export function useDoLogout() {
     const [traveler, setTraveler] = useRecoilState(travelerState);
 
     return function doLogout() {
-        const data = {
-            refreshToken: traveler.refreshToken,
+        const token = {
+            refreshToken: window.sessionStorage.getItem("refreshToken"),
         };
 
-        // TODO: refresh token 폐기 요청
-        // postLogout(data)
-        //     .then((response) => {
-        //         if (response.status === 200) {
-        //             alert(response.data.message);
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         alert(error.response.data.message);
-        //     });
+        postLogout(token)
+            .then(response => {
+                alert(response.data.message);
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            });
 
         setTraveler(null);
-
         clearTraveler();
     }
 }

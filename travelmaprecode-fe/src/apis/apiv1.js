@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { travelerState, useDoLogout } from "../states/traveler";
 import { loadTraveler } from "../states/webstore";
+import {renewalToken} from "./auth";
 
 
 // Generated file. Do not edit
@@ -93,13 +94,20 @@ export const useAPIv1 = function () {
     async function handleTokenExpired(retryFunction) {
         try {
             console.log("API 오류, 토큰 갱신 시도");
-            // TODO: do refresh token
+            renewalToken()
+                .then(res => {
+                    const {accessToken, refreshToken} = res.data.data.payload;
+                    window.sessionStorage.setItem("accessToken", accessToken);
+                    window.sessionStorage.setItem("refreshToken", refreshToken);
+                    console.log("토큰 갱신 성공");
 
-            return retryFunction();
+                    return retryFunction(); // 원래 작업 재시도
+                }).catch(() => {
+                doLogOut();
+            });
         } catch (error) {
-            console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
+            console.log({"예기치 못한 오류: 토큰 갱신 실패": error.toJSON()});
             doLogOut();
-            // TODO: need to announce to user that logged out by unexpected error.
         }
     }
 
