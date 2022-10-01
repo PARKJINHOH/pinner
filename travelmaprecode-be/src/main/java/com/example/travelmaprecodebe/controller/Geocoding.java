@@ -22,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -64,8 +65,59 @@ public class Geocoding {
 
 
     /**
-     * Reverse geocoding API 웹훅.
+     * Reverse geocoding API 웹훅.<p>
+     * {@code plus_code.compound_code}를 사용.<p>
      *
+     * e.g)
+     * <table>
+     *     <thead>
+     *         <tr>
+     *             <th>intput</th>
+     *             <th>output</th>
+     *         </tr>
+     *     </thead>
+     *     <tbody>
+     *         <tr>
+     *             <td>R8RJ+9JM 프랑스 파리</td>
+     *             <td>프랑스 파리</td>
+     *         </tr>
+     *         <tr>
+     *             <td>PVJ5+FRH 대한민국 강원도 강릉시</td>
+     *             <td>대한민국 강원도 강릉시</td>
+     *         </tr>
+     *         <tr>
+     *             <td>GXQH+FHQ 대한민국 서울특별시</td>
+     *             <td>대한민국 서울특별시</td>
+     *         </tr>
+     *         <tr>
+     *             <td>P27Q+MCM 미국 뉴욕</td>
+     *             <td>미국 뉴욕</td>
+     *         </tr>
+     *         <tr>
+     *             <td>WQXW+4WF 영국 에든버러</td>
+     *             <td>영국 에든버러</td>
+     *         </tr>
+     *         <tr>
+     *             <td>VQPX+FR3 일본 교토부 우지시</td>
+     *             <td>일본 교토부 우지시</td>
+     *         </tr>
+     *         <tr>
+     *             <td>MFXV+CMX 일본 오사카부 오사카시</td>
+     *             <td>일본 오사카부 오사카시</td>
+     *         </tr>
+     *         <tr>
+     *             <td>5926+5XW 포르투갈 포르토</td>
+     *             <td>포르투갈 포르토</td>
+     *         </tr>
+     *         <tr>
+     *             <td>HPCR+745 프랑스 스트라스부르</td>
+     *             <td>프랑스 스트라스부르</td>
+     *         </tr>
+     *     </tbody>
+     * </table>
+     *
+     * <p><p>
+     * <h2>원본 응답<h2>
      * <pre>
      * {
      *     "plus_code": {
@@ -153,7 +205,7 @@ public class Geocoding {
 
         log.debug("리버스 지오코딩 응답: {}", value);
 
-        return Arrays.stream(value.results).findFirst().get().formattedAddress;
+        return Arrays.stream(value.plusCode.compoundCode.split(" ")).skip(1).collect(Collectors.joining(" "));
     }
 
     /**
