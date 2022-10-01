@@ -48,8 +48,8 @@ public class TravelerService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Traveler traveler = (Traveler) authentication.getPrincipal();
 
-            String accessToken = jwtUtils.generateJwtToken(traveler);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
+            String accessToken = jwtUtils.generateJwtToken(traveler);
 
             TravelerDto responseTraveler = new TravelerDto();
             responseTraveler.setAccessToken(accessToken);
@@ -64,22 +64,23 @@ public class TravelerService {
         }
     }
 
-
     public void doLogout(TravelerDto travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
-        if (refreshToken.isPresent()) {
-            refreshTokenService.deleteByEmail(refreshToken.get().getTraveler().getEmail());
-        }
+        refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
     }
 
     public TravelerDto getRefreshToken(TravelerDto travelerDto) {
         String requestRefreshToken = travelerDto.getRefreshToken();
 
+        // Refresh Token
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
-        Traveler traveler = refreshTokenService.verifyExpiration(refreshToken).getTraveler();
-        String token = jwtUtils.generateTokenFromUsername(traveler.getEmail());
+        RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
 
-        travelerDto.setRefreshToken(token);
+        // Access Token
+        String validAccessToken = jwtUtils.generateTokenFromUsername(validRefreshToken.getTraveler().getEmail());
+
+        travelerDto.setRefreshToken(validRefreshToken.getToken());
+        travelerDto.setAccessToken(validAccessToken);
 
         return travelerDto;
 

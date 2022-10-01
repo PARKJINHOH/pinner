@@ -1,6 +1,7 @@
 package com.example.travelmaprecodebe.security.jwt;
 
 import com.example.travelmaprecodebe.domain.entity.Traveler;
+import com.example.travelmaprecodebe.global.JwtCode;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,23 +40,26 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public boolean validateJwtToken(String authToken) {
+    public JwtCode validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
-            return true;
+            return JwtCode.ACCESS;
         } catch (SignatureException e) {
             log.error("Invalid JWT signature: {}", e.getMessage());
+            return JwtCode.INVALID;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
+            return JwtCode.INVALID;
         } catch (ExpiredJwtException e) {
             log.error("JWT token is expired: {}", e.getMessage());
+            return JwtCode.EXPIRED;
         } catch (UnsupportedJwtException e) {
             log.error("JWT token is unsupported: {}", e.getMessage());
+            return JwtCode.DENIED;
         } catch (IllegalArgumentException e) {
             log.error("JWT claims string is empty: {}", e.getMessage());
+            return JwtCode.DENIED;
         }
-
-        return false;
     }
 
 }
