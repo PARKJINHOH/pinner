@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/traveler")
+@RequestMapping("/api/v1/traveler")
 @RequiredArgsConstructor
 public class TravelerController {
 
@@ -71,9 +71,13 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@RequestBody TravelerDto travelerDto) {
-        TravelerDto responseDto = travelerService.getRefreshToken(travelerDto);
+    @PostMapping("/renewal/token")
+    public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto travelerDto) {
+        TravelerDto getResult = travelerService.getRefreshToken(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setData(new HashMap<>() {{
+            put("payload", getResult);
+        }});
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
