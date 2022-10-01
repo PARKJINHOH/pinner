@@ -1,14 +1,13 @@
 package com.example.travelmaprecodebe.config;
 
 import com.example.travelmaprecodebe.security.jwt.AuthTokenFilter;
+import com.example.travelmaprecodebe.security.jwt.AuthenticationEntryPointImpl;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.security.oauth.OAuthTravelerServiceImpl;
-import com.example.travelmaprecodebe.security.jwt.AuthenticationEntryPointImpl;
 import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
