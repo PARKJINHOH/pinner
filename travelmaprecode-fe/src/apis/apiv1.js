@@ -137,7 +137,7 @@ export const useAPIv1 = function () {
         },
         post: async (url, data, config) => {
             try {
-                return (await rawAxiosInstance.post(url, data, config)).data;
+                return (await rawAxiosInstance.post(url, data, config));
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
                     return await handleTokenExpired(error.config);

@@ -29,10 +29,10 @@ export const authModalVisibilityState = atom({
  * NewJourney 모달 보이기 여부와 지도 클릭시 지오코딩 API 요청 여부 제어
  *
  * |NewJourneyStep | 모달 보임 | 지오코딩 요청 |
- * |---------------|-------|---------|
- * |NONE           | O     | X       |
- * |LOCATING       | O     | O       |
- * |EDITTING       | X     | X       |
+ * |---------------|-----------|---------------|
+ * | NONE          | X         | X             |
+ * | LOCATING      | X         | O             |
+ * | EDITTING      | O         | X             |
  *
  * @enum {string}
  * @see {@link newJourneyStepState}

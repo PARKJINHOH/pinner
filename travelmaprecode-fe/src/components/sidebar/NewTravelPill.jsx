@@ -23,9 +23,9 @@ export default function NewTravelPill({ onCancle }) {
             e.preventDefault();
             if (isEnter) {
 
-                const data = await apiv1.post("/travel", { title }).data;
-                setTravels([...travels, data]);
-                console.log(data);
+                const resp = await apiv1.post("/travel", { title });
+                const travel = resp.data;
+                setTravels([...travels, travel]);
             }
             onCancle();
         }
