@@ -22,7 +22,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 @Slf4j
 @RestController
@@ -35,6 +36,26 @@ public class Geocoding {
 
     public Geocoding(@Value("${google-api-key}") String googleApiKey) throws MalformedURLException {
         this.googleApiKey = googleApiKey;
+    }
+
+
+    /**
+     * 역 지오코딩 API 응답 상태<p>
+     * 코드에 관해서는 <a href="https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding#reverse-status-codes">문서</a> 참조
+     */
+    private enum ResponseStatus {
+        OK("OK"),
+        ZERO_RESULTS("ZERO_RESULTS"),
+        OVER_QUERY_LIMIT("OVER_QUERY_LIMIT"),
+        REQUEST_DENIED("REQUEST_DENIED"),
+        INVALID_REQUEST("INVALID_REQUEST"),
+        UNKNOWN_ERROR("UNKNOWN_ERROR");
+
+        ResponseStatus(String name) {
+            this.name = name;
+        }
+
+        private final String name;
     }
 
     /**
@@ -56,7 +77,12 @@ public class Geocoding {
                 return ResponseEntity.badRequest().body("this api only accept reverse geocoding");
             }
 
-            return ResponseEntity.ok(Map.of("name", reverseGeocoding(lat, lng)));
+            String name = reverseGeocoding(lat, lng);
+            if (name == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok(Map.of("name", name));
         } catch (Exception e) {
             log.error("something wrong: {}", e.getMessage());
             return ResponseEntity.internalServerError().build();
@@ -66,8 +92,8 @@ public class Geocoding {
 
     /**
      * Reverse geocoding API 웹훅.<p>
-     * {@code plus_code.compound_code}를 사용.<p>
-     *
+     * {@code plus_code.compound_code}를 사용.<p><p>
+     * <p>
      * e.g)
      * <table>
      *     <thead>
@@ -193,20 +219,37 @@ public class Geocoding {
      *
      * @param lat
      * @param lng
-     * @return
+     * @return human readable 주소, 결과가 없을경우 {@code null}
      */
     private String reverseGeocoding(double lat, double lng) throws IOException, InterruptedException {
 
         URI uri = URI.create(String.format("https://maps.googleapis.com/maps/api/geocode/json?language=ko&result_type=locality&key=%s&latlng=%f,%f", googleApiKey, lat, lng));
 
         HttpRequest request = HttpRequest.newBuilder(uri).build();
-        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-        GeocodingResponse value = objectMapper.readValue(response.body(), GeocodingResponse.class);
+        HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+        GeocodingResponse response = objectMapper.readValue(responseStream.body(), GeocodingResponse.class);
 
-        log.debug("리버스 지오코딩 응답: {}", value);
+        // compound code가 두 파츠 이상일 경우 해당값 사용
+        if (response.plusCode.compoundCode != null) {
+            String[] compoundCodes = response.plusCode.compoundCode.split(" ");
+            if (compoundCodes.length >= 2) {
+                return Arrays.stream(compoundCodes).skip(1).collect(joining(" "));
+            }
+        }
 
-        return Arrays.stream(value.plusCode.compoundCode.split(" ")).skip(1).collect(Collectors.joining(" "));
+        switch (ResponseStatus.valueOf(response.status)) {
+            case OK:
+                return response.results[0].formattedAddress;
+
+            case ZERO_RESULTS:
+                return null;
+
+            default:
+                log.error("역지오코딩 API를 사용 할 수 없습니다: {}", response.status);
+                throw new RuntimeException("역지오코딩 API를 사용 할 수 없습니다");
+        }
     }
+
 
     /**
      * Response DTO of google reverse geocoding.

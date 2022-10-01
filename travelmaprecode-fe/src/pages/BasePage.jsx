@@ -1,9 +1,9 @@
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { useAPIv1 } from '../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 import LoginModal from '../components/modals/LoginModal';
 import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
@@ -53,8 +53,20 @@ export default function BasePage() {
 
                         // Locating 모드일 때만 역 지오코딩 API 요청
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
-                            const res = await apiv1.get('/geocoding', { params: { lat, lng, reverse: true } });
-                            const name = res.name;
+                            const resp = await apiv1.get('/geocoding', { params: { lat, lng, reverse: true } });
+                            console.log(resp);
+
+                            if (resp.status === HTTPStatus.NOT_FOUND) {
+                                toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
+                                setNewJourneyStep(NewJourneyStep.EDITTING);
+                                return;
+                            } else if (resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
+                                toast.error("서비스가 불가능해요. 관리자에게 문의해주세요.");
+                                setNewJourneyStep(NewJourneyStep.NONE);
+                                return;
+                            }
+
+                            const name = resp.data.name;
                             setNewLocationState({ lat, lng, name });
                             setNewJourneyStep(NewJourneyStep.EDITTING);
                         }

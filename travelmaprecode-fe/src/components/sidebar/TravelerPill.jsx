@@ -28,8 +28,8 @@ export default function TravelerPill() {
         }
 
         apiv1.get("/travel")
-            .then(data => {
-                setTravels(data);
+            .then(resp => {
+                setTravels(resp.data);
             })
             .catch(error => {
                 console.error(`can not load data: ${error}`);

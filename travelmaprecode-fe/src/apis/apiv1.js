@@ -5,7 +5,7 @@ import { loadTraveler } from "../states/webstore";
 
 
 // Generated file. Do not edit
-const status = {
+export const HTTPStatus = {
     CONTINUE: 100,
     SWITCHING_PROTOCOLS: 101,
     PROCESSING: 102,
@@ -64,7 +64,7 @@ const status = {
     NETWORK_AUTHENTICATION_REQUIRED: 511,
 };
 
-Object.freeze(status);
+Object.freeze(HTTPStatus);
 
 
 export const rawAxiosInstance = axios.create({ baseURL: 'http://localhost:3000/api/v1' });
@@ -90,12 +90,13 @@ export const useAPIv1 = function () {
     const doLogOut = useDoLogout();
 
     // 토큰 갱신 후 재시도 하는 함수
-    async function handleTokenExpired(retryFunction) {
+    async function handleTokenExpired(config) {
         try {
             console.log("API 오류, 토큰 갱신 시도");
             // TODO: do refresh token
 
-            return retryFunction();
+            // 재요청시 interceptor 적용되는지 확인 필요
+            return rawAxiosInstance.request(config);
         } catch (error) {
             console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
             doLogOut();
@@ -108,44 +109,40 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.put(url, data)).data;
             } catch (error) {
-                if (error.response.status === status.UNAUTHORIZED) {
-                    return await handleTokenExpired(
-                        async () => (await rawAxiosInstance.put(url, data)).data,
-                    );
+                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                    return await handleTokenExpired(error.config);
                 }
+                return error.response;
             }
         },
         delete: async (url) => {
             try {
                 return (await rawAxiosInstance.delete(url)).data;
             } catch (error) {
-                if (error.response.status === status.UNAUTHORIZED) {
-                    return await handleTokenExpired(
-                        async () => (await rawAxiosInstance.delete(url)).data,
-                    );
+                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                    return await handleTokenExpired(error.config);
                 }
+                return error.response;
             }
         },
         get: async (url, config) => {
             try {
-                return (await rawAxiosInstance.get(url, config)).data;
+                return (await rawAxiosInstance.get(url, config));
             } catch (error) {
-                if (error.response.status === status.UNAUTHORIZED) {
-                    return await handleTokenExpired(
-                        async () => (await rawAxiosInstance.get(url)).data,
-                    );
+                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                    return await handleTokenExpired(error.config);
                 }
+                return error.response;
             }
         },
         post: async (url, data, config) => {
             try {
                 return (await rawAxiosInstance.post(url, data, config)).data;
             } catch (error) {
-                if (error.response.status === status.UNAUTHORIZED) {
-                    return await handleTokenExpired(
-                        async () => (await rawAxiosInstance.post(url, data)).data,
-                    );
+                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                    return await handleTokenExpired(error.config);
                 }
+                return error.response;
             }
         },
     };

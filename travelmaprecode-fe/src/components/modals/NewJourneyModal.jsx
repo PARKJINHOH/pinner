@@ -90,7 +90,7 @@ function NewJourneyModal({ travelId }) {
         const photoIds = await Promise.all(photos.map(uploadImage));
 
         // FIXME: 데이터 맞게 변환
-        // await apiv1.post(`/travel/${travelId}/journey`, journeyData);
+        // await apiv1.post(`/travel/${travelId}/journey`, journeyData).data;
         // journeyData
     }
 
