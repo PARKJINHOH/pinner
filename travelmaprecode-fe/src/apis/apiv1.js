@@ -91,7 +91,7 @@ export const useAPIv1 = function () {
     const doLogOut = useDoLogout();
 
     // 토큰 갱신 후 재시도 하는 함수
-    async function handleTokenExpired() {
+    async function handleTokenExpired(retryFunction) {
         try {
             console.log("API 오류, 토큰 갱신 시도");
             renewalToken()
@@ -100,6 +100,8 @@ export const useAPIv1 = function () {
                     window.sessionStorage.setItem("accessToken", accessToken);
                     window.sessionStorage.setItem("refreshToken", refreshToken);
                     console.log("토큰 갱신 성공");
+
+                    return retryFunction(); // 원래 작업 재시도
                 }).catch(() => {
                 doLogOut();
             });
