@@ -1,5 +1,6 @@
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { useAPIv1 } from '../apis/apiv1';
@@ -28,6 +29,7 @@ export default function BasePage() {
 
     return (
         <div>
+            <Toaster />
             <RegisterModal />
             <LoginModal />
             <NewJourneyModal />
@@ -41,6 +43,8 @@ export default function BasePage() {
                     mapContainerStyle={containerStyle}
                     center={center}
                     options={mapOptions}
+
+                    // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {
                         const lat = e.latLng.lat();
                         const lng = e.latLng.lng();
@@ -49,9 +53,9 @@ export default function BasePage() {
 
                         // Locating 모드일 때만 역 지오코딩 API 요청
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
-                            const res = await apiv1.get('/geocoding', { params: { lat: lat, lng: lng, reverse: true } });
+                            const res = await apiv1.get('/geocoding', { params: { lat, lng, reverse: true } });
                             const name = res.name;
-                            setNewLocationState({lat, lng, name});
+                            setNewLocationState({ lat, lng, name });
                             setNewJourneyStep(NewJourneyStep.EDITTING);
                         }
                     }}

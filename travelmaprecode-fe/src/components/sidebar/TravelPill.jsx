@@ -5,6 +5,7 @@ import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
 import { useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
+import toast from 'react-hot-toast';
 
 export default function TravelPill({ travel }) {
 
@@ -72,7 +73,14 @@ export default function TravelPill({ travel }) {
                 <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
                     <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
                     <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
-                    <Dropdown.Item onClick={() => setNewJourneyStep(NewJourneyStep.EDITTING)}>Add journey</Dropdown.Item>
+                    <Dropdown.Item onClick={() => {
+                        // 사용자가 맵을 클릭하도록 안내
+                        toast((t) => (<span>
+                            어디를 여행하셨나요?
+                            지도를 클릭해서 Journey를 추가해요.
+                        </span>));
+                        setNewJourneyStep(NewJourneyStep.LOCATING);
+                    }}>Journey 생성</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
 
