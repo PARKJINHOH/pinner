@@ -3,7 +3,7 @@ import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
 import PhotoAlbum from 'react-photo-album';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState } from 'recoil';
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
@@ -77,6 +77,7 @@ function NewJourneyModal({ travelId }) {
     // Journey 데이터
     const [date, setDate] = useState(now);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
+    const resetNewLocationState =  useResetRecoilState(newLocationState);
 
 
 
@@ -94,10 +95,21 @@ function NewJourneyModal({ travelId }) {
         // journeyData
     }
 
+    /**
+     * 모달 닫을 때 상태 초기화
+     */
+    function onHideModal() {
+        setNewJourneyStep(NewJourneyStep.NONE);
+
+        // 상태 초기화
+        resetNewLocationState();
+        _setPhotos([]);
+    }
+
     return (
         <Modal
             show={newJourneyStep === NewJourneyStep.EDITTING}
-            onHide={() => setNewJourneyStep(NewJourneyStep.NONE)}
+            onHide={onHideModal}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             backdrop="static"
@@ -162,7 +174,7 @@ function NewJourneyModal({ travelId }) {
                 </Modal.Body>
                 {/* 저장/취소 */}
                 <Modal.Footer>
-                    <Button variant='outline-primary' onClick={() => setNewJourneyStep(NewJourneyStep.NONE)}>취소</Button>
+                    <Button variant='outline-primary' onClick={onHideModal}>취소</Button>
                     <Button variant='primary' onClick={onCreate}>저장</Button>
                 </Modal.Footer>
             </Container>
