@@ -40,7 +40,7 @@ function LoginModal() {
         postLogin(data)
             .then((response) => {
                 const payload = response.data.data.payload;
-                console.log({ payload });
+                // console.log({ payload });
 
                 doLogin({
                     email: payload.email,

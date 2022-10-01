@@ -63,7 +63,7 @@ instance.interceptors.request.use(
 
 // 로그인
 export async function postLogin(data) {
-    let res = await instance.post("/api/traveler/login", data);
+    let res = await instance.post("/api/v1/traveler/login", data);
     const { accessToken, refreshToken } = res.data.data.payload;
     window.sessionStorage.setItem("accessToken", accessToken);
     window.sessionStorage.setItem("refreshToken", refreshToken);
@@ -72,17 +72,18 @@ export async function postLogin(data) {
 
 // 회원가입
 export async function postRegister(data) {
-    return await instance.post("/api/traveler/register", data);
+    return instance.post("/api/v1/traveler/register", data);
 }
 
 // 로그아웃
 export async function postLogout(data) {
-    return await instance.post("/api/traveler/logout", data);
+    return instance.post("/api/v1/traveler/logout", data);
 }
 
-// refreshToken 갱신
-export async function refreshToken() {
-    return await instance.post("/api/traveler/refreshtoken", {
+// token 갱신
+export async function renewalToken() {
+    return instance.post("/api/v1/traveler/renewal/token", {
         refreshToken: getLocalRefreshToken(),
+        accessToken: getLocalAccessToken()
     });
 }

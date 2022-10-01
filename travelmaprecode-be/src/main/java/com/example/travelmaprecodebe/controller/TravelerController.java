@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/traveler")
+@RequestMapping("/api/v1/traveler")
 @RequiredArgsConstructor
 public class TravelerController {
 
@@ -71,17 +71,28 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@RequestBody TravelerDto travelerDto) {
-        TravelerDto responseDto = travelerService.getRefreshToken(travelerDto);
+    @PostMapping("/renewal/token")
+    public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto travelerDto) {
+        TravelerDto getResult = travelerService.getRefreshToken(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setData(new HashMap<>() {{
+            put("payload", getResult);
+        }});
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 로그아웃 todo
     @PostMapping("/logout")
-    public ResponseEntity.BodyBuilder logoutUser(@RequestBody TravelerDto travelerDto) {
-        travelerService.doLogout(travelerDto);
-        return ResponseEntity.ok();
+    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        try {
+            travelerService.doLogout(travelerDto);
+            responseDto.setMessage("로그아웃 되었습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (Exception e) {
+            responseDto.setMessage("관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
     }
 
 }
