@@ -1,9 +1,12 @@
 import { Image, SimpleGrid, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
 import PhotoAlbum from 'react-photo-album';
 import { useRecoilState, useResetRecoilState } from 'recoil';
+
+import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
@@ -106,6 +109,14 @@ function NewJourneyModal({ travelId }) {
         _setPhotos([]);
     }
 
+    /**
+     * HashTag
+     */
+    const onChange = useCallback((e) => {
+        // todo :. 데이터 담기
+
+        console.log("CHANGED : " + e.detail.value);
+    }, []);
     return (
         <Modal
             show={newJourneyStep === NewJourneyStep.EDITTING}
@@ -165,8 +176,14 @@ function NewJourneyModal({ travelId }) {
 
                         {/* Hash tags */}
                         <div>
+                            {/*https://github.com/yairEO/tagify*/}
                             <h3>태그</h3>
-
+                            <Tags
+                                settings={{
+                                    maxTags: '5'
+                                }}
+                                onChange={onChange}
+                            />
                         </div>
                     </Stack>
 
