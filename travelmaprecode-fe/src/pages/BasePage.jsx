@@ -56,13 +56,9 @@ export default function BasePage() {
                             const resp = await apiv1.get('/geocoding', { params: { lat, lng, reverse: true } });
                             console.log(resp);
 
-                            if (resp.status === HTTPStatus.NOT_FOUND) {
+                            if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
                                 toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
-                                return;
-                            } else if (resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
-                                toast.error("서비스가 불가능해요. 관리자에게 문의해주세요.");
-                                setNewJourneyStep(NewJourneyStep.NONE);
                                 return;
                             }
 
