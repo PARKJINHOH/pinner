@@ -11,3 +11,5 @@ token:
     jwtExpirationMs: 120000  # Access Token (60000 = 1m)
     jwtRefreshExpirationMs: 600000 # Refresh Token
 google-api-key: ${GOOGLE_API_KEY}
+photo-service:
+  base-path: "C:\\travelphoto"
