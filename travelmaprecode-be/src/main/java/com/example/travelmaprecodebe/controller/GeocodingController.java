@@ -28,13 +28,13 @@ import static java.util.stream.Collectors.joining;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/geocoding")
-public class Geocoding {
+public class GeocodingController {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String googleApiKey;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Geocoding(@Value("${google-api-key}") String googleApiKey) throws MalformedURLException {
+    public GeocodingController(@Value("${google-api-key}") String googleApiKey) throws MalformedURLException {
         this.googleApiKey = googleApiKey;
     }
 
