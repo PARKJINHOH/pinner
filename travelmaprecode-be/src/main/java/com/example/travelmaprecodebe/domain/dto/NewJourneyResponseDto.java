@@ -4,16 +4,16 @@ import com.example.travelmaprecodebe.domain.entity.Journey;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class NewJourneyResponseDto {
     private long id;
     private int orderKey;
-    private Date date;
-    private Set<String> hashtags;
+    private LocalDate date;
+    private List<String> hashtags;
 
     public NewJourneyResponseDto(Journey journey) {
         id = journey.getId();

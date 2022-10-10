@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,8 +27,7 @@ public class Journey extends AuditEntity {
     private int orderKey;
 
     @NotNull
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVEL_ID")
@@ -37,17 +37,17 @@ public class Journey extends AuditEntity {
 //    private GoogleMapApi googleMapApi;
 
     @ElementCollection
-    private Set<String> hashtags = new HashSet<>();
+    private List<String> hashtags;
 
     @Builder
-    public Journey(int orderKey, Date date, Travel travel, Set<String> hashtags) {
+    public Journey(int orderKey, LocalDate date, Travel travel, List<String> hashtags) {
         this.orderKey = orderKey;
         this.date = date;
         this.travel = travel;
         this.hashtags = hashtags;
     }
 
-    public Journey(Travel travel, Date date, Set<String> hashtags, int orderKey) {
+    public Journey(Travel travel, LocalDate date, List<String> hashtags, int orderKey) {
         this.travel = travel;
         this.date = date;
         this.hashtags = hashtags;

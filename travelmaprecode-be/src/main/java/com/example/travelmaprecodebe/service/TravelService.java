@@ -52,8 +52,8 @@ public class TravelService {
         return traveler.get();
     }
 
-    public NewJourneyResponseDto postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
-        Travel travel = travelRepository.findTravel(travelerId, travelId);
+    public NewJourneyResponseDto postJourney(Long travelerId, String travelEmail, NewJourneyRequestDto newJourney) {
+        Travel travel = travelRepository.findTravel(travelerId, travelEmail);
         Journey journey = travel.addJourney(newJourney.getDate(), newJourney.getHashtags());
         em.flush();
         em.clear();

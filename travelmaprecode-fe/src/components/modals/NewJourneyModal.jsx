@@ -9,7 +9,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
 
 import { useAPIv1 } from '../../apis/apiv1';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
+import {NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
 
 import './NewJourneyModal.css'
 
@@ -81,7 +81,7 @@ function NewJourneyModal({ travelId }) {
     const [date, setDate] = useState(now);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
     const resetNewLocationState =  useResetRecoilState(newLocationState);
-
+    const [hashTags, setHashTags] = useState('');
 
 
 
@@ -92,10 +92,20 @@ function NewJourneyModal({ travelId }) {
     async function onCreate() {
         // 사진 업로드
         const photoIds = await Promise.all(photos.map(uploadImage));
+        console.log(hashTags);
+        const journeyData = JSON.stringify({
+            date,
+            newLocation,
+            hashTags
+        });
 
-        // FIXME: 데이터 맞게 변환
-        // await apiv1.post(`/travel/${travelId}/journey`, journeyData).data;
-        // journeyData
+        const userEmail = window.sessionStorage.getItem("email");
+        await apiv1.post("/travel/" + userEmail + "/journey", journeyData)
+            .then((response) => {
+                if (response.status === 200) {
+                    alert('성공');
+                }
+            });
     }
 
     /**
@@ -112,11 +122,11 @@ function NewJourneyModal({ travelId }) {
     /**
      * HashTag
      */
-    const onChange = useCallback((e) => {
-        // todo :. 데이터 담기
-
-        console.log("CHANGED : " + e.detail.value);
+    const onHashTagChange = useCallback((e) => {
+        console.log(e.detail.tagify.value);
+        setHashTags(e.detail.tagify.value);
     }, []);
+
     return (
         <Modal
             show={newJourneyStep === NewJourneyStep.EDITTING}
@@ -182,7 +192,7 @@ function NewJourneyModal({ travelId }) {
                                 settings={{
                                     maxTags: '5'
                                 }}
-                                onChange={onChange}
+                                onChange={onHashTagChange}
                             />
                         </div>
                     </Stack>

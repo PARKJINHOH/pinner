@@ -68,7 +68,13 @@ export const HTTPStatus = {
 Object.freeze(HTTPStatus);
 
 
-export const rawAxiosInstance = axios.create({ baseURL: 'http://localhost:3000/api/v1' });
+export const rawAxiosInstance = axios.create({
+        baseURL: 'http://localhost:3000/api/v1',
+        headers: {
+            "Content-Type": "application/json",
+        }
+    }
+);
 
 
 // 모든 요청에 액세스 토큰을 포함하도록 구성
