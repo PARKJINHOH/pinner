@@ -35,7 +35,7 @@ function NewJourneyModal({ travelId }) {
         return date.toISOString().split('T')[0];
     }
 
-    const now = formatDate(new Date())
+    const now = formatDate(new Date());
 
 
     // 훅 및 상태
