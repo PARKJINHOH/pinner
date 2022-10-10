@@ -1,13 +1,14 @@
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 import LoginModal from '../components/modals/LoginModal';
 import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
+import { selectedTravelState } from '../states/travel';
 
 export default function BasePage() {
     const containerStyle = {
@@ -27,12 +28,22 @@ export default function BasePage() {
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
 
+    // 선택된 Travel/Journey Id
+    /**
+     * @type {import('../states/travel').Travel}
+     */
+    const selectedTravel = useRecoilValue(selectedTravelState);
+
     return (
         <div>
             <Toaster />
             <RegisterModal />
             <LoginModal />
-            <NewJourneyModal />
+            {
+                // selectedTravel가 undefinded인 상태가 있을 수 있음.
+                // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.
+                newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />
+            }
 
             <LoadScript
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}

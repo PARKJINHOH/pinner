@@ -3,9 +3,10 @@ import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-boot
 import JourneyPill from './JourneyPill';
 import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsThreeDots } from 'react-icons/bs';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import toast from 'react-hot-toast';
+import { selectedState } from '../../states/travel';
 
 export default function TravelPill({ travel }) {
 
@@ -15,6 +16,7 @@ export default function TravelPill({ travel }) {
     const [collapse, setCollapse] = useState(true);
 
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
+    const [selected, setSelected] = useRecoilState(selectedState);;
 
 
     function onDeleteClick(e) {
@@ -80,6 +82,7 @@ export default function TravelPill({ travel }) {
                             지도를 클릭해서 Journey를 추가해요.
                         </span>));
                         setNewJourneyStep(NewJourneyStep.LOCATING);
+                        setSelected({...selected, travelId: travel.id});
                     }}>Journey 생성</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
