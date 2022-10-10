@@ -123,8 +123,10 @@ function NewJourneyModal({ travelId }) {
      * HashTag
      */
     const onHashTagChange = useCallback((e) => {
-        console.log(e.detail.tagify.value);
-        setHashTags(e.detail.tagify.value);
+        let map = e.detail.tagify.value.map(e =>
+            e.value
+        );
+        setHashTags(map);
     }, []);
 
     return (
