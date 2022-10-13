@@ -22,21 +22,14 @@ public class TravelRepository {
         queryFactory = new JPAQueryFactory(em);
     }
 
-//    public Travel findTravel(Long travelerId, Long travelId) {
-//        TypedQuery<Travel> query = em.createQuery("select t from Travel t join fetch t.traveler o where t.id = :travelId and o.id = :travelerId", Travel.class);
-//        query.setParameter("travelerId", travelerId);
-//        query.setParameter("travelId", travelId);
-//
-//        return query.getSingleResult();
-//    }
-
-    public Travel findTravel(Long travelerId, String travelEmail) {
+    public Travel findTravel(Long travelerId, Long travelId) {
+        /*selectFrom */
         log.info("TravelRepository : {}", "findTravel");
         return queryFactory
                 .selectFrom(travel)
                 .join(travel.traveler, traveler).fetchJoin()
                 .where(travel.traveler.id.eq(travelerId)
-                        .and(traveler.email.eq(travelEmail)))
+                        .and(travel.id.eq(travelId)))
                 .fetchOne();
 
     }

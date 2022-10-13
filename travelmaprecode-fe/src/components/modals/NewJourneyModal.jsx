@@ -95,12 +95,12 @@ function NewJourneyModal({ travelId }) {
         console.log(hashTags);
         const journeyData = JSON.stringify({
             date,
-            newLocation,
+            geoLocation: newLocation,
             hashTags
         });
 
         const userEmail = window.sessionStorage.getItem("email");
-        await apiv1.post("/travel/" + userEmail + "/journey", journeyData)
+        await apiv1.post("/travel/" + travelId + "/journey", journeyData)
             .then((response) => {
                 if (response.status === 200) {
                     alert('성공');

@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -37,7 +38,7 @@ public class Travel extends AuditEntity {
     @JoinColumn(name = "TRAVELER_ID")
     private Traveler traveler;
 
-    public Journey addJourney(LocalDate date, List<String> hashtags) {
+    public Journey addJourney(LocalDate date, Set<String> hashtags) {
         int newOrder = journeys.size() + 1;
 
         Journey journey = new Journey(this, date, hashtags, newOrder);

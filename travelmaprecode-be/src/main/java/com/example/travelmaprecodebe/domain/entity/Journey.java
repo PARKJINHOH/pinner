@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -37,17 +37,17 @@ public class Journey extends AuditEntity {
 //    private GoogleMapApi googleMapApi;
 
     @ElementCollection
-    private List<String> hashtags;
+    private Set<String> hashtags;
 
     @Builder
-    public Journey(int orderKey, LocalDate date, Travel travel, List<String> hashtags) {
+    public Journey(int orderKey, LocalDate date, Travel travel, Set<String> hashtags) {
         this.orderKey = orderKey;
         this.date = date;
         this.travel = travel;
         this.hashtags = hashtags;
     }
 
-    public Journey(Travel travel, LocalDate date, List<String> hashtags, int orderKey) {
+    public Journey(Travel travel, LocalDate date, Set<String> hashtags, int orderKey) {
         this.travel = travel;
         this.date = date;
         this.hashtags = hashtags;

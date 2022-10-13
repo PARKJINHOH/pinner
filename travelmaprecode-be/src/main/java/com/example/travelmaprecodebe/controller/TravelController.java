@@ -34,13 +34,12 @@ public class TravelController {
         return ResponseEntity.ok(travelService.getTravel(traveler.getId()));
     }
 
-    @PostMapping("/{travelEmail}/journey")
+    @PostMapping("/{travelId}/journey")
     public ResponseEntity<?> postJourney(
             @AuthenticationPrincipal Traveler traveler,
-            @PathVariable String travelEmail,
+            @PathVariable Long travelId,
             @RequestBody NewJourneyRequestDto newJourney
     ) {
-        System.out.println("newJourney.getHashtags() = " + newJourney.getHashtags());
-        return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelEmail, newJourney));
+        return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
     }
 }
