@@ -33,24 +33,19 @@ public class Journey extends AuditEntity {
     @JoinColumn(name = "TRAVEL_ID")
     private Travel travel;
 
-//    @OneToOne
-//    private GoogleMapApi googleMapApi;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GEOLOCATION_ID")
+    private GeoLocation geoLocation;
 
     @ElementCollection
     private Set<String> hashtags;
 
     @Builder
-    public Journey(int orderKey, LocalDate date, Travel travel, Set<String> hashtags) {
+    public Journey(int orderKey, LocalDate date, Travel travel, GeoLocation geoLocation, Set<String> hashtags) {
         this.orderKey = orderKey;
         this.date = date;
         this.travel = travel;
+        this.geoLocation = geoLocation;
         this.hashtags = hashtags;
-    }
-
-    public Journey(Travel travel, LocalDate date, Set<String> hashtags, int orderKey) {
-        this.travel = travel;
-        this.date = date;
-        this.hashtags = hashtags;
-        this.orderKey = orderKey;
     }
 }

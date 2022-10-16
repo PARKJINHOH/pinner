@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.dto;
 
+import com.example.travelmaprecodebe.domain.entity.Journey;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,4 +13,12 @@ public class NewJourneyRequestDto {
     private LocalDate date;
     private GeoLocationDto geoLocation;
     private Set<String> hashTags;
+
+    private Journey toEntity(){
+        return Journey.builder()
+                .date(date)
+                .geoLocation(geoLocation.toEntity())
+                .hashtags(hashTags)
+                .build();
+    }
 }
