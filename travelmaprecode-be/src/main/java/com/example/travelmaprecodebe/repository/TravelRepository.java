@@ -24,7 +24,7 @@ public class TravelRepository {
 
     public Travel findTravel(Long travelerId, Long travelId) {
         /*selectFrom */
-        log.info("TravelRepository : {}", "findTravel");
+        log.info("TravelRepository : findTravel");
         return queryFactory
                 .selectFrom(travel)
                 .join(travel.traveler, traveler).fetchJoin()
@@ -35,11 +35,9 @@ public class TravelRepository {
     }
 
     public List<Travel> findAllTravel(Long travelerId) {
-        log.info("TravelRepository : {}", "findAllTravel");
+        log.info("TravelRepository : findAllTravel");
         return queryFactory
-                .select(travel)
-                .from(travel)
-                .leftJoin(travel.journeys).fetchJoin()
+                .selectFrom(travel)
                 .where(travel.traveler.id.eq(travelerId))
                 .fetch();
     }
