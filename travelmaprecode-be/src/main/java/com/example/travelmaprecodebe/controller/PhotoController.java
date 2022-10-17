@@ -25,12 +25,15 @@ public class PhotoController {
     ){
         try {
             // 이미 있는 이미지가 올라와도 충돌시키지 않는다.
-            final String photoLink = photoService.save(file.getBytes());
+            final String photoLink = photoService.save(file.getInputStream());
             log.info("photo saved: {}", photoLink);
             return new ResponseEntity<>(Map.of("link", photoLink), HttpStatus.CREATED);
         } catch (IOException e) {
             log.error("failed to save photo" + e);
-            return new ResponseEntity<>(new ResponseDto("something wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(
+                    new ResponseDto("invalidate image format. We only accept jpg and png."),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 

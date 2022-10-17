@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
+    implementation 'org.imgscalr:imgscalr-lib:4.2'
     runtimeOnly 'com.h2database:h2:1.4.200'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
