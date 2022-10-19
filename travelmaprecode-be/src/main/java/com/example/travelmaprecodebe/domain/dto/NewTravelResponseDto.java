@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class NewTravelResponseDto {
     private long id;
-
     private int orderKey;
     private String title;
     private List<NewJourneyResponseDto> journeys;

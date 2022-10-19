@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -33,18 +31,9 @@ public class Travel extends AuditEntity {
     @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
     private List<Journey> journeys = new ArrayList<>();
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVELER_ID")
     private Traveler traveler;
-
-    public Journey addJourney(Date date, Set<String> hashtags) {
-        int newOrder = journeys.size() + 1;
-
-        Journey journey = new Journey(this, date, hashtags, newOrder);
-        journeys.add(journey);
-        return journey;
-    }
 
     @Builder
     public Travel(int orderKey, String title, List<Journey> journeys) {

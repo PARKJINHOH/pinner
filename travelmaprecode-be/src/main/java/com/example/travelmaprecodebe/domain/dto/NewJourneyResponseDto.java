@@ -4,7 +4,7 @@ import com.example.travelmaprecodebe.domain.entity.Journey;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -12,13 +12,15 @@ import java.util.Set;
 public class NewJourneyResponseDto {
     private long id;
     private int orderKey;
-    private Date date;
+    private LocalDate date;
     private Set<String> hashtags;
+    private GeoLocationDto geoLocationDto;
 
     public NewJourneyResponseDto(Journey journey) {
         id = journey.getId();
         orderKey = journey.getOrderKey();
         date = journey.getDate();
         hashtags = journey.getHashtags();
+        geoLocationDto = new GeoLocationDto(journey.getGeoLocation().getLat(), journey.getGeoLocation().getLng(), journey.getGeoLocation().getName());
     }
 }

@@ -54,9 +54,19 @@ public class TravelService {
 
     public NewJourneyResponseDto postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
         Travel travel = travelRepository.findTravel(travelerId, travelId);
-        Journey journey = travel.addJourney(newJourney.getDate(), newJourney.getHashtags());
+        int getNowOrderKey = travel.getJourneys().size();
+        travel.getJourneys().add(
+                Journey.builder()
+                        .travel(travel)
+                        .date(newJourney.getDate())
+                        .geoLocation(newJourney.getGeoLocation().toEntity())
+                        .hashtags(newJourney.getHashTags())
+                        .orderKey(getNowOrderKey + 1)
+                        .build()
+        );
+
         em.flush();
         em.clear();
-        return new NewJourneyResponseDto(journey);
+        return new NewJourneyResponseDto(travel.getJourneys().get(getNowOrderKey));
     }
 }

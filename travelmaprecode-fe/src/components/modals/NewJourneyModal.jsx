@@ -1,12 +1,15 @@
 import { Image, SimpleGrid, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
 import PhotoAlbum from 'react-photo-album';
 import { useRecoilState, useResetRecoilState } from 'recoil';
 
+import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
+
 import { useAPIv1 } from '../../apis/apiv1';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
+import {NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
 
 import './NewJourneyModal.css'
 
@@ -78,7 +81,7 @@ function NewJourneyModal({ travelId }) {
     const [date, setDate] = useState(now);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
     const resetNewLocationState =  useResetRecoilState(newLocationState);
-
+    const [hashTags, setHashTags] = useState('');
 
 
 
@@ -89,10 +92,20 @@ function NewJourneyModal({ travelId }) {
     async function onCreate() {
         // 사진 업로드
         const photoIds = await Promise.all(photos.map(uploadImage));
+        console.log(hashTags);
+        const journeyData = JSON.stringify({
+            date,
+            geoLocation: newLocation,
+            hashTags
+        });
 
-        // FIXME: 데이터 맞게 변환
-        // await apiv1.post(`/travel/${travelId}/journey`, journeyData).data;
-        // journeyData
+        const userEmail = window.sessionStorage.getItem("email");
+        await apiv1.post("/travel/" + travelId + "/journey", journeyData)
+            .then((response) => {
+                if (response.status === 200) {
+                    alert('성공');
+                }
+            });
     }
 
     /**
@@ -105,6 +118,16 @@ function NewJourneyModal({ travelId }) {
         resetNewLocationState();
         _setPhotos([]);
     }
+
+    /**
+     * HashTag
+     */
+    const onHashTagChange = useCallback((e) => {
+        let map = e.detail.tagify.value.map(e =>
+            e.value
+        );
+        setHashTags(map);
+    }, []);
 
     return (
         <Modal
@@ -165,8 +188,15 @@ function NewJourneyModal({ travelId }) {
 
                         {/* Hash tags */}
                         <div>
+                            {/*https://github.com/yairEO/tagify*/}
                             <h3>태그</h3>
-
+                            <Tags
+                                settings={{
+                                    maxTags: '5'
+                                }}
+                                onChange={onHashTagChange}
+                                placeholder='최대 5개'
+                            />
                         </div>
                     </Stack>
 

@@ -38,7 +38,7 @@ public class TravelController {
     public ResponseEntity<?> postJourney(
             @AuthenticationPrincipal Traveler traveler,
             @PathVariable Long travelId,
-            @RequestBody @Valid NewJourneyRequestDto newJourney
+            @RequestBody NewJourneyRequestDto newJourney
     ) {
         return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
     }
