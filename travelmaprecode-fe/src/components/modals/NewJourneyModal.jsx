@@ -195,6 +195,7 @@ function NewJourneyModal({ travelId }) {
                                     maxTags: '5'
                                 }}
                                 onChange={onHashTagChange}
+                                placeholder='최대 5개'
                             />
                         </div>
                     </Stack>
