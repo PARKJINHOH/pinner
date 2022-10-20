@@ -3,13 +3,13 @@ import { Badge } from 'react-bootstrap';
 
 export default function JourneyPill({ journey }) {
 
-    const geoString = 'Some Country Any City'; // FIXME
+    const geoString = journey.geoLocationDto.name;
     const hashtags = journey.hashtags;
 
     return (
         <div className='ms-3 mb-3'>
             <p className='mb-0'>{geoString}</p>
-            {journey.hashtags.map(tag => <Hashtag key={tag} tag={tag}></Hashtag>)}
+            {hashtags.map(tag => <Hashtag key={tag} tag={tag}></Hashtag>)}
         </div>
     )
 }
