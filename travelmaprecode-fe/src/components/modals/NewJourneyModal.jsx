@@ -92,7 +92,7 @@ function NewJourneyModal({ travelId }) {
     async function onCreate() {
         // 사진 업로드
         const photoIds = await Promise.all(photos.map(uploadImage));
-        console.log(hashTags);
+
         const journeyData = JSON.stringify({
             date,
             geoLocation: newLocation,

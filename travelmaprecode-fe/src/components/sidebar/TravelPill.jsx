@@ -7,6 +7,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import toast from 'react-hot-toast';
 import { selectedState } from '../../states/travel';
+import JourneyDatePill from "./JourneyDatePill";
 
 export default function TravelPill({ travel }) {
 
@@ -18,6 +19,11 @@ export default function TravelPill({ travel }) {
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
     const [selected, setSelected] = useRecoilState(selectedState);;
 
+    const journeyList = travel.journeys;
+    const uniqueDate = [...new Set(journeyList.map((v) => v.date))]
+    const newData = uniqueDate.reduce(
+        (acc, v) => [...acc, [...journeyList.filter((d) => d.date === v)]], []
+    );
 
     function onDeleteClick(e) {
         e.stopPropagation();
@@ -67,8 +73,6 @@ export default function TravelPill({ travel }) {
                                 </>
                         }
                     </Stack>
-
-
                 </Button>
 
 
@@ -92,7 +96,7 @@ export default function TravelPill({ travel }) {
                 collapse ||
                 <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {
-                        travel.journeys.map(journey => <JourneyPill key={journey.id} journey={journey} />)
+                        newData.map(journeys => <JourneyDatePill key={journeys.id} journeys={journeys} />)
                     }
                 </ul>
             }
