@@ -96,7 +96,7 @@ export default function TravelPill({ travel }) {
                 collapse ||
                 <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {
-                        newData.map(journeys => <JourneyDatePill key={journeys.id} journeys={journeys} />)
+                        newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)
                     }
                 </ul>
             }
