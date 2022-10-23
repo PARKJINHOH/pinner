@@ -1,7 +1,6 @@
 package com.example.travelmaprecodebe.service;
 
 import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
-import com.example.travelmaprecodebe.domain.dto.NewJourneyResponseDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
@@ -52,7 +51,7 @@ public class TravelService {
         return traveler.get();
     }
 
-    public NewJourneyResponseDto postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
+    public List<NewTravelResponseDto> postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
         Travel travel = travelRepository.findTravel(travelerId, travelId);
         int getNowOrderKey = travel.getJourneys().size();
         travel.getJourneys().add(
@@ -67,6 +66,6 @@ public class TravelService {
 
         em.flush();
         em.clear();
-        return new NewJourneyResponseDto(travel.getJourneys().get(getNowOrderKey));
+        return this.getTravel(travelerId);
     }
 }
