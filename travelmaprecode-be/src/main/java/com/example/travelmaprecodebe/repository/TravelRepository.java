@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.example.travelmaprecodebe.domain.entity.QJourney.journey;
 import static com.example.travelmaprecodebe.domain.entity.QTravel.travel;
 import static com.example.travelmaprecodebe.domain.entity.QTraveler.traveler;
 
@@ -40,5 +41,20 @@ public class TravelRepository {
                 .selectFrom(travel)
                 .where(travel.traveler.id.eq(travelerId))
                 .fetch();
+    }
+
+    public Long deleteTravel(Long travelerId, Long travelId){
+        log.info("TravelRepository : deleteTravel");
+        queryFactory
+                .update(journey)
+                .set(journey.travel.id, (Long)null)
+                .where(journey.travel.id.eq(travelId))
+                .execute();
+
+        return queryFactory
+                .delete(travel)
+                .where(travel.id.eq(travelId),
+                        travel.traveler.id.eq(travelerId))
+                .execute();
     }
 }

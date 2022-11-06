@@ -68,4 +68,8 @@ public class TravelService {
         em.clear();
         return this.getTravel(travelerId);
     }
+
+    public Long deleteTravel(Long travelerId, Long travelId) {
+        return travelRepository.deleteTravel(travelerId, travelId);
+    }
 }

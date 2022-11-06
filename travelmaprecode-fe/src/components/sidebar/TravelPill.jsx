@@ -6,8 +6,10 @@ import { BsThreeDots } from 'react-icons/bs';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import toast from 'react-hot-toast';
-import { selectedState } from '../../states/travel';
+import {selectedState, travelState} from '../../states/travel';
 import JourneyDatePill from "./JourneyDatePill";
+
+import { useAPIv1 } from '../../apis/apiv1';
 
 export default function TravelPill({ travel }) {
 
@@ -17,7 +19,11 @@ export default function TravelPill({ travel }) {
     const [collapse, setCollapse] = useState(true);
 
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
-    const [selected, setSelected] = useRecoilState(selectedState);;
+    const [selected, setSelected] = useRecoilState(selectedState);
+
+    const apiv1 = useAPIv1();
+
+    const setTravels = useSetRecoilState(travelState);
 
     const journeyList = travel.journeys;
     const uniqueDate = [...new Set(journeyList.map((v) => v.date))]
@@ -25,9 +31,13 @@ export default function TravelPill({ travel }) {
         (acc, v) => [...acc, [...journeyList.filter((d) => d.date === v)]], []
     );
 
-    function onDeleteClick(e) {
-        e.stopPropagation();
-        console.log('asdf');
+    const onDeleteClick = async (event) => {
+        await apiv1.delete("/travel/" + travel.id)
+            .then((response) => {
+                if (response.status === 200) {
+                    setTravels(response.data);
+                }
+            });
     }
 
     function onRenameClick(e) {

@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class NewJourneyResponseDto {
-    private long id;
+    private Long id;
     private int orderKey;
     private LocalDate date;
     private Set<String> hashtags;
