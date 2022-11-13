@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,6 +40,8 @@ public class Journey extends AuditEntity {
     private GeoLocation geoLocation;
 
     @ElementCollection
+    @JoinColumn(name = "HASHTAG")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
     @Builder
@@ -47,5 +51,13 @@ public class Journey extends AuditEntity {
         this.travel = travel;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
+    }
+
+    public Journey(Travel travel, LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey) {
+        this.travel = travel;
+        this.date = date;
+        this.hashtags = hashtags;
+        this.geoLocation = geoLocation;
+        this.orderKey = orderKey;
     }
 }
