@@ -14,7 +14,7 @@ public class NewJourneyRequestDto {
     private GeoLocationDto geoLocation;
     private Set<String> hashTags;
 
-    private Journey toEntity(){
+    public Journey toEntity(){
         return Journey.builder()
                 .date(date)
                 .geoLocation(geoLocation.toEntity())

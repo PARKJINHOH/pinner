@@ -44,6 +44,15 @@ public class Journey extends AuditEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
+    public void addTravel(Travel travel) {
+        if (this.travel != null) {
+            this.travel.getJourneys().remove(this);
+        }
+
+        this.travel = travel;
+        travel.getJourneys().add(this);
+    }
+
     @Builder
     public Journey(int orderKey, LocalDate date, Travel travel, GeoLocation geoLocation, Set<String> hashtags) {
         this.orderKey = orderKey;

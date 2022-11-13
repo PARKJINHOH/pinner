@@ -37,6 +37,8 @@ public class TravelRepository {
 
     public List<Travel> findAllTravel(Long travelerId) {
         log.info("TravelRepository : findAllTravel");
+        em.flush();
+        em.clear();
         return queryFactory
                 .selectFrom(travel)
                 .where(travel.traveler.id.eq(travelerId))
