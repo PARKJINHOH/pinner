@@ -48,8 +48,7 @@ public class TravelRepository {
     public Long deleteTravel(Long travelerId, Long travelId){
         log.info("TravelRepository : deleteTravel");
         queryFactory
-                .update(journey)
-                .set(journey.travel.id, (Long)null)
+                .delete(journey)
                 .where(journey.travel.id.eq(travelId))
                 .execute();
 
