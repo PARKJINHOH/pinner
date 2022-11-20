@@ -17,8 +17,7 @@ export default function JourneyDatePill({ journeys }) {
                                 {collapse ? <FiChevronRight /> : <FiChevronDown />}
                                 <div>
                                     {
-                                        // Todo : 한번만 출력 해야함.
-                                        journeys.map(journey => <div key={journey.id}>{journey.date}</div>)
+                                        <div key={journeys[0].id}>{journeys[0].date}</div>
                                     }
                                 </div>
                             </>

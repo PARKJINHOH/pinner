@@ -82,7 +82,7 @@ function NewJourneyModal({ travelId }) {
     const [date, setDate] = useState(now);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
     const resetNewLocationState =  useResetRecoilState(newLocationState);
-    const [hashTags, setHashTags] = useState('');
+    const [hashTags, setHashTags] = useState([]);
     const setTravels = useSetRecoilState(travelState);
 
     /**

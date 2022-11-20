@@ -28,24 +28,21 @@ public class TravelController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> postTravel(
-            @AuthenticationPrincipal Traveler traveler,
-            @RequestBody @Valid NewTravelRequestDto newTravel
-    ) {
+    public ResponseEntity<?> postTravel(@AuthenticationPrincipal Traveler traveler,
+                                        @RequestBody @Valid NewTravelRequestDto newTravel) {
         return ResponseEntity.ok(travelService.postTravel(traveler.getId(), newTravel));
     }
 
     @PostMapping("/{travelId}/journey")
-    public ResponseEntity<?> postJourney(
-            @AuthenticationPrincipal Traveler traveler,
-            @PathVariable Long travelId,
-            @RequestBody NewJourneyRequestDto newJourney
-    ) {
+    public ResponseEntity<?> postJourney(@AuthenticationPrincipal Traveler traveler,
+                                         @PathVariable Long travelId,
+                                         @RequestBody NewJourneyRequestDto newJourney) {
         return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
     }
 
     @DeleteMapping("/{travelId}")
-    public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler, @PathVariable Long travelId) {
+    public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler,
+                                          @PathVariable Long travelId) {
         Long delResult = travelService.deleteTravel(traveler.getId(), travelId);
         if (delResult != 0) {
             return ResponseEntity.ok(HttpStatus.OK);
