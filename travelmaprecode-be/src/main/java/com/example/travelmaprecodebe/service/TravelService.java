@@ -42,14 +42,6 @@ public class TravelService {
                 .collect(Collectors.toList());
     }
 
-    private Traveler getTraveler(Long travelerId) {
-        Optional<Traveler> traveler = travelerRepository.findById(travelerId);
-        if (traveler.isEmpty()) {
-            throw new RuntimeException("missing traveler");
-        }
-        return traveler.get();
-    }
-
     public List<NewTravelResponseDto> postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
         Travel travel = travelRepository.findTravel(travelerId, travelId);
         newJourney.toEntity().addTravel(travel);
@@ -58,5 +50,13 @@ public class TravelService {
 
     public Long deleteTravel(Long travelerId, Long travelId) {
         return travelRepository.deleteTravel(travelerId, travelId);
+    }
+
+    private Traveler getTraveler(Long travelerId) {
+        Optional<Traveler> traveler = travelerRepository.findById(travelerId);
+        if (traveler.isEmpty()) {
+            throw new RuntimeException("missing traveler");
+        }
+        return traveler.get();
     }
 }
