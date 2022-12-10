@@ -116,9 +116,9 @@ export const useAPIv1 = function () {
     }
 
     return {
-        put: async (url, data) => {
+        patch: async (url, data) => {
             try {
-                return (await rawAxiosInstance.put(url, data)).data;
+                return (await rawAxiosInstance.patch(url, data));
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
                     return await handleTokenExpired(error.config);
@@ -128,7 +128,7 @@ export const useAPIv1 = function () {
         },
         delete: async (url) => {
             try {
-                return (await rawAxiosInstance.delete(url)).data;
+                return (await rawAxiosInstance.delete(url));
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
                     return await handleTokenExpired(error.config);

@@ -45,7 +45,7 @@ public class TravelRepository {
                 .fetch();
     }
 
-    public Long deleteTravel(Long travelerId, Long travelId){
+    public Long deleteTravel(Long travelerId, Long travelId) {
         log.info("TravelRepository : deleteTravel");
         queryFactory
                 .delete(journey)
@@ -57,5 +57,18 @@ public class TravelRepository {
                 .where(travel.id.eq(travelId),
                         travel.traveler.id.eq(travelerId))
                 .execute();
+    }
+
+    public Long patchTravel(Long travelerId, Long travelId, String title) {
+        log.info("TravelRepository : patchTravel");
+        Long resultL = queryFactory
+                .update(travel)
+                .set(travel.title, title)
+                .where(travel.traveler.id.eq(travelerId), travel.id.eq(travelId))
+                .execute();
+
+        em.flush();
+        em.clear();
+        return resultL;
     }
 }

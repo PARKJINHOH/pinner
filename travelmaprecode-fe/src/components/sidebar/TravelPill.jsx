@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react'
-import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-bootstrap'
-import JourneyPill from './JourneyPill';
-import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
-import { BsThreeDots } from 'react-icons/bs';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
+import React, {useRef, useState} from 'react'
+import {Button, ButtonGroup, Dropdown, DropdownButton, Stack} from 'react-bootstrap'
+import {FiChevronRight, FiChevronDown} from 'react-icons/fi';
+import {BsThreeDots} from 'react-icons/bs';
+import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
+import {NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
 import toast from 'react-hot-toast';
 import {selectedState, travelState} from '../../states/travel';
 import JourneyDatePill from "./JourneyDatePill";
@@ -17,7 +16,7 @@ export default function TravelPill({ travel }) {
     const renameRef = useRef(null);
 
     const [collapse, setCollapse] = useState(true);
-
+    const resetNewLocationState =  useResetRecoilState(newLocationState);
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
     const [selected, setSelected] = useRecoilState(selectedState);
 
@@ -31,41 +30,49 @@ export default function TravelPill({ travel }) {
         (acc, v) => [...acc, [...journeyList.filter((d) => d.date === v)]], []
     );
 
-    const onDeleteClick = async (event) => {
+    const onDeleteClick = async (e) => {
         await apiv1.delete("/travel/" + travel.id)
             .then((response) => {
                 if (response.status === 200) {
                     setTravels(response.data);
+                } else {
+                    alert(response.data);
                 }
             });
     }
 
-    function onRenameClick(e) {
-        e.stopPropagation();
-        setIsRenaming(true);
-        // TODO:
-    }
 
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
      * @param {KeyboardEvent} e
      */
-    function onKeyDownRename(e) {
+    async function onKeyDownRename(e) {
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
 
         if (isEsc || isEnter) {
             e.preventDefault();
             if (isEnter) {
-                // TODO: apply rename
-                console.log("apply rename");
+                const titleJson = JSON.stringify({
+                    title: e.target.value,
+                });
+
+                await apiv1.patch("/travel/" + travel.id, titleJson)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            setTravels(response.data);
+
+                        }
+                    });
+
             }
             setIsRenaming(false);
         }
     }
 
-    function applyRename(e) {
-
+    function onRenameClick(e) {
+        e.stopPropagation();
+        setIsRenaming(true);
     }
 
     return (

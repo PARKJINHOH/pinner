@@ -48,8 +48,14 @@ public class TravelService {
         return this.getTravel(travelerId);
     }
 
-    public Long deleteTravel(Long travelerId, Long travelId) {
-        return travelRepository.deleteTravel(travelerId, travelId);
+    public List<NewTravelResponseDto> deleteTravel(Long travelerId, Long travelId) {
+        travelRepository.deleteTravel(travelerId, travelId);
+        return getTravel(travelerId);
+    }
+
+    public List<NewTravelResponseDto> patchTravel(Long travelerId, Long travelId, NewTravelRequestDto newTravel) {
+        travelRepository.patchTravel(travelerId, travelId, newTravel.getTitle());
+        return getTravel(travelerId);
     }
 
     private Traveler getTraveler(Long travelerId) {
@@ -59,4 +65,6 @@ public class TravelService {
         }
         return traveler.get();
     }
+
+
 }

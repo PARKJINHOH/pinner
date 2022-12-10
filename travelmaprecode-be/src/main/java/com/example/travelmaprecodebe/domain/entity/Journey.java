@@ -54,16 +54,14 @@ public class Journey extends AuditEntity {
     }
 
     @Builder
-    public Journey(int orderKey, LocalDate date, Travel travel, GeoLocation geoLocation, Set<String> hashtags) {
+    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags) {
         this.orderKey = orderKey;
         this.date = date;
-        this.travel = travel;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
     }
 
-    public Journey(Travel travel, LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey) {
-        this.travel = travel;
+    public Journey( LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey) {
         this.date = date;
         this.hashtags = hashtags;
         this.geoLocation = geoLocation;

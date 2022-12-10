@@ -2,6 +2,7 @@ package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
+import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.service.TravelService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -41,14 +43,23 @@ public class TravelController {
     }
 
     @DeleteMapping("/{travelId}")
-    public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler,
-                                          @PathVariable Long travelId) {
-        Long delResult = travelService.deleteTravel(traveler.getId(), travelId);
-        if (delResult != 0) {
-            return ResponseEntity.ok(HttpStatus.OK);
-        } else {
-            return ResponseEntity.ok(HttpStatus.BAD_REQUEST);
+    public ResponseEntity deleteTravel(@AuthenticationPrincipal Traveler traveler,
+                                       @PathVariable Long travelId) {
+        try {
+            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteTravel(traveler.getId(), travelId);
+            return ResponseEntity.ok(newTravelResponseDtos);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("관리자에게 문의해주세요");
         }
 
+    }
+
+    @PatchMapping("/{travelId}")
+    public ResponseEntity patchTravel(@AuthenticationPrincipal Traveler traveler,
+                                      @PathVariable Long travelId,
+                                      @RequestBody @Valid NewTravelRequestDto newTravel) {
+        List<NewTravelResponseDto> newTravelResponseDtos = travelService.patchTravel(traveler.getId(), travelId, newTravel);
+        return new ResponseEntity<>(newTravelResponseDtos, HttpStatus.OK);
     }
 }
