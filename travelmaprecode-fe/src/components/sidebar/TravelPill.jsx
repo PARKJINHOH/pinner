@@ -9,20 +9,42 @@ import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyPill from "./JourneyPill";
 
 import { useAPIv1 } from '../../apis/apiv1';
+import { centreOfMapState } from '../../states/map';
+
+
+function getCentreOfTravel(travel) {
+    const journeyList = travel.journeys;
+    const sum = journeyList.reduce((acc, v) => {
+        return {
+            lat: acc.lat + v.geoLocationDto.lat,
+            lng: acc.lng + v.geoLocationDto.lng
+        }
+    }, { lat: 0, lng: 0 });
+
+    return {
+        lat: sum.lat / journeyList.length,
+        lng: sum.lng / journeyList.length
+    }
+}
+
 
 export default function TravelPill({ travel }) {
 
     const [isRenaming, setIsRenaming] = useState(false);
     const renameRef = useRef(null);
 
-    const [collapse, setCollapse] = useState(true);
     const resetNewLocationState = useResetRecoilState(newLocationState);
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
+
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
+    const isSelected = selectedId === travel.id;
 
     const apiv1 = useAPIv1();
 
     const setTravels = useSetRecoilState(travelState);
+
+    // 맵 위치를 여행의 중심으로 이동
+    const [centreOfMap, setCentreOfMap] = useRecoilState(centreOfMapState);
 
     const journeyList = travel.journeys;
     const uniqueDate = [...new Set(journeyList.map((v) => v.date))]
@@ -32,8 +54,13 @@ export default function TravelPill({ travel }) {
 
 
     function onFoldingClick() {
-        if (collapse === true) setSelectedId(travel.id);
-        setCollapse(!collapse);
+        if (isSelected) {
+            setSelectedId(null);
+        } else {
+            const centreOfTravel = getCentreOfTravel(travel);
+            setCentreOfMap(centreOfTravel);
+            setSelectedId(travel.id);
+        }
     }
 
     const onDeleteClick = async (e) => {
@@ -96,7 +123,7 @@ export default function TravelPill({ travel }) {
 
 
     const iconAndTitle = <>
-        {collapse ? <FiChevronRight /> : <FiChevronDown />}
+        {isSelected ? <FiChevronDown /> : <FiChevronRight />}
         <div>{travel.title}</div>
     </>;
 
@@ -120,7 +147,7 @@ export default function TravelPill({ travel }) {
 
             {/* Travel 목록 */}
             {
-                collapse ||
+                isSelected &&
                 <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
                 </ul>

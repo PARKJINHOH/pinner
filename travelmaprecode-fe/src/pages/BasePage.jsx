@@ -7,6 +7,7 @@ import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 import LoginModal from '../components/modals/LoginModal';
 import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
+import { centreOfMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
 import { selectedTravelIdState, selectedTravelState } from '../states/travel';
 
@@ -16,9 +17,8 @@ export default function BasePage() {
         height: '100vh',
     };
 
-    const center = useMemo(() => ({
-        lat: 37.580283, lng: 126.976641,
-    }), []);
+    const [centreOfMap, setCentreOfMap] = useRecoilState(centreOfMapState);
+
 
     const mapOptions = {
         fullscreenControl: false,
@@ -52,8 +52,9 @@ export default function BasePage() {
                 <GoogleMap
                     zoom={10}
                     mapContainerStyle={containerStyle}
-                    center={center}
+                    center={centreOfMap}
                     options={mapOptions}
+                    onCenterChanged={setCentreOfMap}
 
                     // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {
