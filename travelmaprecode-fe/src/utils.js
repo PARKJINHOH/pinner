@@ -43,17 +43,22 @@ function bounds(points) {
 
 // 여러 좌표들의 중심점을 구한다.
 export function centerOfPoints(points) {
-    const sum = points.reduce((acc, v) => {
-        return {
-            lat: acc.lat + v.lat,
-            lng: acc.lng + v.lng
-        }
-    }, { lat: 0, lng: 0 });
+    let latMin = Infinity;
+    let latMax = -Infinity;
+    let lngMin = Infinity;
+    let lngMax = -Infinity;
 
-    return {
-        lat: sum.lat / points.length,
-        lng: sum.lng / points.length
+    for (let i = 0; i < points.length; i++) {
+        latMin = Math.min(latMin, points[i].lat);
+        latMax = Math.max(latMax, points[i].lat);
+        lngMin = Math.min(lngMin, points[i].lng);
+        lngMax = Math.max(lngMax, points[i].lng);
     }
+
+    const lat = (latMin + latMax) / 2;
+    const lng = (lngMin + lngMax) / 2;
+
+    return { lat: lat, lng: lng };
 }
 
 // 여러 좌표들의 중심점과 가장 멀리 떨어진 좌표의 거리를 구한다.
