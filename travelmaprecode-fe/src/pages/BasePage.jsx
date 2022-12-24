@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -79,7 +79,8 @@ export default function BasePage() {
                         }
                     }}
                 >
-                    {drawMarkers(selectedTravel)}
+                    {selectedTravel && drawMarkers(selectedTravel)}
+                    {selectedTravel && drawLine(selectedTravel)}
                 </GoogleMap>
 
             </LoadScript>
@@ -88,11 +89,12 @@ export default function BasePage() {
 }
 
 function drawMarkers(selectedTravel) {
-    if (selectedTravel === undefined) {
-        return;
-    }
-
     return selectedTravel.journeys.map((journey, index) => {
-        return <Marker position={journey.geoLocationDto} key={index} onClick={() => { }} />;
+        return <Marker position={journey.geoLocationDto} key={journey.id} onClick={() => { }} />;
     });
+}
+
+
+function drawLine(selectedTravel) {
+    return <Polyline path={selectedTravel.journeys.map((journey, index) => journey.geoLocationDto)} />;
 }
