@@ -1,5 +1,5 @@
 import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
-import React, { useMemo } from 'react';
+import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -7,9 +7,9 @@ import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 import LoginModal from '../components/modals/LoginModal';
 import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
-import { centreOfMapState } from '../states/map';
+import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelIdState, selectedTravelState } from '../states/travel';
+import { selectedTravelState } from '../states/travel';
 
 export default function BasePage() {
     const containerStyle = {
@@ -17,7 +17,7 @@ export default function BasePage() {
         height: '100vh',
     };
 
-    const [centreOfMap, setCentreOfMap] = useRecoilState(centreOfMapState);
+    const gMap = useRecoilValue(googleMapState);
 
 
     const mapOptions = {
@@ -50,11 +50,10 @@ export default function BasePage() {
             >
                 {/* https://react-google-maps-api-docs.netlify.app/ */}
                 <GoogleMap
-                    zoom={10}
                     mapContainerStyle={containerStyle}
-                    center={centreOfMap}
                     options={mapOptions}
-                    onCenterChanged={setCentreOfMap}
+                    zoom={gMap.zoom}
+                    center={gMap.center}
 
                     // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {

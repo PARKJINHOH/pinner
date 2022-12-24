@@ -1,39 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { BsThreeDots } from 'react-icons/bs';
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyPill from "./JourneyPill";
 
 import { useAPIv1 } from '../../apis/apiv1';
-import { centreOfMapState } from '../../states/map';
-
-
-function getCentreOfTravel(travel) {
-    const journeyList = travel.journeys;
-    const sum = journeyList.reduce((acc, v) => {
-        return {
-            lat: acc.lat + v.geoLocationDto.lat,
-            lng: acc.lng + v.geoLocationDto.lng
-        }
-    }, { lat: 0, lng: 0 });
-
-    return {
-        lat: sum.lat / journeyList.length,
-        lng: sum.lng / journeyList.length
-    }
-}
-
+import { googleMapState } from '../../states/map';
+import { centerOfPoints, radiusOfPoints } from '../../utils';
 
 export default function TravelPill({ travel }) {
 
     const [isRenaming, setIsRenaming] = useState(false);
-    const renameRef = useRef(null);
 
-    const resetNewLocationState = useResetRecoilState(newLocationState);
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
 
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
@@ -44,7 +26,7 @@ export default function TravelPill({ travel }) {
     const setTravels = useSetRecoilState(travelState);
 
     // 맵 위치를 여행의 중심으로 이동
-    const [centreOfMap, setCentreOfMap] = useRecoilState(centreOfMapState);
+    const [gMap, setGMap] = useRecoilState(googleMapState);
 
     const journeyList = travel.journeys;
     const uniqueDate = [...new Set(journeyList.map((v) => v.date))]
@@ -57,8 +39,13 @@ export default function TravelPill({ travel }) {
         if (isSelected) {
             setSelectedId(null);
         } else {
-            const centreOfTravel = getCentreOfTravel(travel);
-            setCentreOfMap(centreOfTravel);
+            let radius = radiusOfPoints(travel.journeys.map(j => j.geoLocationDto));
+            const points = travel.journeys.map(j => j.geoLocationDto);
+            const centerOfTravel = centerOfPoints(points);
+
+            console.log({radius});
+
+            setGMap({ zoom: gMap.zoom, center: centerOfTravel });
             setSelectedId(travel.id);
         }
     }
