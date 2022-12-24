@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import React, { useMemo } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -8,7 +8,7 @@ import LoginModal from '../components/modals/LoginModal';
 import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelState } from '../states/travel';
+import { selectedTravelIdState, selectedTravelState } from '../states/travel';
 
 export default function BasePage() {
     const containerStyle = {
@@ -79,10 +79,20 @@ export default function BasePage() {
                         }
                     }}
                 >
-                    { /* Child components, such as markers, info windows, etc. */}
+                    {drawMarkers(selectedTravel)}
                 </GoogleMap>
 
             </LoadScript>
         </div>
     );
+}
+
+function drawMarkers(selectedTravel) {
+    if (selectedTravel === undefined) {
+        return;
+    }
+
+    return selectedTravel.journeys.map((journey, index) => {
+        return <Marker position={journey.geoLocationDto} key={index} onClick={() => { }} />;
+    });
 }

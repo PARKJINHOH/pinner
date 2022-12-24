@@ -15,9 +15,9 @@ export const travelState = atom({
  *
  * @type {import("recoil").RecoilState<Selected>}
  */
-export const selectedState = atom({
-    key: 'selectedState',
-    default: {},
+export const selectedTravelIdState = atom({
+    key: 'selectedTravelIdState',
+    default: '',
 });
 
 /**
@@ -29,13 +29,13 @@ export const selectedTravelState =  selector({
         /**
          * @type {Selected}
          */
-        const selected =  get(selectedState);
+        const selectedId =  get(selectedTravelIdState);
         /**
          * @type {Travel[]}
          */
         const travels = get(travelState);
 
 
-        return travels.find(travel => travel.id === selected.travelId);
+        return travels.find(travel => travel.id === selectedId);
     },
 });

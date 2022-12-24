@@ -1,11 +1,11 @@
-import React, {useRef, useState} from 'react'
-import {Button, ButtonGroup, Dropdown, DropdownButton, Stack} from 'react-bootstrap'
-import {FiChevronRight, FiChevronDown} from 'react-icons/fi';
-import {BsThreeDots} from 'react-icons/bs';
-import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
-import {NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
+import React, { useRef, useState } from 'react'
+import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-bootstrap'
+import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
+import { BsThreeDots } from 'react-icons/bs';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
 import toast from 'react-hot-toast';
-import {selectedState, travelState} from '../../states/travel';
+import { selectedTravelIdState, selectedTravelState, travelState } from '../../states/travel';
 import JourneyDatePill from "./JourneyDatePill";
 
 import { useAPIv1 } from '../../apis/apiv1';
@@ -16,9 +16,9 @@ export default function TravelPill({ travel }) {
     const renameRef = useRef(null);
 
     const [collapse, setCollapse] = useState(true);
-    const resetNewLocationState =  useResetRecoilState(newLocationState);
+    const resetNewLocationState = useResetRecoilState(newLocationState);
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
-    const [selected, setSelected] = useRecoilState(selectedState);
+    const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
 
     const apiv1 = useAPIv1();
 
@@ -78,7 +78,13 @@ export default function TravelPill({ travel }) {
     return (
         <li className="mb-2 d-grid space-between">
             <ButtonGroup>
-                <Button onClick={() => setCollapse(!collapse)}>
+                <Button onClick={() => {
+                    if (collapse === true) setSelectedId(travel.id);
+
+
+                    setCollapse(!collapse);
+
+                }}>
                     <Stack direction="horizontal" className='me-auto'>
                         {
                             isRenaming ?
@@ -103,7 +109,7 @@ export default function TravelPill({ travel }) {
                             지도를 클릭해서 Journey를 추가해요.
                         </span>));
                         setNewJourneyStep(NewJourneyStep.LOCATING);
-                        setSelected({...selected, travelId: travel.id});
+                        setSelectedId(travel.id);
                     }}>Journey 생성</Dropdown.Item>
                 </DropdownButton>
             </ButtonGroup>
