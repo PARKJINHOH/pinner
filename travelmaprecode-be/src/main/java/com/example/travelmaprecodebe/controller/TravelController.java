@@ -55,6 +55,14 @@ public class TravelController {
 
     }
 
+    @PatchMapping("/orderKey")
+    public ResponseEntity patchTravel(@AuthenticationPrincipal Traveler traveler,
+                                      @PathVariable Long travelId,
+                                      @RequestBody @Valid List<NewTravelRequestDto> travelList) {
+        List<NewTravelResponseDto> newTravelResponseDtos = travelService.patchOrderKey(traveler.getId(), travelId, travelList);
+        return new ResponseEntity<>(newTravelResponseDtos, HttpStatus.OK);
+    }
+
     @PatchMapping("/{travelId}")
     public ResponseEntity patchTravel(@AuthenticationPrincipal Traveler traveler,
                                       @PathVariable Long travelId,

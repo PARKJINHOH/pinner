@@ -58,6 +58,14 @@ public class TravelService {
         return getTravel(travelerId);
     }
 
+    public List<NewTravelResponseDto> patchOrderKey(Long travelerId, Long travelId, List<NewTravelRequestDto> travelList) {
+        for (NewTravelRequestDto newTravelRequestDto : travelList) {
+            travelRepository.patchOrderKey(travelerId, travelId, newTravelRequestDto);
+        }
+
+        return getTravel(travelerId);
+    }
+
     private Traveler getTraveler(Long travelerId) {
         Optional<Traveler> traveler = travelerRepository.findById(travelerId);
         if (traveler.isEmpty()) {
@@ -65,6 +73,7 @@ public class TravelService {
         }
         return traveler.get();
     }
+
 
 
 }
