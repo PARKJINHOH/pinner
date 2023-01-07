@@ -43,6 +43,7 @@ public class TravelRepository {
         return queryFactory
                 .selectFrom(travel)
                 .where(travel.traveler.id.eq(travelerId))
+                .orderBy(travel.orderKey.asc())
                 .fetch();
     }
 
@@ -73,12 +74,12 @@ public class TravelRepository {
         return resultL;
     }
 
-    public Long patchOrderKey(Long travelerId, Long travelId, NewTravelRequestDto newTravelRequestDto) {
-        log.info("TravelRepository : putTravel");
+    public Long putOrderKey(Long travelerId, NewTravelRequestDto newTravelRequestDto) {
+        log.info("TravelRepository : putOrderKey");
         Long resultL = queryFactory
                 .update(travel)
                 .set(travel.orderKey, newTravelRequestDto.getOrderKey())
-                .where(travel.traveler.id.eq(travelerId), travel.id.eq(travelId))
+                .where(travel.traveler.id.eq(travelerId), travel.id.eq(newTravelRequestDto.getId()))
                 .execute();
 
         em.flush();

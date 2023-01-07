@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NewTravelRequestDto {
 
+    Long id;
     String title;
     Integer orderKey;
 }

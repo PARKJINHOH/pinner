@@ -58,9 +58,9 @@ public class TravelService {
         return getTravel(travelerId);
     }
 
-    public List<NewTravelResponseDto> patchOrderKey(Long travelerId, Long travelId, List<NewTravelRequestDto> travelList) {
+    public List<NewTravelResponseDto> putOrderKey(Long travelerId, List<NewTravelRequestDto> travelList) {
         for (NewTravelRequestDto newTravelRequestDto : travelList) {
-            travelRepository.patchOrderKey(travelerId, travelId, newTravelRequestDto);
+            travelRepository.putOrderKey(travelerId, newTravelRequestDto);
         }
 
         return getTravel(travelerId);
