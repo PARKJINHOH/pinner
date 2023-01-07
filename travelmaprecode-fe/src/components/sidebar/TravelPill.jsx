@@ -13,12 +13,10 @@ import { useAPIv1 } from '../../apis/apiv1';
 export default function TravelPill({ travel }) {
 
     const [isRenaming, setIsRenaming] = useState(false);
-    const renameRef = useRef(null);
 
-    const [collapse, setCollapse] = useState(true);
-    const resetNewLocationState = useResetRecoilState(newLocationState);
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
+    const isSelected = travel.id === selectedId;
 
     const apiv1 = useAPIv1();
 
@@ -31,9 +29,9 @@ export default function TravelPill({ travel }) {
     );
 
 
-    function onFoldingClick() {
-        if (collapse === true) setSelectedId(travel.id);
-        setCollapse(!collapse);
+    function onFoldingClick(e) {
+        if (isSelected) setSelectedId(undefined);
+        else setSelectedId(travel.id);
     }
 
     const onDeleteClick = async (e) => {
@@ -96,7 +94,7 @@ export default function TravelPill({ travel }) {
 
 
     const iconAndTitle = <>
-        {collapse ? <FiChevronRight /> : <FiChevronDown />}
+        {isSelected ? <FiChevronDown /> : <FiChevronRight />}
         <div>{travel.title}</div>
     </>;
 
@@ -120,7 +118,7 @@ export default function TravelPill({ travel }) {
 
             {/* Travel 목록 */}
             {
-                collapse ||
+                isSelected &&
                 <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
                 </ul>
