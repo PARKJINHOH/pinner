@@ -28,6 +28,7 @@ export default function TravelListView() {
         const newTravelData = workValue.map(t => ({...t, "orderKey" : i++}));
         setTravelData(newTravelData);
 
+        // PUT /api/v1/travel/orderKey
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
                 if (!response.status === 200) {
