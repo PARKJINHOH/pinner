@@ -24,8 +24,7 @@ export default function TravelListView() {
         const [deletedItem,] = workValue.splice(sourceIndex, 1);
         workValue.splice(targetIndex, 0, deletedItem);
 
-        let i = 0;
-        const newTravelData = workValue.map(t => ({ ...t, "orderKey": i++ }));
+        const newTravelData = workValue.map((t, i) => ({ ...t, "orderKey": i }));
         setTravelData(newTravelData);
 
         // PUT /api/v1/travel/orderKey
