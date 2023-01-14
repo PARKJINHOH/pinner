@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
-import {useRecoilState, useRecoilValue} from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { travelState } from '../../states/travel'
 import { isLoggedInState } from '../../states/traveler'
 import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 
 export default function TravelListView() {
@@ -21,11 +21,10 @@ export default function TravelListView() {
         const sourceIndex = result.source.index;
         const targetIndex = result.destination.index;
         const workValue = travelData.slice();
-        const [deletedItem, ] = workValue.splice(sourceIndex, 1);
+        const [deletedItem,] = workValue.splice(sourceIndex, 1);
         workValue.splice(targetIndex, 0, deletedItem);
 
-        let i = 0;
-        const newTravelData = workValue.map(t => ({...t, "orderKey" : i++}));
+        const newTravelData = workValue.map((t, i) => ({ ...t, "orderKey": i }));
         setTravelData(newTravelData);
 
         // PUT /api/v1/travel/orderKey
@@ -55,7 +54,7 @@ export default function TravelListView() {
                             travelData ?
                                 <DragDropContext onDragEnd={onDragEnd}>
                                     <Droppable droppableId="ROOT">
-                                        {provided =>  (
+                                        {provided => (
                                             <div className="goals-list-wrap" {...provided.droppableProps} ref={provided.innerRef}>
                                                 {
                                                     travelData.map((t) => {
