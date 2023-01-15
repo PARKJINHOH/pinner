@@ -7,6 +7,7 @@ import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyPill from "./JourneyPill";
+import HamburgerIcon from '../../image/hamburgerIcon_16px.png'
 
 import { useAPIv1 } from '../../apis/apiv1';
 
@@ -102,7 +103,8 @@ export default function TravelPill({ travel }) {
         <li className="mb-2 d-grid space-between">
             {/* Travel 버튼 */}
             <ButtonGroup>
-                <Button onClick={onFoldingClick}>
+                <img src={HamburgerIcon}/>
+                <Button onClick={onFoldingClick} >
                     <Stack direction="horizontal" className='me-auto'>
                         {isRenaming ? renameTextInput : iconAndTitle}
                     </Stack>
