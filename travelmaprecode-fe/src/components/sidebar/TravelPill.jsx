@@ -75,12 +75,6 @@ export default function TravelPill({ travel }) {
         }
     }
 
-    // 이름 변경 시작
-    function onRenameClick(e) {
-        e.stopPropagation();
-        setIsRenaming(true);
-    }
-
     const renameTextInput = <input type="text" autoFocus={true} onKeyDown={onKeyDownRename} onBlur={() => setIsRenaming(false)}></input>;
 
     // 새 Journey 생성을 위해 사용자가 맵을 클릭하도록 안내
@@ -103,7 +97,7 @@ export default function TravelPill({ travel }) {
         <li className="mb-2 d-grid space-between">
             {/* Travel 버튼 */}
             <ButtonGroup>
-                <img src={HamburgerIcon}/>
+                <img src={HamburgerIcon} />
                 <Button onClick={onFoldingClick} >
                     <Stack direction="horizontal" className='me-auto'>
                         {isRenaming ? renameTextInput : iconAndTitle}
@@ -111,7 +105,7 @@ export default function TravelPill({ travel }) {
                 </Button>
 
                 <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
-                    <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setIsRenaming(true)}>이름 변경</Dropdown.Item>
                     <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
                     <Dropdown.Item onClick={onNewJourneyClick}>Journey 생성</Dropdown.Item>
                 </DropdownButton>
