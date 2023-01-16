@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.repository;
 
+import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class TravelRepository {
         return queryFactory
                 .selectFrom(travel)
                 .where(travel.traveler.id.eq(travelerId))
+                .orderBy(travel.orderKey.asc())
                 .fetch();
     }
 
@@ -65,6 +67,19 @@ public class TravelRepository {
                 .update(travel)
                 .set(travel.title, title)
                 .where(travel.traveler.id.eq(travelerId), travel.id.eq(travelId))
+                .execute();
+
+        em.flush();
+        em.clear();
+        return resultL;
+    }
+
+    public Long putOrderKey(Long travelerId, NewTravelRequestDto newTravelRequestDto) {
+        log.info("TravelRepository : putOrderKey");
+        Long resultL = queryFactory
+                .update(travel)
+                .set(travel.orderKey, newTravelRequestDto.getOrderKey())
+                .where(travel.traveler.id.eq(travelerId), travel.id.eq(newTravelRequestDto.getId()))
                 .execute();
 
         em.flush();

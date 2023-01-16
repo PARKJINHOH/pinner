@@ -7,6 +7,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyPill from "./JourneyPill";
+import HamburgerIcon from '../../image/hamburgerIcon_16px.png'
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
@@ -19,7 +20,7 @@ export default function TravelPill({ travel }) {
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
 
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
-    const isSelected = selectedId === travel.id;
+    const isSelected = travel.id === selectedId;
 
     const apiv1 = useAPIv1();
 
@@ -37,7 +38,7 @@ export default function TravelPill({ travel }) {
 
     function onFoldingClick() {
         if (isSelected) {
-            setSelectedId(null);
+            setSelectedId(undefined);
         } else {
             let radius = radiusOfPoints(travel.journeys.map(j => j.geoLocationDto));
             const points = travel.journeys.map(j => j.geoLocationDto);
@@ -90,12 +91,6 @@ export default function TravelPill({ travel }) {
         }
     }
 
-    // 이름 변경 시작
-    function onRenameClick(e) {
-        e.stopPropagation();
-        setIsRenaming(true);
-    }
-
     const renameTextInput = <input type="text" autoFocus={true} onKeyDown={onKeyDownRename} onBlur={() => setIsRenaming(false)}></input>;
 
     // 새 Journey 생성을 위해 사용자가 맵을 클릭하도록 안내
@@ -118,14 +113,15 @@ export default function TravelPill({ travel }) {
         <li className="mb-2 d-grid space-between">
             {/* Travel 버튼 */}
             <ButtonGroup>
-                <Button onClick={onFoldingClick}>
+                <img src={HamburgerIcon} />
+                <Button onClick={onFoldingClick} >
                     <Stack direction="horizontal" className='me-auto'>
                         {isRenaming ? renameTextInput : iconAndTitle}
                     </Stack>
                 </Button>
 
                 <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
-                    <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setIsRenaming(true)}>이름 변경</Dropdown.Item>
                     <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
                     <Dropdown.Item onClick={onNewJourneyClick}>Journey 생성</Dropdown.Item>
                 </DropdownButton>

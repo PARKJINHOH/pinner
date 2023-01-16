@@ -116,6 +116,16 @@ export const useAPIv1 = function () {
     }
 
     return {
+        put: async (url, data) => {
+            try {
+                return (await rawAxiosInstance.put(url, data));
+            } catch (error) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                    return await handleTokenExpired(error.config);
+                }
+                return error.response;
+            }
+        },
         patch: async (url, data) => {
             try {
                 return (await rawAxiosInstance.patch(url, data));

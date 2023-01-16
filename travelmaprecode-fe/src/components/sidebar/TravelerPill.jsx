@@ -21,6 +21,7 @@ export default function TravelerPill() {
     const setTravels = useSetRecoilState(travelState);
     const apiv1 = useAPIv1();
 
+    // GET /api/v1/travel
     useEffect(() => {
         if (!traveler) {
             setTravels([]);
