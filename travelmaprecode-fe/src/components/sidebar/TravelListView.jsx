@@ -17,7 +17,10 @@ export default function TravelListView() {
     const [isEditingNewTravel, setIsEditingNewTravel] = useState(false);
 
     const onDragEnd = (result) => {
-
+        if (!result.destination) {
+            // 1개만 있을 때 옮기면 생기는 오류 방지
+            return;
+        }
         const sourceIndex = result.source.index;
         const targetIndex = result.destination.index;
         const workValue = travelData.slice();
