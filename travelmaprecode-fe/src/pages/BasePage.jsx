@@ -57,24 +57,31 @@ export default function BasePage() {
 
                     // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {
-                        const lat = e.latLng.lat();
-                        const lng = e.latLng.lng();
+                        const loc = {
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng(),
+                            name: "",
+                        };
 
                         console.log(e.latLng.toString());
 
                         // Locating 모드일 때만 역 지오코딩 API 요청
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
-                            const resp = await apiv1.get('/geocoding', { params: { lat, lng, reverse: true } });
+                            const resp = await apiv1.get(
+                                '/geocoding',
+                                { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
+                            );
                             console.log(resp);
+
 
                             if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
                                 toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
-                                return;
+                            } else {
+                                loc.name = resp.data.name;
                             }
 
-                            const name = resp.data.name;
-                            setNewLocationState({ lat, lng, name });
+                            setNewLocationState(loc);
                             setNewJourneyStep(NewJourneyStep.EDITTING);
                         }
                     }}
