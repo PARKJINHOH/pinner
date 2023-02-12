@@ -229,23 +229,23 @@ public class GeocodingController {
         HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         GeocodingResponse response = objectMapper.readValue(responseStream.body(), GeocodingResponse.class);
 
-        // compound code가 두 파츠 이상일 경우 해당값 사용
-        if (response.plusCode.compoundCode != null) {
-            String[] compoundCodes = response.plusCode.compoundCode.split(" ");
-            if (compoundCodes.length >= 2) {
-                return Arrays.stream(compoundCodes).skip(1).collect(joining(" "));
-            }
-        }
-
         switch (ResponseStatus.valueOf(response.status)) {
             case OK:
+                // compound code가 두 파츠 이상일 경우 해당값 사용
+                if (response.plusCode.compoundCode != null) {
+                    String[] compoundCodes = response.plusCode.compoundCode.split(" ");
+                    if (compoundCodes.length >= 2) {
+                        return Arrays.stream(compoundCodes).skip(1).collect(joining(" "));
+                    }
+                }
+
                 return response.results[0].formattedAddress;
 
             case ZERO_RESULTS:
                 return null;
 
             default:
-                log.error("역지오코딩 API를 사용 할 수 없습니다: {}", response.status);
+                log.error("역지오코딩 API를 사용 할 수 없습니다: {}, {}", response.status, response.errorMessage);
                 throw new RuntimeException("역지오코딩 API를 사용 할 수 없습니다");
         }
     }
@@ -258,6 +258,7 @@ public class GeocodingController {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     private static class GeocodingResponse {
 
+        private String errorMessage;
         private PlusCode plusCode;
         private Result[] results;
         private String status;
