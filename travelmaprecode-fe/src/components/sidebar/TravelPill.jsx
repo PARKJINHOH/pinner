@@ -7,15 +7,13 @@ import JourneyPill from "./JourneyPill";
 
 import { useAPIv1 } from '../../apis/apiv1';
 
-import { styled } from "@mui/material/styles";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MuiAccordion from '@mui/material/Accordion';
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function TravelPill({ travel }) {
 
@@ -23,7 +21,6 @@ export default function TravelPill({ travel }) {
 
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
-    const isSelected = travel.id === selectedId;
 
     const apiv1 = useAPIv1();
 
@@ -36,11 +33,6 @@ export default function TravelPill({ travel }) {
     );
 
 
-    function onFoldingClick(e) {
-        if (isSelected) setSelectedId(undefined);
-        else setSelectedId(travel.id);
-    }
-
     const onDeleteClick = async (e) => {
         setAnchorEl(null);
         await apiv1.delete("/travel/" + travel.id)
@@ -52,40 +44,6 @@ export default function TravelPill({ travel }) {
                 }
             });
     }
-
-
-    // 아코디언 Custom 시작
-    const Accordion = styled((props) => (
-        <MuiAccordion disableGutters elevation={0} square {...props} />
-    ))(({ theme }) => ({
-        border: `1px solid ${theme.palette.divider}`,
-        "&:not(:last-child)": {
-            borderBottom: 0
-        },
-        "&:before": {
-            display: "none"
-        }
-    }));
-
-    const AccordionSummary = styled((props) => (
-        <MuiAccordionSummary
-            expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
-            {...props}
-        />
-    ))(({ theme }) => ({
-        backgroundColor:
-            theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, .05)"
-                : "rgba(0, 0, 0, .03)",
-        flexDirection: "row-reverse",
-        "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-            transform: "rotate(90deg)"
-        },
-        "& .MuiAccordionSummary-content": {
-            marginLeft: theme.spacing(1)
-        }
-    }));
-    // 아코디언 Custom 끝
 
 
     /**
@@ -139,56 +97,64 @@ export default function TravelPill({ travel }) {
 
 
     const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
+    const showDropdownMenu = Boolean(anchorEl);
+
     const handleClick = (event) => {
-        event.preventDefault();
+        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+
+    const handleClose = () => setAnchorEl(null);
+
     // Travel 사이드 메뉴 끝
 
     const iconAndTitle =
-        <div>
+        <div >
             {travel.title}
+
             <IconButton
                 aria-label="more"
                 id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
+                aria-controls={showDropdownMenu ? 'long-menu' : undefined}
+                aria-expanded={showDropdownMenu ? 'true' : undefined}
                 aria-haspopup="true"
                 onClick={handleClick}
             >
-                <MoreVertIcon/>
+                <MoreVertIcon />
             </IconButton>
-            <Menu
-                anchorEl={anchorEl}
-                id="long-menu"
-                open={open}
-                MenuListProps={{
-                    'aria-labelledby': 'long-button',
-                }}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={onRenameClick}>이름변경</MenuItem>
-                <MenuItem onClick={onDeleteClick}>삭제</MenuItem>
-                <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>
-            </Menu>
+
+
+            {/* NOTE:
+
+                IconButton을 클릭하면 Menu에서 Mouse Click 이벤트가 방출됨.
+                버튼을 클릭하면 Arccorion이 확장/축소되는 현상이 있음.
+            */}
+            <div onClick={(e) => e.stopPropagation()}>
+                <Menu
+                    anchorEl={anchorEl}
+                    id="long-menu"
+                    open={showDropdownMenu}
+                    MenuListProps={{ 'aria-labelledby': 'long-button' }}
+                    onClose={handleClose}
+                >
+                    <MenuItem onClick={onRenameClick}>이름변경</MenuItem>
+                    <MenuItem onClick={onDeleteClick}>삭제</MenuItem>
+                    <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>
+                </Menu>
+            </div>
+
+
         </div>;
 
     return (
-        <>
-            {/* Travel 버튼 */}
-            <Accordion>
-                <AccordionSummary>
-                    {isRenaming ? renameTextInput : iconAndTitle}
-                </AccordionSummary>
-                <AccordionDetails>
-                    {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
-                </AccordionDetails>
-            </Accordion>
-        </>
+        < MuiAccordion >
+            <MuiAccordionSummary>
+                {isRenaming ? renameTextInput : iconAndTitle}
+            </MuiAccordionSummary>
+            <AccordionDetails>
+                {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
+            </AccordionDetails>
+        </MuiAccordion >
     )
 }
 
