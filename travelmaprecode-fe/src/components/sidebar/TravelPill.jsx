@@ -1,15 +1,21 @@
-import React, { useRef, useState } from 'react';
-import { Button, ButtonGroup, Dropdown, DropdownButton, Stack } from 'react-bootstrap';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { BsThreeDots } from 'react-icons/bs';
-import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyPill from "./JourneyPill";
-import HamburgerIcon from '../../image/hamburgerIcon_16px.png'
 
 import { useAPIv1 } from '../../apis/apiv1';
+
+import { styled } from "@mui/material/styles";
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function TravelPill({ travel }) {
 
@@ -36,6 +42,7 @@ export default function TravelPill({ travel }) {
     }
 
     const onDeleteClick = async (e) => {
+        setAnchorEl(null);
         await apiv1.delete("/travel/" + travel.id)
             .then((response) => {
                 if (response.status === 200) {
@@ -45,6 +52,40 @@ export default function TravelPill({ travel }) {
                 }
             });
     }
+
+
+    // 아코디언 Custom 시작
+    const Accordion = styled((props) => (
+        <MuiAccordion disableGutters elevation={0} square {...props} />
+    ))(({ theme }) => ({
+        border: `1px solid ${theme.palette.divider}`,
+        "&:not(:last-child)": {
+            borderBottom: 0
+        },
+        "&:before": {
+            display: "none"
+        }
+    }));
+
+    const AccordionSummary = styled((props) => (
+        <MuiAccordionSummary
+            expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+            {...props}
+        />
+    ))(({ theme }) => ({
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, .05)"
+                : "rgba(0, 0, 0, .03)",
+        flexDirection: "row-reverse",
+        "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+            transform: "rotate(90deg)"
+        },
+        "& .MuiAccordionSummary-content": {
+            marginLeft: theme.spacing(1)
+        }
+    }));
+    // 아코디언 Custom 끝
 
 
     /**
@@ -79,12 +120,15 @@ export default function TravelPill({ travel }) {
     function onRenameClick(e) {
         e.stopPropagation();
         setIsRenaming(true);
+        setAnchorEl(null);
     }
 
     const renameTextInput = <input type="text" autoFocus={true} onKeyDown={onKeyDownRename} onBlur={() => setIsRenaming(false)}></input>;
+    // 이름 변경 끝
 
-    // 새 Journey 생성을 위해 사용자가 맵을 클릭하도록 안내
+    // Travel 사이드 메뉴 시작
     function onNewJourneyClick() {
+        setAnchorEl(null);
         toast((t) => (<span>
             어디를 여행하셨나요?
             지도를 클릭해서 Journey를 추가해요.
@@ -94,38 +138,57 @@ export default function TravelPill({ travel }) {
     }
 
 
-    const iconAndTitle = <>
-        {isSelected ? <FiChevronDown /> : <FiChevronRight />}
-        <div>{travel.title}</div>
-    </>;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        event.preventDefault();
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    // Travel 사이드 메뉴 끝
+
+    const iconAndTitle =
+        <div>
+            {travel.title}
+            <IconButton
+                aria-label="more"
+                id="long-button"
+                aria-controls={open ? 'long-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+            >
+                <MoreVertIcon/>
+            </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                id="long-menu"
+                open={open}
+                MenuListProps={{
+                    'aria-labelledby': 'long-button',
+                }}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={onRenameClick}>이름변경</MenuItem>
+                <MenuItem onClick={onDeleteClick}>삭제</MenuItem>
+                <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>
+            </Menu>
+        </div>;
 
     return (
-        <li className="mb-2 d-grid space-between">
+        <>
             {/* Travel 버튼 */}
-            <ButtonGroup>
-                <img src={HamburgerIcon}/>
-                <Button onClick={onFoldingClick} >
-                    <Stack direction="horizontal" className='me-auto'>
-                        {isRenaming ? renameTextInput : iconAndTitle}
-                    </Stack>
-                </Button>
-
-                <DropdownButton as={ButtonGroup} className='e-caret-hide hide-after' title={<BsThreeDots />}>
-                    <Dropdown.Item onClick={onRenameClick}>이름 변경</Dropdown.Item>
-                    <Dropdown.Item onClick={onDeleteClick}>삭제</Dropdown.Item>
-                    <Dropdown.Item onClick={onNewJourneyClick}>Journey 생성</Dropdown.Item>
-                </DropdownButton>
-            </ButtonGroup>
-
-
-            {/* Travel 목록 */}
-            {
-                isSelected &&
-                <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <Accordion>
+                <AccordionSummary>
+                    {isRenaming ? renameTextInput : iconAndTitle}
+                </AccordionSummary>
+                <AccordionDetails>
                     {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
-                </ul>
-            }
-        </li>
+                </AccordionDetails>
+            </Accordion>
+        </>
     )
 }
 

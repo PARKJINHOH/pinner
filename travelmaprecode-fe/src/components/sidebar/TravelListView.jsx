@@ -7,6 +7,8 @@ import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {Fab} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 
 export default function TravelListView() {
@@ -43,6 +45,70 @@ export default function TravelListView() {
 
     return (
         <ul id='sidebar-list-div' className="flex-column mb-auto list-unstyled ps-0">
+            {
+                isLoggedIn ?
+                    <>
+                        <Fab variant="extended" className='mb-3 mx-5' size="medium" color="primary" aria-label="add" onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
+                            <AddIcon />
+                            새로운 여행
+                        </Fab>
+                        {
+                            isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)} />
+                        }
+
+                        {
+                            travelData ?
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="ROOT">
+                                        {provided => (
+                                            <div className="goals-list-wrap" {...provided.droppableProps} ref={provided.innerRef}>
+                                                {
+                                                    travelData.map((t) => {
+                                                        return (
+                                                            <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey}>
+                                                                {
+                                                                    provided => (
+                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                                            <TravelPill draggable="true" key={t.id} travel={t} />
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            </Draggable>
+                                                        )
+                                                    })
+                                                }
+                                                {provided.placeholder}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                                :
+                                <strong className='text-center fw-bold text-secondary'>
+                                    Add your first travel.
+                                </strong>
+                        }
+                    </>
+                    :
+                    <strong className='text-center fw-bold text-secondary'>
+                        Join us and start your travel ✈
+                    </strong>
+            }
+        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*<ul id='sidebar-list-div' className="flex-column mb-auto list-unstyled ps-0">
             {
                 isLoggedIn ?
                     <>
@@ -90,6 +156,6 @@ export default function TravelListView() {
                         Join us and start your travel ✈
                     </strong>
             }
-        </ul>
+        </ul>*/
     )
 }
