@@ -1,5 +1,5 @@
-import { GoogleMap, LoadScript, Marker, Polyline } from '@react-google-maps/api';
-import React from 'react';
+import { GoogleMap, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import React, { useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -17,7 +17,7 @@ export default function BasePage() {
         height: '100vh',
     };
 
-    const gMap = useRecoilValue(googleMapState);
+    const [gMap, setGMap] = useRecoilState(googleMapState);
 
 
     const mapOptions = {
@@ -34,6 +34,134 @@ export default function BasePage() {
      */
     const selectedTravel = useRecoilValue(selectedTravelState);
 
+
+    // 검색창
+    const placeRef = useRef(null);
+
+    /**
+    * @typedef {Object} Place
+    * @type Object
+    *
+    * @property {string} formatted_address
+    * @property {Geometry} geometry
+    * @property {string} name
+    **/
+
+    /**
+    * @typedef {Object} Geometry
+    * @type Object
+    *
+    * @property {Location} location
+    * @property {Viewport} viewport
+    **/
+
+    /**
+    * @typedef {Object} Location
+    * @type Object
+    *
+    **/
+
+    /**
+    * @typedef {Object} Viewport
+    * @type Object
+    *
+    * @property {Ua} Ua
+    * @property {Ia} Ia
+    **/
+
+    /**
+    * @typedef {Object} Ua
+    * @type Object
+    *
+    * @property {number} lo
+    * @property {number} hi
+    **/
+
+    /**
+    * @typedef {Object} Ia
+    * @type Object
+    *
+    * @property {number} lo
+    * @property {number} hi
+    **/
+
+
+    /**
+     * 주어진 Viewport의 중간 좌표를 구한다.
+     * @param {Viewport} viewport
+     */
+    function middleOfViewport(viewport) {
+        return {
+            "ua": (viewport.Ua.lo + viewport.Ua.hi) / 2,
+            "ia": (viewport.Ia.lo + viewport.Ia.hi) / 2,
+        };
+    }
+
+    /**
+     * 사용자가 검색을 시도하면 호출되는 함수
+     *
+     * 알파카월드를 검색했을때의 응답은 아래와 같다.
+     *
+     * ```json
+     * {
+     *     "formatted_address": "대한민국 강원도 홍천군 화촌면 풍천리 310",
+     *     "geometry": {
+     *       "location": {},
+     *       "viewport": {
+     *         "Ua": {
+     *           "lo": 37.82656461970851,
+     *           "hi": 37.82926258029151
+     *         },
+     *         "Ia": {
+     *           "lo": 127.8817504197085,
+     *           "hi": 127.8844483802915
+     *         }
+     *       }
+     *     },
+     *     "name": "알파카월드",
+     *     "plus_code": {
+     *       "compound_code": "RVHM+56 대한민국 강원도 춘천시",
+     *       "global_code": "8Q99RVHM+56"
+     *     },
+     *     "vicinity": "홍천군 화촌면 풍천리 310",
+     * }
+     * ```
+     *
+     * 카파도키아의 결과는 아래와 같다.
+     *
+     * ```json
+     * {
+     *     "formatted_address": "터키 카파도키아",
+     *     "geometry": {
+     *       "location": {},
+     *       "viewport": {
+     *         "Ua": {
+     *           "lo": 37.3665329,
+     *           "hi": 39.3872799
+     *         },
+     *         "Ia": {
+     *           "lo": 33.1742381,
+     *           "hi": 36.9598169
+     *         }
+     *       }
+     *     },
+     *     "name": "카파도키아",
+     * }
+     * ```
+     */
+    function onPlacesChanged() {
+        /**
+         * @type {Place[]}
+         */
+        const places = placeRef.current.getPlaces();
+        if (places == undefined || places.length == 0) return;
+        const place = places[0];
+
+
+        console.log(place);
+        const ua_ia = middleOfViewport(place.geometry.viewport);
+        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ia } })
+    }
 
     // Drawing Markers and Lines
     function drawMarkers(selectedTravel) {
@@ -62,6 +190,7 @@ export default function BasePage() {
             }
 
             <LoadScript
+                libraries={['places']}
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             >
                 {/* https://react-google-maps-api-docs.netlify.app/ */}
@@ -102,6 +231,11 @@ export default function BasePage() {
                         }
                     }}
                 >
+                    <SearchBar
+                        onLoadPlaces={(place) => placeRef.current = place}
+                        onPlacesChanged={onPlacesChanged}
+                    ></SearchBar>
+
                     {selectedTravel && drawMarkers(selectedTravel)}
                     {selectedTravel && drawLine(selectedTravel)}
                 </GoogleMap>
@@ -109,4 +243,31 @@ export default function BasePage() {
             </LoadScript>
         </div>
     );
+}
+
+function SearchBar(params) {
+    return <StandaloneSearchBox
+        onLoad={params.onLoadPlaces}
+        onPlacesChanged={params.onPlacesChanged}
+    >
+        <input
+            type="text"
+            placeholder="Customized your placeholder"
+            style={{
+                boxSizing: `border-box`,
+                border: `1px solid transparent`,
+                width: `240px`,
+                height: `32px`,
+                padding: `0 12px`,
+                borderRadius: `3px`,
+                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                fontSize: `14px`,
+                outline: `none`,
+                textOverflow: `ellipses`,
+                position: "absolute",
+                left: "50%",
+                marginLeft: "-120px"
+            }}
+        />
+    </StandaloneSearchBox>
 }
