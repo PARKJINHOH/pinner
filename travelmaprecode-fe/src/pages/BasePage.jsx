@@ -34,6 +34,22 @@ export default function BasePage() {
      */
     const selectedTravel = useRecoilValue(selectedTravelState);
 
+
+    // Drawing Markers and Lines
+    function drawMarkers(selectedTravel) {
+        return selectedTravel.journeys.map((journey) =>
+            <Marker
+                position={journey.geoLocationDto}
+                key={journey.id}
+                onClick={() => { }}
+            />
+        );
+    }
+
+    function drawLine(selectedTravel) {
+        return <Polyline path={selectedTravel.journeys.map((journey) => journey.geoLocationDto)} />;
+    }
+
     return (
         <div>
             <Toaster />
@@ -93,15 +109,4 @@ export default function BasePage() {
             </LoadScript>
         </div>
     );
-}
-
-function drawMarkers(selectedTravel) {
-    return selectedTravel.journeys.map((journey, index) => {
-        return <Marker position={journey.geoLocationDto} key={journey.id} onClick={() => { }} />;
-    });
-}
-
-
-function drawLine(selectedTravel) {
-    return <Polyline path={selectedTravel.journeys.map((journey, index) => journey.geoLocationDto)} />;
 }
