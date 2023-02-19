@@ -7,6 +7,8 @@ import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {Fab} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 
 export default function TravelListView() {
@@ -17,7 +19,10 @@ export default function TravelListView() {
     const [isEditingNewTravel, setIsEditingNewTravel] = useState(false);
 
     const onDragEnd = (result) => {
-
+        if (!result.destination) {
+            // 1개만 있을 때 옮기면 생기는 오류 방지
+            return;
+        }
         const sourceIndex = result.source.index;
         const targetIndex = result.destination.index;
         const workValue = travelData.slice();
@@ -43,9 +48,10 @@ export default function TravelListView() {
             {
                 isLoggedIn ?
                     <>
-                        <Button className='mb-3' onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
+                        <Fab variant="extended" className='mb-3 mx-5' size="medium" color="primary" aria-label="add" onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
+                            <AddIcon />
                             새로운 여행
-                        </Button>
+                        </Fab>
                         {
                             isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)} />
                         }

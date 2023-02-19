@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { useAPIv1 } from '../../apis/apiv1';
 import { travelState } from '../../states/travel';
+import {TextField} from "@mui/material";
 
 export default function NewTravelPill({ onCancle }) {
     const [title, setTitle] = useState("");
@@ -32,6 +33,24 @@ export default function NewTravelPill({ onCancle }) {
     }
 
     return (
-        <input type="text" className='mb-2' autoFocus={true} onChange={e => setTitle(e.target.value)} value={title} onKeyDown={onKeyDownRename} onBlur={onCancle}></input>
+        <TextField
+            sx={{
+                mx: 'auto',
+                p: 1,
+                m: 1,
+                textAlign: 'center',
+                fontSize: '0.875rem',
+            }}
+            inputProps={{maxLength: 10}}
+            className='mx-3'
+            variant="outlined"
+            label="여행제목을 적어주세요(10자)"
+            type="text"
+            autoFocus={true}
+            onChange={e => setTitle(e.target.value)}
+            value={title}
+            onKeyDown={onKeyDownRename}
+            onBlur={onCancle}
+        />
     )
 }
