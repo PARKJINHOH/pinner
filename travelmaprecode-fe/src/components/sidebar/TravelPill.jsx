@@ -14,6 +14,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
 export default function TravelPill({ travel }) {
 
@@ -140,8 +141,21 @@ export default function TravelPill({ travel }) {
         </div>;
 
     return (
-        <MuiAccordion>
-            <MuiAccordionSummary>
+        <MuiAccordion
+            sx={{
+                border: '1px solid gray' // border 스타일 지정
+            }}>
+            <MuiAccordionSummary
+                sx={{
+                    backgroundColor: 'rgba(255, 255, 255, .05)' // 배경색 지정
+                }}
+                expandIcon={
+                    <ArrowForwardIosSharpIcon
+                        sx={{ fontSize: '0.9rem',
+                            transform: 'rotate(90deg)' }}
+                    />
+                }
+            >
                 {isRenaming ? renameTextInput : iconAndTitle}
             </MuiAccordionSummary>
             <AccordionDetails>
