@@ -105,7 +105,6 @@ export default function TravelPill({ travel }) {
     };
 
     const handleClose = () => setAnchorEl(null);
-
     // Travel 사이드 메뉴 끝
 
     const iconAndTitle =
@@ -123,12 +122,6 @@ export default function TravelPill({ travel }) {
                 <MoreVertIcon />
             </IconButton>
 
-
-            {/* NOTE:
-
-                IconButton을 클릭하면 Menu에서 Mouse Click 이벤트가 방출됨.
-                버튼을 클릭하면 Arccorion이 확장/축소되는 현상이 있음.
-            */}
             <div onClick={(e) => e.stopPropagation()}>
                 <Menu
                     anchorEl={anchorEl}
@@ -147,14 +140,14 @@ export default function TravelPill({ travel }) {
         </div>;
 
     return (
-        < MuiAccordion >
+        <MuiAccordion>
             <MuiAccordionSummary>
                 {isRenaming ? renameTextInput : iconAndTitle}
             </MuiAccordionSummary>
             <AccordionDetails>
                 {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
             </AccordionDetails>
-        </MuiAccordion >
+        </MuiAccordion>
     )
 }
 
