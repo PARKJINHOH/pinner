@@ -193,6 +193,7 @@ export default function TravelPill({ travel }) {
 }
 
 function JourneyDatePill({ journeys }) {
+    var journeyCnt = 0;
 
     function drawDateTitle() {
         return <div className='ms-3'>
@@ -202,13 +203,18 @@ function JourneyDatePill({ journeys }) {
     }
 
     function drawJourneyPills() {
-        return journeys.map(journey => <JourneyPill key={journey.id} journey={journey} />)
+        journeyCnt++;
+        var lineYn = true;
+        if (journeyCnt == journeys.length) {
+            lineYn = false;
+        }
+        return journeys.map(journey => <JourneyPill key={journey.id} journey={journey} lineYn={lineYn} />);
     }
 
     return (
         <li>
             {drawDateTitle()}
-            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small ms-4">
+            <ul>
                 {drawJourneyPills()}
             </ul>
         </li>

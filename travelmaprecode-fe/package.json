@@ -12,6 +12,7 @@
     "@mantine/dropzone": "^5.4.1",
     "@mantine/hooks": "^5.4.1",
     "@mui/icons-material": "^5.11.0",
+    "@mui/lab": "^5.0.0-alpha.120",
     "@mui/material": "^5.11.4",
     "@react-google-maps/api": "^2.12.1",
     "@testing-library/jest-dom": "^5.16.4",
