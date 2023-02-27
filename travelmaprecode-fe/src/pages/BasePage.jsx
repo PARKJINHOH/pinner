@@ -174,8 +174,77 @@ export default function BasePage() {
         );
     }
 
+
+
+    /**
+     * Groups journeys by date
+     *
+     * @param {Journey[]} journeys
+     * @returns { Object.< string, Journey[] >}
+     */
+    function gruop_by_date(journeys) {
+        const dates = enumerate_date(journeys);
+
+        let groups = {};
+
+        for (const date of dates) {
+            groups[date] = journeys.filter(journey => journey.date === date);
+        }
+
+        return groups;
+    }
+
+    /**
+     * Enumerates unique dates in an array of journeys
+     *
+     * @param {Journey[]} journeys
+     * @returns {Set<string>}
+     */
+    function enumerate_date(journeys) {
+        return new Set(journeys.map(journey => journey.date));
+    }
+
+    /**
+     * Draws a line using Polyline component for each group of journeys by date
+     *
+     * @param {Travel} selectedTravel
+     * @param {Journey[]} selectedTravel.journeys
+     * @returns {Polyline[]}
+     */
     function drawLine(selectedTravel) {
-        return <Polyline path={selectedTravel.journeys.map((journey) => journey.geoLocationDto)} />;
+        const groups = gruop_by_date(selectedTravel.journeys);
+
+        // Note
+        //
+        // Only 5 colors are hard-coded.
+        // Need to find way to generate color or
+        // add enough number of colors.
+        const color_pallet = [
+            "#8CB369",
+            "#F4E285",
+            "#F4A259",
+            "#5B8E7D",
+            "#BC4B51",
+        ];
+
+        let lines = [];
+
+        for (const key in groups) {
+            if (Object.hasOwnProperty.call(groups, key)) {
+                const jouneyGroup = groups[key];
+                const color = color_pallet.pop();
+
+                lines.push(
+                    <Polyline
+                        key={key}
+                        path={jouneyGroup.map(journey => journey.geoLocationDto)}
+                        options={{ strokeColor: color }}
+                    />
+                );
+            }
+        }
+
+        return lines;
     }
 
     return (
