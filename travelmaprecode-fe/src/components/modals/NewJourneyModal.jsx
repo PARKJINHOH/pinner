@@ -1,18 +1,18 @@
 import { Image, SimpleGrid, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
 import PhotoAlbum from 'react-photo-album';
-import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
-import Tags from "@yaireo/tagify/dist/react.tagify" // React-wrapper file
-import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
+import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
 
 import { useAPIv1 } from '../../apis/apiv1';
-import {NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
+import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
 
-import './NewJourneyModal.css'
-import {travelState} from "../../states/travel";
+import { travelState } from "../../states/travel";
+import './NewJourneyModal.css';
 
 
 
@@ -65,6 +65,7 @@ function NewJourneyModal({ travelId }) {
 
     /**
      * @param {File} file
+     * @returns {String}
      */
     async function uploadImage(file) {
         const formData = new FormData();
@@ -81,7 +82,7 @@ function NewJourneyModal({ travelId }) {
     // Journey 데이터
     const [date, setDate] = useState(now);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
-    const resetNewLocationState =  useResetRecoilState(newLocationState);
+    const resetNewLocationState = useResetRecoilState(newLocationState);
     const [hashTags, setHashTags] = useState([]);
     const setTravels = useSetRecoilState(travelState);
 
