@@ -14,6 +14,7 @@ public class NewJourneyResponseDto {
     private int orderKey;
     private LocalDate date;
     private Set<String> hashtags;
+    private Set<String> photos;
     private GeoLocationDto geoLocationDto;
 
     public NewJourneyResponseDto(Journey journey) {
@@ -21,6 +22,7 @@ public class NewJourneyResponseDto {
         orderKey = journey.getOrderKey();
         date = journey.getDate();
         hashtags = journey.getHashtags();
+        photos = journey.getPhotos();
         geoLocationDto = new GeoLocationDto(journey.getGeoLocation().getLat(), journey.getGeoLocation().getLng(), journey.getGeoLocation().getName());
     }
 }

@@ -13,6 +13,7 @@ import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../sta
 
 import { travelState } from "../../states/travel";
 import './NewJourneyModal.css';
+import { toast } from 'react-hot-toast';
 
 
 
@@ -94,15 +95,23 @@ function NewJourneyModal({ travelId }) {
         event.preventDefault();
 
         // 사진 업로드
-        const photoIds = await Promise.all(photos.map(uploadImage));
+        let photoIds = [];
+        try {
+            photoIds = await Promise.all(photos.map(uploadImage));
+        } catch (err) {
+            console.error(`failed to upload photos: ${err}`);
+            toast.error("사진을 업로드 하지 못했어요.")
+            return;
+        }
 
+        // Journey 생성
         const journeyData = JSON.stringify({
             date,
             geoLocation: newLocation,
+            photos: photoIds,
             hashTags
         });
 
-        const userEmail = window.sessionStorage.getItem("email");
         await apiv1.post("/travel/" + travelId + "/journey", journeyData)
             .then((response) => {
                 if (response.status === 200) {

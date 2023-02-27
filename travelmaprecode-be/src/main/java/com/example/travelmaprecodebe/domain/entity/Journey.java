@@ -44,6 +44,12 @@ public class Journey extends AuditEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
+
+    @ElementCollection
+    @JoinColumn(name = "PHOTO")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<String> photos;
+
     public void addTravel(Travel travel) {
         if (this.travel != null) {
             this.travel.getJourneys().remove(this);
@@ -54,17 +60,19 @@ public class Journey extends AuditEntity {
     }
 
     @Builder
-    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags) {
-        this.orderKey = orderKey;
+    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags, Set<String> photos) {
         this.date = date;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
+        this.orderKey = orderKey;
+        this.photos = photos;
     }
 
-    public Journey( LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey) {
+    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey, Set<String> photos) {
         this.date = date;
-        this.hashtags = hashtags;
         this.geoLocation = geoLocation;
+        this.hashtags = hashtags;
         this.orderKey = orderKey;
+        this.photos = photos;
     }
 }
