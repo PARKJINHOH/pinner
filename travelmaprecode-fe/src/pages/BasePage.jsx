@@ -280,8 +280,8 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @param {Journey[]} journeys
      * @returns { Object.< string, Journey[] >}
      */
-    function gruop_by_date(journeys) {
-        const dates = enumerate_date(journeys);
+    function gruopByDate(journeys) {
+        const dates = enumerateDate(journeys);
 
         let groups = {};
 
@@ -298,7 +298,7 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @param {Journey[]} journeys
      * @returns {Set<string>}
      */
-    function enumerate_date(journeys) {
+    function enumerateDate(journeys) {
         return new Set(journeys.map(journey => journey.date));
     }
 
@@ -310,14 +310,14 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @returns {Polyline[]}
      */
     function drawLine(selectedTravel) {
-        const groups = gruop_by_date(selectedTravel.journeys);
+        const groups = gruopByDate(selectedTravel.journeys);
 
         // Note
         //
         // Only 5 colors are hard-coded.
         // Need to find way to generate color or
         // add enough number of colors.
-        const color_pallet = [
+        const colorPallet = [
             "#8CB369",
             "#F4E285",
             "#F4A259",
@@ -330,7 +330,7 @@ function DrawSelectedTravel({ selectedTravel }) {
         for (const key in groups) {
             if (Object.hasOwnProperty.call(groups, key)) {
                 const jouneyGroup = groups[key];
-                const color = color_pallet.pop();
+                const color = colorPallet.pop();
 
                 lines.push(
                     <Polyline
