@@ -163,7 +163,107 @@ export default function BasePage() {
         setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ia } })
     }
 
-    // Drawing Markers and Lines
+    return (
+        <div>
+            <Toaster />
+            <RegisterModal />
+            <LoginModal />
+            {
+                // selectedTravel가 undefinded인 상태가 있을 수 있음.
+                // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.
+                newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />
+            }
+
+            <LoadScript
+                libraries={['places']}
+                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+            >
+                {/* https://react-google-maps-api-docs.netlify.app/ */}
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    options={mapOptions}
+                    zoom={gMap.zoom}
+                    center={gMap.center}
+
+                    // 맵 클릭시 위치 정보 획득
+                    onClick={async (e) => {
+                        const loc = {
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng(),
+                            name: "",
+                        };
+
+                        console.log(e.latLng.toString());
+
+                        // Locating 모드일 때만 역 지오코딩 API 요청
+                        if (newJourneyStep === NewJourneyStep.LOCATING) {
+                            const resp = await apiv1.get(
+                                '/geocoding',
+                                { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
+                            );
+                            console.log(resp);
+
+
+                            if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
+                                toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
+                                setNewJourneyStep(NewJourneyStep.EDITTING);
+                            } else {
+                                loc.name = resp.data.name;
+                            }
+
+                            setNewLocationState(loc);
+                            setNewJourneyStep(NewJourneyStep.EDITTING);
+                        }
+                    }}
+                >
+                    <SearchBar
+                        onLoadPlaces={(place) => placeRef.current = place}
+                        onPlacesChanged={onPlacesChanged}
+                    ></SearchBar>
+
+                    {selectedTravel && <DrawSelectedTravel selectedTravel={selectedTravel} />}
+                </GoogleMap>
+
+            </LoadScript>
+        </div>
+    );
+}
+
+function SearchBar(params) {
+    return <StandaloneSearchBox
+        onLoad={params.onLoadPlaces}
+        onPlacesChanged={params.onPlacesChanged}
+    >
+        <input
+            type="text"
+            placeholder="Customized your placeholder"
+            style={{
+                boxSizing: `border-box`,
+                border: `1px solid transparent`,
+                width: `240px`,
+                height: `32px`,
+                padding: `0 12px`,
+                borderRadius: `3px`,
+                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                fontSize: `14px`,
+                outline: `none`,
+                textOverflow: `ellipses`,
+                position: "absolute",
+                left: "50%",
+                marginLeft: "-120px"
+            }}
+        />
+    </StandaloneSearchBox>
+}
+
+function DrawSelectedTravel({ selectedTravel }) {
+
+    /**
+     * Draws markers on map
+     *
+     * @param {Travel} selectedTravel
+     * @returns {Marker[]}
+     */
     function drawMarkers(selectedTravel) {
         return selectedTravel.journeys.map((journey) =>
             <Marker
@@ -173,8 +273,6 @@ export default function BasePage() {
             />
         );
     }
-
-
 
     /**
      * Groups journeys by date
@@ -247,96 +345,8 @@ export default function BasePage() {
         return lines;
     }
 
-    return (
-        <div>
-            <Toaster />
-            <RegisterModal />
-            <LoginModal />
-            {
-                // selectedTravel가 undefinded인 상태가 있을 수 있음.
-                // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.
-                newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />
-            }
-
-            <LoadScript
-                libraries={['places']}
-                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-            >
-                {/* https://react-google-maps-api-docs.netlify.app/ */}
-                <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    options={mapOptions}
-                    zoom={gMap.zoom}
-                    center={gMap.center}
-
-                    // 맵 클릭시 위치 정보 획득
-                    onClick={async (e) => {
-                        const loc = {
-                            lat: e.latLng.lat(),
-                            lng: e.latLng.lng(),
-                            name: "",
-                        };
-
-                        console.log(e.latLng.toString());
-
-                        // Locating 모드일 때만 역 지오코딩 API 요청
-                        if (newJourneyStep === NewJourneyStep.LOCATING) {
-                            const resp = await apiv1.get(
-                                '/geocoding',
-                                { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
-                            );
-                            console.log(resp);
-
-
-                            if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
-                                toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
-                                setNewJourneyStep(NewJourneyStep.EDITTING);
-                            } else {
-                                loc.name = resp.data.name;
-                            }
-
-                            setNewLocationState(loc);
-                            setNewJourneyStep(NewJourneyStep.EDITTING);
-                        }
-                    }}
-                >
-                    <SearchBar
-                        onLoadPlaces={(place) => placeRef.current = place}
-                        onPlacesChanged={onPlacesChanged}
-                    ></SearchBar>
-
-                    {selectedTravel && drawMarkers(selectedTravel)}
-                    {selectedTravel && drawLine(selectedTravel)}
-                </GoogleMap>
-
-            </LoadScript>
-        </div>
-    );
-}
-
-function SearchBar(params) {
-    return <StandaloneSearchBox
-        onLoad={params.onLoadPlaces}
-        onPlacesChanged={params.onPlacesChanged}
-    >
-        <input
-            type="text"
-            placeholder="Customized your placeholder"
-            style={{
-                boxSizing: `border-box`,
-                border: `1px solid transparent`,
-                width: `240px`,
-                height: `32px`,
-                padding: `0 12px`,
-                borderRadius: `3px`,
-                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-                fontSize: `14px`,
-                outline: `none`,
-                textOverflow: `ellipses`,
-                position: "absolute",
-                left: "50%",
-                marginLeft: "-120px"
-            }}
-        />
-    </StandaloneSearchBox>
+    return <>
+        {drawMarkers(selectedTravel)}
+        {drawLine(selectedTravel)}
+    </>
 }
