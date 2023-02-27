@@ -2,8 +2,8 @@ import { atom, selector } from "recoil";
 
 
 /**
- * @typedef {{id: number}} Travel
- * @type {import("recoil").RecoilState<Travel[]>}
+ * @typedef {{id: number}} TravelState
+ * @type {import("recoil").RecoilState<TravelState[]>}
  */
 export const travelState = atom({
     key: 'travelState',
@@ -21,17 +21,17 @@ export const selectedTravelIdState = atom({
 });
 
 /**
- * @type {Travel | undefined}
+ * @type {TravelState | undefined}
  */
-export const selectedTravelState =  selector({
+export const selectedTravelState = selector({
     key: 'selectedTravelState',
     get: ({ get }) => {
         /**
          * @type {Selected}
          */
-        const selectedId =  get(selectedTravelIdState);
+        const selectedId = get(selectedTravelIdState);
         /**
-         * @type {Travel[]}
+         * @type {TravelState[]}
          */
         const travels = get(travelState);
 
