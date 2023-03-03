@@ -1,5 +1,5 @@
-import { GoogleMap, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
-import React, { useRef } from 'react';
+import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import React, { useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -262,15 +262,11 @@ function DrawSelectedTravel({ selectedTravel }) {
      * Draws markers on map
      *
      * @param {Travel} selectedTravel
-     * @returns {Marker[]}
+     * @returns {CustomMarker[]}
      */
     function drawMarkers(selectedTravel) {
         return selectedTravel.journeys.map((journey) =>
-            <Marker
-                position={journey.geoLocationDto}
-                key={journey.id}
-                onClick={() => { }}
-            />
+            <PhotoMarker key={journey.id} journey={journey} />
         );
     }
 
@@ -349,4 +345,36 @@ function DrawSelectedTravel({ selectedTravel }) {
         {drawMarkers(selectedTravel)}
         {drawLine(selectedTravel)}
     </>
+}
+
+/**
+ *
+ * @param {{"journey": Journey}} props
+ */
+function PhotoMarker(props) {
+    const { journey } = props;
+    const [isShow, _setShow] = useState(false);
+
+    const show = () => _setShow(true);
+    const hide = () => _setShow(false);
+
+    return <Marker
+        position={journey.geoLocationDto}
+        onClick={show}
+    >
+        {
+            isShow &&
+            <InfoWindow position={journey.geoLocationDto} onCloseClick={hide}>
+                <div>
+                    <h3>{journey.geoLocationDto.name}</h3>
+                    {journey.photos.map(img => InfoWindowImage(img))}
+                </div>
+            </InfoWindow>
+        }
+    </Marker>;
+}
+
+function InfoWindowImage(img) {
+    // TODO: fix style
+    return <img src={`/photo/${img}`} alt={img} width={100} />;
 }
