@@ -21,8 +21,8 @@ public class PhotoController {
 
     @PostMapping("/photo")
     public ResponseEntity<?> postPhoto(
-            @RequestParam("photo") MultipartFile file
-    ){
+        @RequestParam("photo") MultipartFile file
+    ) {
         try {
             // 이미 있는 이미지가 올라와도 충돌시키지 않는다.
             final String photoLink = photoService.save(file.getInputStream());
@@ -31,24 +31,26 @@ public class PhotoController {
         } catch (IOException e) {
             log.error("failed to save photo" + e);
             return new ResponseEntity<>(
-                    new ResponseDto("invalidate image format. We only accept jpg and png."),
-                    HttpStatus.INTERNAL_SERVER_ERROR
+                new ResponseDto("invalidate image format. We only accept jpg and png."),
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
 
     @GetMapping("/photo/{id}")
     public ResponseEntity<?> getPhoto(
-            @PathVariable String id
+        @PathVariable String id
     ) {
         byte[] load = photoService.load(id);
+
         if (load == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity
-                    .ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(load);
+                .ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .headers(CommonHeader::withImmutableCache)
+                .body(load);
         }
     }
 }
