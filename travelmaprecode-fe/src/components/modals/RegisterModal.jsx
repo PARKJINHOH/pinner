@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Alert, Button, Container, Form, Modal, Stack } from 'react-bootstrap';
+import { Button, Container, Form, Modal, Stack } from 'react-bootstrap';
 
 import { useRecoilState } from 'recoil';
 import { postRegister } from '../../apis/auth';
 
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
+import {errorAlert, infoAlert} from "../alert/AlertComponent";
 
 function RegisterModal() {
     const [email, setEmail] = useState('');
@@ -60,7 +61,7 @@ function RegisterModal() {
         postRegister(data)
             .then((response) => {
                 if (response.status === 201) {
-                    alert(response.data.message);
+                    infoAlert(response.data.message);
 
                     setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
                     setErrorMessage("");
@@ -109,7 +110,7 @@ function RegisterModal() {
                             </Form.Group>
 
                             {
-                                errorMessage && <Alert variant='danger'> {errorMessage} </Alert>
+                                errorMessage && errorAlert(errorMessage)
                             }
 
                             <Button onClick={onSubmit} type="button" className="mb-3">

@@ -6,10 +6,12 @@ import { postLogin } from '../../apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 import { useDoLogin } from '../../states/traveler';
+import {errorAlert} from "../alert/AlertComponent";
 
 function LoginModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
 
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
@@ -25,12 +27,14 @@ function LoginModal() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        if (email == null) {
-            alert('이메일 확인해주세요.');
+        if (email == null || email == '' || email == undefined) {
+            setErrorMessage('이메일을 확인해주세요.');
+            return;
         }
 
-        if (password == null) {
-            alert('비밀번호 확인해주세요.');
+        if (password == null || password == '' || password == undefined) {
+            setErrorMessage('비밀번호 확인해주세요.');
+            return;
         }
 
         const data = JSON.stringify({
@@ -53,7 +57,7 @@ function LoginModal() {
             })
             .catch((error) => {
                 console.log(error)
-                alert(error.response.data.message);
+                errorAlert(error.response.data.message);
             });
     };
 
@@ -81,6 +85,9 @@ function LoginModal() {
                             <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
                         </Form.Group>
                         <br />
+                        {
+                            errorMessage && errorAlert(errorMessage)
+                        }
                         <Button onClick={onSubmit} variant="info" type="button" className="my-3">
                             로그인
                         </Button>
