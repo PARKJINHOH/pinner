@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Modal } from 'react-bootstrap';
+import { Container, Form, Modal } from 'react-bootstrap';
+import Button from '@mui/material/Button';
 
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { postLogin } from '../../apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
@@ -88,7 +89,7 @@ function LoginModal() {
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
-                        <Button onClick={onSubmit} variant="info" type="button" className="my-3">
+                        <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
                             로그인
                         </Button>
                     </Form>

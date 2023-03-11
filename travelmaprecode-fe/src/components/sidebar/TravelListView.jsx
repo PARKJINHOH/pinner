@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button } from 'react-bootstrap'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { travelState } from '../../states/travel'
 import { isLoggedInState } from '../../states/traveler'
