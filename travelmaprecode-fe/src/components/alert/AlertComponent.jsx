@@ -26,4 +26,4 @@ function successAlert(str) {
     return <AlertComponent type="info" message={str}/>;
 }
 
-export {errorAlert, warningAlert};
+export {errorAlert, warningAlert, infoAlert, successAlert};
