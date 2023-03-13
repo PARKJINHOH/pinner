@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Container, Form, Modal, Stack } from 'react-bootstrap';
+import React, {useState} from 'react';
+import {Container, Form, Modal} from 'react-bootstrap';
 
-import { useRecoilState } from 'recoil';
-import { postRegister } from '../../apis/auth';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
-import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
+import {useRecoilState} from 'recoil';
+import {postRegister} from '../../apis/auth';
+
+import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 import {errorAlert, infoAlert} from "../alert/AlertComponent";
 
 function RegisterModal() {
@@ -88,32 +91,30 @@ function RegisterModal() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Stack className='gap-3'>
+                        <Stack spacing={3}>
                             <Form.Group>
                                 <Form.Label>닉네임</Form.Label>
-                                <Form.Control value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="John Doe" />
+                                <Form.Control value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="John Doe"/>
                             </Form.Group>
 
                             <Form.Group>
                                 <Form.Label>이메일</Form.Label>
-                                <Form.Control value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com" />
+                                <Form.Control value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
                             </Form.Group>
 
                             <Form.Group>
                                 <Form.Label>비밀번호</Form.Label>
-                                <Form.Control value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="********" />
+                                <Form.Control value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="********"/>
                             </Form.Group>
 
                             <Form.Group>
                                 <Form.Label>비밀번호 확인</Form.Label>
-                                <Form.Control value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password" placeholder="********" />
+                                <Form.Control value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password" placeholder="********"/>
                             </Form.Group>
-
                             {
                                 errorMessage && errorAlert(errorMessage)
                             }
-
-                            <Button onClick={onSubmit} type="button" className="mb-3">
+                            <Button onClick={onSubmit} variant="contained">
                                 회원가입
                             </Button>
                         </Stack>
