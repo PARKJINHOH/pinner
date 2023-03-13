@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useAPIv1 } from '../../apis/apiv1';
-import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
-import { travelState } from '../../states/travel';
-import { isLoggedInState, travelerState, useDoLogout } from '../../states/traveler';
+import React, {useEffect} from 'react';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {useAPIv1} from '../../apis/apiv1';
+import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
+import {travelState} from '../../states/travel';
+import {isLoggedInState, travelerState, useDoLogout} from '../../states/traveler';
 import './TravelerPill.css';
+
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
+import {Button, Stack} from "@mui/material";
+import {Avatar} from "@mantine/core";
 
 export default function TravelerPill() {
 
@@ -39,26 +44,38 @@ export default function TravelerPill() {
     }, [traveler]);
 
 
-
     return (
-        <Dropdown>
-            <hr></hr>
-            <Dropdown.Toggle id='traveler-dropdown-toggle' className="align-items-center e-caret-hide">
-                {isLoggedIn && <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle me-2" />}
-                <strong>{isLoggedIn ? traveler.email : "시작하기"} </strong>
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
+        <div>
+            <hr/>
+            <Stack direction="row" spacing={1}
+                   sx={{marginBottom: 2}}
+                   justifyContent="center"
+            >
                 {
                     isLoggedIn ?
-                        <Dropdown.Item onClick={doLogout} > 로그아웃</Dropdown.Item>
+                        <>
+                            <Button variant="outlined" startIcon={<Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src="https://github.com/mdo.png" />}
+                                    onClick={doLogout}>
+                                {traveler.email}
+                            </Button>
+                            <Button variant="outlined" startIcon={<LogoutIcon/>}
+                                    onClick={doLogout}>
+                                로그아웃
+                            </Button>
+                        </>
                         :
                         <>
-                            <Dropdown.Item onClick={() => setModalVisibility(AuthModalVisibility.SHOW_LOGIN)}>로그인</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setModalVisibility(AuthModalVisibility.SHOW_REGISTER)}>회원가입</Dropdown.Item>
+                            <Button variant="outlined" startIcon={<SensorOccupiedIcon/>}
+                                    onClick={() => setModalVisibility(AuthModalVisibility.SHOW_LOGIN)}>
+                                로그인
+                            </Button>
+                            <Button variant="outlined" startIcon={<LoginIcon/>}
+                                    onClick={() => setModalVisibility(AuthModalVisibility.SHOW_REGISTER)}>
+                                회원가입
+                            </Button>
                         </>
                 }
-            </Dropdown.Menu>
-        </Dropdown >
+            </Stack>
+        </div>
     );
 }
