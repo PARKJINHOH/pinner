@@ -54,8 +54,7 @@ export default function TravelerPill() {
                 {
                     isLoggedIn ?
                         <>
-                            <Button variant="outlined" startIcon={<Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src="https://github.com/mdo.png" />}
-                                    onClick={doLogout}>
+                            <Button variant="outlined" startIcon={<Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src="https://github.com/mdo.png" />}>
                                 {traveler.email}
                             </Button>
                             <Button variant="outlined" startIcon={<LogoutIcon/>}

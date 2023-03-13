@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Container, Form, Modal } from 'react-bootstrap';
 import Button from '@mui/material/Button';
 
 import { useRecoilState } from 'recoil';
@@ -8,6 +7,8 @@ import { AuthModalVisibility, authModalVisibilityState } from '../../states/moda
 
 import { useDoLogin } from '../../states/traveler';
 import {errorAlert} from "../alert/AlertComponent";
+import {Box, Modal, Stack, TextField, Typography} from "@mui/material";
+import {Divider} from "@mantine/core";
 
 function LoginModal() {
     const [email, setEmail] = useState('');
@@ -62,40 +63,44 @@ function LoginModal() {
             });
     };
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        bgcolor: 'background.paper',
+        border: '3px solid #000',
+        boxShadow: 48,
+        p: 3,
+    };
+
     return (
-        <Modal
-            show={modalVisibility === AuthModalVisibility.SHOW_LOGIN}
-            onHide={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Container>
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">로그인</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group>
-                            <Form.Label>이메일</Form.Label>
-                            <Form.Control value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group>
-                            <Form.Label>비밀번호</Form.Label>
-                            <Form.Control value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
-                        </Form.Group>
-                        <br />
+        <div>
+            <Modal
+                open={modalVisibility === AuthModalVisibility.SHOW_LOGIN}
+                onClose={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h5" gutterBottom>
+                        로그인
+                    </Typography>
+                    <Divider sx={{marginBottom: 20}}/>
+                    <Stack spacing={3}>
+                        <TextField label="이메일" variant="outlined"
+                                   value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
+                        <TextField label="비밀번호" variant="outlined"
+                                   value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
                         <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
                             로그인
                         </Button>
-                    </Form>
-                </Modal.Body>
-            </Container>
-        </Modal>
+                    </Stack>
+                </Box>
+            </Modal>
+        </div>
     );
 }
 
