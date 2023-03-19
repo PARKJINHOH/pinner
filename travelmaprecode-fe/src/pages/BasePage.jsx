@@ -18,7 +18,7 @@ export default function BasePage() {
     };
 
     const [gMap, setGMap] = useRecoilState(googleMapState);
-
+    const [ libraries ] = useState(['places']);
 
     const mapOptions = {
         fullscreenControl: false,
@@ -175,7 +175,7 @@ export default function BasePage() {
             }
 
             <LoadScript
-                libraries={['places']}
+                libraries={libraries}
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
             >
                 {/* https://react-google-maps-api-docs.netlify.app/ */}
