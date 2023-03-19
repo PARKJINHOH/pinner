@@ -1,20 +1,35 @@
-import { Image, SimpleGrid, Text } from '@mantine/core';
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Container, Form, Modal, Row, Stack } from 'react-bootstrap';
-import PhotoAlbum from 'react-photo-album';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
-
-import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
-import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
-
-import { useAPIv1 } from '../../apis/apiv1';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
-
-import { travelState } from "../../states/travel";
+/*React Import*/
+import React, {useCallback, useEffect, useState} from 'react';
+import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
+import { NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
+import {travelState} from "../../states/travel";
 import './NewJourneyModal.css';
-import { toast } from 'react-hot-toast';
+import {toast} from 'react-hot-toast';
 
+/*API Import*/
+import {useAPIv1} from '../../apis/apiv1';
+
+/*MUI Import*/
+import Grid from '@mui/material/Unstable_Grid2';
+import {Paper, Box,  ImageList, ImageListItem } from "@mui/material";
+import Button from '@mui/joy/Button';
+
+import dayjs from 'dayjs';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
+import {LocalizationProvider} from '@mui/x-date-pickers';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import Input from '@mui/joy/Input';
+import {Add} from "@mui/icons-material";
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import {pink} from "@mui/material/colors";
+
+/*ETC Import*/
+import {Dropzone, IMAGE_MIME_TYPE} from '@mantine/dropzone';
+import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
+import "@yaireo/tagify/dist/tagify.css";
 
 
 /**
@@ -26,19 +41,6 @@ import { toast } from 'react-hot-toast';
  * @returns
  */
 function NewJourneyModal({ travelId }) {
-    // Utils
-    /**
-     * Date를 yyyy-mm-dd 형태의 문자열로 변환
-     *
-     * @param {Date} date
-     * @returns string
-     */
-    function formatDate(date) {
-        return date.toISOString().split('T')[0];
-    }
-
-    const now = formatDate(new Date());
-
 
     // 훅 및 상태
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
@@ -55,10 +57,23 @@ function NewJourneyModal({ travelId }) {
         async function toPreview(file, index) {
             const tmpPhotoUrl = URL.createObjectURL(file);
 
-            return <div key={tmpPhotoUrl} className="photoContainer">
-                <Button variant="danger" size="sm" onClick={() => removePhoto(index)}>삭제</Button>
-                <Image src={tmpPhotoUrl} />
-            </div>;
+            return (
+                <ImageListItem key={tmpPhotoUrl}>
+                    <IconButton
+                        onClick={() => removePhoto(index)}
+                        sx={{p: 1}}
+                        style={{position: 'absolute', top: 0, left: 0}}>
+                        <HighlightOffIcon
+                            sx={{ color: pink[500] }}
+                        />
+                    </IconButton>
+                    <img
+                        src={tmpPhotoUrl}
+                        srcSet={tmpPhotoUrl}
+                        loading="lazy"
+                        alt="tmpImg"/>
+                </ImageListItem>
+            );
         }
 
         Promise.all(photos.map(toPreview)).then(setPreviews);
@@ -81,7 +96,7 @@ function NewJourneyModal({ travelId }) {
     }
 
     // Journey 데이터
-    const [date, setDate] = useState(now);
+    const [date, setDate] = useState(dayjs(new Date()));
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
     const resetNewLocationState = useResetRecoilState(newLocationState);
     const [hashTags, setHashTags] = useState([]);
@@ -106,10 +121,10 @@ function NewJourneyModal({ travelId }) {
 
         // Journey 생성
         const journeyData = JSON.stringify({
-            date,
+            date : dayjs(date).format('YYYY-MM-DD'),
             geoLocation: newLocation,
             photos: photoIds,
-            hashTags
+            hashTags: hashTags
         });
 
         await apiv1.post("/travel/" + travelId + "/journey", journeyData)
@@ -142,86 +157,109 @@ function NewJourneyModal({ travelId }) {
         setHashTags(map);
     }, []);
 
+    const paperStyle = {
+        position: 'fixed',
+        top: 'auto',
+        right: '5px',
+        bottom: '5px',
+        transform: 'translate(-0%, -0%)',
+        width: 'calc(100vw - 290px)', // viewport 가로축 크기 - 40px (padding)
+        height: '320px',
+        padding: '0px',
+        zIndex: 9999, // 우선순위 (높을수록 최상단)
+    };
+
+    const boxStyle1 = {
+        borderRight: '1px dashed grey',
+        height: '320px',
+        display: 'grid',
+        alignItems: 'center',
+        justifyContent: 'center',
+    };
+
+    const boxStyle2 = {
+        borderRight: '1px dashed grey',
+        height: '320px',
+        paddingTop: '20px',
+    };
+
+    const boxStyle3 = {
+        height: '320px',
+        width: '95%',
+        paddingTop: '20px',
+    };
+
+
     return (
-        <Modal
-            show={newJourneyStep === NewJourneyStep.EDITTING}
-            onHide={onHideModal}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            backdrop="static"
-            centered
-        >
-            <Container>
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">새로운 여행</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Stack gap={5}>
-                        {/* Location Name */}
-                        <div>
-                            <h3>위치</h3>
-                            <Row>
-                                <Col xs={10}>
-                                    <Form.Control type="text" className='md-3' value={newLocation.name} onChange={e => setNewLocation({ ...newLocation, name: e.target.value })} />
-                                </Col>
-                                <Col>
-                                    <Button onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}>위치 선택</Button>
-                                </Col>
-                            </Row>
-                        </div>
-
-
-                        {/* Date Picker */}
-                        <div>
-                            <h3>날짜</h3>
-                            <input type="date" max={now} value={date} onChange={e => {
-                                const dateStr = e.target.value;
-                                setDate(dateStr);
-                            }} />
-                        </div>
-
-
-                        {/* Photos */}
-                        <div>
-                            <h3>사진</h3>
-                            <PhotoAlbum layout="rows" photos={addPhotos} />
-                            <SimpleGrid
-                                cols={4}
-                                breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
-                            >
-                                {[
-                                    ...previews,
-                                    <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                        <Text>사진 추가</Text>
-                                    </Dropzone>
-                                ]}
-                            </SimpleGrid>
-                        </div>
-
-
-                        {/* Hash tags */}
-                        <div>
-                            {/*https://github.com/yairEO/tagify*/}
-                            <h3>태그</h3>
-                            <Tags
-                                settings={{
-                                    maxTags: '5'
-                                }}
-                                onChange={onHashTagChange}
-                                placeholder='최대 5개'
-                            />
-                        </div>
-                    </Stack>
-
-
-                </Modal.Body>
-                {/* 저장/취소 */}
-                <Modal.Footer>
-                    <Button variant='outline-primary' onClick={onHideModal}>취소</Button>
-                    <Button variant='primary' onClick={onCreate}>저장</Button>
-                </Modal.Footer>
-            </Container>
-        </Modal>
+        <div>
+            {newJourneyStep === NewJourneyStep.EDITTING && (
+                <Paper sx={paperStyle}>
+                    <IconButton
+                        onClick={onHideModal} sx={{p: 1}}
+                        style={{position: 'absolute', top: 0, right: 0}}>
+                        <CloseIcon/>
+                    </IconButton>
+                    <Box sx={{flexGrow: 1}}>
+                        <Grid container spacing={3}>
+                            <Grid xs={2}>
+                                <Box sx={boxStyle1}>
+                                    <div>
+                                        {[
+                                            <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                                사진 추가
+                                            </Dropzone>
+                                        ]}
+                                    </div>
+                                    <div>
+                                        <Button variant="outlined" onClick={onHideModal}>취소</Button>
+                                        <Button variant="outlined" onClick={onCreate}>저장</Button>
+                                    </div>
+                                </Box>
+                            </Grid>
+                            <Grid xs={4}>
+                                <Box sx={boxStyle2}>
+                                    <div>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={["DatePicker"]}>
+                                                <DesktopDatePicker
+                                                    label="여행 날짜"
+                                                    value={date}
+                                                    format={"YYYY/MM/DD"}
+                                                    onChange={(newValue) => {setDate(newValue)}}
+                                                />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <Button variant="outlined" onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)} startDecorator={<Add/>}>위치 선택</Button>
+                                        <Input sx={{width : '90%'}}placeholder="Type in here…" variant="outlined" value={newLocation.name} onChange={e => setNewLocation({...newLocation, name: e.target.value})}/>
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <h5>태그</h5>
+                                        <Tags
+                                            settings={{
+                                                maxTags: '5'
+                                            }}
+                                            onChange={onHashTagChange}
+                                            placeholder='최대 5개'
+                                        />
+                                    </div>
+                                </Box>
+                            </Grid>
+                            <Grid xs>
+                                <Box sx={boxStyle3}>
+                                    <ImageList sx={{height: 300}} variant="masonry" cols={3}>
+                                        {[...previews]}
+                                    </ImageList>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Paper>
+            )}
+        </div>
     );
 }
 
