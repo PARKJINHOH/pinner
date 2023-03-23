@@ -1,33 +1,33 @@
 /*React Import*/
-import React, {useCallback, useEffect, useState} from 'react';
-import {useRecoilState, useResetRecoilState, useSetRecoilState} from 'recoil';
-import { NewJourneyStep, newJourneyStepState, newLocationState} from '../../states/modal';
-import {travelState} from "../../states/travel";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { NewJourneyStep, newJourneyStepState, newLocationState } from '../../states/modal';
+import { travelState } from "../../states/travel";
 import './NewJourneyModal.css';
-import {toast} from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 /*API Import*/
-import {useAPIv1} from '../../apis/apiv1';
+import { useAPIv1 } from '../../apis/apiv1';
 
 /*MUI Import*/
 import Grid from '@mui/material/Unstable_Grid2';
-import {Paper, Box,  ImageList, ImageListItem } from "@mui/material";
+import { Paper, Box, ImageList, ImageListItem, InputAdornment, OutlinedInput } from "@mui/material";
 import Button from '@mui/joy/Button';
 
 import dayjs from 'dayjs';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {DemoContainer} from '@mui/x-date-pickers/internals/demo';
-import {LocalizationProvider} from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Input from '@mui/joy/Input';
-import {Add} from "@mui/icons-material";
+import { Add, Place, Visibility, VisibilityOff } from "@mui/icons-material";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import {pink} from "@mui/material/colors";
+import { pink } from "@mui/material/colors";
 
 /*ETC Import*/
-import {Dropzone, IMAGE_MIME_TYPE} from '@mantine/dropzone';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css";
 
@@ -61,8 +61,8 @@ function NewJourneyModal({ travelId }) {
                 <ImageListItem key={tmpPhotoUrl}>
                     <IconButton
                         onClick={() => removePhoto(index)}
-                        sx={{p: 1}}
-                        style={{position: 'absolute', top: 0, left: 0}}>
+                        sx={{ p: 1 }}
+                        style={{ position: 'absolute', top: 0, left: 0 }}>
                         <HighlightOffIcon
                             sx={{ color: pink[500] }}
                         />
@@ -71,7 +71,7 @@ function NewJourneyModal({ travelId }) {
                         src={tmpPhotoUrl}
                         srcSet={tmpPhotoUrl}
                         loading="lazy"
-                        alt="tmpImg"/>
+                        alt="tmpImg" />
                 </ImageListItem>
             );
         }
@@ -121,7 +121,7 @@ function NewJourneyModal({ travelId }) {
 
         // Journey 생성
         const journeyData = JSON.stringify({
-            date : dayjs(date).format('YYYY-MM-DD'),
+            date: dayjs(date).format('YYYY-MM-DD'),
             geoLocation: newLocation,
             photos: photoIds,
             hashTags: hashTags
@@ -195,17 +195,17 @@ function NewJourneyModal({ travelId }) {
             {newJourneyStep === NewJourneyStep.EDITTING && (
                 <Paper sx={paperStyle}>
                     <IconButton
-                        onClick={onHideModal} sx={{p: 1}}
-                        style={{position: 'absolute', top: 0, right: 0}}>
-                        <CloseIcon/>
+                        onClick={onHideModal} sx={{ p: 1 }}
+                        style={{ position: 'absolute', top: 0, right: 0 }}>
+                        <CloseIcon />
                     </IconButton>
-                    <Box sx={{flexGrow: 1}}>
+                    <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={3}>
                             <Grid xs={2}>
                                 <Box sx={boxStyle1}>
                                     <div>
                                         {[
-                                            <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                            <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                 사진 추가
                                             </Dropzone>
                                         ]}
@@ -218,39 +218,50 @@ function NewJourneyModal({ travelId }) {
                             </Grid>
                             <Grid xs={4}>
                                 <Box sx={boxStyle2}>
-                                    <div>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DemoContainer components={["DatePicker"]}>
-                                                <DesktopDatePicker
-                                                    label="여행 날짜"
-                                                    value={date}
-                                                    format={"YYYY/MM/DD"}
-                                                    onChange={(newValue) => {setDate(newValue)}}
-                                                />
-                                            </DemoContainer>
-                                        </LocalizationProvider>
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <Button variant="outlined" onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)} startDecorator={<Add/>}>위치 선택</Button>
-                                        <Input sx={{width : '90%'}}placeholder="Type in here…" variant="outlined" value={newLocation.name} onChange={e => setNewLocation({...newLocation, name: e.target.value})}/>
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <h5>태그</h5>
-                                        <Tags
-                                            settings={{
-                                                maxTags: '5'
-                                            }}
-                                            onChange={onHashTagChange}
-                                            placeholder='최대 5개'
-                                        />
-                                    </div>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DemoContainer components={["DatePicker"]}>
+                                            <DesktopDatePicker
+                                                label="언제 여행하셨나요?"
+                                                value={date}
+                                                format={"YYYY/MM/DD"}
+                                                onChange={(newValue) => { setDate(newValue) }}
+                                            />
+                                        </DemoContainer>
+                                    </LocalizationProvider>
+
+                                    <br />
+
+                                    <OutlinedInput
+                                        sx={{ width: '90%' }}
+                                        placeholder="어디를 여행하셨나요?"
+                                        variant="outlined"
+                                        value={newLocation.name}
+                                        onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}
+                                                    edge="end"
+                                                >
+                                                    <Place />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+
+                                    <br />
+
+                                    <h5>태그</h5>
+                                    <Tags
+                                        settings={{ maxTags: '5' }}
+                                        onChange={onHashTagChange}
+                                        placeholder='최대 5개'
+                                    />
                                 </Box>
                             </Grid>
                             <Grid xs>
                                 <Box sx={boxStyle3}>
-                                    <ImageList sx={{height: 300}} variant="masonry" cols={3}>
+                                    <ImageList sx={{ height: 300 }} variant="masonry" cols={3}>
                                         {[...previews]}
                                     </ImageList>
                                 </Box>

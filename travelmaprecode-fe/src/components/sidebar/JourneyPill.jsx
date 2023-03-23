@@ -14,32 +14,28 @@ export default function JourneyPill({ journey, lineYn }) {
     const hashtags = journey.hashtags;
 
     return (
-        <div>
-            <Timeline
-                sx={{
-                    [`& .${timelineItemClasses.root}:before`]: {
-                        flex: 0,
-                        padding: 0,
-                    },
-                }}
-            >
-                <TimelineItem>
-                    <TimelineSeparator>
-                        <TimelineDot />
-                        {lineYn ? <TimelineConnector /> : ''}
-                    </TimelineSeparator>
-                    <TimelineContent>
-                        {geoString}
-                        <Typography
-                            component={'span'}
-                            sx={{width: 170}}>
-                            {hashtags.map(tag => (
-                                <Chip key={tag} size="small" label={`#${tag}`} />
-                            ))}
-                        </Typography>
-                    </TimelineContent>
-                </TimelineItem>
-            </Timeline>
-        </div>
+        <Timeline
+            sx={{
+                [`& .${timelineItemClasses.root}:before`]: {
+                    flex: 0,
+                    padding: 0,
+                },
+            }}
+        >
+            <TimelineItem>
+                <TimelineSeparator>
+                    <TimelineDot />
+                    {lineYn ? <TimelineConnector /> : ''}
+                </TimelineSeparator>
+                <TimelineContent>
+                    {geoString}
+                    <Typography component={'span'} sx={{ width: 170 }}>
+                        {
+                            hashtags.map(tag => <Chip key={tag} size="small" label={`#${tag}`} />)
+                        }
+                    </Typography>
+                </TimelineContent>
+            </TimelineItem>
+        </Timeline>
     )
 }

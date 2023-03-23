@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import { Box, Card } from '@mui/material';
 
 export default function TravelPill({ travel }) {
 
@@ -49,9 +50,9 @@ export default function TravelPill({ travel }) {
             const points = travel.journeys.map(j => j.geoLocationDto);
             const centerOfTravel = centerOfPoints(points);
 
-            console.log({radius});
+            console.log({ radius });
             console.log(gMap);
-            if(isNaN(centerOfTravel.lat) && isNaN(centerOfTravel.lng)){
+            if (isNaN(centerOfTravel.lat) && isNaN(centerOfTravel.lng)) {
                 return;
             }
 
@@ -167,33 +168,38 @@ export default function TravelPill({ travel }) {
         </div>;
 
     return (
-        <MuiAccordion
-            sx={{
-                border: '1px solid gray' // border 스타일 지정
-            }}>
-            <MuiAccordionSummary
-                onClick={onFoldingClick}
+        <Box sx={{ margin: 1 }}>
+            <MuiAccordion
                 sx={{
-                    backgroundColor: 'rgba(255, 255, 255, .05)' // 배경색 지정
-                }}
-                expandIcon={
-                    <ArrowForwardIosSharpIcon
-                        sx={{ fontSize: '0.9rem',
-                            transform: 'rotate(90deg)' }}
-                    />
-                }
-            >
-                {isRenaming ? renameTextInput : iconAndTitle}
-            </MuiAccordionSummary>
-            <AccordionDetails>
-                {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
-            </AccordionDetails>
-        </MuiAccordion>
+                    border: '0.5px solid gray' // border 스타일 지정
+                }}>
+                <MuiAccordionSummary
+                    onClick={onFoldingClick}
+                    sx={{
+                        backgroundColor: 'rgba(255, 255, 255, .05)' // 배경색 지정
+                    }}
+                    expandIcon={
+                        <ArrowForwardIosSharpIcon
+                            sx={{
+                                fontSize: '0.9rem',
+                                transform: 'rotate(90deg)'
+                            }}
+                        />
+                    }
+                >
+                    {isRenaming ? renameTextInput : iconAndTitle}
+                </MuiAccordionSummary>
+                <AccordionDetails>
+                    {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
+                </AccordionDetails>
+            </MuiAccordion>
+        </Box>
+
     )
 }
 
 function JourneyDatePill({ journeys }) {
-    var journeyCnt = 0;
+    let journeyCnt = 0;
 
     function drawDateTitle() {
         return <div className='ms-3'>
@@ -204,8 +210,8 @@ function JourneyDatePill({ journeys }) {
 
     function drawJourneyPills() {
         journeyCnt++;
-        var lineYn = true;
-        if (journeyCnt == journeys.length) {
+        let lineYn = true;
+        if (journeyCnt === journeys.length) {
             lineYn = false;
         }
         return journeys.map(journey => <JourneyPill key={journey.id} journey={journey} lineYn={lineYn} />);

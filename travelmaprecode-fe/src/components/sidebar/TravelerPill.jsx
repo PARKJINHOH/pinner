@@ -1,16 +1,16 @@
-import React, {useEffect} from 'react';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
-import {useAPIv1} from '../../apis/apiv1';
-import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
-import {travelState} from '../../states/travel';
-import {isLoggedInState, travelerState, useDoLogout} from '../../states/traveler';
+import React, { useEffect } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAPIv1 } from '../../apis/apiv1';
+import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
+import { travelState } from '../../states/travel';
+import { isLoggedInState, travelerState, useDoLogout } from '../../states/traveler';
 import './TravelerPill.css';
 
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
-import {Button, Stack} from "@mui/material";
-import {Avatar} from "@mantine/core";
+import { Button, Stack } from "@mui/material";
+import { Avatar } from "@mantine/core";
 
 export default function TravelerPill() {
 
@@ -46,10 +46,10 @@ export default function TravelerPill() {
 
     return (
         <div>
-            <hr/>
+            <hr />
             <Stack direction="row" spacing={1}
-                   sx={{marginBottom: 2}}
-                   justifyContent="center"
+                sx={{ marginBottom: 2 }}
+                justifyContent="center"
             >
                 {
                     isLoggedIn ?
@@ -57,19 +57,19 @@ export default function TravelerPill() {
                             <Button variant="outlined" startIcon={<Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src="https://github.com/mdo.png" />}>
                                 {traveler.email}
                             </Button>
-                            <Button variant="outlined" startIcon={<LogoutIcon/>}
-                                    onClick={doLogout}>
+                            <Button variant="outlined" startIcon={<LogoutIcon />}
+                                onClick={doLogout}>
                                 로그아웃
                             </Button>
                         </>
                         :
                         <>
-                            <Button variant="outlined" startIcon={<SensorOccupiedIcon/>}
-                                    onClick={() => setModalVisibility(AuthModalVisibility.SHOW_LOGIN)}>
+                            <Button variant="outlined" startIcon={<SensorOccupiedIcon />}
+                                onClick={() => setModalVisibility(AuthModalVisibility.SHOW_LOGIN)}>
                                 로그인
                             </Button>
-                            <Button variant="outlined" startIcon={<LoginIcon/>}
-                                    onClick={() => setModalVisibility(AuthModalVisibility.SHOW_REGISTER)}>
+                            <Button variant="outlined" startIcon={<LoginIcon />}
+                                onClick={() => setModalVisibility(AuthModalVisibility.SHOW_REGISTER)}>
                                 회원가입
                             </Button>
                         </>
