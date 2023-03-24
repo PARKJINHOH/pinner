@@ -11,18 +11,15 @@ import { useAPIv1 } from '../../apis/apiv1';
 
 /*MUI Import*/
 import Grid from '@mui/material/Unstable_Grid2';
-import { Paper, Box, ImageList, ImageListItem, InputAdornment, OutlinedInput } from "@mui/material";
+import { Paper, Box, ImageListItem, InputAdornment, OutlinedInput, Typography, createTheme, ThemeProvider, imageListItemClasses } from "@mui/material";
 import Button from '@mui/joy/Button';
 
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import Input from '@mui/joy/Input';
-import { Add, Place, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Place } from "@mui/icons-material";
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { pink } from "@mui/material/colors";
 
@@ -31,6 +28,26 @@ import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import Tags from "@yaireo/tagify/dist/react.tagify"; // React-wrapper file
 import "@yaireo/tagify/dist/tagify.css";
 
+
+const theme = createTheme({
+    breakpoints: {
+        values: {
+            mobile: 0,
+            bigMobile: 350,
+            tablet: 650,
+            desktop: 900,
+            desktop4k: 2000,
+        },
+    },
+});
+
+const bpGridTemplateColumns = {
+    mobile: "repeat(2, 1fr)",
+    bigMobile: "repeat(3, 1fr)",
+    tablet: "repeat(4, 1fr)",
+    desktop: "repeat(7, 1fr)",
+    desktop4k: "repeat(10, 1fr)",
+};
 
 /**
  * 1. 사진 업로드
@@ -157,6 +174,8 @@ function NewJourneyModal({ travelId }) {
         setHashTags(map);
     }, []);
 
+    const containerHeight = '360px';
+
     const paperStyle = {
         position: 'fixed',
         top: 'auto',
@@ -164,14 +183,14 @@ function NewJourneyModal({ travelId }) {
         bottom: '5px',
         transform: 'translate(-0%, -0%)',
         width: 'calc(100vw - 290px)', // viewport 가로축 크기 - 40px (padding)
-        height: '320px',
+        height: containerHeight,
         padding: '0px',
         zIndex: 9999, // 우선순위 (높을수록 최상단)
     };
 
     const boxStyle1 = {
         borderRight: '1px dashed grey',
-        height: '320px',
+        height: containerHeight,
         display: 'grid',
         alignItems: 'center',
         justifyContent: 'center',
@@ -179,12 +198,12 @@ function NewJourneyModal({ travelId }) {
 
     const boxStyle2 = {
         borderRight: '1px dashed grey',
-        height: '320px',
+        height: containerHeight,
         paddingTop: '20px',
     };
 
     const boxStyle3 = {
-        height: '320px',
+        height: containerHeight,
         width: '95%',
         paddingTop: '20px',
     };
@@ -194,83 +213,86 @@ function NewJourneyModal({ travelId }) {
         <div>
             {newJourneyStep === NewJourneyStep.EDITTING && (
                 <Paper sx={paperStyle}>
-                    <IconButton
-                        onClick={onHideModal} sx={{ p: 1 }}
-                        style={{ position: 'absolute', top: 0, right: 0 }}>
-                        <CloseIcon />
-                    </IconButton>
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box sx={{ padding: 2 }} >
                         <Grid container spacing={3}>
-                            <Grid xs={2}>
-                                <Box sx={boxStyle1}>
-                                    <div>
+                            <Box xs={4}>
+                                <Typography variant='h6' >언제 여행하셨나요?</Typography>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DesktopDatePicker
+                                        value={date}
+                                        format={"YYYY/MM/DD"}
+                                        onChange={(newValue) => { setDate(newValue) }}
+                                    />
+                                </LocalizationProvider>
+
+                                <Box mb={3} />
+
+                                <Typography variant='h6' >어디를 여행하셨나요?</Typography>
+                                <OutlinedInput
+                                    size="small"
+                                    sx={{ width: '90%' }}
+                                    placeholder="어디를 여행하셨나요?"
+                                    variant="outlined"
+                                    value={newLocation.name}
+                                    onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}
+                                                edge="end"
+                                            >
+                                                <Place />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+
+                                <Box mb={3} />
+
+                                <h5>태그</h5>
+                                <Tags
+                                    settings={{ maxTags: '5' }}
+                                    onChange={onHashTagChange}
+                                    placeholder='최대 5개'
+                                />
+
+                                <Box mb={3} />
+
+                                <div>
+                                    <Button variant="outlined" onClick={onHideModal}>취소</Button>
+                                    <Button variant="outlined" onClick={onCreate}>저장</Button>
+                                </div>
+                            </Box>
+
+                            {/* 사진 미리보기 */}
+                            <Grid xs={1} flexGrow={1}>
+                                <ThemeProvider theme={theme}>
+                                    <Box
+                                        sx={{
+                                            display: "grid",
+                                            gridTemplateColumns: bpGridTemplateColumns,
+                                            [`& .${imageListItemClasses.root}`]: {
+                                                display: "flex",
+                                                flexDirection: "column"
+                                            }
+                                        }}
+                                    >
                                         {[
+
                                             <Dropzone key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                 사진 추가
-                                            </Dropzone>
+                                            </Dropzone>,
+                                            ...previews,
                                         ]}
-                                    </div>
-                                    <div>
-                                        <Button variant="outlined" onClick={onHideModal}>취소</Button>
-                                        <Button variant="outlined" onClick={onCreate}>저장</Button>
-                                    </div>
-                                </Box>
-                            </Grid>
-                            <Grid xs={4}>
-                                <Box sx={boxStyle2}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DemoContainer components={["DatePicker"]}>
-                                            <DesktopDatePicker
-                                                label="언제 여행하셨나요?"
-                                                value={date}
-                                                format={"YYYY/MM/DD"}
-                                                onChange={(newValue) => { setDate(newValue) }}
-                                            />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
-
-                                    <br />
-
-                                    <OutlinedInput
-                                        sx={{ width: '90%' }}
-                                        placeholder="어디를 여행하셨나요?"
-                                        variant="outlined"
-                                        value={newLocation.name}
-                                        onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}
-                                                    edge="end"
-                                                >
-                                                    <Place />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-
-                                    <br />
-
-                                    <h5>태그</h5>
-                                    <Tags
-                                        settings={{ maxTags: '5' }}
-                                        onChange={onHashTagChange}
-                                        placeholder='최대 5개'
-                                    />
-                                </Box>
-                            </Grid>
-                            <Grid xs>
-                                <Box sx={boxStyle3}>
-                                    <ImageList sx={{ height: 300 }} variant="masonry" cols={3}>
-                                        {[...previews]}
-                                    </ImageList>
-                                </Box>
+                                    </Box>
+                                </ThemeProvider>
                             </Grid>
                         </Grid>
                     </Box>
                 </Paper>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
 
