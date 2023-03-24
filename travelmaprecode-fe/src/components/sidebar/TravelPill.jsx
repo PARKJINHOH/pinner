@@ -17,7 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-import { Box, Card } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 
 export default function TravelPill({ travel }) {
 
@@ -136,8 +136,12 @@ export default function TravelPill({ travel }) {
     // Travel 사이드 메뉴 끝
 
     const iconAndTitle =
-        <div >
-            {travel.title}
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: '1rem' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                {travel.title}
+            </Typography>
+
+            <Box sx={{ flex: 1 }}></Box>
 
             <IconButton
                 aria-label="more"
@@ -163,26 +167,22 @@ export default function TravelPill({ travel }) {
                     <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>
                 </Menu>
             </div>
-
-
-        </div>;
+        </Box>;
 
     return (
         <Box sx={{ margin: 1 }}>
-            <MuiAccordion
-                sx={{
-                    border: '0.5px solid gray' // border 스타일 지정
-                }}>
+            <MuiAccordion sx={{ border: '0.5px solid gray' /* border 스타일 지정 */ }}>
                 <MuiAccordionSummary
                     onClick={onFoldingClick}
                     sx={{
-                        backgroundColor: 'rgba(255, 255, 255, .05)' // 배경색 지정
+                        backgroundColor: 'rgba(255, 255, 255, .05)' /* 배경색 지정 */,
+                        flexDirection: "row-reverse", /* Icon 왼쪽으로 */
                     }}
                     expandIcon={
                         <ArrowForwardIosSharpIcon
                             sx={{
                                 fontSize: '0.9rem',
-                                transform: 'rotate(90deg)'
+                                transform: 'rotate(90deg)',
                             }}
                         />
                     }

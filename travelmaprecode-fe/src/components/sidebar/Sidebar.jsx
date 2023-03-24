@@ -2,7 +2,7 @@ import React from 'react'
 import './Sidebar.css'
 import TravelerPill from './TravelerPill'
 import TravelListView from './TravelListView'
-import { Box, Drawer } from "@mui/material";
+import { Box, Divider, Drawer } from "@mui/material";
 
 const drawerWidth = 280;
 
@@ -31,10 +31,11 @@ export default function Sidebar() {
                             Travel Map Record
                         </Box>
 
-                        <br />
-                        <TravelListView></TravelListView>
-                        <TravelerPill></TravelerPill>
+                        <Divider />
 
+                        <TravelListView />
+
+                        <TravelerPill />
                     </Drawer>
                 </Box>
             </Box>

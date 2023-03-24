@@ -6,7 +6,7 @@ import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import {Fab} from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 
 
@@ -47,7 +47,7 @@ export default function TravelListView() {
             {
                 isLoggedIn ?
                     <>
-                        <Fab variant="extended" className='mb-3 mx-5' size="medium" color="primary" aria-label="add" onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
+                        <Fab variant="extended" className='mt-3 mb-3 mx-5' size="medium" color="primary" aria-label="add" onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
                             <AddIcon />
                             새로운 여행
                         </Fab>
@@ -88,9 +88,9 @@ export default function TravelListView() {
                         }
                     </>
                     :
-                    <strong className='text-center fw-bold text-secondary'>
+                    <Box sx={{ padding: 2, fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'grey' }}>
                         Join us and start your travel ✈
-                    </strong>
+                    </Box>
             }
         </ul>
     )

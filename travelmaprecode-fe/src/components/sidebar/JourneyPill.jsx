@@ -29,6 +29,7 @@ export default function JourneyPill({ journey, lineYn }) {
                 </TimelineSeparator>
                 <TimelineContent>
                     {geoString}
+                    <br />
                     <Typography component={'span'} sx={{ width: 170 }}>
                         {
                             hashtags.map(tag => <Chip key={tag} size="small" label={`#${tag}`} />)

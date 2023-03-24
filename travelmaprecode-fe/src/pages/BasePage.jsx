@@ -18,7 +18,7 @@ export default function BasePage() {
     };
 
     const [gMap, setGMap] = useRecoilState(googleMapState);
-    const [ libraries ] = useState(['places']);
+    const [libraries] = useState(['places']);
 
     const mapOptions = {
         fullscreenControl: false,
@@ -154,7 +154,7 @@ export default function BasePage() {
          * @type {Place[]}
          */
         const places = placeRef.current.getPlaces();
-        if (places == undefined || places.length == 0) return;
+        if (places === undefined || places.length === 0) return;
         const place = places[0];
 
 
