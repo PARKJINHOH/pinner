@@ -171,7 +171,10 @@ export default function TravelPill({ travel }) {
 
     return (
         <Box sx={{ margin: 1 }}>
-            <MuiAccordion sx={{ border: '0.5px solid gray' /* border 스타일 지정 */ }}>
+            <MuiAccordion
+                sx={{ border: '0.5px solid gray' /* border 스타일 지정 */ }}
+                disableGutters={true} /* 확장했을 때 마진 제거 */
+            >
                 <MuiAccordionSummary
                     onClick={onFoldingClick}
                     sx={{

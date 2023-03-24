@@ -16,8 +16,8 @@ import Button from '@mui/joy/Button';
 
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+
 import { Place } from "@mui/icons-material";
 import IconButton from '@mui/material/IconButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -184,6 +184,7 @@ function NewJourneyModal({ travelId }) {
         transform: 'translate(-0%, -0%)',
         width: 'calc(100vw - 290px)', // viewport 가로축 크기 - 40px (padding)
         height: containerHeight,
+        borderRadius: '16px',
         padding: '0px',
         zIndex: 9999, // 우선순위 (높을수록 최상단)
     };
@@ -212,13 +213,14 @@ function NewJourneyModal({ travelId }) {
     return (
         <div>
             {newJourneyStep === NewJourneyStep.EDITTING && (
-                <Paper sx={paperStyle}>
-                    <Box sx={{ padding: 2 }} >
+                <Paper sx={paperStyle} elevation={4}>
+                    <Box sx={{ padding: 3 }} >
                         <Grid container spacing={3}>
                             <Box xs={4}>
                                 <Typography variant='h6' >언제 여행하셨나요?</Typography>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DesktopDatePicker
+                                        className='datepicker'
                                         value={date}
                                         format={"YYYY/MM/DD"}
                                         onChange={(newValue) => { setDate(newValue) }}
@@ -231,7 +233,7 @@ function NewJourneyModal({ travelId }) {
                                 <OutlinedInput
                                     size="small"
                                     sx={{ width: '90%' }}
-                                    placeholder="어디를 여행하셨나요?"
+                                    placeholder="장소이름"
                                     variant="outlined"
                                     value={newLocation.name}
                                     onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
@@ -258,10 +260,12 @@ function NewJourneyModal({ travelId }) {
 
                                 <Box mb={3} />
 
-                                <div>
-                                    <Button variant="outlined" onClick={onHideModal}>취소</Button>
+                                {/* 확인/취소 버튼 */}
+                                <>
+                                    <Button variant="outlined" color='danger' onClick={onHideModal}>취소</Button>
+                                    <Box display='inline-block' sx={{ mx: 'auto', width: 10, height: 10 }} />
                                     <Button variant="outlined" onClick={onCreate}>저장</Button>
-                                </div>
+                                </>
                             </Box>
 
                             {/* 사진 미리보기 */}
