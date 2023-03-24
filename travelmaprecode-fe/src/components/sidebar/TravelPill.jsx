@@ -17,7 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export default function TravelPill({ travel }) {
 
@@ -44,21 +44,22 @@ export default function TravelPill({ travel }) {
 
     function onFoldingClick() {
         if (isSelected) {
-            setSelectedId(undefined);
+            setSelectedId(null);
         } else {
-            let radius = radiusOfPoints(travel.journeys.map(j => j.geoLocationDto));
-            const points = travel.journeys.map(j => j.geoLocationDto);
-            const centerOfTravel = centerOfPoints(points);
-
-            console.log({ radius });
-            console.log(gMap);
-            if (isNaN(centerOfTravel.lat) && isNaN(centerOfTravel.lng)) {
-                return;
-            }
-
-            setGMap({ zoom: gMap.zoom, center: centerOfTravel });
             setSelectedId(travel.id);
+
+            if (travel.journeys.length !== 0) {
+                moveMaptoCenterofJourneys(travel.journeys)
+            }
         }
+    }
+
+    function moveMaptoCenterofJourneys(journeys) {
+        // TODO: Radius 에 따라서 줌 레벨 동적으로 조정?
+        // let radius = radiusOfPoints(travel.journeys.map(j => j.geoLocationDto));
+        const points = journeys.map(j => j.geoLocationDto);
+        const centerOfTravel = centerOfPoints(points);
+        setGMap({ zoom: gMap.zoom, center: centerOfTravel });
     }
 
     const onDeleteClick = async (e) => {
@@ -174,6 +175,8 @@ export default function TravelPill({ travel }) {
             <MuiAccordion
                 sx={{ border: '0.5px solid gray' /* border 스타일 지정 */ }}
                 disableGutters={true} /* 확장했을 때 마진 제거 */
+                expanded={isSelected}
+                onClick={() => { }}
             >
                 <MuiAccordionSummary
                     onClick={onFoldingClick}
