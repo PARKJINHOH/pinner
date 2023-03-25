@@ -63,12 +63,24 @@ function NewJourneyModal({ travelId }) {
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const apiv1 = useAPIv1();
 
-    // 이미지 포스팅
-    const [photos, _setPhotos] = useState([]);
-    const addPhotos = (newPhotos) => _setPhotos([...photos, ...newPhotos]);
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     const [previews, setPreviews] = useState([]);
+
+    // 이미지 포스팅
+    const [photos, _setPhotos] = useState([]);
+
+    const addPhotos = (newPhotos) => {
+        let limitPhoto = 8; // 최대 사진 갯수
+
+        const currentPhotoCount = photos.length;
+        const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
+        const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
+        const combinedPhotos = [...photos, ...additionalPhotos];
+
+        _setPhotos(combinedPhotos);
+    };
+
 
     useEffect(() => {
         async function toPreview(file, index) {
