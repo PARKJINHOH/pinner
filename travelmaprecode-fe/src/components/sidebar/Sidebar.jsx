@@ -14,30 +14,28 @@ export default function Sidebar() {
 
 
     return (
-        <div className="sidebar d-flex flex-column flex-shrink-0 bg-white">
-            <Box sx={{ display: 'flex' }}>
-                <Box
-                    component="nav"
-                    sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-                    aria-label="mailbox folders"
+        <div>
+            <Box
+                component="nav"
+                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+                aria-label="mailbox folders"
+            >
+                {/*사이드바(SideBar) - PC*/}
+                <Drawer
+                    variant="permanent"
+                    sx={{ display: { xs: 'none', sm: 'block' }, '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth }, }}
+                    open
                 >
-                    {/*사이드바(SideBar) - PC*/}
-                    <Drawer
-                        variant="permanent"
-                        sx={{ display: { xs: 'none', sm: 'block' }, '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth }, }}
-                        open
-                    >
-                        <Box sx={{ padding: 2, fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
-                            Travel Map Record
-                        </Box>
+                    <Box sx={{ padding: 2, fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
+                        Travel Map Record
+                    </Box>
 
-                        <Divider />
+                    <Divider />
 
-                        <TravelListView />
+                    <TravelListView />
 
-                        <TravelerPill />
-                    </Drawer>
-                </Box>
+                    <TravelerPill />
+                </Drawer>
             </Box>
         </div >
     )

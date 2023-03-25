@@ -42,7 +42,6 @@ export default function NewTravelPill({ onCancle }) {
                 fontSize: '0.875rem',
             }}
             inputProps={{maxLength: 10}}
-            className='mx-3'
             variant="outlined"
             label="여행제목을 적어주세요(10자)"
             type="text"

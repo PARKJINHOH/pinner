@@ -208,9 +208,9 @@ function JourneyDatePill({ journeys }) {
     let journeyCnt = 0;
 
     function drawDateTitle() {
-        return <div className='ms-3'>
+        return <div>
             <b key={journeys[0].id}>{journeys[0].date}</b>
-            <hr style={{ margin: 4 }}></hr>
+            <hr style={{ margin: 2 }}></hr>
         </div>;
     }
 
