@@ -227,61 +227,62 @@ function NewJourneyModal({ travelId }) {
             {newJourneyStep === NewJourneyStep.EDITTING && (
                 <Paper sx={paperStyle} elevation={4}>
                     <Box sx={{ padding: 3 }} >
-                        <Grid container spacing={3}>
-                            <Box xs={4}>
-                                <Typography variant='h6' >언제 여행하셨나요?</Typography>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DesktopDatePicker
-                                        className='datepicker'
-                                        value={date}
-                                        format={"YYYY/MM/DD"}
-                                        onChange={(newValue) => { setDate(newValue) }}
+                        <Grid container spacing={3} columns={16}>
+                            <Grid xs={3}>
+                                <Box>
+                                    <Typography variant='h6' >언제 여행하셨나요?</Typography>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DesktopDatePicker
+                                            className='datepicker'
+                                            value={date}
+                                            format={"YYYY/MM/DD"}
+                                            onChange={(newValue) => { setDate(newValue) }}
+                                        />
+                                    </LocalizationProvider>
+
+                                    <Box mb={3} />
+
+                                    <Typography variant='h6' >어디를 여행하셨나요?</Typography>
+                                    <OutlinedInput
+                                        size="small"
+                                        placeholder="장소이름"
+                                        variant="outlined"
+                                        value={newLocation.name}
+                                        onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}
+                                                    edge="end"
+                                                >
+                                                    <Place />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
                                     />
-                                </LocalizationProvider>
 
-                                <Box mb={3} />
+                                    <Box mb={3} />
 
-                                <Typography variant='h6' >어디를 여행하셨나요?</Typography>
-                                <OutlinedInput
-                                    size="small"
-                                    sx={{ width: '90%' }}
-                                    placeholder="장소이름"
-                                    variant="outlined"
-                                    value={newLocation.name}
-                                    onChange={e => setNewLocation({ ...newLocation, name: e.target.value })}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() => setNewJourneyStep(NewJourneyStep.LOCATING)}
-                                                edge="end"
-                                            >
-                                                <Place />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
+                                    <h5>태그</h5>
+                                    <Tags
+                                        settings={{ maxTags: '5' }}
+                                        onChange={onHashTagChange}
+                                        placeholder='최대 5개'
+                                    />
 
-                                <Box mb={3} />
+                                    <Box mb={3} />
 
-                                <h5>태그</h5>
-                                <Tags
-                                    settings={{ maxTags: '5' }}
-                                    onChange={onHashTagChange}
-                                    placeholder='최대 5개'
-                                />
-
-                                <Box mb={3} />
-
-                                {/* 확인/취소 버튼 */}
-                                <>
-                                    <Button variant="outlined" color='danger' onClick={onHideModal}>취소</Button>
-                                    <Box display='inline-block' sx={{ mx: 'auto', width: 10, height: 10 }} />
-                                    <Button variant="outlined" onClick={onCreate}>저장</Button>
-                                </>
-                            </Box>
+                                    {/* 확인/취소 버튼 */}
+                                    <>
+                                        <Button variant="outlined" color='danger' onClick={onHideModal}>취소</Button>
+                                        <Box display='inline-block' sx={{ mx: 'auto', width: 10, height: 10 }} />
+                                        <Button variant="outlined" onClick={onCreate}>저장</Button>
+                                    </>
+                                </Box>
+                            </Grid>
 
                             {/* 사진 미리보기 */}
-                            <Grid xs={1} flexGrow={1}>
+                            <Grid xs={13}>
                                 <ThemeProvider theme={theme}>
                                     <Box
                                         sx={{
