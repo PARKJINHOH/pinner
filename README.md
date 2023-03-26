@@ -19,8 +19,3 @@
 [Local]
 1. h2 DataBases 실행
 2. TravelMapRecordApplication.class 내장톰캣 실행
-
-<br>
-
-프로젝트 상세
-* https://www.notion.so/adg0609/TravelMapRecode-11020cfa2d9947d19c3d618a4db10c76
