@@ -22,9 +22,10 @@ function RegisterModal() {
 
 
     function validInputs() {
-        // name Vaildation, 순서 중요
+        // 순서 중요
+
         if (!name || name.length < 3 || name.length > 8) {
-            return '닉네임은 3글자 이상, 8글자 이하로 적어주세요.';
+            return '닉네임은 3~8자 이내로 적어주세요.';
         } else if (/[\s]/.test(name)) {
             return '닉네임은 공백을 사용할 수 없습니다.';
         } else if (/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/.test(name)) {
@@ -35,6 +36,8 @@ function RegisterModal() {
 
         if (!email) {
             return '이메일을 확인해주세요.';
+        } else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)){
+            return '이메일 형식이 올바르지 않습니다.';
         }
 
         if (!password || !confirmPassword) {
