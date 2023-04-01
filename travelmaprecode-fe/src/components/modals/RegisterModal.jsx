@@ -22,7 +22,7 @@ function RegisterModal() {
 
 
     function validInputs() {
-        // 순서 중요
+        // if문 순서 중요
 
         if (!name || name.length < 3 || name.length > 8) {
             return '닉네임은 3~8자 이내로 적어주세요.';
@@ -46,17 +46,15 @@ function RegisterModal() {
             return '비밀번호는 최소 하나 이상의 숫자를 포함해야 합니다.';
         } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
             return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
-        } else if (!/[a-zA-Z]+/.test(password)) {
-            return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
         } else if (!/[!@#$%^&*()_+~`\-={}[\]:\";'<>,.?\\/]+/.test(password)) {
             return '비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다.';
         } else if (!/.{8,}/.test(password)) {
             return '비밀번호는 최소 8자 이상이어야 합니다.';
-        }
-
-        if (password !== confirmPassword) {
+        } else if (password !== confirmPassword) {
             return '비밀번호와 비밀번호확인은 같아야 합니다.';
         }
+
+
     }
 
     function clearInputs() {
@@ -122,11 +120,11 @@ function RegisterModal() {
                     <Divider sx={{marginBottom: 20}}/>
                     <Stack spacing={3}>
                         <TextField label="닉네임" variant="outlined"
-                                   value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="John Doe"/>
+                                   value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="세계여행자"/>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
                         <TextField label="비밀번호" variant="outlined"
-                                   value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="********"/>
+                                   value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
                         <TextField label="비밀번호 확인" variant="outlined"
                                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password" placeholder="********"/>
                         {
