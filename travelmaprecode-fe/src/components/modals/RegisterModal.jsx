@@ -119,7 +119,7 @@ function RegisterModal() {
                     </Typography>
                     <Divider sx={{marginBottom: 20}}/>
                     <Stack spacing={3}>
-                        <TextField label="닉네임" variant="outlined"
+                        <TextField label="닉네임" variant="outlined" inputProps={{maxLength: 6}}
                                    value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
