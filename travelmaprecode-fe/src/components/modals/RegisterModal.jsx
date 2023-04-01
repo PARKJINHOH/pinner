@@ -42,6 +42,16 @@ function RegisterModal() {
 
         if (!password || !confirmPassword) {
             return '비밀번호 확인해주세요.';
+        } else if (!/\d+/.test(password)) {
+            return '비밀번호는 최소 하나 이상의 숫자를 포함해야 합니다.';
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
+            return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
+        } else if (!/[a-zA-Z]+/.test(password)) {
+            return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
+        } else if (!/[!@#$%^&*()_+~`\-={}[\]:\";'<>,.?\\/]+/.test(password)) {
+            return '비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다.';
+        } else if (!/.{8,}/.test(password)) {
+            return '비밀번호는 최소 8자 이상이어야 합니다.';
         }
 
         if (password !== confirmPassword) {
