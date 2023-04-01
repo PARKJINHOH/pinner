@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class TravelerDto {
 
     private String email;
-    private String name;
+    private String name; // 닉네임
     private String password;
 
     private String accessToken;

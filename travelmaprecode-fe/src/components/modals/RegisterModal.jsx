@@ -24,8 +24,8 @@ function RegisterModal() {
     function validInputs() {
         // if문 순서 중요
 
-        if (!name || name.length < 3 || name.length > 8) {
-            return '닉네임은 3~8자 이내로 적어주세요.';
+        if (!name || name.length < 2 || name.length > 6) {
+            return '닉네임은 2~6자 이내로 적어주세요.';
         } else if (/[\s]/.test(name)) {
             return '닉네임은 공백을 사용할 수 없습니다.';
         } else if (/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/.test(name)) {
@@ -120,7 +120,7 @@ function RegisterModal() {
                     <Divider sx={{marginBottom: 20}}/>
                     <Stack spacing={3}>
                         <TextField label="닉네임" variant="outlined"
-                                   value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="세계여행자"/>
+                                   value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
                         <TextField label="비밀번호" variant="outlined"

@@ -50,6 +50,7 @@ function LoginModal() {
 
                 doLogin({
                     email: payload.email,
+                    name: payload.name,
                     accessToken: payload.accessToken,
                     refreshToken: payload.refreshToken,
                 });
