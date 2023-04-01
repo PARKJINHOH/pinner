@@ -22,8 +22,15 @@ function RegisterModal() {
 
 
     function validInputs() {
-        if (!name || name.length < 3) {
-            return '닉네임은 3글자 이상 적어주세요.';
+        // name Vaildation, 순서 중요
+        if (!name || name.length < 3 || name.length > 8) {
+            return '닉네임은 3글자 이상, 8글자 이하로 적어주세요.';
+        } else if (/[\s]/.test(name)) {
+            return '닉네임은 공백을 사용할 수 없습니다.';
+        } else if (/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/.test(name)) {
+            return '닉네임은 특수문자를 사용할 수 없습니다.';
+        } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
+            return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
         }
 
         if (!email) {
