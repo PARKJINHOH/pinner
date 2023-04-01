@@ -60,7 +60,7 @@ function LoginModal() {
             })
             .catch((error) => {
                 console.log(error)
-                errorAlert(error.response.data.message);
+                setErrorMessage(error.response.data.message);
             });
     };
 
