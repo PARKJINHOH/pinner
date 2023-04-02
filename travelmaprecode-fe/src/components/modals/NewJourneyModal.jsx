@@ -263,7 +263,7 @@ function NewJourneyModal({ travelId }) {
 
                                     <Box mb={3} />
 
-                                    <h5>태그</h5>
+                                    <Typography variant='h6' >태그</Typography>
                                     <Tags
                                         settings={{ maxTags: '5' }}
                                         onChange={onHashTagChange}
