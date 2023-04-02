@@ -27,8 +27,7 @@ function LoginModal() {
         setPassword(event.currentTarget.value);
     };
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
+    const onSubmit = async () => {
         if (email == null || email == '' || email == undefined) {
             setErrorMessage('이메일을 확인해주세요.');
             return;
@@ -91,7 +90,12 @@ function LoginModal() {
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         <TextField label="비밀번호" variant="outlined"
-                                   value={password} onChange={onPasswordHandler} type="password" placeholder="Password" />
+                                   value={password} onChange={onPasswordHandler} type="password" placeholder="Password"
+                                   onKeyDown={(e) => {
+                                       if(e.key === "Enter") {
+                                           onSubmit();
+                                       }
+                                   }}/>
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
