@@ -26,17 +26,15 @@ function RegisterModal() {
 
         if (!name || name.length < 2 || name.length > 6) {
             return '닉네임은 2~6자 이내로 적어주세요.';
-        } else if (/[\s]/.test(name)) {
+        } else if (!/^\S+$/.test(name)) {
             return '닉네임은 공백을 사용할 수 없습니다.';
-        } else if (/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/.test(name)) {
-            return '닉네임은 특수문자를 사용할 수 없습니다.';
         } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
             return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
         }
 
         if (!email) {
             return '이메일을 확인해주세요.';
-        } else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)){
+        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
             return '이메일 형식이 올바르지 않습니다.';
         }
 
@@ -46,7 +44,7 @@ function RegisterModal() {
             return '비밀번호는 최소 하나 이상의 숫자를 포함해야 합니다.';
         } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
             return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
-        } else if (!/[!@#$%^&*()_+~`\-={}[\]:\";'<>,.?\\/]+/.test(password)) {
+        } else if (!/[!@#$%^&*()_+~`\-={}[\]:";'<>,.?\\/]+/.test(password)) {
             return '비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다.';
         } else if (!/.{8,}/.test(password)) {
             return '비밀번호는 최소 8자 이상이어야 합니다.';
