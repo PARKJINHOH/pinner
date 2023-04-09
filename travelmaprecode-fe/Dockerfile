@@ -1,21 +1,31 @@
-# 이미지를 빌드 할 때는 해당 파일을 이용해서 빌드한다.
-
 # Node
-FROM node
+FROM node:alpine AS build
 
-# Set working directory
+RUN mkdir /app
 WORKDIR /app
 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+COPY package*.json ./
 
-# Same as npm install
-RUN npm ci
+RUN npm install
 
-COPY . /app
+COPY . .
 
-ENV CI=true
-ENV PORT=3000
+RUN npm run build
 
-# npm start 스크립트 실행
-CMD ["npm", "start"]
+################################################
+FROM nginx:alpine
+
+# Remove default nginx static assets
+RUN rm -rf /etc/nginx/conf.d/default.conf
+
+# Copy config nginx
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy the built React application to the container
+COPY --from=build /app /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
