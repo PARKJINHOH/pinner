@@ -69,11 +69,11 @@ Object.freeze(HTTPStatus);
 
 
 export const rawAxiosInstance = axios.create({
-        baseURL: 'http://localhost:3000/api/v1',
-        headers: {
-            "Content-Type": "application/json",
-        }
+    baseURL: '/api/v1',
+    headers: {
+        "Content-Type": "application/json",
     }
+}
 );
 
 
