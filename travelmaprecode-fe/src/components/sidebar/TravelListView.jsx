@@ -6,9 +6,9 @@ import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import {Box, Fab, List, Typography} from "@mui/material";
+import {Box, Button, Fab, List, Paper, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 
 export default function TravelListView() {
     const apiv1 = useAPIv1();
@@ -47,49 +47,63 @@ export default function TravelListView() {
             {
                 isLoggedIn ?
                     <>
-                        <Fab variant="extended" sx={{ margin: '16px 48px'}} size="medium" color="primary" aria-label="add" onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}>
-                            <AddIcon />
-                            새로운 여행
-                        </Fab>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography sx={{ margin: '10px', fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
+                                나의 여행 둘러보기
+                            </Typography>
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Button>
+                                <SortByAlphaIcon />
+                            </Button>
+                        </Box>
+
+                        <Box sx={{
+                            backgroundColor: '#cecece', borderRadius: '10px', cursor: 'pointer',
+                            height: '200px', margin: '10px', padding: '10px',
+                            display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
+                        }}
+                             onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}
+                        >
+                            <AddIcon sx={{ fontSize: '60px' }} />
+                            <Typography >
+                                Click to add new Travel
+                            </Typography>
+                        </Box>
+
                         {
                             isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)} />
                         }
 
                         {
-                            travelData.length ?
-                                <DragDropContext onDragEnd={onDragEnd}>
-                                    <Droppable droppableId="ROOT">
-                                        {provided => (
-                                            <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                {
-                                                    travelData.map((t) => {
-                                                        return (
-                                                            <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey}>
-                                                                {
-                                                                    provided => (
-                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                                            <TravelPill draggable="true" key={t.id} travel={t} />
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                            </Draggable>
-                                                        )
-                                                    })
-                                                }
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
-                                    </Droppable>
-                                </DragDropContext>
-                                :
-                                <Typography sx={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold', color: 'grey' }}>
-                                    Add your first travel.
-                                </Typography>
+                            <DragDropContext onDragEnd={onDragEnd}>
+                                <Droppable droppableId="ROOT">
+                                    {provided => (
+                                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                                            {
+                                                travelData.map((t) => {
+                                                    return (
+                                                        <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey}>
+                                                            {
+                                                                provided => (
+                                                                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                                        <TravelPill draggable="true" key={t.id} travel={t} />
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        </Draggable>
+                                                    )
+                                                })
+                                            }
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                         }
                     </>
                     :
                     <Box sx={{ padding: 2, fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'grey' }}>
-                        Join us and start your travel ✈
+                        로그인 후 이용해주세요. ✈
                     </Box>
             }
         </List>

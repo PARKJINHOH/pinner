@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { useAPIv1 } from '../../apis/apiv1';
-import { travelState } from '../../states/travel';
-import {TextField} from "@mui/material";
+import React, {useState} from 'react';
+import {useRecoilState} from 'recoil';
+import {useAPIv1} from '../../apis/apiv1';
+import {travelState} from '../../states/travel';
+import {Button, TextField} from "@mui/material";
+import SensorOccupiedIcon from "@mui/icons-material/SensorOccupied";
+import {AuthModalVisibility} from "../../states/modal";
+import LoginIcon from "@mui/icons-material/Login";
+import Stack from "@mui/material/Stack";
 
-export default function NewTravelPill({ onCancle }) {
+export default function NewTravelPill({onCancle}) {
     const [title, setTitle] = useState("");
 
     const [travels, setTravels] = useRecoilState(travelState);
@@ -23,8 +27,7 @@ export default function NewTravelPill({ onCancle }) {
         if (isEsc || isEnter) {
             e.preventDefault();
             if (isEnter) {
-
-                const resp = await apiv1.post("/travel", { title });
+                const resp = await apiv1.post("/travel", {title});
                 const travel = resp.data;
                 setTravels([...travels, travel]);
             }
@@ -33,23 +36,39 @@ export default function NewTravelPill({ onCancle }) {
     }
 
     return (
-        <TextField
-            sx={{
-                mx: 'auto',
-                p: 1,
-                m: 1,
-                textAlign: 'center',
-                fontSize: '0.875rem',
-            }}
-            inputProps={{maxLength: 10}}
-            variant="outlined"
-            label="여행제목을 적어주세요(10자)"
-            type="text"
-            autoFocus={true}
-            onChange={e => setTitle(e.target.value)}
-            value={title}
-            onKeyDown={onKeyDownRename}
-            onBlur={onCancle}
-        />
+        <>
+            <TextField
+                sx={{mx: '10px', marginTop: '5px'}}
+                id="outlined-multiline-flexible"
+                label="여행제목을 적어주세요(10자)"
+                inputProps={{maxLength: 10}}
+                multiline
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                onKeyDown={onKeyDownRename}
+            />
+            <Stack
+                sx={{ mx: '10px', marginTop: '5px'}}
+                spacing={2} direction="row"
+            >
+                <Button
+                    sx={{ flex: 1 }}
+                    color="error"
+                    variant="contained"
+                    onClick={onCancle}
+                >
+                    취소
+                </Button>
+                <Button
+                    sx={{ flex: 1 }}
+                    variant="contained"
+                    onClick={onKeyDownRename}
+                >
+                    확인
+                </Button>
+            </Stack>
+
+        </>
+
     )
 }
