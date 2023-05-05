@@ -71,3 +71,14 @@
 .fw-semibold {
     font-weight: 600;
 }
+
+
+/*
+* TravelListView.jsx
+*/
+.new-travel-pill{
+    height: 200px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}

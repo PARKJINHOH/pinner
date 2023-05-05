@@ -43,7 +43,7 @@ export default function TravelListView() {
 
 
     return (
-        <List id='sidebar-list-div' sx={{ mb: 'auto'}}>
+        <List id='sidebar-list-div'>
             {
                 isLoggedIn ?
                     <>
@@ -56,23 +56,6 @@ export default function TravelListView() {
                                 <SortByAlphaIcon />
                             </Button>
                         </Box>
-
-                        <Box sx={{
-                            backgroundColor: '#cecece', borderRadius: '10px', cursor: 'pointer',
-                            height: '200px', margin: '10px', padding: '10px',
-                            display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
-                        }}
-                             onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}
-                        >
-                            <AddIcon sx={{ fontSize: '60px' }} />
-                            <Typography >
-                                Click to add new Travel
-                            </Typography>
-                        </Box>
-
-                        {
-                            isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)} />
-                        }
 
                         {
                             <DragDropContext onDragEnd={onDragEnd}>
@@ -99,6 +82,25 @@ export default function TravelListView() {
                                     )}
                                 </Droppable>
                             </DragDropContext>
+                        }
+
+                        {
+                            <Box
+                                className="new-travel-pill"
+                                sx={{
+                                    backgroundColor: '#cecece', cursor: 'pointer',
+                                    display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
+                                }}
+                                onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}
+                            >
+                                <AddIcon sx={{fontSize: '60px'}}/>
+                                <Typography>
+                                    Click to add new Travel
+                                </Typography>
+                            </Box>
+                        }
+                        {
+                            isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)}/>
                         }
                     </>
                     :
