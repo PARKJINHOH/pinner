@@ -6,7 +6,10 @@ import Sidebar from './components/sidebar/Sidebar';
 
 import MapIcon from '@mui/icons-material/Map';
 import LanguageIcon from '@mui/icons-material/Language';
-import {AppBar, Box, CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import {AppBar, Box, Button, CssBaseline, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography} from "@mui/material";
+import {Avatar} from "@mantine/core";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
 
 const drawerWidth = 70; // 사이드바 너비
 
@@ -63,6 +66,13 @@ function App() {
                             </ListItemButton>
                         </ListItem>
                     </List>
+                    <Button
+                        sx={{marginTop: 'auto'}}
+                    >
+                        <Avatar sx={{
+                            width: 56, height: 56,
+                        }}/>
+                    </Button>
                 </Drawer>
                 <Box
                     sx={{flexGrow: 1}}
