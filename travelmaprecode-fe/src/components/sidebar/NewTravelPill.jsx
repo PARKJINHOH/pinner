@@ -23,10 +23,11 @@ export default function NewTravelPill({onCancle}) {
     async function onKeyDownRename(e) {
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
+        const isMouseClick = e.type === "click";
 
-        if (isEsc || isEnter) {
+        if (isEsc || isEnter || isMouseClick) {
             e.preventDefault();
-            if (isEnter) {
+            if (isEnter || isMouseClick) {
                 const resp = await apiv1.post("/travel", {title});
                 const travel = resp.data;
                 setTravels([...travels, travel]);

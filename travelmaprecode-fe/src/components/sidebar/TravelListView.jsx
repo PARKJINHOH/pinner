@@ -86,7 +86,7 @@ export default function TravelListView() {
 
                         {
                             <Box
-                                className="new-travel-pill"
+                                className="travel-box"
                                 sx={{
                                     backgroundColor: '#cecece', cursor: 'pointer',
                                     display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"

@@ -93,7 +93,8 @@ export default function Sidebar() {
             {selectedDrawer === 'TravelListView' && (
                 <Paper sx={{
                     width: panelWidth, position: 'absolute',
-                    height: '100vh', top: 0, left: drawerWidth, zIndex: '9'
+                    height: '100vh', top: 0, left: drawerWidth, zIndex: '9',
+                    overflow: 'auto', // 스크롤바 추가
                 }}>
                     <TravelListView/>
                 </Paper>
