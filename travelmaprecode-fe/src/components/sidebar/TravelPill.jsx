@@ -18,6 +18,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { Box, Typography } from '@mui/material';
+import Stack from "@mui/material/Stack";
 
 export default function TravelPill({ travel }) {
 
@@ -136,71 +137,56 @@ export default function TravelPill({ travel }) {
     const handleClose = () => setAnchorEl(null);
     // Travel 사이드 메뉴 끝
 
-    const iconAndTitle =
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: '1rem' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+    const travelTitle =
+        <Box sx={{ marginLeft: '10px' }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 {travel.title}
             </Typography>
 
-            <Box sx={{ flex: 1 }}></Box>
+            {/*<Box sx={{ flex: 1 }}></Box>*/}
 
-            <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={showDropdownMenu ? 'long-menu' : undefined}
-                aria-expanded={showDropdownMenu ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}
-            >
-                <MoreVertIcon />
-            </IconButton>
+            {/*<IconButton*/}
+            {/*    aria-label="more"*/}
+            {/*    id="long-button"*/}
+            {/*    aria-controls={showDropdownMenu ? 'long-menu' : undefined}*/}
+            {/*    aria-expanded={showDropdownMenu ? 'true' : undefined}*/}
+            {/*    aria-haspopup="true"*/}
+            {/*    onClick={handleClick}*/}
+            {/*>*/}
+            {/*    <MoreVertIcon />*/}
+            {/*</IconButton>*/}
 
-            <div onClick={(e) => e.stopPropagation()}>
-                <Menu
-                    anchorEl={anchorEl}
-                    id="long-menu"
-                    open={showDropdownMenu}
-                    MenuListProps={{ 'aria-labelledby': 'long-button' }}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={onRenameClick}>이름변경</MenuItem>
-                    <MenuItem onClick={onDeleteClick}>삭제</MenuItem>
-                    <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>
-                </Menu>
-            </div>
+            {/*<div onClick={(e) => e.stopPropagation()}>*/}
+            {/*    <Menu*/}
+            {/*        anchorEl={anchorEl}*/}
+            {/*        id="long-menu"*/}
+            {/*        open={showDropdownMenu}*/}
+            {/*        MenuListProps={{ 'aria-labelledby': 'long-button' }}*/}
+            {/*        onClose={handleClose}*/}
+            {/*    >*/}
+            {/*        <MenuItem onClick={onRenameClick}>이름변경</MenuItem>*/}
+            {/*        <MenuItem onClick={onDeleteClick}>삭제</MenuItem>*/}
+            {/*        <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>*/}
+            {/*    </Menu>*/}
+            {/*</div>*/}
         </Box>;
 
     return (
-        <Box sx={{ margin: 1 }}>
-            <MuiAccordion
-                sx={{ border: '0.5px solid gray' /* border 스타일 지정 */ }}
-                disableGutters={true} /* 확장했을 때 마진 제거 */
-                expanded={isSelected}
-                onClick={() => { }}
+        <Stack
+            direction="column"
+            sx={{marginBottom: '15px'}}
+        >
+            <Box
+                className="travel-box"
+                sx={{
+                    backgroundColor: '#cecece',
+                    marginBottom: '5px'
+                }}
             >
-                <MuiAccordionSummary
-                    onClick={onFoldingClick}
-                    sx={{
-                        backgroundColor: 'rgba(255, 255, 255, .05)' /* 배경색 지정 */,
-                        flexDirection: "row-reverse", /* Icon 왼쪽으로 */
-                    }}
-                    expandIcon={
-                        <ArrowForwardIosSharpIcon
-                            sx={{
-                                fontSize: '0.9rem',
-                                transform: 'rotate(90deg)',
-                            }}
-                        />
-                    }
-                >
-                    {isRenaming ? renameTextInput : iconAndTitle}
-                </MuiAccordionSummary>
-                <AccordionDetails>
-                    {newData.map((journeys, i) => <JourneyDatePill key={i} journeys={journeys} />)}
-                </AccordionDetails>
-            </MuiAccordion>
-        </Box>
-
+                {/*TODO : Travel의 첫번째 사진*/}
+            </Box>
+            {isRenaming ? renameTextInput : travelTitle}
+        </Stack>
     )
 }
 

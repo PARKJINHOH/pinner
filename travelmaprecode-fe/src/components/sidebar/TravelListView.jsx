@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import React, {useEffect, useState} from 'react'
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
 import { travelState } from '../../states/travel'
-import { isLoggedInState } from '../../states/traveler'
+import {isLoggedInState, travelerState} from '../../states/traveler'
 import { useAPIv1 } from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
@@ -16,6 +16,28 @@ export default function TravelListView() {
     const isLoggedIn = useRecoilValue(isLoggedInState);
     const [travelData, setTravelData] = useRecoilState(travelState);
     const [isEditingNewTravel, setIsEditingNewTravel] = useState(false);
+    const traveler = useRecoilValue(travelerState);
+
+
+    const setTravels = useSetRecoilState(travelState);
+
+    // GET /api/v1/travel
+    // TODO : token으로 유지되기 때문에 전역으로 빼기
+    useEffect(() => {
+        if (!traveler) {
+            setTravels([]);
+            return;
+        }
+
+        apiv1.get("/travel")
+            .then(resp => {
+                setTravels(resp.data);
+            })
+            .catch(error => {
+                console.error(`can not load data: ${error}`);
+                setTravels([]);
+            });
+    }, [traveler]);
 
     const onDragEnd = (result) => {
         if (!result.destination) {
