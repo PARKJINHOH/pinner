@@ -22,7 +22,6 @@ export default function TravelListView() {
     const setTravels = useSetRecoilState(travelState);
 
     // GET /api/v1/travel
-    // TODO : token으로 유지되기 때문에 전역으로 빼기
     useEffect(() => {
         if (!traveler) {
             setTravels([]);
