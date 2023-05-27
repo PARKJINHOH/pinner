@@ -64,7 +64,7 @@ export default function TravelListView() {
 
 
     return (
-        <List id='sidebar-list-div'>
+        <List className='sidebar-list-div'>
             {
                 isLoggedIn ?
                     <>
