@@ -17,8 +17,12 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-import { Box, Typography } from '@mui/material';
+import {Box, Paper, Typography} from '@mui/material';
 import Stack from "@mui/material/Stack";
+import TravelListView from "./TravelListView";
+
+const drawerWidth = 70; // 사이드바 너비
+const panelWidth = 280; // 패널 너비
 
 export default function TravelPill({ travel }) {
 
@@ -42,6 +46,16 @@ export default function TravelPill({ travel }) {
         (acc, v) => [...acc, [...journeyList.filter((d) => d.date === v)]], []
     );
 
+    // journeySideBar 상태
+    const[journeySideBar, setJourneySideBar] = useState(null);
+    function onJourneyClick() {
+        console.log(travel.id);
+        if (journeySideBar === travel.id) {
+            setJourneySideBar(null);
+            return;
+        }
+        setJourneySideBar(travel.id);
+    }
 
     function onFoldingClick() {
         if (isSelected) {
@@ -139,54 +153,42 @@ export default function TravelPill({ travel }) {
 
     const travelTitle =
         <Box sx={{ marginLeft: '10px' }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 {travel.title}
             </Typography>
-
-            {/*<Box sx={{ flex: 1 }}></Box>*/}
-
-            {/*<IconButton*/}
-            {/*    aria-label="more"*/}
-            {/*    id="long-button"*/}
-            {/*    aria-controls={showDropdownMenu ? 'long-menu' : undefined}*/}
-            {/*    aria-expanded={showDropdownMenu ? 'true' : undefined}*/}
-            {/*    aria-haspopup="true"*/}
-            {/*    onClick={handleClick}*/}
-            {/*>*/}
-            {/*    <MoreVertIcon />*/}
-            {/*</IconButton>*/}
-
-            {/*<div onClick={(e) => e.stopPropagation()}>*/}
-            {/*    <Menu*/}
-            {/*        anchorEl={anchorEl}*/}
-            {/*        id="long-menu"*/}
-            {/*        open={showDropdownMenu}*/}
-            {/*        MenuListProps={{ 'aria-labelledby': 'long-button' }}*/}
-            {/*        onClose={handleClose}*/}
-            {/*    >*/}
-            {/*        <MenuItem onClick={onRenameClick}>이름변경</MenuItem>*/}
-            {/*        <MenuItem onClick={onDeleteClick}>삭제</MenuItem>*/}
-            {/*        <MenuItem onClick={onNewJourneyClick}>여행지 생성</MenuItem>*/}
-            {/*    </Menu>*/}
-            {/*</div>*/}
         </Box>;
 
     return (
-        <Stack
-            direction="column"
-            sx={{marginBottom: '15px'}}
-        >
-            <Box
-                className="travel-box"
-                sx={{
-                    backgroundColor: '#cecece',
-                    marginBottom: '5px'
-                }}
+        <>
+            <Stack
+                direction="column"
+                sx={{marginBottom: '15px'}}
+                onClick={onJourneyClick}
             >
-                {/*TODO : Travel의 첫번째 사진*/}
-            </Box>
-            {isRenaming ? renameTextInput : travelTitle}
-        </Stack>
+                <Box
+                    className="travel-box"
+                    sx={{
+                        backgroundColor: '#cecece',
+                        marginBottom: '5px'
+                    }}
+                >
+                    {/*TODO : Travel의 첫번째 사진*/}
+                </Box>
+                {isRenaming ? renameTextInput : travelTitle}
+            </Stack>
+
+            {
+                journeySideBar === travel.id && (
+                    <Paper sx={{
+                        width: panelWidth, position: 'fixed',
+                        height: '100vh', top: 0, left: panelWidth + drawerWidth + 1, zIndex: '9',
+                        overflow: 'auto', // 스크롤바 추가
+                    }}>
+                        <JourneyPill travel={travel}/>
+                    </Paper>
+                )
+            }
+        </>
     )
 }
 

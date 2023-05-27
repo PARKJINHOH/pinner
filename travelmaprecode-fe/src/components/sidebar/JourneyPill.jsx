@@ -8,35 +8,19 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
+import {Box, List} from "@mui/material";
 
-export default function JourneyPill({ journey, lineYn }) {
-    const geoString = journey.geoLocationDto.name;
-    const hashtags = journey.hashtags;
+export default function JourneyPill({ travel }) {
+    console.log('travel', travel);
 
     return (
-        <Timeline
-            sx={{
-                [`& .${timelineItemClasses.root}:before`]: {
-                    flex: 0,
-                    padding: 0,
-                },
-            }}
-        >
-            <TimelineItem>
-                <TimelineSeparator>
-                    <TimelineDot />
-                    {lineYn ? <TimelineConnector /> : ''}
-                </TimelineSeparator>
-                <TimelineContent>
-                    {geoString}
-                    <br />
-                    <Typography component={'span'} sx={{ width: 170 }}>
-                        {
-                            hashtags.map(tag => <Chip key={tag} size="small" label={`#${tag}`} />)
-                        }
-                    </Typography>
-                </TimelineContent>
-            </TimelineItem>
-        </Timeline>
+        <List className='journey-list-div'>
+            <Box sx={{ bgcolor: 'background.paper', p: 2 }}>
+                <Typography variant="h6" component="div">
+                    {travel.title}
+                </Typography>
+                {/*<img src={journey.image} alt={journey.title} width="100%"/>*/}
+            </Box>
+        </List>
     )
 }
