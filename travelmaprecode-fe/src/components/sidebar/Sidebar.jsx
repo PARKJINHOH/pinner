@@ -113,6 +113,7 @@ export default function Sidebar() {
     return (
         <>
             <Drawer
+                id={'sidebar'}
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
@@ -23,9 +23,24 @@ import TravelListView from "./TravelListView";
 import AddIcon from "@mui/icons-material/Add";
 
 const drawerWidth = 70; // 사이드바 너비
-const panelWidth = 280; // 패널 너비
+const panelWidth = 350; // 패널 너비
 
 export default function TravelPill({ travel }) {
+    const [travelListViewWidth, setTravelListViewWidth] = useState(null);
+    const [sidebarWidth, setSidebarWidth] = useState(null);
+
+    useEffect(() => {
+        const travelListView = document.getElementById("travelListView");
+        const sidebar = document.getElementById("sidebar");
+
+        if (travelListView) {
+            setTravelListViewWidth(travelListView.offsetWidth);
+        }
+
+        if (sidebar) {
+            setSidebarWidth(sidebar.offsetWidth);
+        }
+    }, []);
 
     const [isRenaming, setIsRenaming] = useState(false);
 
@@ -191,7 +206,7 @@ export default function TravelPill({ travel }) {
                 journeySideBar === travel.id && (
                     <Paper sx={{
                         width: panelWidth, position: 'fixed',
-                        height: '100vh', top: 0, left: panelWidth + drawerWidth + 1, zIndex: '9',
+                        height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth + 1, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
                         <JourneyPill journey={travel.journey}/>
