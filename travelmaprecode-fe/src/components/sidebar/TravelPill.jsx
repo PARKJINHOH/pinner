@@ -20,6 +20,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {Box, Paper, Typography} from '@mui/material';
 import Stack from "@mui/material/Stack";
 import TravelListView from "./TravelListView";
+import AddIcon from "@mui/icons-material/Add";
 
 const drawerWidth = 70; // 사이드바 너비
 const panelWidth = 280; // 패널 너비
@@ -49,7 +50,7 @@ export default function TravelPill({ travel }) {
     // journeySideBar 상태
     const[journeySideBar, setJourneySideBar] = useState(null);
     function onJourneyClick() {
-        console.log(travel.id);
+        console.log(travel);
         if (journeySideBar === travel.id) {
             setJourneySideBar(null);
             return;
@@ -169,10 +170,19 @@ export default function TravelPill({ travel }) {
                     className="travel-box"
                     sx={{
                         backgroundColor: '#cecece',
-                        marginBottom: '5px'
+                        marginBottom: '5px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}
                 >
-                    {/*TODO : Travel의 첫번째 사진*/}
+                    {travel.journeys.size > 0 ? (
+                        <img src={travel.journeys[0].image} alt="travel" width="100%" height="100%"/>
+                    ) : (
+                        <Typography align="center" color="textSecondary">
+                            사진 없음
+                        </Typography>
+                    )}
                 </Box>
                 {isRenaming ? renameTextInput : travelTitle}
             </Stack>
@@ -184,7 +194,7 @@ export default function TravelPill({ travel }) {
                         height: '100vh', top: 0, left: panelWidth + drawerWidth + 1, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
-                        <JourneyPill travel={travel}/>
+                        <JourneyPill journey={travel.journey}/>
                     </Paper>
                 )
             }
