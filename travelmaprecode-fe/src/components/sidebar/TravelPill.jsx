@@ -207,9 +207,10 @@ export default function TravelPill({ travel }) {
                     <Paper sx={{
                         width: panelWidth, position: 'fixed',
                         height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth + 1, zIndex: '9',
+                        height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
-                        <JourneyPill journey={travel.journey}/>
+                        <JourneyPill travel={travel}/>
                     </Paper>
                 )
             }
