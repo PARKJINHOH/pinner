@@ -169,7 +169,7 @@ export default function Sidebar() {
                 <Paper
                     id={'travelListView'}
                     sx={{
-                    width: panelWidth, position: 'absolute',
+                    width: panelWidth, position: 'absolute', borderRadius: 0,
                     height: '100vh', top: 0, left: drawerWidth, zIndex: '9',
                     overflow: 'auto', // 스크롤바 추가
                 }}>

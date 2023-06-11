@@ -63,14 +63,15 @@ export default function TravelPill({ travel }) {
     );
 
     // journeySideBar 상태
-    const[journeySideBar, setJourneySideBar] = useState(null);
+    const [selectedTravelId, setSelectedTravelId] = useRecoilState(selectedTravelIdState);
+
     function onJourneyClick() {
         console.log(travel);
-        if (journeySideBar === travel.id) {
-            setJourneySideBar(null);
+        if (selectedTravelId === travel.id) {
+            setSelectedTravelId('');
             return;
         }
-        setJourneySideBar(travel.id);
+        setSelectedTravelId(travel.id);
     }
 
     function onFoldingClick() {
@@ -203,10 +204,9 @@ export default function TravelPill({ travel }) {
             </Stack>
 
             {
-                journeySideBar === travel.id && (
+                selectedTravelId === travel.id && (
                     <Paper sx={{
-                        width: panelWidth, position: 'fixed',
-                        height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth + 1, zIndex: '9',
+                        width: panelWidth, position: 'fixed', borderRadius: 0,
                         height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
