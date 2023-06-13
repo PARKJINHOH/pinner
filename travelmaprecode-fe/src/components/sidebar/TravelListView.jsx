@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
-import { travelState } from '../../states/travel'
+import {selectedTravelIdState, travelState} from '../../states/travel'
 import {isLoggedInState, travelerState} from '../../states/traveler'
-import { useAPIv1 } from '../../apis/apiv1'
+import {useAPIv1} from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import {Box, Button, Fab, List, Paper, Typography} from "@mui/material";
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import {Box, Button, List, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import PanToolIcon from '@mui/icons-material/PanTool';
 
 export default function TravelListView() {
     const apiv1 = useAPIv1();
@@ -17,24 +17,25 @@ export default function TravelListView() {
     const [travelData, setTravelData] = useRecoilState(travelState);
     const [isEditingNewTravel, setIsEditingNewTravel] = useState(false);
     const traveler = useRecoilValue(travelerState);
+    const [dndState, setDndState] = useState(true); // 드래그 앤 드롭 상태(초기값: true)
+    const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
 
-
-    const setTravels = useSetRecoilState(travelState);
+    
 
     // GET /api/v1/travel
     useEffect(() => {
         if (!traveler) {
-            setTravels([]);
+            setTravelData([]);
             return;
         }
 
         apiv1.get("/travel")
             .then(resp => {
-                setTravels(resp.data);
+                setTravelData(resp.data);
             })
             .catch(error => {
                 console.error(`can not load data: ${error}`);
-                setTravels([]);
+                setTravelData([]);
             });
     }, [traveler]);
 
@@ -62,6 +63,11 @@ export default function TravelListView() {
 
     }
 
+    const dndHandleClick = () => {
+        setDndState(!dndState);
+        setSelectedId(null);
+    };
+
 
     return (
         <List className='sidebar-list-div'>
@@ -73,8 +79,10 @@ export default function TravelListView() {
                                 나의 여행 둘러보기
                             </Typography>
                             <Box sx={{ flexGrow: 1 }} />
-                            <Button>
-                                <SortByAlphaIcon />
+                            <Button onClick={dndHandleClick}>
+                                <PanToolIcon
+                                    color = {dndState ? 'disabled' : 'primary'}
+                                />
                             </Button>
                         </Box>
 
@@ -86,7 +94,7 @@ export default function TravelListView() {
                                             {
                                                 travelData.map((t) => {
                                                     return (
-                                                        <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey}>
+                                                        <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey} isDragDisabled={dndState}>
                                                             {
                                                                 provided => (
                                                                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
@@ -112,8 +120,13 @@ export default function TravelListView() {
                                     backgroundColor: '#cecece', cursor: 'pointer',
                                     display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
                                 }}
-                                onClick={(e) => setIsEditingNewTravel(!isEditingNewTravel)}
-                            >
+                                onClick={() => {
+                                    setIsEditingNewTravel(!isEditingNewTravel);
+                                    if (dndState === false) {
+                                        setDndState(true);
+                                    }
+                                    setSelectedId(null);
+                                }}>
                                 <AddIcon sx={{fontSize: '60px'}}/>
                                 <Typography>
                                     Click to add new Travel
