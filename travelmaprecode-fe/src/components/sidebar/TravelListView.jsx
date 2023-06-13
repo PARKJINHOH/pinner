@@ -97,7 +97,13 @@ export default function TravelListView() {
                                                         <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey} isDragDisabled={dndState}>
                                                             {
                                                                 provided => (
-                                                                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                         onClick={() => {
+                                                                             if (dndState === false) {
+                                                                                 setDndState(true);
+                                                                             }
+                                                                         }}
+                                                                    >
                                                                         <TravelPill draggable="true" key={t.id} travel={t} />
                                                                     </div>
                                                                 )
