@@ -7,28 +7,18 @@ import LanguageIcon from "@mui/icons-material/Language";
 import Avatar from '@mui/material/Avatar';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import {useAPIv1} from "../../apis/apiv1";
+
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {isLoggedInState, travelerState, useDoLogout} from "../../states/traveler";
 import {AuthModalVisibility, authModalVisibilityState} from "../../states/modal";
-import {travelState} from "../../states/travel";
-
 
 const drawerWidth = 70; // 사이드바 너비
 const panelWidth = 280; // 패널 너비
 
-// Style
-const listItemButtonStyles = {
-    minHeight: 40, // Icon 간격
-    justifyContent: 'center',
-    flexDirection: 'column', // 세로 방향으로 표시
-};
-
-const listItemIconStyles = {
-    justifyContent: 'center',
-};
-//! Style
-
+/**
+ * 사이드바(SideBar) 컴포넌트
+ * 사이드바 순서 : 지도Icon, 둘러보기
+ */
 export default function Sidebar() {
     const traveler = useRecoilValue(travelerState);
     const isLoggedIn = useRecoilValue(isLoggedInState);
@@ -202,3 +192,16 @@ export default function Sidebar() {
         </>
     )
 }
+
+
+// Style
+const listItemButtonStyles = {
+    minHeight: 40, // Icon 간격
+    justifyContent: 'center',
+    flexDirection: 'column', // 세로 방향으로 표시
+};
+
+const listItemIconStyles = {
+    justifyContent: 'center',
+};
+//! Style

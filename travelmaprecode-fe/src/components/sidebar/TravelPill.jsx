@@ -9,22 +9,15 @@ import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
 import { centerOfPoints, radiusOfPoints } from '../../utils';
 
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MuiAccordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {Box, Paper, Typography} from '@mui/material';
 import Stack from "@mui/material/Stack";
-import TravelListView from "./TravelListView";
-import AddIcon from "@mui/icons-material/Add";
 
-const drawerWidth = 70; // 사이드바 너비
-const panelWidth = 350; // 패널 너비
+const journeyPanelWidth = 350; // 패널 너비
 
+/**
+ * 여행 목록(Travel List)에서의 여행(Travel) 컴포넌트
+ * @param travel
+ */
 export default function TravelPill({ travel }) {
     const [travelListViewWidth, setTravelListViewWidth] = useState(null);
     const [sidebarWidth, setSidebarWidth] = useState(null);
@@ -34,10 +27,12 @@ export default function TravelPill({ travel }) {
         const sidebar = document.getElementById("sidebar");
 
         if (travelListView) {
+            // travelListView의 너비 가지고와서 저장
             setTravelListViewWidth(travelListView.offsetWidth);
         }
 
         if (sidebar) {
+            // sidebar의 너비 가지고와서 저장
             setSidebarWidth(sidebar.offsetWidth);
         }
     }, []);
@@ -206,7 +201,7 @@ export default function TravelPill({ travel }) {
             {
                 selectedTravelId === travel.id && (
                     <Paper sx={{
-                        width: panelWidth, position: 'fixed', borderRadius: 0,
+                        width: journeyPanelWidth, position: 'fixed', borderRadius: 0,
                         height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>

@@ -5,6 +5,10 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import './JourneyPill.css';
 import AddIcon from "@mui/icons-material/Add";
 
+/**
+ * Journey 상세 정보를 보여주는 컴포넌트
+ * @param travel
+ */
 export default function JourneyPill({ travel }) {
     console.log('travel', travel);
 

@@ -3,16 +3,15 @@ import {useRecoilState} from 'recoil';
 import {useAPIv1} from '../../apis/apiv1';
 import {travelState} from '../../states/travel';
 import {Button, TextField} from "@mui/material";
-import SensorOccupiedIcon from "@mui/icons-material/SensorOccupied";
-import {AuthModalVisibility} from "../../states/modal";
-import LoginIcon from "@mui/icons-material/Login";
 import Stack from "@mui/material/Stack";
 
-export default function NewTravelPill({onCancle}) {
+/**
+ * 'Click to add new Travel'클릭시 나오는 컴포넌트
+ * @param onCancel
+ */
+export default function NewTravelPill({onCancel}) {
     const [title, setTitle] = useState("");
-
     const [travels, setTravels] = useRecoilState(travelState);
-
     const apiv1 = useAPIv1();
 
 
@@ -32,7 +31,7 @@ export default function NewTravelPill({onCancle}) {
                 const travel = resp.data;
                 setTravels([...travels, travel]);
             }
-            onCancle();
+            onCancel();
         }
     }
 
@@ -56,7 +55,7 @@ export default function NewTravelPill({onCancle}) {
                     sx={{ flex: 1 }}
                     color="error"
                     variant="contained"
-                    onClick={onCancle}
+                    onClick={onCancel}
                 >
                     취소
                 </Button>

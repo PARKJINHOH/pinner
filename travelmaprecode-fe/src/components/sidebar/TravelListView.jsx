@@ -10,6 +10,9 @@ import {Box, Button, List, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
+/**
+ * 여행(Travel) 목록을 보여주는 컴포넌트
+ */
 export default function TravelListView() {
     const apiv1 = useAPIv1();
 
@@ -140,7 +143,7 @@ export default function TravelListView() {
                             </Box>
                         }
                         {
-                            isEditingNewTravel && <NewTravelPill onCancle={() => setIsEditingNewTravel(false)}/>
+                            isEditingNewTravel && <NewTravelPill onCancel={() => setIsEditingNewTravel(false)}/>
                         }
                     </>
                     :
