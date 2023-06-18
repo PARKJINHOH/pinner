@@ -10,10 +10,6 @@ import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from '@mui/icons-material/Create';
 import {useSetRecoilState} from "recoil";
 import {travelState} from "../../states/travel";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {DemoContainer, DemoItem} from "@mui/x-date-pickers/internals/demo";
-import dayjs from "dayjs";
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -22,13 +18,9 @@ import dayjs from "dayjs";
 export default function JourneyListView({ travel }) {
     console.log('travel', travel);
     const apiv1 = useAPIv1();
-
     const setTravels = useSetRecoilState(travelState);
-
     const[isTitleEditing, setIsTitleEditing] = useState(false);
-    const[isDateEditing, setIsDateEditing] = useState(false);
 
-    // Travel Date는 Journey StartDate, EndDate를 계산해서 보여준다.
 
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
@@ -58,7 +50,6 @@ export default function JourneyListView({ travel }) {
     }
 
     return (
-        // Todo : 보기 <> 편집(Edit) 변경될 때 UI 변경해야함.
         <>
             {/*UI상태 - 보기*/}
             {/* 타이틀 사진 영역 */}
@@ -96,32 +87,10 @@ export default function JourneyListView({ travel }) {
                             </Typography>
                         </>
                 }
-                {
-                    isDateEditing ?
-                        <>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer
-                                    components={[
-                                        'DatePicker',
-                                        'MobileDatePicker',
-                                        'DesktopDatePicker',
-                                        'StaticDatePicker',
-                                    ]}
-                                >
-                                    <DemoItem label="시작날짜">
-                                        <DatePicker defaultValue={dayjs('2022-04-17')} />
-                                    </DemoItem>
-                                </DemoContainer>
-                            </LocalizationProvider>
-                        </>
-                        :
-                        <>
-                            <Typography variant='subtitle1'>
-                                {/*{travel.startDate} ~ {travel.endDate}*/}
-                                2023.01.01 ~ 2023.12.31
-                            </Typography>
-                        </>
-                }
+                <Typography variant='subtitle1'>
+                    {/*Travel Date는 Journey StartDate, EndDate를 계산해서 보여준다.*/}
+                    2023.01.01 ~ 2023.12.31
+                </Typography>
             </div>
 
 
