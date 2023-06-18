@@ -4,7 +4,7 @@ import {useAPIv1} from '../../apis/apiv1'
 
 import {Box, Container, TextField, Typography} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import './JourneyPill.css';
+import './JourneyListView.css';
 import AddIcon from "@mui/icons-material/Add";
 
 import CreateIcon from '@mui/icons-material/Create';
@@ -16,10 +16,10 @@ import {DemoContainer, DemoItem} from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
 
 /**
- * Journey 상세 정보를 보여주는 컴포넌트
+ * Journey 정보를 보여주는 컴포넌트
  * @param travel
  */
-export default function JourneyPill({ travel }) {
+export default function JourneyListView({ travel }) {
     console.log('travel', travel);
     const apiv1 = useAPIv1();
 

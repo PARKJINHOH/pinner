@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
-import JourneyPill from "./JourneyPill";
+import JourneyListView from "./JourneyListView";
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
@@ -205,7 +205,7 @@ export default function TravelPill({ travel }) {
                         height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
-                        <JourneyPill travel={travel}/>
+                        <JourneyListView travel={travel}/>
                     </Paper>
                 )
             }
@@ -229,7 +229,7 @@ function JourneyDatePill({ journeys }) {
         if (journeyCnt === journeys.length) {
             lineYn = false;
         }
-        return journeys.map(journey => <JourneyPill key={journey.id} journey={journey} lineYn={lineYn} />);
+        return journeys.map(journey => <JourneyListView key={journey.id} journey={journey} lineYn={lineYn} />);
     }
 
     return (
