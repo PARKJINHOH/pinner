@@ -11,20 +11,24 @@ import MenuItem from "@mui/material/MenuItem";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {isLoggedInState, travelerState, useDoLogout} from "../../states/traveler";
 import {AuthModalVisibility, authModalVisibilityState} from "../../states/modal";
-
-const drawerWidth = 70; // 사이드바 너비
-const panelWidth = 280; // 패널 너비
+import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 
 /**
  * 사이드바(SideBar) 컴포넌트
  * 사이드바 순서 : 지도Icon, 둘러보기
  */
 export default function Sidebar() {
+    // Panel Width
+    const _sidebarWidth = useRecoilValue(sidebarWidth);
+
     const traveler = useRecoilValue(travelerState);
     const isLoggedIn = useRecoilValue(isLoggedInState);
     const doLogout = useDoLogout();
 
     const setModalVisibility = useSetRecoilState(authModalVisibilityState);
+
+
+
     function showRegisterModal() {
         travelerClose();
         setModalVisibility(AuthModalVisibility.SHOW_REGISTER);
@@ -105,10 +109,10 @@ export default function Sidebar() {
             <Drawer
                 id={'sidebar'}
                 sx={{
-                    width: drawerWidth,
+                    width: _sidebarWidth,
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
-                        width: drawerWidth,
+                        width: _sidebarWidth,
                         boxSizing: 'border-box',
                     },
                 }}
@@ -154,18 +158,13 @@ export default function Sidebar() {
                 </Button>
             </Drawer>
 
-            {/* Panel - TravelerListView */}
-            {selectedDrawer === 'TravelListView' && (
-                <Paper
-                    id={'travelListView'}
-                    sx={{
-                    width: panelWidth, position: 'absolute', borderRadius: 0,
-                    height: '100vh', top: 0, left: drawerWidth, zIndex: '9',
-                    overflow: 'auto', // 스크롤바 추가
-                }}>
+
+            {
+                /* Panel - TravelerListView */
+                selectedDrawer === 'TravelListView' && (
                     <TravelListView/>
-                </Paper>
-            )}
+                )
+            }
 
             {
                 <Menu

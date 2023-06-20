@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
 import {selectedTravelIdState, travelState} from '../../states/travel'
+import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import {isLoggedInState, travelerState} from '../../states/traveler'
 import {useAPIv1} from '../../apis/apiv1'
 import NewTravelPill from './NewTravelPill'
 import TravelPill from './TravelPill'
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import {Box, Button, List, Typography} from "@mui/material";
+import {Box, Button, List, Paper, Typography} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
@@ -16,14 +17,16 @@ import PanToolIcon from '@mui/icons-material/PanTool';
 export default function TravelListView() {
     const apiv1 = useAPIv1();
 
+    // Panel Width
+    const _sidebarWidth = useRecoilValue(sidebarWidth);
+    const _travelListViewWidth = useRecoilValue(travelListViewWidth);
+
     const isLoggedIn = useRecoilValue(isLoggedInState);
     const [travelData, setTravelData] = useRecoilState(travelState);
     const [isEditingNewTravel, setIsEditingNewTravel] = useState(false);
     const traveler = useRecoilValue(travelerState);
     const [dndState, setDndState] = useState(true); // 드래그 앤 드롭 상태(초기값: true)
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
-
-    
 
     // GET /api/v1/travel
     useEffect(() => {
@@ -73,84 +76,92 @@ export default function TravelListView() {
 
 
     return (
-        <List className='sidebar-list-div'>
-            {
-                isLoggedIn ?
-                    <>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography sx={{ margin: '10px', fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
-                                나의 여행 둘러보기
-                            </Typography>
-                            <Box sx={{ flexGrow: 1 }} />
-                            <Button onClick={dndHandleClick}>
-                                <PanToolIcon
-                                    color = {dndState ? 'disabled' : 'primary'}
-                                />
-                            </Button>
-                        </Box>
-
-                        {
-                            <DragDropContext onDragEnd={onDragEnd}>
-                                <Droppable droppableId="ROOT">
-                                    {provided => (
-                                        <div {...provided.droppableProps} ref={provided.innerRef}>
-                                            {
-                                                travelData.map((t) => {
-                                                    return (
-                                                        <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey} isDragDisabled={dndState}>
-                                                            {
-                                                                provided => (
-                                                                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
-                                                                         onClick={() => {
-                                                                             if (dndState === false) {
-                                                                                 setDndState(true);
-                                                                             }
-                                                                         }}
-                                                                    >
-                                                                        <TravelPill draggable="true" key={t.id} travel={t} />
-                                                                    </div>
-                                                                )
-                                                            }
-                                                        </Draggable>
-                                                    )
-                                                })
-                                            }
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
-                        }
-
-                        {
-                            <Box
-                                className="travel-box"
-                                sx={{
-                                    backgroundColor: '#cecece', cursor: 'pointer',
-                                    display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
-                                }}
-                                onClick={() => {
-                                    setIsEditingNewTravel(!isEditingNewTravel);
-                                    if (dndState === false) {
-                                        setDndState(true);
-                                    }
-                                    setSelectedId(null);
-                                }}>
-                                <AddIcon sx={{fontSize: '60px'}}/>
-                                <Typography>
-                                    Click to add new Travel
+        <Paper
+            id={'travelListView'}
+            sx={{
+                width: _travelListViewWidth, position: 'absolute', borderRadius: 0,
+                height: '100vh', top: 0, left: _sidebarWidth, zIndex: '9',
+                overflow: 'auto', // 스크롤바 추가
+            }}>
+            <List className='sidebar-list-div'>
+                {
+                    isLoggedIn ?
+                        <>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography sx={{ margin: '10px', fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
+                                    나의 여행 둘러보기
                                 </Typography>
+                                <Box sx={{ flexGrow: 1 }} />
+                                <Button onClick={dndHandleClick}>
+                                    <PanToolIcon
+                                        color = {dndState ? 'disabled' : 'primary'}
+                                    />
+                                </Button>
                             </Box>
-                        }
-                        {
-                            isEditingNewTravel && <NewTravelPill onCancel={() => setIsEditingNewTravel(false)}/>
-                        }
-                    </>
-                    :
-                    <Box sx={{ padding: 2, fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'grey' }}>
-                        로그인 후 이용해주세요. ✈
-                    </Box>
-            }
-        </List>
+
+                            {
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="ROOT">
+                                        {provided => (
+                                            <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                {
+                                                    travelData.map((t) => {
+                                                        return (
+                                                            <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey} isDragDisabled={dndState}>
+                                                                {
+                                                                    provided => (
+                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                             onClick={() => {
+                                                                                 if (dndState === false) {
+                                                                                     setDndState(true);
+                                                                                 }
+                                                                             }}
+                                                                        >
+                                                                            <TravelPill draggable="true" key={t.id} travel={t} />
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            </Draggable>
+                                                        )
+                                                    })
+                                                }
+                                                {provided.placeholder}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                            }
+
+                            {
+                                <Box
+                                    className="travel-box"
+                                    sx={{
+                                        backgroundColor: '#cecece', cursor: 'pointer',
+                                        display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
+                                    }}
+                                    onClick={() => {
+                                        setIsEditingNewTravel(!isEditingNewTravel);
+                                        if (dndState === false) {
+                                            setDndState(true);
+                                        }
+                                        setSelectedId(null);
+                                    }}>
+                                    <AddIcon sx={{fontSize: '60px'}}/>
+                                    <Typography>
+                                        Click to add new Travel
+                                    </Typography>
+                                </Box>
+                            }
+                            {
+                                isEditingNewTravel && <NewTravelPill onCancel={() => setIsEditingNewTravel(false)}/>
+                            }
+                        </>
+                        :
+                        <Box sx={{ padding: 2, fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'grey' }}>
+                            로그인 후 이용해주세요. ✈
+                        </Box>
+                }
+            </List>
+        </Paper>
     )
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyListView from "./JourneyListView";
@@ -11,31 +11,20 @@ import { centerOfPoints, radiusOfPoints } from '../../utils';
 
 import {Box, Paper, Typography} from '@mui/material';
 import Stack from "@mui/material/Stack";
+import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 
-const journeyPanelWidth = 350; // 패널 너비
 
 /**
  * 여행 목록(Travel List)에서의 여행(Travel) 컴포넌트
  * @param travel
  */
 export default function TravelPill({ travel }) {
-    const [travelListViewWidth, setTravelListViewWidth] = useState(null);
-    const [sidebarWidth, setSidebarWidth] = useState(null);
+    const apiv1 = useAPIv1();
 
-    useEffect(() => {
-        const travelListView = document.getElementById("travelListView");
-        const sidebar = document.getElementById("sidebar");
-
-        if (travelListView) {
-            // travelListView의 너비 가지고와서 저장
-            setTravelListViewWidth(travelListView.offsetWidth);
-        }
-
-        if (sidebar) {
-            // sidebar의 너비 가지고와서 저장
-            setSidebarWidth(sidebar.offsetWidth);
-        }
-    }, []);
+    // Panel Width
+    const _sidebarWidth = useRecoilValue(sidebarWidth);
+    const _travelListViewWidth = useRecoilValue(travelListViewWidth);
+    const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
     const [isRenaming, setIsRenaming] = useState(false);
 
@@ -43,8 +32,6 @@ export default function TravelPill({ travel }) {
 
     const [selectedId, setSelectedId] = useRecoilState(selectedTravelIdState);
     const isSelected = travel.id === selectedId;
-
-    const apiv1 = useAPIv1();
 
     const setTravels = useSetRecoilState(travelState);
 
@@ -201,8 +188,8 @@ export default function TravelPill({ travel }) {
             {
                 selectedTravelId === travel.id && (
                     <Paper sx={{
-                        width: journeyPanelWidth, position: 'fixed', borderRadius: 0,
-                        height: '100vh', top: 0, left: travelListViewWidth + sidebarWidth, zIndex: '9',
+                        width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
+                        height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
                         overflow: 'auto', // 스크롤바 추가
                     }}>
                         <JourneyListView travel={travel}/>
