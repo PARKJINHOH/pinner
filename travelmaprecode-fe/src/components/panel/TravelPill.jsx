@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
-import JourneyListView from "./JourneyListView";
+import JourneyList from "./JourneyList";
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
@@ -183,7 +183,7 @@ export default function TravelPill({ travel }) {
             {
                 /* 여정(Journey)목록 리스트 패널 */
                 selectedTravelId === travel.id && (
-                    <JourneyListView travel={travel}/>
+                    <JourneyList travel={travel}/>
                 )
             }
         </>
@@ -206,7 +206,7 @@ function JourneyDatePill({ journeys }) {
         if (journeyCnt === journeys.length) {
             lineYn = false;
         }
-        return journeys.map(journey => <JourneyListView key={journey.id} journey={journey} lineYn={lineYn} />);
+        return journeys.map(journey => <JourneyList key={journey.id} journey={journey} lineYn={lineYn} />);
     }
 
     return (

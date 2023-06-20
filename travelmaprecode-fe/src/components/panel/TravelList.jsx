@@ -14,7 +14,7 @@ import PanToolIcon from '@mui/icons-material/PanTool';
 /**
  * 여행(Travel) 목록을 보여주는 컴포넌트
  */
-export default function TravelListView() {
+export default function TravelList() {
     const apiv1 = useAPIv1();
 
     // Panel Width

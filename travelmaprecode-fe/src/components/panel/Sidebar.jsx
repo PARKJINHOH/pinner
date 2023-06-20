@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import './Sidebar.css'
-import TravelListView from './TravelListView'
+import TravelList from './TravelList'
 import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Typography} from "@mui/material";
 import MapIcon from "@mui/icons-material/Map";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -133,9 +133,9 @@ export default function Sidebar() {
                     </ListItem>
                     <ListItem disablePadding>
                         <ListItemButton
-                            selected={selectedDrawer === 'TravelListView'}
+                            selected={selectedDrawer === 'TravelList'}
                             sx={listItemButtonStyles}
-                            onClick={() => handleItemClick('TravelListView')}
+                            onClick={() => handleItemClick('TravelList')}
                         >
                             <ListItemIcon sx={listItemIconStyles}>
                                 <LanguageIcon sx={{fontSize: 30}}/>
@@ -161,8 +161,8 @@ export default function Sidebar() {
 
             {
                 /* 여행(Travel)목록 리스트 패널 */
-                selectedDrawer === 'TravelListView' && (
-                    <TravelListView/>
+                selectedDrawer === 'TravelList' && (
+                    <TravelList/>
                 )
             }
 

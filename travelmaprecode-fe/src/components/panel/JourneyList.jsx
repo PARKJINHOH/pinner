@@ -4,7 +4,7 @@ import {useAPIv1} from '../../apis/apiv1'
 
 import {Box, Paper, Container, TextField, Typography} from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import './JourneyListView.css';
+import './JourneyList.css';
 import AddIcon from "@mui/icons-material/Add";
 
 import CreateIcon from '@mui/icons-material/Create';
@@ -16,7 +16,7 @@ import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../sta
  * Journey 정보를 보여주는 컴포넌트
  * @param travel
  */
-export default function JourneyListView({ travel }) {
+export default function JourneyList({ travel }) {
     console.log('travel', travel);
     const apiv1 = useAPIv1();
 
@@ -107,6 +107,7 @@ export default function JourneyListView({ travel }) {
 
 
                 {/* Journey 목록 영역 */}
+                {/* Todo : JourneyPill.jsx로 분리하기 */}
                 <Container maxWidth="sm" className="journey-conatiner">
                     <Box className="journey-list-box">
                         {/* 이미지 */}
@@ -133,7 +134,7 @@ export default function JourneyListView({ travel }) {
                     <div className="journey-tag">강릉만두</div>
                     <div className="journey-tag">강릉해변가</div>
                 </Container>
-
+                {/* Todo : JourneyPill.jsx로 분리하기 */}
 
                 {/*Jorney 추가 영역*/}
                 <Box className="journey-add-box">
