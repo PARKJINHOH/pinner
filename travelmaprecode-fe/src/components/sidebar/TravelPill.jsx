@@ -21,11 +21,6 @@ import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../sta
 export default function TravelPill({ travel }) {
     const apiv1 = useAPIv1();
 
-    // Panel Width
-    const _sidebarWidth = useRecoilValue(sidebarWidth);
-    const _travelListViewWidth = useRecoilValue(travelListViewWidth);
-    const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
-
     const [isRenaming, setIsRenaming] = useState(false);
 
     const setNewJourneyStep = useSetRecoilState(newJourneyStepState);
@@ -186,14 +181,9 @@ export default function TravelPill({ travel }) {
             </Stack>
 
             {
+                /* 여정(Journey)목록 리스트 패널 */
                 selectedTravelId === travel.id && (
-                    <Paper sx={{
-                        width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
-                        height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
-                        overflow: 'auto', // 스크롤바 추가
-                    }}>
-                        <JourneyListView travel={travel}/>
-                    </Paper>
+                    <JourneyListView travel={travel}/>
                 )
             }
         </>

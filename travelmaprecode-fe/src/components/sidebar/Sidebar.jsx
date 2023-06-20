@@ -160,7 +160,7 @@ export default function Sidebar() {
 
 
             {
-                /* Panel - TravelerListView */
+                /* 여행(Travel)목록 리스트 패널 */
                 selectedDrawer === 'TravelListView' && (
                     <TravelListView/>
                 )
