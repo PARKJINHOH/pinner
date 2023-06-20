@@ -3,7 +3,7 @@ import {RecoilRoot} from 'recoil';
 import React from 'react';
 import BasePage from './pages/BasePage';
 import { Box,  CssBaseline} from "@mui/material";
-import Sidebar from "./components/sidebar/Sidebar";
+import Sidebar from "./components/panel/Sidebar";
 
 function App() {
     return (
