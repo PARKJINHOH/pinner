@@ -11,6 +11,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {travelState} from "../../states/travel";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import NewJourneyPill from "./NewJourneyPill";
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -27,6 +28,7 @@ export default function JourneyList({ travel }) {
 
     const setTravels = useSetRecoilState(travelState);
     const[isTitleEditing, setIsTitleEditing] = useState(false);
+    const[isEditingNewJourney, setIsEditingNewJourney] = useState(false);
 
 
     /**
@@ -108,42 +110,52 @@ export default function JourneyList({ travel }) {
 
                 {/* Journey 목록 영역 */}
                 {/* Todo : JourneyPill.jsx로 분리하기 */}
-                <Container maxWidth="sm" className="journey-conatiner">
-                    <Box className="journey-list-box">
-                        {/* 이미지 */}
-                    </Box>
-                    <Typography variant='h6'>터키, 이스탄불</Typography>
-                    <div className="journey-tag">카파도키아</div>
-                    <div className="journey-tag">괴레메</div>
-                    <div className="journey-tag">카파도키아</div>
-                </Container>
-                <Container maxWidth="sm" className="journey-conatiner">
-                    <Box className="journey-list-box">
-                        {/* 이미지 */}
-                    </Box>
-                    <Typography variant='h6'>일본, 오사카</Typography>
-                    <div className="journey-tag">코쿠젠</div>
-                    <div className="journey-tag">라멘</div>
-                    <div className="journey-tag">소바</div>
-                </Container>
-                <Container maxWidth="sm" className="journey-conatiner">
-                    <Box className="journey-list-box">
-                        {/* 이미지 */}
-                    </Box>
-                    <Typography variant='h6'>대한민국, 강릉</Typography>
-                    <div className="journey-tag">강릉만두</div>
-                    <div className="journey-tag">강릉해변가</div>
-                </Container>
+                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
+                {/*    <Box className="journey-list-box">*/}
+                {/*        /!* 이미지 *!/*/}
+                {/*    </Box>*/}
+                {/*    <Typography variant='h6'>터키, 이스탄불</Typography>*/}
+                {/*    <div className="journey-tag">카파도키아</div>*/}
+                {/*    <div className="journey-tag">괴레메</div>*/}
+                {/*    <div className="journey-tag">카파도키아</div>*/}
+                {/*</Container>*/}
+                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
+                {/*    <Box className="journey-list-box">*/}
+                {/*        /!* 이미지 *!/*/}
+                {/*    </Box>*/}
+                {/*    <Typography variant='h6'>일본, 오사카</Typography>*/}
+                {/*    <div className="journey-tag">코쿠젠</div>*/}
+                {/*    <div className="journey-tag">라멘</div>*/}
+                {/*    <div className="journey-tag">소바</div>*/}
+                {/*</Container>*/}
+                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
+                {/*    <Box className="journey-list-box">*/}
+                {/*        /!* 이미지 *!/*/}
+                {/*    </Box>*/}
+                {/*    <Typography variant='h6'>대한민국, 강릉</Typography>*/}
+                {/*    <div className="journey-tag">강릉만두</div>*/}
+                {/*    <div className="journey-tag">강릉해변가</div>*/}
+                {/*</Container>*/}
                 {/* Todo : JourneyPill.jsx로 분리하기 */}
 
                 {/*Jorney 추가 영역*/}
-                <Box className="journey-add-box">
+                <Box
+                    className="journey-add-box"
+                    onClick={() => {
+                        setIsEditingNewJourney(!isEditingNewJourney)
+                    }}
+                >
                     <AddIcon sx={{fontSize: '60px'}}/>
                     <Typography>
                         Click to add new Journey
                     </Typography>
                 </Box>
             </Paper>
+
+            {
+                /* 여정 글쓰기 */
+                isEditingNewJourney && <NewJourneyPill travel={travel}/>
+            }
         </>
     )
 }

@@ -1,0 +1,14 @@
+.newJourney-box {
+    margin: 10px auto 0;
+}
+
+.newJourney-arrowBack {
+    display: flex;
+    align-items: center;
+}
+
+.newJourney-date-underline {
+    margin-left: 25px;
+    text-decoration: underline;
+    cursor: pointer;
+}
