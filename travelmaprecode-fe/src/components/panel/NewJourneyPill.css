@@ -7,8 +7,20 @@
     align-items: center;
 }
 
-.newJourney-date-underline {
+.newJourney-date {
     margin-left: 25px;
     text-decoration: underline;
     cursor: pointer;
+}
+.newJourney-tags-div {
+}
+.newJourney-tags {
+    --tag-pad: 0.1em;
+    --tag-inset-shadow-size: 2em;
+    font-size: 5px;
+    margin-left: 25px;
+    width: 100%;
+    max-width: 300px;
+    border: 0;
+    border-bottom: 1px solid black;
 }

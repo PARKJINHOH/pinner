@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
@@ -14,6 +14,7 @@ import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import "moment/locale/ko";
 import moment from "moment";
+import Tags from "@yaireo/tagify/dist/react.tagify";
 
 /**
  * Journey 글쓰기 컴포넌트
@@ -31,8 +32,22 @@ export default function NewJourneyPill({ travel }) {
     const currentDate = moment().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(moment(currentDate));
 
+    const [hashTags, setHashTags] = useState([]);
+
     const setTravels = useSetRecoilState(travelState);
     const[isTitleEditing, setIsTitleEditing] = useState(false);
+
+
+
+    /**
+     * HashTag
+     */
+    const onHashTagChange = useCallback((e) => {
+        let map = e.detail.tagify.value.map(e =>
+            e.value
+        );
+        setHashTags(map);
+    }, []);
 
 
     function ButtonField(props) {
@@ -93,11 +108,19 @@ export default function NewJourneyPill({ travel }) {
                             inputProps={{maxLength: 13}}
                         />
                     </div>
-                    <div className="newJourney-date-underline">
+                    <div className="newJourney-date">
                         <ButtonDatePicker
                             label={`${pickerDate.format('YYYY-MM-DD')}`}
                             value={pickerDate}
                             onChange={(newPickerDate) => setPickerDate(newPickerDate)}
+                        />
+                    </div>
+                    <div className="newJourney-tags-div">
+                        <Tags
+                            className="newJourney-tags"
+                            settings={{ maxTags: '5' }}
+                            onChange={onHashTagChange}
+                            placeholder='태그 최대 5개'
                         />
                     </div>
                 </Box>
