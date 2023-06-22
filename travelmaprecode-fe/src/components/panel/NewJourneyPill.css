@@ -7,6 +7,17 @@
     align-items: center;
 }
 
+.newJourney-title {
+    width: 250px;
+    height: 40px;
+    font-size: 14px;
+}
+
+.newJourney-location {
+    margin: 0 auto;
+
+}
+
 .newJourney-date {
     margin-left: 25px;
     margin-top: 5px;

@@ -168,11 +168,11 @@ export default function BasePage() {
             <Toaster />
             <RegisterModal />
             <LoginModal />
-            {
-                // selectedTravel가 undefinded인 상태가 있을 수 있음.
-                // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.
-                newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />
-            }
+            {/*{*/}
+            {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
+            {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
+            {/*    newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />*/}
+            {/*}*/}
 
             <LoadScript
                 libraries={libraries}

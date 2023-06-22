@@ -2,13 +2,14 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, imageListItemClasses, Input, Paper, Typography} from "@mui/material";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, imageListItemClasses, Input, Paper, Snackbar, Typography} from "@mui/material";
 import './NewJourneyPill.css';
 
-import {useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 
 import Tags from "@yaireo/tagify/dist/react.tagify";
@@ -17,6 +18,9 @@ import dayjs from "dayjs";
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import IconButton from "@mui/material/IconButton";
 import {Divider} from "@mantine/core";
+import {toast} from "react-hot-toast";
+import {travelState} from "../../states/travel";
+import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
 
 
 /**
@@ -32,13 +36,67 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const _travelListViewWidth = useRecoilValue(travelListViewWidth);
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
+    const _setTravels = useSetRecoilState(travelState);
+    const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
+    const [newLocation, setNewLocation] = useRecoilState(newLocationState);
+
+    const [snackbarState, setSnackbarState] = useState({open: false, vertical: 'top', horizontal: 'center'});
+    const { vertical, horizontal, open } = snackbarState;
+
     const currentDate = dayjs().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
-
-    const [hashTags, setHashTags] = useState([]);
-    // 이미지 포스팅
+    const [hashTags, setHashTags] = useState([])
     const [photos, _setPhotos] = useState([]);
+
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
+
+    /**
+     * 1. POST 요청
+     * 2. 응답결과가 정상일 경우
+     */
+    const onCreate = async () => {
+
+        // 사진 업로드
+        let photoIds = [];
+        try {
+            photoIds = await Promise.all(photos.map(uploadImage));
+        } catch (err) {
+            console.error(`failed to upload photos: ${err}`);
+            toast.error("사진을 업로드 하지 못했어요.")
+            return;
+        }
+
+        // Journey 생성
+        const journeyData = JSON.stringify({
+            date: dayjs(pickerDate).format('YYYY-MM-DD'),
+            geoLocation: newLocation,
+            photos: photoIds,
+            hashTags: hashTags
+        });
+
+        await apiv1.post("/travel/" + travel.id + "/journey", journeyData)
+            .then((response) => {
+                if (response.status === 200) {
+                    _setTravels(response.data);
+                }
+            });
+    }
+
+    /**
+     * @param {File} file
+     * @returns {String}
+     */
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("photo", file);
+
+        const resp = await fetch("/photo", {
+            method: "POST",
+            body: formData,
+        });
+
+        return (await resp.json()).link;
+    }
 
     /**
      * HashTag
@@ -59,6 +117,17 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         const combinedPhotos = [...photos, ...additionalPhotos];
         console.log(photos);
         _setPhotos(combinedPhotos);
+    };
+
+    const snackbarOpen = (newState) => {
+        setSnackbarState({ open: true, ...newState });
+    }
+
+    const snackbarClose = (event, reason) => {
+        if(newJourneyStep === NewJourneyStep.LOCATING){
+            return;
+        }
+        setSnackbarState({ ...snackbarState, open: false });
     };
 
 
@@ -118,6 +187,15 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     return (
         <>
+            <div>
+                <Snackbar
+                    anchorOrigin={{vertical, horizontal}}
+                    open={open}
+                    onClose={snackbarClose}
+                    message="지도에서 위치를 클릭해주세요."
+                    key={vertical + horizontal}
+                />
+            </div>
             <Paper sx={{
                 width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
                 height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
@@ -132,9 +210,18 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             }}
                         />
                         <Input
-                            placeholder="여행한 장소를 입력해주세요.(13자 이내)"
-                            sx={{width: 285, fontSize:14, height: 40}}
-                            inputProps={{maxLength: 13}}
+                            className="newJourney-title"
+                            placeholder="여행한 장소를 입력해주세요."
+                            inputProps={{maxLength: 50}}
+                            value={newLocation.name}
+                            onChange={e => setNewLocation({...newLocation, name: e.target.value})}
+                        />
+                        <LocationOnIcon
+                            className="newJourney-location"
+                            onClick={() => {
+                                snackbarOpen({vertical: "top", horizontal: "center"});
+                                setNewJourneyStep(NewJourneyStep.LOCATING);
+                            }}
                         />
                     </div>
                     <div className="newJourney-date">
@@ -147,7 +234,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     <div className="newJourney-tags-div">
                         <Tags
                             className="newJourney-tags"
-                            settings={{ maxTags: '5' }}
+                            settings={{maxTags: '5'}}
                             onChange={onHashTagChange}
                             placeholder='태그 최대 5개'
                         />
@@ -167,7 +254,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                                         actionPosition="right"
                                         actionIcon={
                                             <IconButton onClick={() => removePhoto(index)}>
-                                                <DeleteForeverIcon fontSize="small" />
+                                                <DeleteForeverIcon fontSize="small"/>
                                             </IconButton>
                                         }
                                     />
@@ -190,8 +277,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         </Typography>
                     </Dropzone>
                 </Box>
-
+                <button className="newJourney-save" onClick={() => {
+                    onCreate();
+                }}>Save
+                </button>
             </Paper>
         </>
-    )
+    );
 }
