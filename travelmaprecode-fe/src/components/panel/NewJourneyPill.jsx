@@ -1,18 +1,22 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, Input, Paper, Typography} from "@mui/material";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, imageListItemClasses, Input, Paper, Typography} from "@mui/material";
 import './NewJourneyPill.css';
 
 import {useRecoilValue} from "recoil";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import IconButton from "@mui/material/IconButton";
+
 
 /**
  * Journey 글쓰기 컴포넌트
@@ -31,7 +35,9 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
 
     const [hashTags, setHashTags] = useState([]);
-
+    // 이미지 포스팅
+    const [photos, _setPhotos] = useState([]);
+    const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     /**
      * HashTag
@@ -42,6 +48,17 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         );
         setHashTags(map);
     }, []);
+
+    const addPhotos = (newPhotos) => {
+        let limitPhoto = 8; // 최대 사진 갯수
+
+        const currentPhotoCount = photos.length;
+        const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
+        const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
+        const combinedPhotos = [...photos, ...additionalPhotos];
+        console.log(photos);
+        _setPhotos(combinedPhotos);
+    };
 
 
     /**
@@ -136,14 +153,44 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     </div>
                 </Box>
 
-                {/* 사진 미리보기 */}
-                <Box className="newJourney-add-picture">
-                    <Typography variant="p" align="center" color="textSecondary">
-                        클릭 혹은 <br/>
-                        드래그 앤 드랍으로 <br/>
-                        사진 추가
-                    </Typography>
+                <Box>
+                    <ImageList variant="masonry" cols={2} gap={8}>
+                        {photos.map((file, index) => {
+                            const tmpPhotoUrl = URL.createObjectURL(file);
+                            return (
+                                <ImageListItem key={file.img}>
+                                    <ImageListItemBar
+                                        sx={{
+                                            background: "transparent"
+                                        }}
+                                        position="top"
+                                        actionPosition="right"
+                                        actionIcon={
+                                            <IconButton onClick={() => removePhoto(index)}>
+                                                <DeleteForeverIcon fontSize="small" />
+                                            </IconButton>
+                                        }
+                                    />
+                                    <img
+                                        src={tmpPhotoUrl}
+                                        srcSet={tmpPhotoUrl}
+                                        loading="lazy"
+                                        alt="tmpImg"
+                                    />
+                                </ImageListItem>
+                            );
+                        })}
+                    </ImageList>
+                    <Dropzone className="newJourney-add-picture"
+                              key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
+                        <Typography variant="p" align="center" color="textSecondary">
+                            클릭 혹은 <br/>
+                            드래그 앤 드랍으로 <br/>
+                            사진 추가
+                        </Typography>
+                    </Dropzone>
                 </Box>
+
 
             </Paper>
         </>
