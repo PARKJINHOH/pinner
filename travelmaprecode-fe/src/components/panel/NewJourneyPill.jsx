@@ -16,6 +16,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import IconButton from "@mui/material/IconButton";
+import {Divider} from "@mantine/core";
 
 
 /**
@@ -152,8 +153,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         />
                     </div>
                 </Box>
-
-                <Box>
+                <Box className="newJourney-imageBox">
                     <ImageList variant="masonry" cols={2} gap={8}>
                         {photos.map((file, index) => {
                             const tmpPhotoUrl = URL.createObjectURL(file);
@@ -190,7 +190,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         </Typography>
                     </Dropzone>
                 </Box>
-
 
             </Paper>
         </>
