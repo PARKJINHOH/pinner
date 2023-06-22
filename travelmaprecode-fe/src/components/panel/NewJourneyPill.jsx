@@ -2,25 +2,23 @@ import React, {useCallback, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, Input, Paper} from "@mui/material";
+import {Box, Button, Input, Paper, Typography} from "@mui/material";
 import './NewJourneyPill.css';
 
-import {useRecoilValue, useSetRecoilState} from "recoil";
-import {travelState} from "../../states/travel";
+import {useRecoilValue} from "recoil";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 
-import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import "moment/locale/ko";
-import moment from "moment";
 import Tags from "@yaireo/tagify/dist/react.tagify";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 /**
  * Journey 글쓰기 컴포넌트
  * @param travel
  */
-export default function NewJourneyPill({ travel }) {
+export default function NewJourneyPill({ travel, editingCancel }) {
     console.log('travel', travel);
     const apiv1 = useAPIv1();
 
@@ -29,14 +27,10 @@ export default function NewJourneyPill({ travel }) {
     const _travelListViewWidth = useRecoilValue(travelListViewWidth);
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
-    const currentDate = moment().format('YYYY-MM-DD');
-    const [pickerDate, setPickerDate] = useState(moment(currentDate));
+    const currentDate = dayjs().format('YYYY-MM-DD');
+    const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
 
     const [hashTags, setHashTags] = useState([]);
-
-    const setTravels = useSetRecoilState(travelState);
-    const[isTitleEditing, setIsTitleEditing] = useState(false);
-
 
 
     /**
@@ -50,6 +44,12 @@ export default function NewJourneyPill({ travel }) {
     }, []);
 
 
+    /**
+     * DatePicker용 Button 함수
+     * @param props
+     * @returns {JSX.Element}
+     * @constructor
+     */
     function ButtonField(props) {
         const {
             setOpen,
@@ -70,16 +70,22 @@ export default function NewJourneyPill({ travel }) {
                 aria-label={ariaLabel}
                 onClick={() => setOpen?.((prev) => !prev)}
             >
-                {label ?? 'Pick a date'}
+                {label}
             </Button>
         );
     }
 
+    /**
+     * 클릭시 DatePicker 관련 함수
+     * @param props
+     * @returns {JSX.Element}
+     * @constructor
+     */
     function ButtonDatePicker(props) {
         const [open, setOpen] = useState(false);
 
         return (
-            <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="koKR">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     slots={{ field: ButtonField, ...props.slots }}
                     slotProps={{ field: { setOpen } }}
@@ -101,10 +107,15 @@ export default function NewJourneyPill({ travel }) {
             }}>
                 <Box className="newJourney-box">
                     <div className="newJourney-arrowBack">
-                        <ArrowBackIosIcon/>
+                        <ArrowBackIosIcon
+                            sx={{marginLeft: 2}}
+                            onClick={() => {
+                                editingCancel();
+                            }}
+                        />
                         <Input
                             placeholder="여행한 장소를 입력해주세요.(13자 이내)"
-                            sx={{width: 300, fontSize:14, height: 40}}
+                            sx={{width: 285, fontSize:14, height: 40}}
                             inputProps={{maxLength: 13}}
                         />
                     </div>
@@ -123,6 +134,15 @@ export default function NewJourneyPill({ travel }) {
                             placeholder='태그 최대 5개'
                         />
                     </div>
+                </Box>
+
+                {/* 사진 미리보기 */}
+                <Box className="newJourney-add-picture">
+                    <Typography variant="p" align="center" color="textSecondary">
+                        클릭 혹은 <br/>
+                        드래그 앤 드랍으로 <br/>
+                        사진 추가
+                    </Typography>
                 </Box>
 
             </Paper>

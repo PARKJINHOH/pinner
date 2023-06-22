@@ -28,7 +28,7 @@ export default function JourneyList({ travel }) {
 
     const setTravels = useSetRecoilState(travelState);
     const[isTitleEditing, setIsTitleEditing] = useState(false);
-    const[isEditingNewJourney, setIsEditingNewJourney] = useState(false);
+    const[isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
 
 
     /**
@@ -142,7 +142,7 @@ export default function JourneyList({ travel }) {
                 <Box
                     className="journey-add-box"
                     onClick={() => {
-                        setIsEditingNewJourney(!isEditingNewJourney)
+                        setIsEditingNewJourneyState(!isEditingNewJourneyState)
                     }}
                 >
                     <AddIcon sx={{fontSize: '60px'}}/>
@@ -154,7 +154,7 @@ export default function JourneyList({ travel }) {
 
             {
                 /* 여정 글쓰기 */
-                isEditingNewJourney && <NewJourneyPill travel={travel}/>
+                isEditingNewJourneyState && <NewJourneyPill travel={travel} editingCancel={() => setIsEditingNewJourneyState(false)}/>
             }
         </>
     )
