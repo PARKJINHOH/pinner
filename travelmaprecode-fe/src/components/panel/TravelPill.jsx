@@ -4,14 +4,15 @@ import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyList from "./JourneyList";
+import './TravelPill.css';
 
 import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
-import { centerOfPoints, radiusOfPoints } from '../../utils';
+import { centerOfPoints } from '../../utils';
 
-import {Box, Paper, Typography} from '@mui/material';
+import {Box, Chip, Paper, Typography} from '@mui/material';
 import Stack from "@mui/material/Stack";
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import {grey} from "@mui/material/colors";
 
 
 /**
@@ -41,6 +42,10 @@ export default function TravelPill({ travel }) {
 
     // journeySideBar 상태
     const [selectedTravelId, setSelectedTravelId] = useRecoilState(selectedTravelIdState);
+
+    const journeyCnt = travel.journeys.length;
+    const journeyPhotoCnt = journeyList.reduce((acc, v) => v.photos.length + acc, 0);
+
 
     function onJourneyClick() {
         console.log(travel);
@@ -159,23 +164,25 @@ export default function TravelPill({ travel }) {
                 sx={{marginBottom: '15px'}}
                 onClick={onJourneyClick}
             >
-                <Box
-                    className="travel-box"
-                    sx={{
-                        backgroundColor: '#cecece',
-                        marginBottom: '5px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                >
-                    {travel.journeys.size > 0 ? (
-                        <img src={travel.journeys[0].image} alt="travel" width="100%" height="100%"/>
-                    ) : (
-                        <Typography align="center" color="textSecondary">
-                            사진 없음
-                        </Typography>
-                    )}
+                <Box className='travelPill-box'>
+                    <div className="travelPill-info">
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                              label={`${journeyCnt} 장소`}
+                        />
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                              label={`${journeyPhotoCnt} 이미지`}
+                        />
+                    </div>
+                    <div className="travelPill-thumbnail">
+                        {/* Todo : 썸네일(thumbnail) DB 추가 하기*/}
+                        {travel.journeys.size > 0 ? (
+                            <img src={travel.journeys[0].image} alt="travel" width="100%" height="100%"/>
+                        ) : (
+                            <Typography color="textSecondary">
+                                사진 없음
+                            </Typography>
+                        )}
+                    </div>
                 </Box>
                 {isRenaming ? renameTextInput : travelTitle}
             </Stack>
