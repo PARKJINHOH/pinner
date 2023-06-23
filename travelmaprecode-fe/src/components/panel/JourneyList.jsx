@@ -13,6 +13,7 @@ import {travelState} from "../../states/travel";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import NewJourneyPill from "./NewJourneyPill";
 import JourneyPill from "./JourneyPill";
+import dayjs from "dayjs";
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -31,6 +32,9 @@ export default function JourneyList({ travel }) {
     const[isTitleEditing, setIsTitleEditing] = useState(false);
     const[isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
 
+    const sortedJourneys = [...travel.journeys].sort((a, b) => a.date.localeCompare(b.date));
+    const startDate = dayjs(sortedJourneys[0].date).format("YYYY년 MM월 DD일");
+    const endDate = dayjs(sortedJourneys[sortedJourneys.length - 1].date).format("YYYY년 MM월 DD일");
 
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
@@ -103,8 +107,7 @@ export default function JourneyList({ travel }) {
                             </>
                     }
                     <Typography variant='subtitle1'>
-                        {/*Todo : Travel Date는 Journey StartDate, EndDate를 계산해서 보여준다.*/}
-                        2023.01.01 ~ 2023.12.31
+                        {startDate} ~ {endDate}
                     </Typography>
                 </div>
 
