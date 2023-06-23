@@ -12,6 +12,7 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import {travelState} from "../../states/travel";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import NewJourneyPill from "./NewJourneyPill";
+import JourneyPill from "./JourneyPill";
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -68,7 +69,7 @@ export default function JourneyList({ travel }) {
                 {/*UI상태 - 보기*/}
                 {/* 타이틀 사진 영역 */}
                 <Box
-                    className="journey-box"
+                    className="journeyList-box"
                     sx={{
                         backgroundColor: '#cecece',
                         marginBottom: '5px',
@@ -78,7 +79,7 @@ export default function JourneyList({ travel }) {
                 </Box>
 
                 {/* 타이틀 영역 */}
-                <div align="center" className="journey-title">
+                <div align="center" className="journeyList-title">
                     {
                         isTitleEditing ?
                             <>
@@ -102,45 +103,18 @@ export default function JourneyList({ travel }) {
                             </>
                     }
                     <Typography variant='subtitle1'>
-                        {/*Travel Date는 Journey StartDate, EndDate를 계산해서 보여준다.*/}
+                        {/*Todo : Travel Date는 Journey StartDate, EndDate를 계산해서 보여준다.*/}
                         2023.01.01 ~ 2023.12.31
                     </Typography>
                 </div>
 
-
-                {/* Journey 목록 영역 */}
-                {/* Todo : JourneyPill.jsx로 분리하기 */}
-                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
-                {/*    <Box className="journey-list-box">*/}
-                {/*        /!* 이미지 *!/*/}
-                {/*    </Box>*/}
-                {/*    <Typography variant='h6'>터키, 이스탄불</Typography>*/}
-                {/*    <div className="journey-tag">카파도키아</div>*/}
-                {/*    <div className="journey-tag">괴레메</div>*/}
-                {/*    <div className="journey-tag">카파도키아</div>*/}
-                {/*</Container>*/}
-                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
-                {/*    <Box className="journey-list-box">*/}
-                {/*        /!* 이미지 *!/*/}
-                {/*    </Box>*/}
-                {/*    <Typography variant='h6'>일본, 오사카</Typography>*/}
-                {/*    <div className="journey-tag">코쿠젠</div>*/}
-                {/*    <div className="journey-tag">라멘</div>*/}
-                {/*    <div className="journey-tag">소바</div>*/}
-                {/*</Container>*/}
-                {/*<Container maxWidth="sm" className="journey-conatiner">*/}
-                {/*    <Box className="journey-list-box">*/}
-                {/*        /!* 이미지 *!/*/}
-                {/*    </Box>*/}
-                {/*    <Typography variant='h6'>대한민국, 강릉</Typography>*/}
-                {/*    <div className="journey-tag">강릉만두</div>*/}
-                {/*    <div className="journey-tag">강릉해변가</div>*/}
-                {/*</Container>*/}
-                {/* Todo : JourneyPill.jsx로 분리하기 */}
+                {
+                    travel.journeys.map(journey => <JourneyPill key={journey.id} journey={journey} />)
+                }
 
                 {/*Jorney 추가 영역*/}
                 <Box
-                    className="journey-add-box"
+                    className="journeyList-add-box"
                     onClick={() => {
                         setIsEditingNewJourneyState(!isEditingNewJourneyState)
                     }}

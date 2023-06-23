@@ -1,45 +1,16 @@
-.journey-list-div {
-    justify-content: space-between;
-    display: flex;
-    flex-direction: column;
-    /* height: max-content; */
-}
-
-.journey-box {
+.journeyList-box {
     height: 200px;
     margin: 5px;
     padding: 10px;
     border-radius: 5px;
 }
 
-.journey-title {
+.journeyList-title {
     margin-top: 10px;
     margin-bottom: 60px;
 }
 
-.journey-list-box {
-    border-radius: 10px;
-    height: 225px; /*4:3 비율*/
-    width: 300px; /*4:3 비율*/
-    background-color: cornflowerblue;
-}
-
-.journey-conatiner {
-    margin-top: 30px;
-}
-
-.journey-tag {
-    display: inline-block;
-    padding: 4px;
-    margin-right: 4px;
-    border-radius: 7px;
-    background-color: #f2f2f2;
-    color: #333;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.journey-add-box {
+.journeyList-add-box {
     margin: 30px auto 0;
     border-radius: 10px;
     height: 225px; /*4:3 비율*/
