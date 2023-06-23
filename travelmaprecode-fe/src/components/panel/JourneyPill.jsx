@@ -1,10 +1,11 @@
 import React from 'react';
 
-import {Box, Container, Typography} from "@mui/material";
+import {Box, Chip, Container, Typography} from "@mui/material";
 import './JourneyPill.css';
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {travelState} from "../../states/travel";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import dayjs from "dayjs";
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -20,28 +21,41 @@ export default function JourneyPill({ journey }) {
 
     const setTravels = useSetRecoilState(travelState);
 
+    const journeyPhotoCnt = journey.photos.length;
+    const journeyDate = dayjs(journey.date).format("YYYY년 MM월 DD일");
+
 
     return (
         <>
             <Container maxWidth="sm" className="journeyPill-container">
-                <Box className="journeyPill-list-box">
-                    {journey.photos.length > 0 ? (
-                        (() => {
-                            return (
-                                <img
-                                    src={`/photo/${journey.photos[0]}`}
-                                    loading="lazy"
-                                    alt="photo"
-                                    width="100%"
-                                    height="100%"
-                                />
-                            );
-                        })()
-                    ) : (
-                        <Typography align="center" color="textSecondary">
-                            사진 없음
-                        </Typography>
-                    )}
+                <Box className="journeyPill-box">
+                    <div className="journeyPill-thumbnail">
+                        {journey.photos.length > 0 ? (
+                            (() => {
+                                return (
+                                    <img
+                                        src={`/photo/${journey.photos[0]}`}
+                                        loading="lazy"
+                                        alt="photo"
+                                        width="100%"
+                                        height="100%"
+                                    />
+                                );
+                            })()
+                        ) : (
+                            <Typography color="textSecondary">
+                                사진 없음
+                            </Typography>
+                        )}
+                    </div>
+                    <div className="journeyPill-info">
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white'}}
+                              label={journeyDate}
+                        />
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white', marginLeft: '90px' }}
+                              label={`${journeyPhotoCnt} 이미지`}
+                        />
+                    </div>
                 </Box>
                 <Typography variant='h6'>{journey.geoLocationDto.name}</Typography>
                 {

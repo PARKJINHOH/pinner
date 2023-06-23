@@ -1,11 +1,23 @@
-.journeyPill-list-box {
+.journeyPill-box{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 10px;
     height: 225px; /*4:3 비율*/
     width: 300px; /*4:3 비율*/
     background-color: #eeeeee;
+}
+
+.journeyPill-thumbnail {
+    display: contents;
+}
+
+.journeyPill-info {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    position: absolute;
+    bottom: 7px;
+    opacity: 0.9;
 }
 
 .journeyPill-container {
@@ -22,3 +34,4 @@
     font-size: 13px;
     font-weight: bold;
 }
+
