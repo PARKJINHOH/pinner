@@ -56,6 +56,16 @@ export default function NewJourneyPill({ travel, editingCancel }) {
      */
     const onCreate = async () => {
 
+        if(newLocation.name === "") {
+            toast.error("여행한 지역을 선택해주세요.");
+            return;
+        }
+        if(hashTags.length === 0) {
+            toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
+            return;
+        }
+
+
         // 사진 업로드
         let photoIds = [];
         try {
@@ -78,6 +88,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             .then((response) => {
                 if (response.status === 200) {
                     _setTravels(response.data);
+                    editingCancel();
                 }
             });
     }
@@ -277,9 +288,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         </Typography>
                     </Dropzone>
                 </Box>
-                <button className="newJourney-save" onClick={() => {
-                    onCreate();
-                }}>Save
+                <button className="newJourney-save" onClick={onCreate}>Save
                 </button>
             </Paper>
         </>
