@@ -33,8 +33,13 @@ export default function JourneyList({ travel }) {
     const[isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
 
     const sortedJourneys = [...travel.journeys].sort((a, b) => a.date.localeCompare(b.date));
-    const startDate = dayjs(sortedJourneys[0].date).format("YYYY년 MM월 DD일");
-    const endDate = dayjs(sortedJourneys[sortedJourneys.length - 1].date).format("YYYY년 MM월 DD일");
+
+    let startDate = '';
+    let endDate = '';
+    if(sortedJourneys && sortedJourneys.length > 0) {
+        startDate = dayjs(sortedJourneys[0].date).format("YYYY년 MM월 DD일");
+        endDate = dayjs(sortedJourneys[sortedJourneys.length - 1].date).format("YYYY년 MM월 DD일");
+    }
 
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
@@ -107,7 +112,7 @@ export default function JourneyList({ travel }) {
                             </>
                     }
                     <Typography variant='subtitle1'>
-                        {startDate} ~ {endDate}
+                        {sortedJourneys && sortedJourneys.length > 0 ? startDate + ' ~ ' + endDate : ''}
                     </Typography>
                 </div>
 
