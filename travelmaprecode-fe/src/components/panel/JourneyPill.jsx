@@ -59,7 +59,7 @@ export default function JourneyPill({ journey }) {
                 </Box>
                 <Typography variant='h6'>{journey.geoLocationDto.name}</Typography>
                 {
-                    journey.hashtags.map(({tag}, index) => (
+                    journey.hashtags.map((tag, index) => (
                         <div key={index} className="journeyPill-tag">{tag}</div>
                         )
                     )
