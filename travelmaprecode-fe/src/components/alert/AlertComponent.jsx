@@ -2,6 +2,13 @@ import * as React from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 
+/**
+ * Alert 컴포넌트
+ * ※ 화면 중앙에 나오는 Toast가 아님.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function AlertComponent(props) {
     return (
         <Stack sx={{width: '100%'}} spacing={2}>
