@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { NewJourneyStep, newJourneyStepState } from '../../states/modal';
 import { selectedTravelIdState, travelState } from '../../states/travel';
 import JourneyList from "./JourneyList";
@@ -10,9 +10,9 @@ import { useAPIv1 } from '../../apis/apiv1';
 import { googleMapState } from '../../states/map';
 import { centerOfPoints } from '../../utils';
 
-import {Box, Chip, Paper, Typography} from '@mui/material';
-import Stack from "@mui/material/Stack";
-import {grey} from "@mui/material/colors";
+import { Box, Chip, Typography } from '@mui/material';
+import { representPhotoIdOfTravel } from '../../common/travelutils';
+import RepresentImage from './RepresentImage';
 
 
 /**
@@ -150,6 +150,8 @@ export default function TravelPill({ travel }) {
     const handleClose = () => setAnchorEl(null);
     // Travel 사이드 메뉴 끝
 
+
+
     const travelTitle =
         <Box sx={{ marginLeft: '10px' }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
@@ -157,45 +159,50 @@ export default function TravelPill({ travel }) {
             </Typography>
         </Box>;
 
+    const photoId = representPhotoIdOfTravel(travel);
+
     return (
         <>
-            <Stack
-                direction="column"
-                sx={{marginBottom: '15px'}}
+            <Box
+                style={{
+                    marginBottom: '15px',
+                }}
                 onClick={onJourneyClick}
             >
+                {/* image */}
                 <Box className='travelPill-box'>
-                    <div className="travelPill-info">
-                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
-                              label={`${journeyCnt} 장소`}
-                        />
-                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
-                              label={`${journeyPhotoCnt} 이미지`}
-                        />
-                    </div>
-                    <div className="travelPill-thumbnail">
-                        {/* Todo : 썸네일(thumbnail) DB 추가 하기*/}
-                        {travel.journeys.size > 0 ? (
-                            <img src={travel.journeys[0].image} alt="travel" width="100%" height="100%"/>
-                        ) : (
+                    {
+                        photoId !== null ?
+                            <RepresentImage photoId={photoId} />
+                            :
                             <Typography color="textSecondary">
                                 사진 없음
                             </Typography>
-                        )}
+                    }
+                    <div className="travelPill-info">
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                            label={`${journeyCnt} 장소`}
+                        />
+                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                            label={`${journeyPhotoCnt} 이미지`}
+                        />
                     </div>
                 </Box>
+
+                {/* title */}
                 {isRenaming ? renameTextInput : travelTitle}
-            </Stack>
+            </Box>
 
             {
                 /* 여정(Journey)목록 리스트 패널 */
                 selectedTravelId === travel.id && (
-                    <JourneyList travel={travel}/>
+                    <JourneyList travel={travel} />
                 )
             }
         </>
     )
 }
+
 
 function JourneyDatePill({ journeys }) {
     let journeyCnt = 0;

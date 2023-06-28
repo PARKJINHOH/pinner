@@ -7,6 +7,7 @@
     height: 225px; /*4:3 비율*/
     width: 300px; /*4:3 비율*/
     background-color: #eeeeee;
+    overflow: hidden;
 }
 
 .journeyPill-thumbnail {

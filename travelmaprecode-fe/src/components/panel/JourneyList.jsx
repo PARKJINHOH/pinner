@@ -1,19 +1,45 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {useAPIv1} from '../../apis/apiv1'
+import { useAPIv1 } from '../../apis/apiv1'
 
-import {Box, Paper, Container, TextField, Typography} from "@mui/material";
+import { Box, Paper, TextField, Typography } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import './JourneyList.css';
 import AddIcon from "@mui/icons-material/Add";
 
 import CreateIcon from '@mui/icons-material/Create';
-import {useRecoilValue, useSetRecoilState} from "recoil";
-import {travelState} from "../../states/travel";
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { travelState } from "../../states/travel";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../states/panel/panelWidth";
 import NewJourneyPill from "./NewJourneyPill";
 import JourneyPill from "./JourneyPill";
 import dayjs from "dayjs";
+import { representPhotoIdOfTravel } from '../../common/travelutils';
+import RepresentImage from './RepresentImage';
+
+
+/**
+ *
+ * @param {Travel} travel
+ * @returns
+ */
+function ImageWithButton({ travel }) {
+    const photoId = representPhotoIdOfTravel(travel);
+
+    return (
+        <div style={{
+            aspectRatio: 16 / 10,
+        }}>
+            <ArrowBackIosIcon style={{
+                position: 'absolute',
+                margin: 10,
+            }} />
+
+            <RepresentImage photoId={photoId}></RepresentImage>
+        </div>
+    )
+}
+
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -29,14 +55,14 @@ export default function JourneyList({ travel }) {
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
     const setTravels = useSetRecoilState(travelState);
-    const[isTitleEditing, setIsTitleEditing] = useState(false);
-    const[isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
+    const [isTitleEditing, setIsTitleEditing] = useState(false);
+    const [isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
 
     const sortedJourneys = [...travel.journeys].sort((a, b) => a.date.localeCompare(b.date));
 
     let startDate = '';
     let endDate = '';
-    if(sortedJourneys && sortedJourneys.length > 0) {
+    if (sortedJourneys && sortedJourneys.length > 0) {
         startDate = dayjs(sortedJourneys[0].date).format("YYYY년 MM월 DD일");
         endDate = dayjs(sortedJourneys[sortedJourneys.length - 1].date).format("YYYY년 MM월 DD일");
     }
@@ -68,6 +94,7 @@ export default function JourneyList({ travel }) {
         }
     }
 
+
     return (
         <>
             <Paper sx={{
@@ -77,15 +104,7 @@ export default function JourneyList({ travel }) {
             }}>
                 {/*UI상태 - 보기*/}
                 {/* 타이틀 사진 영역 */}
-                <Box
-                    className="journeyList-box"
-                    sx={{
-                        backgroundColor: '#cecece',
-                        marginBottom: '5px',
-                    }}
-                >
-                    <ArrowBackIosIcon/>
-                </Box>
+                <ImageWithButton travel={travel}></ImageWithButton>
 
                 {/* 타이틀 영역 */}
                 <div align="center" className="journeyList-title">
@@ -127,7 +146,7 @@ export default function JourneyList({ travel }) {
                         setIsEditingNewJourneyState(!isEditingNewJourneyState)
                     }}
                 >
-                    <AddIcon sx={{fontSize: '60px'}}/>
+                    <AddIcon sx={{ fontSize: '60px' }} />
                     <Typography>
                         Click to add new Journey
                     </Typography>
@@ -136,7 +155,7 @@ export default function JourneyList({ travel }) {
 
             {
                 /* 여정 글쓰기 */
-                isEditingNewJourneyState && <NewJourneyPill travel={travel} editingCancel={() => setIsEditingNewJourneyState(false)}/>
+                isEditingNewJourneyState && <NewJourneyPill travel={travel} editingCancel={() => setIsEditingNewJourneyState(false)} />
             }
         </>
     )
