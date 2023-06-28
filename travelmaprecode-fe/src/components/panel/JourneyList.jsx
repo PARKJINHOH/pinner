@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 
 import { useAPIv1 } from '../../apis/apiv1'
 
-import { Box, Paper, TextField, Typography } from "@mui/material";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Box, IconButton, Paper, TextField, Typography } from "@mui/material";
 import './JourneyList.css';
 import AddIcon from "@mui/icons-material/Add";
 
@@ -16,27 +15,37 @@ import JourneyPill from "./JourneyPill";
 import dayjs from "dayjs";
 import { representPhotoIdOfTravel } from '../../common/travelutils';
 import RepresentImage from './RepresentImage';
+import { ChevronLeft } from '@mui/icons-material';
 
 
 /**
  *
- * @param {Travel} travel
- * @returns
+ * @param {Object} obj
+ * @param {Travel} obj.travel
+ * @param {function (): void} obj.onClick
+ *
+ * @returns {HTMLDivElement}
  */
-function ImageWithButton({ travel }) {
+function RepresentImageWithButton({ travel, onClick }) {
     const photoId = representPhotoIdOfTravel(travel);
 
     return (
-        <div style={{
-            aspectRatio: 16 / 10,
-        }}>
-            <ArrowBackIosIcon style={{
-                position: 'absolute',
-                margin: 10,
-            }} />
+        <div style={{ aspectRatio: 16 / 10, }}>
+            {/* Button */}
+            <IconButton
+                sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', p: 0, m: 1, zIndex: 1 }}
+                style={{ position: 'absolute' }}
+                onClick={onClick}
+            >
+                <ChevronLeft
+                    sx={{ color: 'rgba(0, 0, 0, 0.7)', }}
+                    fontSize='large'
+                />
+            </IconButton>
 
+            {/* RepresentImage */}
             <RepresentImage photoId={photoId}></RepresentImage>
-        </div>
+        </div >
     )
 }
 
@@ -104,7 +113,7 @@ export default function JourneyList({ travel }) {
             }}>
                 {/*UI상태 - 보기*/}
                 {/* 타이틀 사진 영역 */}
-                <ImageWithButton travel={travel}></ImageWithButton>
+                <RepresentImageWithButton travel={travel}></RepresentImageWithButton>
 
                 {/* 타이틀 영역 */}
                 <div align="center" className="journeyList-title">
