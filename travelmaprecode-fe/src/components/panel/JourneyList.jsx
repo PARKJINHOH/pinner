@@ -29,6 +29,10 @@ import { ChevronLeft } from '@mui/icons-material';
 function RepresentImageWithButton({ travel, onClick }) {
     const photoId = representPhotoIdOfTravel(travel);
 
+    if (photoId === null) {
+        return <div style={{ aspectRatio: 16 / 10, backgroundColor: 'grey' }} />;
+    }
+
     return (
         <div style={{ aspectRatio: 16 / 10, }}>
             {/* Button */}
@@ -79,7 +83,7 @@ export default function JourneyList({ travel }) {
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
      * @param {KeyboardEvent} e
-     */
+            */
     async function onKeyDownRename(e) {
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
