@@ -242,7 +242,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             onChange={(newPickerDate) => setPickerDate(newPickerDate)}
                         />
                     </div>
-                    <div className="newJourney-tags-div">
+                    <div>
                         <Tags
                             className="newJourney-tags"
                             settings={{maxTags: '5'}}
