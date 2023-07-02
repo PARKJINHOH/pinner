@@ -256,7 +256,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         {photos.map((file, index) => {
                             const tmpPhotoUrl = URL.createObjectURL(file);
                             return (
-                                <ImageListItem key={file.img}>
+                                <ImageListItem key={index}>
                                     <ImageListItemBar
                                         sx={{
                                             background: "transparent"
