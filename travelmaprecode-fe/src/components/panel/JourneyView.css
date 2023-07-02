@@ -1,0 +1,53 @@
+.journeyView-box {
+    margin: 10px auto 0;
+}
+
+.journeyView-arrowBack {
+    display: flex;
+    align-items: center;
+}
+
+.journeyView-title {
+    width: 250px;
+    height: 40px;
+    font-size: 14px;
+}
+
+.journeyView-location {
+    margin: 0 auto;
+
+}
+
+.journeyView-date {
+    margin-left: 25px;
+    margin-top: 5px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.journeyView-tags-div {
+}
+.journeyView-tags {
+    --tag-pad: 0.1em;
+    --tag-inset-shadow-size: 2em;
+    font-size: 5px;
+    margin-left: 25px;
+    width: 100%;
+    max-width: 300px;
+    border: 0;
+    border-bottom: 1px solid black;
+}
+.journeyView-add-picture {
+    height: 180px;
+    margin: 25px 25px 5px;
+    border-radius: 5px;
+    background-color: #cecece;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.journeyView-imageBox {
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-top: 20px;
+}
