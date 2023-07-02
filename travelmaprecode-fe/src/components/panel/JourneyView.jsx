@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 import {selectedTravelState, travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 /**
  * Journey 보기 및 수정
@@ -33,8 +35,31 @@ export default function JourneyView({journey, viewCancel}) {
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
 
+    const [snackbarState, setSnackbarState] = useState({open: false, vertical: 'top', horizontal: 'center'});
+    const { vertical, horizontal, open } = snackbarState;
+
+    const snackbarOpen = (newState) => {
+        setSnackbarState({ open: true, ...newState });
+    }
+
+    const snackbarClose = (event, reason) => {
+        if(newJourneyStep === NewJourneyStep.LOCATING){
+            return;
+        }
+        setSnackbarState({ ...snackbarState, open: false });
+    };
+
     return (
         <>
+            <div>
+                <Snackbar
+                    anchorOrigin={{vertical, horizontal}}
+                    open={open}
+                    onClose={snackbarClose}
+                    message="지도에서 위치를 클릭해주세요."
+                    key={vertical + horizontal}
+                />
+            </div>
             <Paper sx={{
                 padding: 2,
                 width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
@@ -44,25 +69,35 @@ export default function JourneyView({journey, viewCancel}) {
                 <Box>
                     <div className="journeyView-title-group">
                         <ArrowBackIosIcon
+                            sx={{cursor: 'pointer'}}
                             onClick={() => {
                                 viewCancel();
                             }}
                         />
                         {
                             editMode ?
-                                <Input
-                                    className="journeyView-title"
-                                    placeholder="여행한 장소를 입력해주세요."
-                                    inputProps={{maxLength: 50}}
-                                    value={newLocation.name}
-                                    onChange={e => setNewLocation({...newLocation, name: e.target.value})}
-                                />
+                                <>
+                                    <Input
+                                        className="journeyView-title"
+                                        placeholder="여행한 장소를 입력해주세요."
+                                        inputProps={{maxLength: 50}}
+                                        value={newLocation.name}
+                                        onChange={e => setNewLocation({...newLocation, name: e.target.value})}
+                                    />
+                                    <LocationOnIcon
+                                        sx={{cursor: 'pointer'}}
+                                        className="journeyView-location"
+                                        onClick={() => {
+                                            snackbarOpen({vertical: "top", horizontal: "center"});
+                                            setNewJourneyStep(NewJourneyStep.LOCATING);
+                                        }}
+                                    />
+                                </>
                                 :
                                 <Typography variant="h6" className="journeyView-title">
                                     {journey.geoLocationDto.name}
                                 </Typography>
                         }
-                        <ModeEditIcon />
                     </div>
                     <div className="journeyView-date">
                         <Typography>
@@ -77,6 +112,26 @@ export default function JourneyView({journey, viewCancel}) {
                             )
                         }
                     </div>
+                </Box>
+                <Box className="journeyView-edit">
+                    {
+                        editMode ?
+                            <CheckCircleOutlineIcon
+                                sx={{cursor: 'pointer'}}
+                                onClick={() => {
+                                    setEditMode(!editMode);
+                                    // Todo : function 저장
+                                }}
+                            />
+                            :
+                            <ModeEditIcon
+                                sx={{cursor: 'pointer'}}
+                                onClick={() => {
+                                    setEditMode(!editMode);
+                                }}
+                            />
+                    }
+
                 </Box>
                 <Box className="journeyView-imageBox">
                     <ImageList variant="masonry" cols={2} gap={8}>

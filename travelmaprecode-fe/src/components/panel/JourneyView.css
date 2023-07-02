@@ -34,7 +34,20 @@
     font-size: 5px;
 }
 
+.journeyView-edit{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 .journeyView-imageBox {
     margin-top: 20px;
 }
 
+
+
+/*--------------------------------------*/
+/*수정 CSS*/
+.journeyView--location {
+    margin: 0 auto;
+}
