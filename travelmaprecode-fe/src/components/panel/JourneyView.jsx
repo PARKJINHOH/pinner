@@ -11,7 +11,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import dayjs from "dayjs";
 import {selectedTravelState, travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
-
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 /**
  * Journey 보기 및 수정
@@ -36,21 +36,33 @@ export default function JourneyView({journey, viewCancel}) {
     return (
         <>
             <Paper sx={{
+                padding: 2,
                 width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
                 height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
                 overflow: 'auto', // 스크롤바 추가
             }}>
-                <Box className="journeyView-box">
-                    <div className="journeyView-arrowBack">
+                <Box>
+                    <div className="journeyView-title-group">
                         <ArrowBackIosIcon
-                            sx={{marginLeft: 2}}
                             onClick={() => {
                                 viewCancel();
                             }}
                         />
-                        <Typography>
-                            {journey.geoLocationDto.name}
-                        </Typography>
+                        {
+                            editMode ?
+                                <Input
+                                    className="journeyView-title"
+                                    placeholder="여행한 장소를 입력해주세요."
+                                    inputProps={{maxLength: 50}}
+                                    value={newLocation.name}
+                                    onChange={e => setNewLocation({...newLocation, name: e.target.value})}
+                                />
+                                :
+                                <Typography variant="h6" className="journeyView-title">
+                                    {journey.geoLocationDto.name}
+                                </Typography>
+                        }
+                        <ModeEditIcon />
                     </div>
                     <div className="journeyView-date">
                         <Typography>
