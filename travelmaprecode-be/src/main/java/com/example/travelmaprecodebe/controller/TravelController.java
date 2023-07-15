@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/v1/travel")
 @RequiredArgsConstructor
 public class TravelController {
-    // todo : Token 확인
 
     private final TravelService travelService;
 
@@ -40,6 +39,13 @@ public class TravelController {
                                          @PathVariable Long travelId,
                                          @RequestBody NewJourneyRequestDto newJourney) {
         return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
+    }
+
+    @PutMapping("/{travelId}/journey/{journeyId}")
+    public ResponseEntity<?> pathJourney(@AuthenticationPrincipal Traveler traveler,
+                                         @PathVariable Long travelId, @PathVariable Long journeyId,
+                                         @RequestBody NewJourneyRequestDto journey) {
+        return ResponseEntity.ok(travelService.patchJourney(travelId, journeyId, journey));
     }
 
     @DeleteMapping("/{travelId}")

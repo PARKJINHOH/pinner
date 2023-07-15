@@ -149,7 +149,7 @@ export default function JourneyList({ travel }) {
                 </div>
 
                 {
-                    travel.journeys.map(journey => <JourneyPill key={journey.id} journey={journey} />)
+                    travel.journeys.map(journey => <JourneyPill key={journey.id} travelId={travel.id} journey={journey} />)
                 }
 
                 {/*Jorney 추가 영역*/}

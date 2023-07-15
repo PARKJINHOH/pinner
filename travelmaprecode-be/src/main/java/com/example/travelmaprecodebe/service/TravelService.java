@@ -3,6 +3,7 @@ package com.example.travelmaprecodebe.service;
 import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
+import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.TravelRepository;
@@ -75,5 +76,9 @@ public class TravelService {
     }
 
 
-
+    public List<NewTravelResponseDto> patchJourney(Long travelId, Long journeyId, NewJourneyRequestDto newJourney) {
+        Journey journey = travelRepository.findJourney(travelId, journeyId);
+        journey.updateJourney(newJourney);
+        return getTravel(travelId);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.travelmaprecodebe.domain.entity;
 
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
+import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,12 +52,28 @@ public class Journey extends AuditEntity {
     private Set<String> photos;
 
     public void addTravel(Travel travel) {
+        // 연관 관계 편의 메소드
         if (this.travel != null) {
             this.travel.getJourneys().remove(this);
         }
 
         this.travel = travel;
         travel.getJourneys().add(this);
+    }
+
+    public void updateJourney(NewJourneyRequestDto newJourneyRequestDto) {
+        if (newJourneyRequestDto.getDate() != null) {
+            this.date = newJourneyRequestDto.getDate();
+        }
+        if (newJourneyRequestDto.getHashTags() != null) {
+            this.hashtags = newJourneyRequestDto.getHashTags();
+        }
+        if (newJourneyRequestDto.getGeoLocation() != null) {
+            this.geoLocation = newJourneyRequestDto.getGeoLocation().toEntity();
+        }
+        if (newJourneyRequestDto.getPhotos() != null) {
+            this.photos = newJourneyRequestDto.getPhotos();
+        }
     }
 
     @Builder

@@ -1,6 +1,8 @@
 package com.example.travelmaprecodebe.repository;
 
+import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
+import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,16 @@ public class TravelRepository {
                         .and(travel.id.eq(travelId)))
                 .fetchOne();
 
+    }
+
+    public Journey findJourney(Long travelId, Long journeyId) {
+        /*selectFrom */
+        log.info("TravelRepository : findJourney");
+        return queryFactory
+                .selectFrom(journey)
+                .where(travel.id.eq(travelId)
+                        .and(journey.id.eq(journeyId)))
+                .fetchOne();
     }
 
     public List<Travel> findAllTravel(Long travelerId) {
@@ -86,4 +98,20 @@ public class TravelRepository {
         em.clear();
         return resultL;
     }
+
+    public Long patchJourney(Long journeyId, NewJourneyRequestDto newJourney) {
+        log.info("TravelRepository : patchJourney");
+
+        Long resultL = queryFactory
+                .update(journey)
+//                .set(journey.date, newJourney.getDate())
+                .set(journey.hashtags, newJourney.getHashTags())
+//                .set(journey.geoLocation, newJourney.getGeoLocation().toEntity())
+                .where(journey.id.eq(journeyId))
+                .execute();
+        em.flush();
+        em.clear();
+        return resultL;
+    }
+
 }

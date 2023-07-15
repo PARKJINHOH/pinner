@@ -48,6 +48,26 @@
 
 /*--------------------------------------*/
 /*수정 CSS*/
-.journeyView--location {
+.journeyView-location {
     margin: 0 auto;
+}
+
+.journeyView-tags {
+    --tag-pad: 0.1em;
+    --tag-inset-shadow-size: 2em;
+    font-size: 5px;
+    width: 100%;
+    max-width: 300px;
+    border: 0;
+    border-bottom: 1px solid black;
+}
+
+.journeyView-add-picture {
+    height: 180px;
+    margin: 25px 25px 5px;
+    border-radius: 5px;
+    background-color: #cecece;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

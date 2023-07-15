@@ -14,7 +14,7 @@ import JourneyView from "./JourneyView";
  * Journey 정보를 보여주는 컴포넌트
  * @param {Journey} journey
  */
-export default function JourneyPill({journey}) {
+export default function JourneyPill({travelId, journey}) {
     console.log('JourneyPill', journey);
 
     // Panel Width
@@ -73,7 +73,7 @@ export default function JourneyPill({journey}) {
 
             {
                 // 여정(Journey)목록 리스트 패널
-                isJourneyViewState && <JourneyView journey={journey} viewCancel={() => setIsJourneyViewState(false)}/>
+                isJourneyViewState && <JourneyView travelId={travelId} journey={journey} viewCancel={() => setIsJourneyViewState(false)}/>
             }
         </>
     );
