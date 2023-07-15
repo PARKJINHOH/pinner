@@ -201,7 +201,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         sx={{cursor: 'pointer'}}
                                         className="journeyView-location"
                                         onClick={() => {
-                                            toast('지도를 클릭해주세요', {duration: 3000,});
+                                            toast('지도를 클릭해주세요', {duration: 2000,});
                                             setNewJourneyStep(NewJourneyStep.LOCATING);
                                         }}
                                     />

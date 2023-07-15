@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Snackbar, Typography} from "@mui/material";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
 import './NewJourneyPill.css';
 
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
@@ -38,9 +38,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const _setTravels = useSetRecoilState(travelState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
-
-    const [snackbarState, setSnackbarState] = useState({open: false, vertical: 'top', horizontal: 'center'});
-    const { vertical, horizontal, open } = snackbarState;
 
     const currentDate = dayjs().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
@@ -133,18 +130,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         _setPhotos(combinedPhotos);
     };
 
-    const snackbarOpen = (newState) => {
-        setSnackbarState({ open: true, ...newState });
-    }
-
-    const snackbarClose = (event, reason) => {
-        if(newJourneyStep === NewJourneyStep.LOCATING){
-            return;
-        }
-        setSnackbarState({ ...snackbarState, open: false });
-    };
-
-
     /**
      * DatePicker용 Button 함수
      * @param props
@@ -201,15 +186,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     return (
         <>
-            <div>
-                <Snackbar
-                    anchorOrigin={{vertical, horizontal}}
-                    open={open}
-                    onClose={snackbarClose}
-                    message="지도에서 위치를 클릭해주세요."
-                    key={vertical + horizontal}
-                />
-            </div>
             <Paper sx={{
                 width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
                 height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
@@ -233,7 +209,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         <LocationOnIcon
                             className="newJourney-location"
                             onClick={() => {
-                                snackbarOpen({vertical: "top", horizontal: "center"});
+                                toast('지도를 클릭해주세요', {duration: 2000,});
                                 setNewJourneyStep(NewJourneyStep.LOCATING);
                             }}
                         />
