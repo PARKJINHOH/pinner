@@ -2,14 +2,14 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, imageListItemClasses, Input, Paper, Typography} from "@mui/material";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
 import './JourneyView.css';
 
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import dayjs from "dayjs";
-import {selectedTravelState, travelState} from "../../states/travel";
+import {travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -36,7 +36,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const _sidebarWidth = useRecoilValue(sidebarWidth);
     const _travelListViewWidth = useRecoilValue(travelListViewWidth);
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
-    const [travelData, setTravelData] = useRecoilState(travelState);
 
     const _setTravels = useSetRecoilState(travelState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
@@ -46,6 +45,10 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const [hashTags, setHashTags] = useState(null)
     const [photos, setPhotos] = useState([]);
     const removePhoto = (idx) => setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
+
+    useEffect(() => {
+        setNewLocation({lat: 0, lng: 0, name: "",});
+    }, [])
 
     /**
      * 1. POST 요청
@@ -65,9 +68,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
         // Journey 생성
         const journeyData = {};
-        if (newLocation.name !== '') {
+        if (newLocation.name != "") {
             journeyData.geoLocation = newLocation;
-            setNewLocation({lat: 0,lng: 0,name: "",});
         }
         if (pickerDate) {
             journeyData.date = dayjs(pickerDate).format('YYYY-MM-DD');
@@ -193,7 +195,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         placeholder="여행한 장소를 입력해주세요."
                                         inputProps={{maxLength: 50}}
                                         value={newLocation.name != "" ? newLocation.name : journey.geoLocationDto.name}
-                                        onChange={e => setNewLocation({...newLocation, name: e.target.value})}
+                                        onChange={e => setNewLocation({...journey.geoLocationDto, name: e.target.value})}
                                     />
                                     <LocationOnIcon
                                         sx={{cursor: 'pointer'}}
@@ -259,8 +261,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                             <CheckCircleOutlineIcon
                                 sx={{cursor: 'pointer'}}
                                 onClick={() => {
-                                    setEditMode(!editMode);
                                     onCreate();
+                                    setEditMode(!editMode);
                                 }}
                             />
                             :

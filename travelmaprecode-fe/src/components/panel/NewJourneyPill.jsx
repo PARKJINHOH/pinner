@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, imageListItemClasses, Input, Paper, Snackbar, Typography} from "@mui/material";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Snackbar, Typography} from "@mui/material";
 import './NewJourneyPill.css';
 
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
@@ -17,7 +17,6 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import IconButton from "@mui/material/IconButton";
-import {Divider} from "@mantine/core";
 import {toast} from "react-hot-toast";
 import {travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
@@ -49,6 +48,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const [photos, _setPhotos] = useState([]);
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
+
+    useEffect(() => {
+        setNewLocation({lat: 0, lng: 0, name: "",});
+    }, [])
 
     /**
      * 1. POST 요청
