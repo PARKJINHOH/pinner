@@ -15,7 +15,6 @@ import JourneyView from "./JourneyView";
  * @param {Journey} journey
  */
 export default function JourneyPill({travelId, journey}) {
-    console.log('JourneyPill', journey);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);

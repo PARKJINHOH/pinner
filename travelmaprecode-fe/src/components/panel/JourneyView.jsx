@@ -27,7 +27,6 @@ import toast from "react-hot-toast";
  * @param travel
  */
 export default function JourneyView({travelId, journey, viewCancel}) {
-    console.log('JourneyView', journey);
     const apiv1 = useAPIv1();
 
     const [editMode, setEditMode] = useState(false);
@@ -82,7 +81,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         // }
 
         if (JSON.stringify(journeyData) !== '{}') {
-            console.log('journeyData : ', JSON.stringify(journeyData));
             await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, JSON.stringify(journeyData))
                 .then((response) => {
                     if (response.status === 200) {
@@ -96,7 +94,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
 
     const addPhotos = (newPhotos) => {
-        console.log("사진 추가");
         let limitPhoto = 8; // 최대 사진 갯수
 
         const currentPhotoCount = photos.length;

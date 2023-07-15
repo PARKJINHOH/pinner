@@ -45,7 +45,6 @@ function LoginModal() {
         postLogin(data)
             .then((response) => {
                 const payload = response.data.data.payload;
-                // console.log({ payload });
 
                 doLogin({
                     email: payload.email,
@@ -58,7 +57,6 @@ function LoginModal() {
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
-                console.log(error)
                 setErrorMessage(error.response.data.message);
             });
     };

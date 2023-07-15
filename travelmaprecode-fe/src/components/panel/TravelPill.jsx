@@ -48,7 +48,6 @@ export default function TravelPill({ travel }) {
 
 
     function onJourneyClick() {
-        console.log(travel);
         if (selectedTravelId === travel.id) {
             setSelectedTravelId('');
             return;

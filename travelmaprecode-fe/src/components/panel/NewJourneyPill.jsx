@@ -27,7 +27,6 @@ import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../state
  * @param travel
  */
 export default function NewJourneyPill({ travel, editingCancel }) {
-    console.log('travel', travel);
     const apiv1 = useAPIv1();
 
     // Panel Width
@@ -126,7 +125,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
         const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
         const combinedPhotos = [...photos, ...additionalPhotos];
-        console.log(photos);
         _setPhotos(combinedPhotos);
     };
 

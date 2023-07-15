@@ -59,7 +59,6 @@ function RepresentImageWithButton({ travel, onClick }) {
  * @param travel
  */
 export default function JourneyList({ travel }) {
-    console.log('travel', travel);
     const apiv1 = useAPIv1();
 
     // Panel Width

@@ -23,7 +23,6 @@ instance.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.log(error.response.data.message);
         return Promise.reject(error);
     }
 );

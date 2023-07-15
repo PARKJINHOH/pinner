@@ -157,8 +157,6 @@ export default function BasePage() {
         if (places === undefined || places.length === 0) return;
         const place = places[0];
 
-
-        console.log(place);
         const ua_ia = middleOfViewport(place.geometry.viewport);
         setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ia } })
     }
