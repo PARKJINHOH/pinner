@@ -12,14 +12,14 @@ import java.util.Set;
 public class NewJourneyRequestDto {
     private LocalDate date;
     private GeoLocationDto geoLocation;
-    private Set<String> hashTags;
+    private Set<String> hashtags;
     private Set<String> photos;
 
     public Journey toEntity() {
         return Journey.builder()
             .date(date)
             .geoLocation(geoLocation.toEntity())
-            .hashtags(hashTags)
+            .hashtags(hashtags)
             .photos(photos)
             .build();
     }

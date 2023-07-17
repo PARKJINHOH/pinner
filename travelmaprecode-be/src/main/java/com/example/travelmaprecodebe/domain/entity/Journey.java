@@ -65,8 +65,8 @@ public class Journey extends AuditEntity {
         if (newJourneyRequestDto.getDate() != null) {
             this.date = newJourneyRequestDto.getDate();
         }
-        if (newJourneyRequestDto.getHashTags() != null) {
-            this.hashtags = newJourneyRequestDto.getHashTags();
+        if (newJourneyRequestDto.getHashtags() != null) {
+            this.hashtags = newJourneyRequestDto.getHashtags();
         }
         if (newJourneyRequestDto.getGeoLocation() != null) {
             this.geoLocation = newJourneyRequestDto.getGeoLocation().toEntity();

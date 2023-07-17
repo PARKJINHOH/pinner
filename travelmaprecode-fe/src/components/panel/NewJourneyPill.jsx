@@ -40,7 +40,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     const currentDate = dayjs().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
-    const [hashTags, setHashTags] = useState([])
+    const [hashtags, setHashtags] = useState([])
     const [photos, _setPhotos] = useState([]);
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
@@ -59,7 +59,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             toast.error("여행한 지역을 선택해주세요.");
             return;
         }
-        if(hashTags.length === 0) {
+        if(hashtags.length === 0) {
             toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
             return;
         }
@@ -80,7 +80,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             date: dayjs(pickerDate).format('YYYY-MM-DD'),
             geoLocation: newLocation,
             photos: photoIds,
-            hashTags: hashTags
+            hashtags: hashtags
         });
 
         await apiv1.post("/travel/" + travel.id + "/journey", journeyData)
@@ -115,7 +115,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         let map = e.detail.tagify.value.map(e =>
             e.value
         );
-        setHashTags(map);
+        setHashtags(map);
     }, []);
 
     const addPhotos = (newPhotos) => {

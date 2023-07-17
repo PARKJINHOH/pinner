@@ -128,7 +128,7 @@ function NewJourneyModal({ travelId }) {
     const [date, setDate] = useState(dayjs(new Date()));
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
     const resetNewLocationState = useResetRecoilState(newLocationState);
-    const [hashTags, setHashTags] = useState([]);
+    const [hashtags, setHashtags] = useState([]);
     const setTravels = useSetRecoilState(travelState);
 
     /**
@@ -153,7 +153,7 @@ function NewJourneyModal({ travelId }) {
             date: dayjs(date).format('YYYY-MM-DD'),
             geoLocation: newLocation,
             photos: photoIds,
-            hashTags: hashTags
+            hashtags: hashtags
         });
 
         await apiv1.post("/travel/" + travelId + "/journey", journeyData)
@@ -183,7 +183,7 @@ function NewJourneyModal({ travelId }) {
         let map = e.detail.tagify.value.map(e =>
             e.value
         );
-        setHashTags(map);
+        setHashtags(map);
     }, []);
 
     const containerHeight = '360px';
