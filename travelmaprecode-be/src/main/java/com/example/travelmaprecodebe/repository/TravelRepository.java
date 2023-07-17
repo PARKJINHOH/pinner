@@ -1,6 +1,5 @@
 package com.example.travelmaprecodebe.repository;
 
-import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
@@ -94,21 +93,6 @@ public class TravelRepository {
                 .where(travel.traveler.id.eq(travelerId), travel.id.eq(newTravelRequestDto.getId()))
                 .execute();
 
-        em.flush();
-        em.clear();
-        return resultL;
-    }
-
-    public Long patchJourney(Long journeyId, NewJourneyRequestDto newJourney) {
-        log.info("TravelRepository : patchJourney");
-
-        Long resultL = queryFactory
-                .update(journey)
-//                .set(journey.date, newJourney.getDate())
-                .set(journey.hashtags, newJourney.getHashTags())
-//                .set(journey.geoLocation, newJourney.getGeoLocation().toEntity())
-                .where(journey.id.eq(journeyId))
-                .execute();
         em.flush();
         em.clear();
         return resultL;
