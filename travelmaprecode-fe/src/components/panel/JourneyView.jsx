@@ -13,6 +13,7 @@ import {travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -41,12 +42,36 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
 
     const [pickerDate, setPickerDate] = useState(null);
-    const [hashTags, setHashTags] = useState(null)
+    const [hashtags, setHashtags] = useState([])
     const [photos, setPhotos] = useState([]);
     const removePhoto = (idx) => setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     useEffect(() => {
         setNewLocation({lat: 0, lng: 0, name: "",});
+        setHashtags(journey.hashtags);
+
+        const protocol = window.location.protocol;
+        const hostname = window.location.hostname;
+        const port = window.location.port;
+        setPhotos([]);
+        journey.photos.map((photoName) => {
+            const imageUrl = `${protocol}//${hostname}${port ? `:${port}` : ''}/photo/${photoName}`;
+
+            // 이미지 URL을 Blob 객체로 가져오기
+            fetch(imageUrl)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    // const objectUrl = URL.createObjectURL(blob);
+                    setPhotos((prevPhotos) => [...prevPhotos, blob]);
+                })
+                .catch((error) => {
+                    console.error('Failed to image:', error);
+                });
+        });
+
+        return () => {
+            photos.forEach((url) => URL.revokeObjectURL(url));
+        };
     }, [])
 
     /**
@@ -54,31 +79,41 @@ export default function JourneyView({travelId, journey, viewCancel}) {
      * 2. 응답결과가 정상일 경우
      */
     const onCreate = async () => {
+        if (!newLocation.name && !journey.geoLocationDto) {
+            toast.error("여행한 지역을 선택해주세요.");
+            return;
+        }
+        if(hashtags.length === 0) {
+            toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
+            return;
+        }
 
-        // 사진 업로드
-        // let photoIds = [];
-        // try {
-        //     photoIds = await Promise.all(photos.map(uploadImage));
-        // } catch (err) {
-        //     console.error(`failed to upload photos: ${err}`);
-        //     toast.error("사진을 업로드 하지 못했어요.")
-        //     return;
-        // }
+        let photoIds = [];
+        if(photos.length !== 0){
+            try {
+                photoIds = await Promise.all(photos.map(uploadImage));
+            } catch (err) {
+                console.error(`failed to upload photos: ${err}`);
+                toast.error("사진을 업로드 하지 못했어요.")
+                return;
+            }
+        }
 
-        // Journey 생성
+
         const journeyData = {};
-        if (newLocation.name != "") {
+        if (newLocation.name !== "") {
             journeyData.geoLocation = newLocation;
         }
         if (pickerDate) {
             journeyData.date = dayjs(pickerDate).format('YYYY-MM-DD');
         }
-        if (hashTags) {
-            journeyData.hashTags = hashTags;
+        if (hashtags.length !== 0) {
+            journeyData.hashtags = hashtags;
         }
-        // if (photos.length) {
-        //     journeyData.photos = photoIds;
-        // }
+        if (photos) {
+            // Todo : 지금은 항상 True
+            journeyData.photos = photoIds;
+        }
 
         if (JSON.stringify(journeyData) !== '{}') {
             await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, JSON.stringify(journeyData))
@@ -86,6 +121,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                     if (response.status === 200) {
                         // 화면이 꺼짐
                         _setTravels(response.data);
+                        setEditMode(!editMode);
                     }
                 });
         }
@@ -103,6 +139,21 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         setPhotos(combinedPhotos);
     };
 
+    /**
+     * @param {File} file
+     * @returns {String}
+     */
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("photo", file);
+
+        const resp = await fetch("/photo", {
+            method: "POST",
+            body: formData,
+        });
+
+        return (await resp.json()).link;
+    }
 
     /**
      * HashTag
@@ -111,7 +162,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         let map = e.detail.tagify.value.map(e =>
             e.value
         );
-        setHashTags(map);
+        setHashtags(map);
     }, []);
 
     /**
@@ -237,7 +288,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     settings={{maxTags: '5'}}
                                     onChange={onHashTagChange}
                                     placeholder='태그 최대 5개'
-                                    defaultValue={hashTags ? hashTags : journey.hashtags}
+                                    defaultValue={hashtags.length != 0 ? hashtags : journey.hashtags}
                                 />
                             </>
                             :
@@ -255,13 +306,23 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                 <Box className="journeyView-edit">
                     {
                         editMode ?
-                            <CheckCircleOutlineIcon
-                                sx={{cursor: 'pointer'}}
-                                onClick={() => {
-                                    onCreate();
-                                    setEditMode(!editMode);
-                                }}
-                            />
+                            <>
+                                <CheckCircleOutlineIcon
+                                    sx={{cursor: 'pointer'}}
+                                    onClick={() => {
+                                        if (!onCreate()) {
+                                            setEditMode(!editMode);
+                                        }
+
+                                    }}
+                                />
+                                <CancelIcon
+                                    sx={{cursor: 'pointer'}}
+                                    onClick={() => {
+                                        setEditMode(!editMode);
+                                    }}
+                                />
+                            </>
                             :
                             <ModeEditIcon
                                 sx={{cursor: 'pointer'}}
@@ -277,32 +338,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                         editMode ?
                             <>
                                 <ImageList variant="masonry" cols={2} gap={8}>
-                                    {
-                                        journey.photos && journey.photos.map((file, index) => {
-                                            return (
-                                                <ImageListItem key={index}>
-                                                    <ImageListItemBar
-                                                        sx={{
-                                                            background: "transparent"
-                                                        }}
-                                                        position="top"
-                                                        actionPosition="right"
-                                                        actionIcon={
-                                                            <IconButton onClick={() => removePhoto(index)}>
-                                                                <DeleteForeverIcon fontSize="small"/>
-                                                            </IconButton>
-                                                        }
-                                                    />
-                                                    <img
-                                                        src={`/photo/${file}`}
-                                                        srcSet={`/photo/${file}`}
-                                                        loading="lazy"
-                                                        alt="tmpImg"
-                                                    />
-                                                </ImageListItem>
-                                            );
-                                        })
-                                    }
                                     {
                                         photos && photos.map((file, index) => {
                                             const tmpPhotoUrl = URL.createObjectURL(file);
