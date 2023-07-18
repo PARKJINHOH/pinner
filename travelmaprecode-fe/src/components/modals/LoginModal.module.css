@@ -9,3 +9,7 @@
     box-shadow: 0 0 48px rgba(0, 0, 0, 0.5);
     padding: 24px;
 }
+
+.login_box Divider {
+    margin-bottom: 20px;
+}

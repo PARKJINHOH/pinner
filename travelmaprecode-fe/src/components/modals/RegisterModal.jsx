@@ -1,16 +1,22 @@
 import React, {useState} from 'react';
+import {useRecoilState} from 'recoil';
 
+// css
+import style from './RegisterModal.module.css';
+
+// component
+import {postRegister} from '../../apis/auth';
+import {errorAlert} from "../alert/AlertComponent";
+import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
+
+// mui
 import {Modal, Button, Stack, Box, Typography, TextField} from "@mui/material";
+
+// mantine
 import {Divider} from "@mantine/core";
 
-import {useRecoilState} from 'recoil';
-import {postRegister} from '../../apis/auth';
 
-import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
-import {errorAlert} from "../alert/AlertComponent";
-
-
-function RegisterModal() {
+export default function RegisterModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
@@ -51,8 +57,6 @@ function RegisterModal() {
         } else if (password !== confirmPassword) {
             return '비밀번호와 비밀번호확인은 같아야 합니다.';
         }
-
-
     }
 
     function clearInputs() {
@@ -89,18 +93,6 @@ function RegisterModal() {
             .catch((error) => setErrorMessage(error.response.data ? error.response.data.message : error.message));
     };
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 800,
-        bgcolor: 'background.paper',
-        border: '3px solid #000',
-        boxShadow: 48,
-        p: 3,
-    };
-
     return (
         <div>
             <Modal
@@ -111,7 +103,7 @@ function RegisterModal() {
                     clearInputs();
                 }}
             >
-                <Box sx={style}>
+                <Box className={style.register_box}>
                     <Typography id="modal-modal-title" variant="h5" gutterBottom>
                         회원가입
                     </Typography>
@@ -137,5 +129,3 @@ function RegisterModal() {
         </div>
     );
 }
-
-export default RegisterModal;

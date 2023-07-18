@@ -5,7 +5,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 import LoginModal from '../components/modals/LoginModal';
-import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';

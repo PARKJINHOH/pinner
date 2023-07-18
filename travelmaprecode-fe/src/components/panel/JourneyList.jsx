@@ -17,43 +17,6 @@ import { representPhotoIdOfTravel } from '../../common/travelutils';
 import RepresentImage from './RepresentImage';
 import { ChevronLeft } from '@mui/icons-material';
 
-
-/**
- *
- * @param {Object} obj
- * @param {Travel} obj.travel
- * @param {function (): void} obj.onClick
- *
- * @returns {HTMLDivElement}
- */
-function RepresentImageWithButton({ travel, onClick }) {
-    const photoId = representPhotoIdOfTravel(travel);
-
-    if (photoId === null) {
-        return <div style={{ aspectRatio: 16 / 10, backgroundColor: 'grey' }} />;
-    }
-
-    return (
-        <div style={{ aspectRatio: 16 / 10, }}>
-            {/* Button */}
-            <IconButton
-                sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', p: 0, m: 1, zIndex: 1 }}
-                style={{ position: 'absolute' }}
-                onClick={onClick}
-            >
-                <ChevronLeft
-                    sx={{ color: 'rgba(0, 0, 0, 0.7)', }}
-                    fontSize='large'
-                />
-            </IconButton>
-
-            {/* RepresentImage */}
-            <RepresentImage photoId={photoId}></RepresentImage>
-        </div >
-    )
-}
-
-
 /**
  * Journey 정보를 보여주는 컴포넌트
  * @param travel
@@ -106,6 +69,40 @@ export default function JourneyList({ travel }) {
         }
     }
 
+    /**
+     *
+     * @param {Object} obj
+     * @param {Travel} obj.travel
+     * @param {function (): void} obj.onClick
+     *
+     * @returns {HTMLDivElement}
+     */
+    function RepresentImageWithButton({ travel, onClick }) {
+        const photoId = representPhotoIdOfTravel(travel);
+
+        if (photoId === null) {
+            return <div style={{ aspectRatio: 16 / 10, backgroundColor: 'grey' }} />;
+        }
+
+        return (
+            <div style={{ aspectRatio: 16 / 10, }}>
+                {/* Button */}
+                <IconButton
+                    sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', p: 0, m: 1, zIndex: 1 }}
+                    style={{ position: 'absolute' }}
+                    onClick={onClick}
+                >
+                    <ChevronLeft
+                        sx={{ color: 'rgba(0, 0, 0, 0.7)', }}
+                        fontSize='large'
+                    />
+                </IconButton>
+
+                {/* RepresentImage */}
+                <RepresentImage photoId={photoId}></RepresentImage>
+            </div >
+        )
+    }
 
     return (
         <>
@@ -116,7 +113,7 @@ export default function JourneyList({ travel }) {
             }}>
                 {/*UI상태 - 보기*/}
                 {/* 타이틀 사진 영역 */}
-                <RepresentImageWithButton travel={travel}></RepresentImageWithButton>
+                <RepresentImageWithButton travel={travel}/>
 
                 {/* 타이틀 영역 */}
                 <div align="center" className="journeyList-title">
