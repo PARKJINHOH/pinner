@@ -2,15 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {useRecoilState, useRecoilValue} from 'recoil';
 
 // api
-import {useAPIv1} from '../../apis/apiv1';
+import {useAPIv1} from '../../../apis/apiv1';
 
 // css
 import style from './TravelList.module.css';
 
 // component
-import {selectedTravelIdState, travelState} from '../../states/travel';
-import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
-import {isLoggedInState, travelerState} from '../../states/traveler';
+import {selectedTravelIdState, travelState} from '../../../states/travel';
+import {sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
+import {isLoggedInState, travelerState} from '../../../states/traveler';
 import NewTravelPill from './NewTravelPill';
 import TravelPill from './TravelPill';
 

@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 // api
-import { useAPIv1 } from '../../apis/apiv1';
+import { useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './TravelPill.module.css';
 
 // component
-import { newJourneyStepState } from '../../states/modal';
-import { selectedTravelIdState, travelState } from '../../states/travel';
-import JourneyList from "./JourneyList";
-import { googleMapState } from '../../states/map';
-import { centerOfPoints } from '../../utils';
-import { representPhotoIdOfTravel } from '../../common/travelutils';
-import RepresentImage from './RepresentImage';
+import { newJourneyStepState } from '../../../states/modal';
+import { selectedTravelIdState, travelState } from '../../../states/travel';
+import JourneyList from "../journey/JourneyList";
+import { googleMapState } from '../../../states/map';
+import { centerOfPoints } from '../../../utils';
+import { representPhotoIdOfTravel } from '../../../common/travelutils';
+import RepresentImage from '../RepresentImage';
 
 // mui
 import { Box, Chip, Typography } from '@mui/material';
@@ -103,12 +103,11 @@ export default function TravelPill({ travel }) {
 
     return (
         <>
-            <Box
-                className={style.root_box}
-                onClick={onJourneyClick}
-            >
-                {/* image */}
-                <Box className={style.travel_box}>
+            <Box className={style.root_box}>
+                <Box
+                    className={style.travel_box}
+                    onClick={onJourneyClick}
+                >
                     {
                         photoId !== null ?
                             <RepresentImage photoId={photoId} />
@@ -126,8 +125,6 @@ export default function TravelPill({ travel }) {
                         />
                     </div>
                 </Box>
-
-                {/* title */}
                 {isRenaming ? renameTextInput : travelTitle}
             </Box>
 

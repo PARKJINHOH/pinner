@@ -3,8 +3,8 @@ import React, {useState} from 'react';
 // css
 import style from './JourneyPill.module.css';
 
-import {representPhotoIdOfJourney} from '../../common/travelutils';
-import RepresentImage from './RepresentImage';
+import {representPhotoIdOfJourney} from '../../../common/travelutils';
+import RepresentImage from '../RepresentImage';
 import JourneyView from "./JourneyView";
 
 // mui

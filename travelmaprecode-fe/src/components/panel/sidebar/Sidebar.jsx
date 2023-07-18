@@ -5,10 +5,10 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import style from './Sidebar.module.css'
 
 // component
-import TravelList from './TravelList'
-import {isLoggedInState, travelerState, useDoLogout} from "../../states/traveler";
-import {AuthModalVisibility, authModalVisibilityState} from "../../states/modal";
-import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import TravelList from '../travel/TravelList'
+import {isLoggedInState, travelerState, useDoLogout} from "../../../states/traveler";
+import {AuthModalVisibility, authModalVisibilityState} from "../../../states/modal";
+import {sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
 
 // mui
 import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Menu, MenuItem} from "@mui/material";

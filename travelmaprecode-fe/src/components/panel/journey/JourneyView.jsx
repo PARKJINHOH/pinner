@@ -2,15 +2,15 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
-import {useAPIv1} from '../../apis/apiv1'
+import {useAPIv1} from '../../../apis/apiv1'
 
 // css
 import style from './JourneyView.module.css';
 
 // component
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
-import {travelState} from "../../states/travel";
-import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
+import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
+import {travelState} from "../../../states/travel";
+import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
 
 // mui
 import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography, IconButton} from "@mui/material";

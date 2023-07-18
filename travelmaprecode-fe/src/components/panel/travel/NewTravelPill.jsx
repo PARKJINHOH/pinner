@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {useRecoilState} from 'recoil';
 
 // api
-import {useAPIv1} from '../../apis/apiv1';
+import {useAPIv1} from '../../../apis/apiv1';
 
 // component
-import {travelState} from '../../states/travel';
+import {travelState} from '../../../states/travel';
 
 // mui
 import Stack from "@mui/material/Stack";

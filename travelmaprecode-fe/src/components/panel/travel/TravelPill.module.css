@@ -12,6 +12,7 @@
     margin: 10px 10px 5px 10px;
     border-radius: 10px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .travel_info {
