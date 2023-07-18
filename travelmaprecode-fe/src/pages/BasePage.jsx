@@ -15,6 +15,7 @@ import { selectedTravelState } from '../states/travel';
 
 // etc
 import toast, { Toaster } from 'react-hot-toast';
+import "@yaireo/tagify/dist/tagify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
