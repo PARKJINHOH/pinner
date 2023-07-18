@@ -194,11 +194,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     return (
         <>
-            <Paper sx={{
-                width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
-                height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
-                overflow: 'auto', // 스크롤바 추가
-            }}>
+            <Paper
+                className={style.root_paper}
+                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
+            >
                 <Box className={style.newJourney_box}>
                     <div className={style.newJourney_arrowBack}>
                         <ArrowBackIosIcon
@@ -275,7 +274,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         </Typography>
                     </Dropzone>
                 </Box>
-                <button className={style.newJourney_save} onClick={onCreate}>Save
+                <button onClick={onCreate}>Save
                 </button>
             </Paper>
         </>

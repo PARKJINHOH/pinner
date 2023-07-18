@@ -1,12 +1,7 @@
 import React, {useState} from 'react';
-import {useRecoilValue, useSetRecoilState} from "recoil";
 
 // css
 import style from './JourneyPill.module.css';
-
-// component
-import {travelState} from "../../states/travel";
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
 
 import {representPhotoIdOfJourney} from '../../common/travelutils';
 import RepresentImage from './RepresentImage';

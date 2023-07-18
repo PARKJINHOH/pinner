@@ -1,18 +1,24 @@
 import React, {useState} from 'react';
 import {useRecoilState} from 'recoil';
+
+// api
 import {useAPIv1} from '../../apis/apiv1';
+
+// component
 import {travelState} from '../../states/travel';
-import {Button, TextField} from "@mui/material";
+
+// mui
 import Stack from "@mui/material/Stack";
+import {Button, TextField} from "@mui/material";
 
 /**
  * 'Click to add new Travel'클릭시 나오는 컴포넌트
  * @param onCancel
  */
 export default function NewTravelPill({onCancel}) {
+    const apiv1 = useAPIv1();
     const [title, setTitle] = useState("");
     const [travels, setTravels] = useRecoilState(travelState);
-    const apiv1 = useAPIv1();
 
 
     /**
@@ -39,7 +45,6 @@ export default function NewTravelPill({onCancel}) {
         <>
             <TextField
                 sx={{mx: '10px', marginTop: '5px'}}
-                id="outlined-multiline-flexible"
                 label="여행제목을 적어주세요(10자)"
                 inputProps={{maxLength: 10}}
                 multiline

@@ -1,0 +1,36 @@
+.root_paper {
+    position: absolute;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow: auto;
+}
+
+.sidebar_list_div {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+.travel_box{
+    height: 200px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+
+    background-color: #cecece;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login_title_box{
+    padding: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: grey;
+}

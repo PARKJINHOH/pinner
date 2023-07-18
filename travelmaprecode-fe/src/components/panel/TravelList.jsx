@@ -1,15 +1,29 @@
-import React, {useEffect, useState} from 'react'
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil'
-import {selectedTravelIdState, travelState} from '../../states/travel'
+import React, {useEffect, useState} from 'react';
+import {useRecoilState, useRecoilValue} from 'recoil';
+
+// api
+import {useAPIv1} from '../../apis/apiv1';
+
+// css
+import style from './TravelList.module.css';
+
+// component
+import {selectedTravelIdState, travelState} from '../../states/travel';
 import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
-import {isLoggedInState, travelerState} from '../../states/traveler'
-import {useAPIv1} from '../../apis/apiv1'
-import NewTravelPill from './NewTravelPill'
-import TravelPill from './TravelPill'
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import {isLoggedInState, travelerState} from '../../states/traveler';
+import NewTravelPill from './NewTravelPill';
+import TravelPill from './TravelPill';
+
+// mui
 import {Box, Button, List, Paper, Typography} from "@mui/material";
+
+// mui Icon
 import AddIcon from '@mui/icons-material/Add';
 import PanToolIcon from '@mui/icons-material/PanTool';
+
+// etc
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+
 
 /**
  * 여행(Travel) 목록을 보여주는 컴포넌트
@@ -77,13 +91,10 @@ export default function TravelList() {
 
     return (
         <Paper
-            id={'travelListView'}
-            sx={{
-                width: _travelListViewWidth, position: 'absolute', borderRadius: 0,
-                height: '100vh', top: 0, left: _sidebarWidth, zIndex: '9',
-                overflow: 'auto', // 스크롤바 추가
-            }}>
-            <List className='sidebar-list-div'>
+            className={style.root_paper}
+            sx={{width: _travelListViewWidth, left: _sidebarWidth}}
+        >
+            <List className={style.sidebar_list_div}>
                 {
                     isLoggedIn ?
                         <>
@@ -134,11 +145,7 @@ export default function TravelList() {
 
                             {
                                 <Box
-                                    className="travel-box"
-                                    sx={{
-                                        backgroundColor: '#cecece', cursor: 'pointer',
-                                        display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: "column"
-                                    }}
+                                    className={style.travel_box}
                                     onClick={() => {
                                         setIsEditingNewTravel(!isEditingNewTravel);
                                         if (dndState === false) {
@@ -157,7 +164,7 @@ export default function TravelList() {
                             }
                         </>
                         :
-                        <Box sx={{ padding: 2, fontSize: 16, fontWeight: 'bold', textAlign: 'center', color: 'grey' }}>
+                        <Box className={style.login_title_box}>
                             로그인 후 이용해주세요. ✈
                         </Box>
                 }

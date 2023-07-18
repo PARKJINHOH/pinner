@@ -1,14 +1,24 @@
-import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
 import React, { useRef, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
+// api
 import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
+
+// css
+
+// component
 import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
 import { selectedTravelState } from '../states/travel';
+
+// etc
+import toast, { Toaster } from 'react-hot-toast';
+
+// google map
+import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+
 
 export default function BasePage() {
     const containerStyle = {

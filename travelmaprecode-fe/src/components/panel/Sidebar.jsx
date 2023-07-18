@@ -1,17 +1,21 @@
 import React, {useState} from 'react'
-import './Sidebar.css'
-import TravelList from './TravelList'
-import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, Typography} from "@mui/material";
-import MapIcon from "@mui/icons-material/Map";
-import LanguageIcon from "@mui/icons-material/Language";
-import Avatar from '@mui/material/Avatar';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-
 import {useRecoilValue, useSetRecoilState} from "recoil";
+
+// css
+import style from './Sidebar.module.css'
+
+// component
+import TravelList from './TravelList'
 import {isLoggedInState, travelerState, useDoLogout} from "../../states/traveler";
 import {AuthModalVisibility, authModalVisibilityState} from "../../states/modal";
 import {sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+
+// mui
+import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Menu, MenuItem} from "@mui/material";
+
+// mui Icon
+import MapIcon from "@mui/icons-material/Map";
+import LanguageIcon from "@mui/icons-material/Language";
 
 /**
  * 사이드바(SideBar) 컴포넌트
@@ -21,12 +25,16 @@ export default function Sidebar() {
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
 
+    // Travel 메뉴
+    const [selectedDrawer, setSelectedDrawer] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
     const traveler = useRecoilValue(travelerState);
     const isLoggedIn = useRecoilValue(isLoggedInState);
     const doLogout = useDoLogout();
 
     const setModalVisibility = useSetRecoilState(authModalVisibilityState);
-
 
 
     function showRegisterModal() {
@@ -37,14 +45,12 @@ export default function Sidebar() {
         travelerClose();
         setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
     }
+
     function logout() {
         travelerClose();
         doLogout();
     }
 
-    // Traveler 메뉴
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
     const travelerClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -52,8 +58,6 @@ export default function Sidebar() {
         setAnchorEl(null);
     };
 
-    // Travel 메뉴
-    const [selectedDrawer, setSelectedDrawer] = useState(null);
     const handleItemClick = (pageNm) => {
         if (selectedDrawer !== null && selectedDrawer === pageNm) {
             setSelectedDrawer(null);
@@ -107,7 +111,6 @@ export default function Sidebar() {
     return (
         <>
             <Drawer
-                id={'sidebar'}
                 sx={{
                     width: _sidebarWidth,
                     flexShrink: 0,
@@ -123,22 +126,22 @@ export default function Sidebar() {
                     <ListItem disablePadding>
                         <ListItemButton
                             selected={selectedDrawer === 'main'}
-                            sx={listItemButtonStyles}
+                            className={style.list_item}
                             onClick={() => handleItemClick('main')}
                         >
-                            <ListItemIcon sx={listItemIconStyles}>
-                                <MapIcon sx={{fontSize: 30}}/>
+                            <ListItemIcon className={style.list_item_icon}>
+                                <MapIcon className={style.icon_size}/>
                             </ListItemIcon>
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
                         <ListItemButton
                             selected={selectedDrawer === 'TravelList'}
-                            sx={listItemButtonStyles}
+                            className={style.list_item}
                             onClick={() => handleItemClick('TravelList')}
                         >
-                            <ListItemIcon sx={listItemIconStyles}>
-                                <LanguageIcon sx={{fontSize: 30}}/>
+                            <ListItemIcon className={style.list_item_icon}>
+                                <LanguageIcon className={style.icon_size}/>
                             </ListItemIcon>
                             <ListItemText
                                 primary={
@@ -191,16 +194,3 @@ export default function Sidebar() {
         </>
     )
 }
-
-
-// Style
-const listItemButtonStyles = {
-    minHeight: 40, // Icon 간격
-    justifyContent: 'center',
-    flexDirection: 'column', // 세로 방향으로 표시
-};
-
-const listItemIconStyles = {
-    justifyContent: 'center',
-};
-//! Style
