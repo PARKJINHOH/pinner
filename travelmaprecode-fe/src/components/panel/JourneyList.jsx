@@ -130,7 +130,6 @@ export default function JourneyList({ travel }) {
                         isTitleEditing ?
                             <>
                                 <TextField
-                                    id="travel-title"
                                     defaultValue={travel.title}
                                     hiddenLabel
                                     variant="standard"

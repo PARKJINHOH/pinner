@@ -1,14 +1,25 @@
 import React, {useState} from 'react';
-
-import {Box, Chip, Container, Typography} from "@mui/material";
-import './JourneyPill.css';
 import {useRecoilValue, useSetRecoilState} from "recoil";
+
+// css
+import style from './JourneyPill.module.css';
+
+// component
 import {travelState} from "../../states/travel";
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
-import dayjs from "dayjs";
+
 import {representPhotoIdOfJourney} from '../../common/travelutils';
 import RepresentImage from './RepresentImage';
 import JourneyView from "./JourneyView";
+
+// mui
+import {Box, Chip, Container, Typography} from "@mui/material";
+
+// etc
+import dayjs from "dayjs";
+
+
+
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -16,18 +27,10 @@ import JourneyView from "./JourneyView";
  */
 export default function JourneyPill({travelId, journey}) {
 
-    // Panel Width
-    const _sidebarWidth = useRecoilValue(sidebarWidth);
-    const _travelListViewWidth = useRecoilValue(travelListViewWidth);
-    const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
-
-    const setTravels = useSetRecoilState(travelState);
-
     const [isJourneyViewState, setIsJourneyViewState] = useState(false);
 
     const journeyPhotoCnt = journey.photos.length;
     const journeyDate = dayjs(journey.date).format("YYYY년 MM월 DD일");
-
 
     const photoId = representPhotoIdOfJourney(journey);
 
@@ -38,11 +41,13 @@ export default function JourneyPill({travelId, journey}) {
 
     return (
         <>
-            <Container maxWidth="sm" className="journeyPill-container"
-                       onClick={onJourneyViewClick}
+            <Container
+                maxWidth="sm"
+                className={style.root_container}
+                onClick={onJourneyViewClick}
             >
-                <Box className="journeyPill-box">
-                    <div className="journeyPill-thumbnail">
+                <Box className={style.preview_box}>
+                    <div className={style.preview}>
                         {
                             photoId !== null ?
                                 <RepresentImage photoId={photoId}></RepresentImage>
@@ -52,7 +57,7 @@ export default function JourneyPill({travelId, journey}) {
                                 </Typography>
                         }
                     </div>
-                    <div className="journeyPill-info">
+                    <div className={style.journey_info}>
                         <Chip size="small" sx={{backgroundColor: '#5b5b5b', color: 'white'}}
                               label={journeyDate}
                         />
@@ -64,7 +69,7 @@ export default function JourneyPill({travelId, journey}) {
                 <Typography variant='h6'>{journey.geoLocationDto.name}</Typography>
                 {
                     journey.hashtags.map((tag, index) => (
-                            <div key={index} className="journeyPill-tag">{tag}</div>
+                            <div key={index} className={style.journey_tags}>{tag}</div>
                         )
                     )
                 }

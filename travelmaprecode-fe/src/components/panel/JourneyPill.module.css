@@ -1,4 +1,4 @@
-.journeyPill-box{
+.preview_box{
     position: relative;
     display: flex;
     justify-content: center;
@@ -10,22 +10,22 @@
     overflow: hidden;
 }
 
-.journeyPill-thumbnail {
+.preview {
     display: contents;
 }
 
-.journeyPill-info {
+.journey_info {
     display: flex;
     position: absolute;
     bottom: 7px;
     opacity: 0.9;
 }
 
-.journeyPill-container {
+.root_container {
     margin-top: 30px;
 }
 
-.journeyPill-tag {
+.journey_tags {
     display: inline-block;
     padding: 4px;
     margin-right: 4px;
