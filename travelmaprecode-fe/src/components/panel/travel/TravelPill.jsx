@@ -93,8 +93,8 @@ export default function TravelPill({ travel }) {
     const renameTextInput = <input type="text" autoFocus={true} onKeyDown={onKeyDownRename} onBlur={() => setIsRenaming(false)}></input>;
 
     const travelTitle =
-        <Box sx={{ marginLeft: '10px' }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+        <Box>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '19px' }}>
                 {travel.title}
             </Typography>
         </Box>;
@@ -117,10 +117,14 @@ export default function TravelPill({ travel }) {
                             </Typography>
                     }
                     <div className={style.travel_info}>
-                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                        <Chip
+                            size="small"
+                            className={style.journey_cnt_chip}
                             label={`${journeyCnt} 장소`}
                         />
-                        <Chip size="small" sx={{ backgroundColor: '#5b5b5b', color: 'white' }}
+                        <Chip
+                            size="small"
+                            className={style.journey_photo_chip}
                             label={`${journeyPhotoCnt} 이미지`}
                         />
                     </div>

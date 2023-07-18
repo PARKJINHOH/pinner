@@ -10,6 +10,8 @@ import {travelState} from '../../../states/travel';
 // mui
 import Stack from "@mui/material/Stack";
 import {Button, TextField} from "@mui/material";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
 
 /**
  * 'Click to add new Travel'클릭시 나오는 컴포넌트
@@ -32,8 +34,12 @@ export default function NewTravelPill({onCancel}) {
 
         if (isEsc || isEnter || isMouseClick) {
             e.preventDefault();
+            if (title.trim() === "" || title.trim().length < 2) {
+                toast.error("여행제목을 2글자 이상 입력해주세요.");
+                return;
+            }
             if (isEnter || isMouseClick) {
-                const resp = await apiv1.post("/travel", {title});
+                const resp = await apiv1.post("/travel", JSON.stringify({title: title.trim()}));
                 const travel = resp.data;
                 setTravels([...travels, travel]);
             }
@@ -44,7 +50,7 @@ export default function NewTravelPill({onCancel}) {
     return (
         <>
             <TextField
-                sx={{mx: '10px', marginTop: '5px'}}
+                sx={{marginTop: '10px'}}
                 label="여행제목을 적어주세요(10자)"
                 inputProps={{maxLength: 10}}
                 multiline
@@ -53,8 +59,8 @@ export default function NewTravelPill({onCancel}) {
                 onKeyDown={onKeyDownRename}
             />
             <Stack
-                sx={{ mx: '10px', marginTop: '5px'}}
-                spacing={2} direction="row"
+                sx={{marginTop: '5px'}}
+                spacing={3} direction="row"
             >
                 <Button
                     sx={{ flex: 1 }}

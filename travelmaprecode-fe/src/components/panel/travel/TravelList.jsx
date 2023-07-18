@@ -98,16 +98,17 @@ export default function TravelList() {
                 {
                     isLoggedIn ?
                         <>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Typography sx={{ margin: '10px', fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
+                            <Box sx={{ display: 'flex'}}>
+                                <Typography sx={{ fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
                                     나의 여행 둘러보기
                                 </Typography>
-                                <Box sx={{ flexGrow: 1 }} />
-                                <Button onClick={dndHandleClick}>
+                                <div className={style.dnd_icon}>
                                     <PanToolIcon
+                                        onClick={dndHandleClick}
                                         color = {dndState ? 'disabled' : 'primary'}
                                     />
-                                </Button>
+                                </div>
+
                             </Box>
 
                             {

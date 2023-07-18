@@ -9,15 +9,30 @@
     background-color: #cecece;
     position: relative;
     height: 200px;
-    margin: 10px 10px 5px 10px;
-    border-radius: 10px;
+    margin: 10px 0 5px 0;
+    border-radius: 5px;
     overflow: hidden;
     cursor: pointer;
 }
 
 .travel_info {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    opacity: 0.9;
+    top: 10px;
+    right: 10px;
+    opacity: 0.8;
+}
+
+.journey_cnt_chip{
+    background-color: #343434;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+.journey_photo_chip{
+    background-color: #343434;
+    border-radius: 8px;
+    color: white;
+    margin-left: 2px;
+    cursor: pointer;
 }
