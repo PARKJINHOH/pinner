@@ -14,7 +14,7 @@ export const sidebarWidth = atom({
  */
 export const travelListViewWidth = atom({
     key: 'travelListViewWidth',
-    default: 280,
+    default: 365,
 });
 
 /**
@@ -22,5 +22,5 @@ export const travelListViewWidth = atom({
  */
 export const journeyListViewWidth = atom({
     key: 'journeyListViewWidth',
-    default: 350
+    default: 380
 });
