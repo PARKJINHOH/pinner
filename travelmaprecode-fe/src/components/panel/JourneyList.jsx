@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
+// api
 import { useAPIv1 } from '../../apis/apiv1'
 
-import { Box, IconButton, Paper, TextField, Typography } from "@mui/material";
-import './JourneyList.css';
-import AddIcon from "@mui/icons-material/Add";
+// css
+import style from './JourneyList.module.css';
 
-import CreateIcon from '@mui/icons-material/Create';
-import { useRecoilValue, useSetRecoilState } from "recoil";
+// component
 import { travelState } from "../../states/travel";
 import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../states/panel/panelWidth";
 import NewJourneyPill from "./NewJourneyPill";
 import JourneyPill from "./JourneyPill";
-import dayjs from "dayjs";
 import { representPhotoIdOfTravel } from '../../common/travelutils';
 import RepresentImage from './RepresentImage';
+
+// mui
+import { Box, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { ChevronLeft } from '@mui/icons-material';
+
+// mui Icon
+import AddIcon from "@mui/icons-material/Add";
+import CreateIcon from '@mui/icons-material/Create';
+
+// etc
+import dayjs from "dayjs";
+
 
 /**
  * Journey 정보를 보여주는 컴포넌트
@@ -45,7 +55,7 @@ export default function JourneyList({ travel }) {
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
      * @param {KeyboardEvent} e
-            */
+    */
     async function onKeyDownRename(e) {
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
@@ -106,17 +116,16 @@ export default function JourneyList({ travel }) {
 
     return (
         <>
-            <Paper sx={{
-                width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
-                height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
-                overflow: 'auto', // 스크롤바 추가
-            }}>
+            <Paper
+                className={style.root_paper}
+                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
+            >
                 {/*UI상태 - 보기*/}
                 {/* 타이틀 사진 영역 */}
                 <RepresentImageWithButton travel={travel}/>
 
                 {/* 타이틀 영역 */}
-                <div align="center" className="journeyList-title">
+                <div align="center" className={style.travel_title}>
                     {
                         isTitleEditing ?
                             <>
@@ -150,7 +159,7 @@ export default function JourneyList({ travel }) {
 
                 {/*Jorney 추가 영역*/}
                 <Box
-                    className="journeyList-add-box"
+                    className={style.journey_add_box}
                     onClick={() => {
                         setIsEditingNewJourneyState(!isEditingNewJourneyState)
                     }}

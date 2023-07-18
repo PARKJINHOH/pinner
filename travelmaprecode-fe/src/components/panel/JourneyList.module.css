@@ -1,16 +1,18 @@
-.journeyList-box {
-    height: 200px;
-    margin: 5px;
-    padding: 10px;
-    border-radius: 5px;
+.root_paper {
+    position: fixed;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow: auto;
 }
 
-.journeyList-title {
+.travel_title {
     margin-top: 10px;
     margin-bottom: 60px;
 }
 
-.journeyList-add-box {
+.journey_add_box {
     margin: 30px auto 0;
     border-radius: 10px;
     height: 225px; /*4:3 비율*/
