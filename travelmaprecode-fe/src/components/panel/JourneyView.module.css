@@ -2,27 +2,27 @@
     --arrow-back-width: 24px; /* 특정 div의 width 값 */
 }
 
-.journeyView-title-group {
+.journeyView_title_group {
     display: flex;
     align-items: center;
 }
 
-.journeyView-title {
+.journeyView_title {
     display: flex;
     align-items: center;
     width: 280px;
     height: 40px;
 }
 
-.journeyView-date {
+.journeyView_date {
     margin-left: var(--arrow-back-width);
 }
 
-.journeyView-tag-div {
+.journeyView_tag_div {
     margin-left: var(--arrow-back-width);
 }
 
-.journeyView-tag {
+.journeyView_tag {
     align-items: center;
     display: inline-block;
     padding: 2px;
@@ -34,13 +34,13 @@
     font-size: 5px;
 }
 
-.journeyView-edit{
+.journeyView_edit{
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
-.journeyView-imageBox {
+.journeyView_imageBox {
     margin-top: 20px;
 }
 
@@ -48,11 +48,11 @@
 
 /*--------------------------------------*/
 /*수정 CSS*/
-.journeyView-location {
+.journeyView_location {
     margin: 0 auto;
 }
 
-.journeyView-tags {
+.journeyView_tags {
     --tag-pad: 0.1em;
     --tag-inset-shadow-size: 2em;
     font-size: 5px;
@@ -62,7 +62,7 @@
     border-bottom: 1px solid black;
 }
 
-.journeyView-add-picture {
+.journeyView_add_picture {
     height: 180px;
     margin: 25px 25px 5px;
     border-radius: 5px;

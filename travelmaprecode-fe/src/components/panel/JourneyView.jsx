@@ -1,26 +1,36 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
+// api
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
-import './JourneyView.css';
+// css
+import style from './JourneyView.module.css';
 
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+// component
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import dayjs from "dayjs";
 import {travelState} from "../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
+
+// mui
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography, IconButton} from "@mui/material";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+
+// mui Icon
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import Tags from "@yaireo/tagify/dist/react.tagify";
-import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
+// mantine
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+
+// etc
+import dayjs from "dayjs";
+import Tags from "@yaireo/tagify/dist/react.tagify";
 import toast from "react-hot-toast";
 
 /**
@@ -228,7 +238,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                 overflow: 'auto', // 스크롤바 추가
             }}>
                 <Box>
-                    <div className="journeyView-title-group">
+                    <div className={style.journeyView_title_group}>
                         <ArrowBackIosIcon
                             sx={{cursor: 'pointer'}}
                             onClick={() => {
@@ -239,7 +249,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                             editMode ?
                                 <>
                                     <Input
-                                        className="journeyView-title"
+                                        className={style.journeyView_title}
                                         placeholder="여행한 장소를 입력해주세요."
                                         inputProps={{maxLength: 50}}
                                         value={newLocation.name != "" ? newLocation.name : journey.geoLocationDto.name}
@@ -247,7 +257,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     />
                                     <LocationOnIcon
                                         sx={{cursor: 'pointer'}}
-                                        className="journeyView-location"
+                                        className={style.journeyView_location}
                                         onClick={() => {
                                             toast('지도를 클릭해주세요', {duration: 2000,});
                                             setNewJourneyStep(NewJourneyStep.LOCATING);
@@ -255,12 +265,12 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     />
                                 </>
                                 :
-                                <Typography variant="h6" className="journeyView-title">
+                                <Typography variant="h6" className={style.journeyView_title}>
                                     {journey.geoLocationDto.name}
                                 </Typography>
                         }
                     </div>
-                    <div className="journeyView-date">
+                    <div className={style.journeyView_date}>
                         {
                             editMode ?
                                 <>
@@ -279,12 +289,12 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                         }
 
                     </div>
-                    <div className="journeyView-tag-div">
+                    <div className={style.journeyView_tag_div}>
                         {
                             editMode ?
                             <>
                                 <Tags
-                                    className="journeyView-tags"
+                                    className={style.journeyView_tags}
                                     settings={{maxTags: '5'}}
                                     onChange={onHashTagChange}
                                     placeholder='태그 최대 5개'
@@ -295,7 +305,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                             <>
                                 {
                                     journey.hashtags.map((tag, index) => (
-                                            <div key={index} className="journeyView-tag">{tag}</div>
+                                            <div key={index} className={style.journeyView_tag}>{tag}</div>
                                         )
                                     )
                                 }
@@ -303,7 +313,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                         }
                     </div>
                 </Box>
-                <Box className="journeyView-edit">
+                <Box className={style.journeyView_edit}>
                     {
                         editMode ?
                             <>
@@ -333,7 +343,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                     }
 
                 </Box>
-                <Box className="journeyView-imageBox">
+                <Box className={style.journeyView_imageBox}>
                     {
                         editMode ?
                             <>
@@ -366,7 +376,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         })
                                     }
                                 </ImageList>
-                                <Dropzone className="journeyView-add-picture"
+                                <Dropzone className={style.journeyView_add_picture}
                                           key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
                                     <Typography variant="p" align="center" color="textSecondary">
                                         클릭 혹은 <br/>
