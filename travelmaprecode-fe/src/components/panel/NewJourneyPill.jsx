@@ -1,25 +1,35 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
+// api
 import {useAPIv1} from '../../apis/apiv1'
 
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
-import './NewJourneyPill.css';
+// css
+import style from './NewJourneyPill.module.css';
 
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+// component
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../states/panel/panelWidth";
+import {travelState} from "../../states/travel";
+import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
+
+// mui
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
+import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import IconButton from "@mui/material/IconButton";
+
+// mui Icon
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 
-import Tags from "@yaireo/tagify/dist/react.tagify";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+// mantine
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
-import IconButton from "@mui/material/IconButton";
+
+// etc
+import Tags from "@yaireo/tagify/dist/react.tagify";
+import dayjs from "dayjs";
 import {toast} from "react-hot-toast";
-import {travelState} from "../../states/travel";
-import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../states/modal";
 
 
 /**
@@ -189,8 +199,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
                 overflow: 'auto', // 스크롤바 추가
             }}>
-                <Box className="newJourney-box">
-                    <div className="newJourney-arrowBack">
+                <Box className={style.newJourney_box}>
+                    <div className={style.newJourney_arrowBack}>
                         <ArrowBackIosIcon
                             sx={{marginLeft: 2}}
                             onClick={() => {
@@ -198,21 +208,21 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             }}
                         />
                         <Input
-                            className="newJourney-title"
+                            className={style.newJourney_title}
                             placeholder="여행한 장소를 입력해주세요."
                             inputProps={{maxLength: 50}}
                             value={newLocation.name}
                             onChange={e => setNewLocation({...newLocation, name: e.target.value})}
                         />
                         <LocationOnIcon
-                            className="newJourney-location"
+                            className={style.newJourney_location}
                             onClick={() => {
                                 toast('지도를 클릭해주세요', {duration: 2000,});
                                 setNewJourneyStep(NewJourneyStep.LOCATING);
                             }}
                         />
                     </div>
-                    <div className="newJourney-date">
+                    <div className={style.newJourney_date}>
                         <ButtonDatePicker
                             label={`${pickerDate.format('YYYY-MM-DD')}`}
                             value={pickerDate}
@@ -221,14 +231,14 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     </div>
                     <div>
                         <Tags
-                            className="newJourney-tags"
+                            className={style.newJourney_tags}
                             settings={{maxTags: '5'}}
                             onChange={onHashTagChange}
                             placeholder='태그 최대 5개'
                         />
                     </div>
                 </Box>
-                <Box className="newJourney-imageBox">
+                <Box className={style.newJourney_imageBox}>
                     <ImageList variant="masonry" cols={2} gap={8}>
                         {photos.map((file, index) => {
                             const tmpPhotoUrl = URL.createObjectURL(file);
@@ -256,7 +266,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             );
                         })}
                     </ImageList>
-                    <Dropzone className="newJourney-add-picture"
+                    <Dropzone className={style.newJourney_add_picture}
                               key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
                         <Typography variant="p" align="center" color="textSecondary">
                             클릭 혹은 <br/>
@@ -265,7 +275,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         </Typography>
                     </Dropzone>
                 </Box>
-                <button className="newJourney-save" onClick={onCreate}>Save
+                <button className={style.newJourney_save} onClick={onCreate}>Save
                 </button>
             </Paper>
         </>

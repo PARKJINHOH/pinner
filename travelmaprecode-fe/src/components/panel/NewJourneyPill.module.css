@@ -1,32 +1,30 @@
-.newJourney-box {
+.newJourney_box {
     margin: 10px auto 0;
 }
 
-.newJourney-arrowBack {
+.newJourney_arrowBack {
     display: flex;
     align-items: center;
 }
 
-.newJourney-title {
+.newJourney_title {
     width: 250px;
     height: 40px;
     font-size: 14px;
 }
 
-.newJourney-location {
+.newJourney_location {
     margin: 0 auto;
-
 }
 
-.newJourney-date {
+.newJourney_date {
     margin-left: 25px;
     margin-top: 5px;
     text-decoration: underline;
     cursor: pointer;
 }
-.newJourney-tags-div {
-}
-.newJourney-tags {
+
+.newJourney_tags {
     --tag-pad: 0.1em;
     --tag-inset-shadow-size: 2em;
     font-size: 5px;
@@ -36,7 +34,8 @@
     border: 0;
     border-bottom: 1px solid black;
 }
-.newJourney-add-picture {
+
+.newJourney_add_picture {
     height: 180px;
     margin: 25px 25px 5px;
     border-radius: 5px;
@@ -46,7 +45,7 @@
     align-items: center;
 }
 
-.newJourney-imageBox {
+.newJourney_imageBox {
     margin-left: 25px;
     margin-right: 25px;
     margin-top: 20px;
