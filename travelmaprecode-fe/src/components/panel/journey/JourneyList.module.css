@@ -1,5 +1,6 @@
 .root_paper {
     position: fixed;
+    padding: 0px 15px 0 15px;
     border-radius: 0;
     height: 100vh;
     top: 0;
@@ -7,20 +8,64 @@
     overflow: auto;
 }
 
-.travel_title {
-    margin-top: 10px;
-    margin-bottom: 60px;
+.travel_title_group {
+    margin-top: 20px;
 }
 
-.journey_add_box {
-    margin: 30px auto 0;
-    border-radius: 10px;
-    height: 225px; /*4:3 비율*/
-    width: 300px; /*4:3 비율*/
-    background-color: #cecece;
+.journey_tool {
     display: flex;
-    justify-content: center;
     align-items: center;
-    flex-direction: column;
+    justify-content: right;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+    gap: 20px;
+}
+
+.add_icon{
     cursor: pointer;
+}
+.edit_icon{
+    height: 30px;
+    cursor: pointer;
+}
+.del_icon{
+    cursor: pointer;
+}
+
+/* Hover styles for each element */
+.edit_icon:hover {
+    fill: #36afb4;
+    transition: fill 0.3s ease;
+}
+
+.add_icon:hover,
+.del_icon:hover {
+    color: #36afb4;
+    transition: color 0.3s ease;
+}
+
+/*.journey_add_box {*/
+/*    margin: 30px auto 0;*/
+/*    border-radius: 10px;*/
+/*    height: 225px; !*4:3 비율*!*/
+/*    width: 300px; !*4:3 비율*!*/
+/*    background-color: #cecece;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    flex-direction: column;*/
+/*    cursor: pointer;*/
+/*}*/
+
+.main_preview {
+    margin-top: 10px;
+    aspect-ratio: 16 / 9;
+    border-radius: 5px;
+    background-color: #c2c2c2;
+}
+
+.no_journey_title{
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
 }

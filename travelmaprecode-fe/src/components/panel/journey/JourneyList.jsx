@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
@@ -16,15 +16,20 @@ import { representPhotoIdOfTravel } from '../../../common/travelutils';
 import RepresentImage from '../RepresentImage';
 
 // mui
-import { Box, IconButton, Paper, TextField, Typography } from "@mui/material";
+import {Box, IconButton, Paper, Stack, TextField, Typography} from "@mui/material";
 import { ChevronLeft } from '@mui/icons-material';
 
-// mui Icon
+// mui Icon & images
 import AddIcon from "@mui/icons-material/Add";
 import CreateIcon from '@mui/icons-material/Create';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
+import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
 
 // etc
 import dayjs from "dayjs";
+import Alert from "@mui/material/Alert";
+import {Divider} from "@mantine/core";
 
 
 /**
@@ -33,6 +38,7 @@ import dayjs from "dayjs";
  */
 export default function JourneyList({ travel }) {
     const apiv1 = useAPIv1();
+    const textFieldRef = useRef(null);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -52,11 +58,18 @@ export default function JourneyList({ travel }) {
         endDate = dayjs(sortedJourneys[sortedJourneys.length - 1].date).format("YYYY년 MM월 DD일");
     }
 
+    useEffect(() => {
+        if (isTitleEditing && textFieldRef.current) {
+            textFieldRef.current.focus();
+        }
+    }, [isTitleEditing]);
+
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
      * @param {KeyboardEvent} e
     */
     async function onKeyDownRename(e) {
+        console.log(e.key);
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
 
@@ -64,7 +77,7 @@ export default function JourneyList({ travel }) {
             e.preventDefault();
             if (isEnter) {
                 const titleJson = JSON.stringify({
-                    title: e.target.value,
+                    title: e.target.value.trim(),
                 });
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
@@ -85,13 +98,13 @@ export default function JourneyList({ travel }) {
      * @param {Travel} obj.travel
      * @param {function (): void} obj.onClick
      *
-     * @returns {HTMLDivElement}
+     * @returns {JSX.Element}
      */
     function RepresentImageWithButton({ travel, onClick }) {
         const photoId = representPhotoIdOfTravel(travel);
 
         if (photoId === null) {
-            return <div style={{ aspectRatio: 16 / 10, backgroundColor: 'grey' }} />;
+            return <div className={style.main_preview} />;
         }
 
         return (
@@ -120,54 +133,78 @@ export default function JourneyList({ travel }) {
                 className={style.root_paper}
                 sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
             >
-                {/*UI상태 - 보기*/}
-                {/* 타이틀 사진 영역 */}
-                <RepresentImageWithButton travel={travel}/>
+                <div>
+                    {/* 타이틀 사진 영역 */}
+                    <RepresentImageWithButton travel={travel}/>
 
-                {/* 타이틀 영역 */}
-                <div align="center" className={style.travel_title}>
-                    {
-                        isTitleEditing ?
-                            <>
-                                <TextField
-                                    defaultValue={travel.title}
-                                    hiddenLabel
-                                    variant="standard"
-                                    onKeyDown={onKeyDownRename}
-                                    onBlur={() => setIsTitleEditing(false)}
-                                />
-                            </>
-                            :
-                            <>
-                                <Typography variant='h5'>
-                                    {travel.title}
-                                    <CreateIcon
-                                        onClick={() => setIsTitleEditing(true)}
+                    {/* 타이틀 영역 */}
+                    <div align="center" className={style.travel_title_group}>
+                        {
+                            isTitleEditing ?
+                                <>
+                                    <TextField
+                                        inputProps={{ maxLength: 10, style: {fontSize: 20} }}
+                                        style={{ width: 250 }}
+                                        defaultValue={travel.title}
+                                        variant="standard"
+                                        onKeyDown={onKeyDownRename}
+                                        onBlur={() => setIsTitleEditing(false)}
+                                        inputRef={textFieldRef}
                                     />
-                                </Typography>
-                            </>
-                    }
-                    <Typography variant='subtitle1'>
-                        {sortedJourneys && sortedJourneys.length > 0 ? startDate + ' ~ ' + endDate : ''}
-                    </Typography>
+                                </>
+                                :
+                                <>
+                                    <Typography sx={{fontSize: '25px', fontWeight: 'bold'}}>
+                                        {travel.title}
+                                    </Typography>
+                                </>
+                        }
+                        <Typography variant='subtitle1'>
+                            {sortedJourneys && sortedJourneys.length > 0 ? startDate + ' ~ ' + endDate : ''}
+                        </Typography>
+                    </div>
+
+                    <div className={style.journey_tool}>
+                        <AddBoxOutlinedIcon
+                            sx={{fontSize: '30px'}}
+                            className={style.add_icon}
+                            onClick={() => {
+                                setIsEditingNewJourneyState(!isEditingNewJourneyState);
+                            }}
+                        />
+                        <EditIcon
+                            className={style.edit_icon}
+                            style={{ pointerEvents: isTitleEditing ? 'none' : 'auto', fill: isTitleEditing ? 'gray' : 'black' }}
+                            onClick={() => {
+                                setIsTitleEditing(!isTitleEditing);
+                            }}
+                        />
+                        <DisabledByDefaultOutlinedIcon
+                            sx={{fontSize: '30px'}}
+                            className={style.del_icon}
+                            onClick={() => {
+
+                            }}
+                        />
+                    </div>
                 </div>
 
-                {
-                    travel.journeys.map(journey => <JourneyPill key={journey.id} travelId={travel.id} journey={journey} />)
-                }
+                <Divider />
 
-                {/*Jorney 추가 영역*/}
-                <Box
-                    className={style.journey_add_box}
-                    onClick={() => {
-                        setIsEditingNewJourneyState(!isEditingNewJourneyState)
-                    }}
-                >
-                    <AddIcon sx={{ fontSize: '60px' }} />
-                    <Typography>
-                        Click to add new Journey
-                    </Typography>
-                </Box>
+                {
+                    travel.journeys.length !== 0 ?
+                        travel.journeys.map(journey =>
+                            <JourneyPill key={journey.id} travelId={travel.id} journey={journey}/>
+                        )
+                    :
+                        <div className={style.no_journey_title}>
+                            <Stack sx={{ width: '80%' }} >
+                                <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>
+                                    여정을 추가해주세요.
+                                </Alert>
+                            </Stack>
+                        </div>
+                }
             </Paper>
 
             {
