@@ -24,6 +24,7 @@
 }
 
 .add_icon{
+    margin-left: auto;
     cursor: pointer;
 }
 .edit_icon{
@@ -52,7 +53,7 @@
 
 .main_preview {
     margin-top: 10px;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
     border-radius: 5px;
     background-color: #c2c2c2;
 }
