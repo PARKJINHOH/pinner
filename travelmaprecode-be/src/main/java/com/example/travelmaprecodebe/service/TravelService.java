@@ -6,6 +6,7 @@ import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
+import com.example.travelmaprecodebe.repository.JourneyRepository;
 import com.example.travelmaprecodebe.repository.TravelRepository;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class TravelService {
 
     private final TravelRepository travelRepository;
+    private final JourneyRepository journeyRepository;
     private final TravelerRepository travelerRepository;
     private final EntityManager em;
 
@@ -79,6 +81,22 @@ public class TravelService {
     public List<NewTravelResponseDto> patchJourney(Long travelId, Long journeyId, NewJourneyRequestDto newJourney) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
         journey.updateJourney(newJourney);
+        return getTravel(travelId);
+    }
+
+    public List<NewTravelResponseDto> deleteJourney(Long id, Long travelId, Long journeyId) {
+        Journey journey = travelRepository.findJourney(travelId, journeyId);
+        if (journey == null) {
+            // Todo
+            return null;
+        }
+
+        Travel travel = journey.getTravel();
+        if (travel != null) {
+            travel.getJourneys().remove(journey);
+        }
+        journeyRepository.delete(journey);
+
         return getTravel(travelId);
     }
 }

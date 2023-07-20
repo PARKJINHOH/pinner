@@ -48,17 +48,16 @@ public class TravelController {
         return ResponseEntity.ok(travelService.patchJourney(travelId, journeyId, journey));
     }
 
-    @DeleteMapping("/{travelId}")
-    public ResponseEntity deleteTravel(@AuthenticationPrincipal Traveler traveler,
-                                       @PathVariable Long travelId) {
+    @DeleteMapping("/{travelId}/journey/{journeyId}")
+    public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler,
+                                          @PathVariable Long travelId, @PathVariable Long journeyId) {
         try {
-            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteTravel(traveler.getId(), travelId);
+            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteJourney(traveler.getId(), travelId, journeyId);
             return ResponseEntity.ok(newTravelResponseDtos);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("관리자에게 문의해주세요");
         }
-
     }
 
     @PutMapping("/orderKey")

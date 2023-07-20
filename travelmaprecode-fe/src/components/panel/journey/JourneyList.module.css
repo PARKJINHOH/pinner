@@ -5,7 +5,7 @@
     height: 100vh;
     top: 0;
     z-index: 9;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .travel_title_group {

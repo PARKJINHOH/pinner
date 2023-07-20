@@ -20,8 +20,6 @@ import {Box, IconButton, Paper, Stack, TextField, Typography} from "@mui/materia
 import { ChevronLeft } from '@mui/icons-material';
 
 // mui Icon & images
-import AddIcon from "@mui/icons-material/Add";
-import CreateIcon from '@mui/icons-material/Create';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
 import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
@@ -37,6 +35,12 @@ import {Divider} from "@mantine/core";
  * @param travel
  */
 export default function JourneyList({ travel }) {
+    const EditMode = {
+        DEFAULT: '',
+        EDIT: 'EDIT',
+        DELETE: 'DELETE',
+    }
+
     const apiv1 = useAPIv1();
     const textFieldRef = useRef(null);
 
@@ -46,7 +50,7 @@ export default function JourneyList({ travel }) {
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
     const setTravels = useSetRecoilState(travelState);
-    const [isTitleEditing, setIsTitleEditing] = useState(false);
+    const [editMode, setEditMode] = useState(EditMode.DEFAULT);
     const [isEditingNewJourneyState, setIsEditingNewJourneyState] = useState(false);
 
     const sortedJourneys = [...travel.journeys].sort((a, b) => a.date.localeCompare(b.date));
@@ -59,17 +63,16 @@ export default function JourneyList({ travel }) {
     }
 
     useEffect(() => {
-        if (isTitleEditing && textFieldRef.current) {
+        if (editMode === EditMode.EDIT && textFieldRef.current) {
             textFieldRef.current.focus();
         }
-    }, [isTitleEditing]);
+    }, [editMode]);
 
     /**
      * 이름 변경 중 ESC키를 누르면 취소를, 엔터를 누르면 적용한다.
      * @param {KeyboardEvent} e
     */
     async function onKeyDownRename(e) {
-        console.log(e.key);
         const isEsc = e.key === "Escape";
         const isEnter = e.key === "Enter";
 
@@ -88,7 +91,7 @@ export default function JourneyList({ travel }) {
                     });
 
             }
-            setIsTitleEditing(false);
+            setEditMode(EditMode.DEFAULT);
         }
     }
 
@@ -140,7 +143,7 @@ export default function JourneyList({ travel }) {
                     {/* 타이틀 영역 */}
                     <div align="center" className={style.travel_title_group}>
                         {
-                            isTitleEditing ?
+                            editMode === EditMode.EDIT ?
                                 <>
                                     <TextField
                                         inputProps={{ maxLength: 10, style: {fontSize: 20} }}
@@ -148,7 +151,7 @@ export default function JourneyList({ travel }) {
                                         defaultValue={travel.title}
                                         variant="standard"
                                         onKeyDown={onKeyDownRename}
-                                        onBlur={() => setIsTitleEditing(false)}
+                                        onBlur={() => setEditMode(EditMode.DEFAULT)}
                                         inputRef={textFieldRef}
                                     />
                                 </>
@@ -174,16 +177,21 @@ export default function JourneyList({ travel }) {
                         />
                         <EditIcon
                             className={style.edit_icon}
-                            style={{ pointerEvents: isTitleEditing ? 'none' : 'auto', fill: isTitleEditing ? 'gray' : 'black' }}
+                            style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT ? 'gray' : 'black' }}
                             onClick={() => {
-                                setIsTitleEditing(!isTitleEditing);
+                                setEditMode(prevMode =>
+                                    prevMode === EditMode.EDIT ? EditMode.DEFAULT : EditMode.EDIT
+                                );
                             }}
                         />
                         <DisabledByDefaultOutlinedIcon
                             sx={{fontSize: '30px'}}
                             className={style.del_icon}
+                            style={{ color: editMode === EditMode.DELETE ? 'red' : 'black' }}
                             onClick={() => {
-
+                                setEditMode(prevMode =>
+                                    prevMode === EditMode.DELETE ? EditMode.DEFAULT : EditMode.DELETE
+                                );
                             }}
                         />
                     </div>
@@ -194,7 +202,7 @@ export default function JourneyList({ travel }) {
                 {
                     travel.journeys.length !== 0 ?
                         travel.journeys.map(journey =>
-                            <JourneyPill key={journey.id} travelId={travel.id} journey={journey}/>
+                            <JourneyPill key={journey.id} travelId={travel.id} editMode={editMode} setEditMode={setEditMode} journey={journey}/>
                         )
                     :
                         <div className={style.no_journey_title}>
