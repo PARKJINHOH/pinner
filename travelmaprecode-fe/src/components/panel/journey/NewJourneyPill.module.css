@@ -42,15 +42,6 @@
     width: 100%;
 }
 
-.newJourney_add_picture {
-    background-color: rgba(0, 0, 0, 0);
-    border:  rgba(0, 0, 0, 0);
-}
-
-.newJourney_add_picture:hover {
-    background-color: rgba(0, 0, 0, 0);
-}
-
 .newJourney_imageBox {
     margin-top: 20px;
 }
@@ -69,13 +60,24 @@
     margin-right: auto;
 }
 
-.add_icon {
+.save_icon{
     height: 30px;
     cursor: pointer;
     margin-left: auto;
+}
+.save_icon:hover {
+    color: #2a7bff;
+    transition: color 0.3s ease;
+}
+
+
+.add_icon {
+    height: 30px;
+    cursor: pointer;
 }
 
 .add_icon:hover {
     color: #36afb4;
     transition: color 0.3s ease;
 }
+

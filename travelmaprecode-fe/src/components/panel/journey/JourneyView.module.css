@@ -60,7 +60,7 @@
     transition: fill 0.3s ease;
 }
 .journey_image {
-    border: 1px solid gray;
+    border: 1px solid #cbcbcb;
     border-radius: 6px;
     cursor: pointer;
 }

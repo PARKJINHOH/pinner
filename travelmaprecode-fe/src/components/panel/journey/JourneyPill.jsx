@@ -59,49 +59,48 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
 
     return (
         <>
-            <Box
-                className={style.root_box}
-                onClick={onJourneyViewClick}
-            >
-                {
-                    editMode === 'DELETE' && (
-                        <IconButton
-                            aria-label="delete"
-                            sx={{position: 'absolute'}}
-                            className={style.journey_delete_iconBtn}
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                onDeleteClick();
-                            }}
-                        >
-                            <DeleteForeverOutlinedIcon
-                                className={style.journey_delete_icon}
-                                sx={{fontSize: 30, color: 'red'}}
+            <Box className={style.root_box}>
+                <div onClick={onJourneyViewClick}>
+                    {
+                        editMode === 'DELETE' && (
+                            <IconButton
+                                aria-label="delete"
+                                sx={{position: 'absolute'}}
+                                className={style.journey_delete_iconBtn}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onDeleteClick();
+                                }}
+                            >
+                                <DeleteForeverOutlinedIcon
+                                    className={style.journey_delete_icon}
+                                    sx={{fontSize: 30, color: 'red'}}
+                                />
+                            </IconButton>
+                        )
+                    }
+                    <Box className={style.preview_box}>
+                        <div className={style.preview}>
+                            {
+                                photoId !== null ?
+                                    <RepresentImage photoId={photoId}></RepresentImage>
+                                    :
+                                    <Typography color="textSecondary">
+                                        사진 없음
+                                    </Typography>
+                            }
+                        </div>
+                        <div className={style.journey_info}>
+                            <Chip size="small" sx={{backgroundColor: '#5b5b5b', color: 'white'}}
+                                  label={journeyDate}
                             />
-                        </IconButton>
-                    )
-                }
-                <Box className={style.preview_box}>
-                    <div className={style.preview}>
-                        {
-                            photoId !== null ?
-                                <RepresentImage photoId={photoId}></RepresentImage>
-                                :
-                                <Typography color="textSecondary">
-                                    사진 없음
-                                </Typography>
-                        }
-                    </div>
-                    <div className={style.journey_info}>
-                        <Chip size="small" sx={{backgroundColor: '#5b5b5b', color: 'white'}}
-                              label={journeyDate}
-                        />
-                        <Chip size="small" sx={{backgroundColor: '#5b5b5b', color: 'white', marginLeft: '120px'}}
-                              label={`${journeyPhotoCnt} 이미지`}
-                        />
-                    </div>
-                </Box>
-                <Typography variant='h6'>{journey.geoLocationDto.name}</Typography>
+                            <Chip size="small" sx={{backgroundColor: '#5b5b5b', color: 'white', marginLeft: '120px'}}
+                                  label={`${journeyPhotoCnt} 이미지`}
+                            />
+                        </div>
+                    </Box>
+                </div>
+                <Typography sx={{fontSize: '20px', fontWeight: 'bold'}}>{journey.geoLocationDto.name}</Typography>
                 {
                     journey.hashtags.map((tag, index) => (
                             <div key={index} className={style.journey_tags}>{tag}</div>

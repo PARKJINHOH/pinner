@@ -24,6 +24,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    border: 1px solid #cbcbcb;
     aspect-ratio: 16 / 10;
     background-color: #eeeeee;
     overflow: hidden;

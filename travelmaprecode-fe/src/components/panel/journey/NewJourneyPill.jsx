@@ -20,6 +20,7 @@ import IconButton from "@mui/material/IconButton";
 
 // mui Icon
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
@@ -252,7 +253,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             sx={{fontSize: '30px'}}
                         />
                     </IconButton>
-
+                    <CheckBoxOutlinedIcon
+                        className={style.save_icon}
+                        sx={{fontSize: '30px'}}
+                        onClick={onCreate}
+                    />
                     <input
                         ref={inputRef}
                         type="file"
@@ -272,40 +277,38 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 </div>
 
                 <Divider />
-
                 <Box className={style.newJourney_imageBox}>
-                    <Dropzone className={style.newJourney_add_picture} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
-                        <ImageList variant="masonry" cols={2} gap={8}>
-                            {photos.map((file, index) => {
-                                const tmpPhotoUrl = URL.createObjectURL(file);
-                                return (
-                                    <ImageListItem key={index}>
-                                        <ImageListItemBar
-                                            sx={{
-                                                background: "transparent"
-                                            }}
-                                            position="top"
-                                            actionPosition="right"
-                                            actionIcon={
-                                                <IconButton onClick={() => removePhoto(index)}>
-                                                    <DeleteForeverIcon fontSize="small"/>
-                                                </IconButton>
-                                            }
-                                        />
-                                        <img
-                                            src={tmpPhotoUrl}
-                                            srcSet={tmpPhotoUrl}
-                                            loading="lazy"
-                                            alt="tmpImg"
-                                        />
-                                    </ImageListItem>
-                                );
-                            })}
-                        </ImageList>
-                    </Dropzone>
+                    <ImageList variant="masonry" cols={2} gap={8}>
+                        {photos.map((file, index) => {
+                            const tmpPhotoUrl = URL.createObjectURL(file);
+                            return (
+                                <ImageListItem key={index}>
+                                    <ImageListItemBar
+                                        sx={{
+                                            background: "transparent"
+                                        }}
+                                        position="top"
+                                        actionPosition="left"
+                                        actionIcon={
+                                            <IconButton
+                                                sx={{color: 'red'}}
+                                                onClick={() => removePhoto(index)}>
+                                                <DeleteForeverIcon fontSize="small"/>
+                                            </IconButton>
+                                        }
+                                    />
+                                    <img
+                                        style={{border: '1px solid #cbcbcb'}}
+                                        src={tmpPhotoUrl}
+                                        srcSet={tmpPhotoUrl}
+                                        loading="lazy"
+                                        alt="tmpImg"
+                                    />
+                                </ImageListItem>
+                            );
+                        })}
+                    </ImageList>
                 </Box>
-                <button onClick={onCreate}>Save
-                </button>
             </Paper>
         </>
     );
