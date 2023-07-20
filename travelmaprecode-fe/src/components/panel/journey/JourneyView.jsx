@@ -17,9 +17,9 @@ import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, T
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
-// mui Icon
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+// Icon
+import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -32,6 +32,9 @@ import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import dayjs from "dayjs";
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import toast from "react-hot-toast";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import {Divider} from "@mantine/core";
 
 /**
  * Journey 보기 및 수정
@@ -40,7 +43,12 @@ import toast from "react-hot-toast";
 export default function JourneyView({travelId, journey, viewCancel}) {
     const apiv1 = useAPIv1();
 
-    const [editMode, setEditMode] = useState(false);
+    const EditMode = {
+        DEFAULT: '',
+        EDIT: 'EDIT',
+        DELETE: 'DELETE',
+    }
+    const [editMode, setEditMode] = useState(EditMode.DEFAULT);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -131,7 +139,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                     if (response.status === 200) {
                         // 화면이 꺼짐
                         _setTravels(response.data);
-                        setEditMode(!editMode);
+                        setEditMode(EditMode.DEFAULT);
                     }
                 });
         }
@@ -231,28 +239,20 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
     return (
         <>
-            <Paper sx={{
-                padding: 2,
-                width: _journeyPanelWidth, position: 'fixed', borderRadius: 0,
-                height: '100vh', top: 0, left: _sidebarWidth + _travelListViewWidth, zIndex: '9',
-                overflow: 'auto', // 스크롤바 추가
-            }}>
+            <Paper
+                className={style.root_paper}
+                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth}}
+            >
                 <Box>
-                    <div className={style.journeyView_title_group}>
-                        <ArrowBackIosIcon
-                            sx={{cursor: 'pointer'}}
-                            onClick={() => {
-                                viewCancel();
-                            }}
-                        />
+                    <div className={style.journey_title}>
                         {
-                            editMode ?
+                            editMode === EditMode.EDIT ?
                                 <>
                                     <Input
-                                        className={style.journeyView_title}
+                                        className={style.journey_title}
                                         placeholder="여행한 장소를 입력해주세요."
                                         inputProps={{maxLength: 50}}
-                                        value={newLocation.name != "" ? newLocation.name : journey.geoLocationDto.name}
+                                        value={newLocation.name !== "" ? newLocation.name : journey.geoLocationDto.name}
                                         onChange={e => setNewLocation({...journey.geoLocationDto, name: e.target.value})}
                                     />
                                     <LocationOnIcon
@@ -265,14 +265,14 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     />
                                 </>
                                 :
-                                <Typography variant="h6" className={style.journeyView_title}>
+                                <Typography sx={{fontSize: '21px', fontWeight: 'bold'}}>
                                     {journey.geoLocationDto.name}
                                 </Typography>
                         }
                     </div>
-                    <div className={style.journeyView_date}>
+                    <div className={style.journey_date}>
                         {
-                            editMode ?
+                            editMode === EditMode.EDIT ?
                                 <>
                                     <ButtonDatePicker
                                         label={pickerDate ? `${pickerDate.format('YYYY-MM-DD')}` : dayjs(journey.date).format('YYYY-MM-DD')}
@@ -281,47 +281,47 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     />
                                 </>
                                 :
-                                <>
+                                <div>
                                     <Typography>
                                         {dayjs(journey.date).format("YYYY.MM.DD")}
                                     </Typography>
-                                </>
+                                </div>
                         }
 
                     </div>
-                    <div className={style.journeyView_tag_div}>
+                    <div className={style.journey_tags}>
                         {
-                            editMode ?
+                            editMode === EditMode.EDIT ?
                             <>
                                 <Tags
                                     className={style.journeyView_tags}
                                     settings={{maxTags: '5'}}
                                     onChange={onHashTagChange}
                                     placeholder='태그 최대 5개'
-                                    defaultValue={hashtags.length != 0 ? hashtags : journey.hashtags}
+                                    defaultValue={hashtags.length !== 0 ? hashtags : journey.hashtags}
                                 />
                             </>
                             :
-                            <>
+                            <div>
                                 {
                                     journey.hashtags.map((tag, index) => (
-                                            <div key={index} className={style.journeyView_tag}>{tag}</div>
+                                            <div key={index} className={style.journey_tag}>{tag}</div>
                                         )
                                     )
                                 }
-                            </>
+                            </div>
                         }
                     </div>
                 </Box>
-                <Box className={style.journeyView_edit}>
+                <Box>
                     {
-                        editMode ?
+                        editMode === EditMode.EDIT ?
                             <>
                                 <CheckCircleOutlineIcon
                                     sx={{cursor: 'pointer'}}
                                     onClick={() => {
                                         if (!onCreate()) {
-                                            setEditMode(!editMode);
+                                            setEditMode(EditMode.DEFAULT);
                                         }
 
                                     }}
@@ -329,23 +329,42 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 <CancelIcon
                                     sx={{cursor: 'pointer'}}
                                     onClick={() => {
-                                        setEditMode(!editMode);
+                                        setEditMode(EditMode.DEFAULT);
                                     }}
                                 />
                             </>
                             :
-                            <ModeEditIcon
-                                sx={{cursor: 'pointer'}}
-                                onClick={() => {
-                                    setEditMode(!editMode);
-                                }}
-                            />
-                    }
+                            <>
+                                <div className={style.journey_tool}>
+                                    <IconButton
+                                        className={style.arrow_icon_btn}
+                                        onClick={() => {
+                                            viewCancel();
+                                        }}
+                                    >
+                                        <ArrowBackIosOutlinedIcon
+                                            className={style.arrow_icon}
+                                            sx={{fontSize: '30px'}}
+                                        />
+                                    </IconButton>
+                                    <EditIcon
+                                        className={style.edit_icon}
+                                        style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT && 'gray' }}
+                                        onClick={() => {
+                                            setEditMode(EditMode.EDIT);
+                                        }}
+                                    />
+                                </div>
+                            </>
 
+                    }
                 </Box>
+
+                <Divider />
+
                 <Box className={style.journeyView_imageBox}>
                     {
-                        editMode ?
+                        editMode === EditMode.EDIT ?
                             <>
                                 <ImageList variant="masonry" cols={2} gap={8}>
                                     {
@@ -393,6 +412,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                             return (
                                                 <ImageListItem key={index}>
                                                     <img
+                                                        className={style.journey_image}
                                                         alt={index}
                                                         src={`/photo/${file}`}
                                                         srcSet={`/photo/${file}`}

@@ -129,7 +129,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     }, []);
 
     const addPhotos = (newPhotos) => {
-        let limitPhoto = 8; // 최대 사진 갯수
+        let limitPhoto = 10; // 최대 사진 갯수
 
         const currentPhotoCount = photos.length;
         const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);

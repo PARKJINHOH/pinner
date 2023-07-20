@@ -1,29 +1,30 @@
-:root {
-    --arrow-back-width: 24px; /* 특정 div의 width 값 */
+.root_paper {
+    position: fixed;
+    padding: 10px 15px 0 15px;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow-y: auto;
 }
 
-.journeyView_title_group {
+.journey_title {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    margin: 5px 0 5px 0;
 }
 
-.journeyView_title {
+.journey_date {
     display: flex;
-    align-items: center;
-    width: 280px;
-    height: 40px;
+    justify-content: center;
 }
 
-.journeyView_date {
-    margin-left: var(--arrow-back-width);
+.journey_tags {
+    display: flex;
+    justify-content: center;
 }
 
-.journeyView_tag_div {
-    margin-left: var(--arrow-back-width);
-}
-
-.journeyView_tag {
-    align-items: center;
+.journey_tag {
     display: inline-block;
     padding: 2px;
     margin-right: 4px;
@@ -31,19 +32,38 @@
     background-color: #f2f2f2;
     color: #333;
     font-weight: bold;
-    font-size: 5px;
-}
-
-.journeyView_edit{
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    font-size: 12px;
 }
 
 .journeyView_imageBox {
     margin-top: 20px;
 }
 
+.journey_tool {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+    gap: 20px;
+}
+.arrow_icon_btn{
+    cursor: pointer;
+    margin-right: auto;
+}
+.edit_icon{
+    height: 30px;
+    cursor: pointer;
+    margin-left: auto;
+}
+.edit_icon:hover {
+    fill: #36afb4;
+    transition: fill 0.3s ease;
+}
+.journey_image {
+    border: 1px solid gray;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
 
 /*--------------------------------------*/

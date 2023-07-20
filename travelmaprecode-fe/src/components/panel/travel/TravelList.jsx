@@ -98,7 +98,7 @@ export default function TravelList() {
                 {
                     isLoggedIn ?
                         <>
-                            <Box sx={{ display: 'flex'}}>
+                            <Box sx={{ display: 'flex', marginBottom: '20px'}}>
                                 <Typography sx={{ fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
                                     나의 여행 둘러보기
                                 </Typography>

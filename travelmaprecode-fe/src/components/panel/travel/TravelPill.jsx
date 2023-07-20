@@ -136,7 +136,6 @@ export default function TravelPill({ travel }) {
                                 cursor: 'pointer',
                                 marginLeft: '3px'
                             }}
-                            className={style.journey_photo_chip}
                             label={`${journeyPhotoCnt} 이미지`}
                         />
                     </div>

@@ -167,7 +167,7 @@ export default function JourneyList({ travel }) {
                         </Typography>
                     </div>
 
-                    <div className={style.journey_tool}>
+                    <div className={style.journeys_tool}>
                         <AddBoxOutlinedIcon
                             sx={{fontSize: '30px'}}
                             className={style.add_icon}
@@ -177,7 +177,7 @@ export default function JourneyList({ travel }) {
                         />
                         <EditIcon
                             className={style.edit_icon}
-                            style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT ? 'gray' : 'black' }}
+                            style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT && 'gray' }}
                             onClick={() => {
                                 setEditMode(prevMode =>
                                     prevMode === EditMode.EDIT ? EditMode.DEFAULT : EditMode.EDIT
@@ -187,7 +187,7 @@ export default function JourneyList({ travel }) {
                         <DisabledByDefaultOutlinedIcon
                             sx={{fontSize: '30px'}}
                             className={style.del_icon}
-                            style={{ color: editMode === EditMode.DELETE ? 'red' : 'black' }}
+                            style={{ color: editMode === EditMode.DELETE && 'red'}}
                             onClick={() => {
                                 setEditMode(prevMode =>
                                     prevMode === EditMode.DELETE ? EditMode.DEFAULT : EditMode.DELETE
