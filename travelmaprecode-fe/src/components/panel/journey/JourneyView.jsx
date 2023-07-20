@@ -343,7 +343,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         }}
                                     >
                                         <ArrowBackIosOutlinedIcon
-                                            className={style.arrow_icon}
                                             sx={{fontSize: '30px'}}
                                         />
                                     </IconButton>

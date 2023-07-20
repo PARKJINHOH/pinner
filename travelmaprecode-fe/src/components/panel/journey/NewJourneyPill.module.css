@@ -1,4 +1,4 @@
-.root_paper{
+.root_paper {
     position: fixed;
     padding: 10px 15px 0 15px;
     border-radius: 0;
@@ -9,54 +9,73 @@
 }
 
 .newJourney_box {
-    margin: 10px auto 0;
+
 }
 
-.newJourney_arrowBack {
+.journey_title_group {
     display: flex;
     align-items: center;
+    margin-bottom: 15px;
 }
 
 .newJourney_title {
-    width: 250px;
-    height: 40px;
-    font-size: 14px;
+    width: 100%;
+    font-size: 16px;
 }
 
 .newJourney_location {
-    margin: 0 auto;
 }
 
 .newJourney_date {
-    margin-left: 25px;
-    margin-top: 5px;
+    margin-top: 7px;
     text-decoration: underline;
     cursor: pointer;
 }
 
 .newJourney_tags {
+    margin-top: 12px;
+}
+
+.newJourney_tag {
     --tag-pad: 0.1em;
-    --tag-inset-shadow-size: 2em;
-    font-size: 5px;
-    margin-left: 25px;
+    font-size: 12px;
     width: 100%;
-    max-width: 300px;
-    border: 0;
-    border-bottom: 1px solid black;
 }
 
 .newJourney_add_picture {
-    height: 180px;
-    margin: 25px 25px 5px;
-    border-radius: 5px;
-    background-color: #cecece;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    border:  rgba(0, 0, 0, 0);
+}
+
+.newJourney_add_picture:hover {
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .newJourney_imageBox {
-    margin-left: 25px;
-    margin-right: 25px;
     margin-top: 20px;
+}
+
+.newJourney_tool {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+    gap: 20px;
+}
+
+.arrow_icon_btn {
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.add_icon {
+    height: 30px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.add_icon:hover {
+    color: #36afb4;
+    transition: color 0.3s ease;
 }

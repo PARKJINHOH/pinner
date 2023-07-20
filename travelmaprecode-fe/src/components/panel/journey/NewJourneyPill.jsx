@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
@@ -19,17 +19,19 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
 
 // mui Icon
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 // mantine
+import {Divider} from "@mantine/core";
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 
 // etc
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import {toast} from "react-hot-toast";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 
 
 /**
@@ -38,6 +40,7 @@ import {toast} from "react-hot-toast";
  */
 export default function NewJourneyPill({ travel, editingCancel }) {
     const apiv1 = useAPIv1();
+    const inputRef = useRef(null);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -138,6 +141,14 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         _setPhotos(combinedPhotos);
     };
 
+    const onClickAddPhotos = (event) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
+            addPhotos(newPhotos);
+        }
+    };
+
     /**
      * DatePicker용 Button 함수
      * @param props
@@ -151,17 +162,15 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             id,
             disabled,
             InputProps: { ref } = {},
-            inputProps: { 'aria-label': ariaLabel } = {},
         } = props;
 
         return (
             <Button
+                sx={{padding: 0, width: '100%'}}
                 variant="text"
-                size="small"
                 id={id}
                 disabled={disabled}
                 ref={ref}
-                aria-label={ariaLabel}
                 onClick={() => setOpen?.((prev) => !prev)}
             >
                 {label}
@@ -199,13 +208,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
             >
                 <Box className={style.newJourney_box}>
-                    <div className={style.newJourney_arrowBack}>
-                        <ArrowBackIosIcon
-                            sx={{marginLeft: 2}}
-                            onClick={() => {
-                                editingCancel();
-                            }}
-                        />
+                    <div className={style.journey_title_group}>
                         <Input
                             className={style.newJourney_title}
                             placeholder="여행한 장소를 입력해주세요."
@@ -228,50 +231,77 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             onChange={(newPickerDate) => setPickerDate(newPickerDate)}
                         />
                     </div>
-                    <div>
+                    <div className={style.newJourney_tags}>
                         <Tags
-                            className={style.newJourney_tags}
+                            className={style.newJourney_tag}
                             settings={{maxTags: '5'}}
                             onChange={onHashTagChange}
                             placeholder='태그 최대 5개'
                         />
                     </div>
                 </Box>
+
+                <div className={style.newJourney_tool}>
+                    <IconButton
+                        className={style.arrow_icon_btn}
+                        onClick={() => {
+                            editingCancel();
+                        }}
+                    >
+                        <ArrowBackIosOutlinedIcon
+                            sx={{fontSize: '30px'}}
+                        />
+                    </IconButton>
+
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        accept={IMAGE_MIME_TYPE} // 이미지 파일만 선택할 수 있도록 설정
+                        style={{ display: 'none' }}
+                        onChange={onClickAddPhotos}
+                        multiple
+                    />
+                    <label
+                        className={style.add_icon}
+                    >
+                        <AddBoxOutlinedIcon
+                            sx={{fontSize: '30px'}}
+                            onClick={() => inputRef.current.click()}
+                        />
+                    </label>
+                </div>
+
+                <Divider />
+
                 <Box className={style.newJourney_imageBox}>
-                    <ImageList variant="masonry" cols={2} gap={8}>
-                        {photos.map((file, index) => {
-                            const tmpPhotoUrl = URL.createObjectURL(file);
-                            return (
-                                <ImageListItem key={index}>
-                                    <ImageListItemBar
-                                        sx={{
-                                            background: "transparent"
-                                        }}
-                                        position="top"
-                                        actionPosition="right"
-                                        actionIcon={
-                                            <IconButton onClick={() => removePhoto(index)}>
-                                                <DeleteForeverIcon fontSize="small"/>
-                                            </IconButton>
-                                        }
-                                    />
-                                    <img
-                                        src={tmpPhotoUrl}
-                                        srcSet={tmpPhotoUrl}
-                                        loading="lazy"
-                                        alt="tmpImg"
-                                    />
-                                </ImageListItem>
-                            );
-                        })}
-                    </ImageList>
-                    <Dropzone className={style.newJourney_add_picture}
-                              key={"dropzone"} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
-                        <Typography variant="p" align="center" color="textSecondary">
-                            클릭 혹은 <br/>
-                            드래그 앤 드랍으로 <br/>
-                            사진 추가
-                        </Typography>
+                    <Dropzone className={style.newJourney_add_picture} accept={IMAGE_MIME_TYPE} onDrop={addPhotos}>
+                        <ImageList variant="masonry" cols={2} gap={8}>
+                            {photos.map((file, index) => {
+                                const tmpPhotoUrl = URL.createObjectURL(file);
+                                return (
+                                    <ImageListItem key={index}>
+                                        <ImageListItemBar
+                                            sx={{
+                                                background: "transparent"
+                                            }}
+                                            position="top"
+                                            actionPosition="right"
+                                            actionIcon={
+                                                <IconButton onClick={() => removePhoto(index)}>
+                                                    <DeleteForeverIcon fontSize="small"/>
+                                                </IconButton>
+                                            }
+                                        />
+                                        <img
+                                            src={tmpPhotoUrl}
+                                            srcSet={tmpPhotoUrl}
+                                            loading="lazy"
+                                            alt="tmpImg"
+                                        />
+                                    </ImageListItem>
+                                );
+                            })}
+                        </ImageList>
                     </Dropzone>
                 </Box>
                 <button onClick={onCreate}>Save
