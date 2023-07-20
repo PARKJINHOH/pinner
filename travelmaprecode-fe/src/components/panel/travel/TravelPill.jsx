@@ -119,11 +119,23 @@ export default function TravelPill({ travel }) {
                     <div className={style.travel_info}>
                         <Chip
                             size="small"
-                            className={style.journey_cnt_chip}
+                            sx={{
+                                backgroundColor: '#343434',
+                                borderRadius: '8px',
+                                color: 'white',
+                                cursor: 'pointer'
+                            }}
                             label={`${journeyCnt} 장소`}
                         />
                         <Chip
                             size="small"
+                            sx={{
+                                backgroundColor: '#343434',
+                                borderRadius: '8px',
+                                color: 'white',
+                                cursor: 'pointer',
+                                marginLeft: '3px'
+                            }}
                             className={style.journey_photo_chip}
                             label={`${journeyPhotoCnt} 이미지`}
                         />

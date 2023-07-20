@@ -21,18 +21,3 @@
     right: 10px;
     opacity: 0.8;
 }
-
-.journey_cnt_chip{
-    background-color: #343434;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-}
-
-.journey_photo_chip{
-    background-color: #343434;
-    border-radius: 8px;
-    color: white;
-    margin-left: 2px;
-    cursor: pointer;
-}
