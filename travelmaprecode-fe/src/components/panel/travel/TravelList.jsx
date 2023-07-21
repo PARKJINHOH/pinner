@@ -15,14 +15,15 @@ import NewTravelPill from './NewTravelPill';
 import TravelPill from './TravelPill';
 
 // mui
-import {Box, Button, List, Paper, Typography} from "@mui/material";
+import {Box, Button, IconButton, List, Paper, Typography} from "@mui/material";
 
-// mui Icon
-import AddIcon from '@mui/icons-material/Add';
-import PanToolIcon from '@mui/icons-material/PanTool';
+// Icon
+import {ReactComponent as DragIcon} from 'assets/images/drag_icon.svg';
 
 // etc
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import {Divider} from "@mantine/core";
 
 
 /**
@@ -98,18 +99,32 @@ export default function TravelList() {
                 {
                     isLoggedIn ?
                         <>
-                            <Box sx={{ display: 'flex', marginBottom: '20px'}}>
+                            <Box className={style.title_box}>
                                 <Typography sx={{ fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
                                     나의 여행 둘러보기
                                 </Typography>
-                                <div className={style.dnd_icon}>
-                                    <PanToolIcon
-                                        onClick={dndHandleClick}
-                                        color = {dndState ? 'disabled' : 'primary'}
-                                    />
-                                </div>
-
                             </Box>
+
+                            <div className={style.journey_tool}>
+                                <AddBoxOutlinedIcon
+                                    sx={{fontSize: '30px'}}
+                                    className={style.add_icon}
+                                    onClick={() => {
+                                        setIsEditingNewTravel(!isEditingNewTravel);
+                                        if (dndState === false) {
+                                            setDndState(true);
+                                        }
+                                        setSelectedId(null);
+                                    }}
+                                />
+                                <DragIcon
+                                    className={style.drag_icon}
+                                    onClick={dndHandleClick}
+                                    style={{stroke: !dndState && '#00AEFF'}}
+                                />
+                            </div>
+
+                            <Divider />
 
                             {
                                 <DragDropContext onDragEnd={onDragEnd}>
@@ -144,22 +159,6 @@ export default function TravelList() {
                                 </DragDropContext>
                             }
 
-                            {
-                                <Box
-                                    className={style.travel_box}
-                                    onClick={() => {
-                                        setIsEditingNewTravel(!isEditingNewTravel);
-                                        if (dndState === false) {
-                                            setDndState(true);
-                                        }
-                                        setSelectedId(null);
-                                    }}>
-                                    <AddIcon sx={{fontSize: '60px'}}/>
-                                    <Typography>
-                                        Click to add new Travel
-                                    </Typography>
-                                </Box>
-                            }
                             {
                                 isEditingNewTravel && <NewTravelPill onCancel={() => setIsEditingNewTravel(false)}/>
                             }
