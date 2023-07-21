@@ -4,14 +4,24 @@ import {useRecoilState} from 'recoil';
 // api
 import {useAPIv1} from '../../../apis/apiv1';
 
+// css
+import style from './NewTravelPill.module.css';
+
 // component
 import {travelState} from '../../../states/travel';
 
 // mui
 import Stack from "@mui/material/Stack";
-import {Button, TextField} from "@mui/material";
+import Input from '@mui/joy/Input';
+import {Button, Skeleton} from "@mui/material";
+import {AspectRatio} from "@mui/joy";
+
+// icon
+import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
+import ModeOfTravelOutlinedIcon from '@mui/icons-material/ModeOfTravelOutlined';
+
+// etc
 import toast from "react-hot-toast";
-import dayjs from "dayjs";
 
 /**
  * 'Click to add new Travel'클릭시 나오는 컴포넌트
@@ -49,36 +59,27 @@ export default function NewTravelPill({onCancel}) {
 
     return (
         <>
-            <TextField
-                sx={{marginTop: '10px'}}
-                label="여행제목을 적어주세요(10자)"
-                inputProps={{maxLength: 10}}
-                multiline
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                onKeyDown={onKeyDownRename}
-            />
-            <Stack
-                sx={{marginTop: '5px'}}
-                spacing={3} direction="row"
-            >
-                <Button
-                    sx={{ flex: 1 }}
-                    color="error"
-                    variant="contained"
-                    onClick={onCancel}
-                >
-                    취소
-                </Button>
-                <Button
-                    sx={{ flex: 1 }}
-                    variant="contained"
-                    onClick={onKeyDownRename}
-                >
-                    확인
-                </Button>
+            <Stack spacing={1}>
+                <AspectRatio ratio="16/10">
+                    <Skeleton variant="rectangular"/>
+                </AspectRatio>
+                <div className={style.travel_title_group}>
+                    <Input
+                        sx={{width: '90%'}}
+                        label="여행제목을 적어주세요(10자)"
+                        startDecorator={<ModeOfTravelOutlinedIcon />}
+                        endDecorator={<Button>저장</Button>}
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                        onKeyDown={onKeyDownRename}
+                        onClick={onKeyDownRename}
+                    />
+                    <WrongLocationOutlinedIcon
+                        sx={{marginLeft: 'auto', cursor: 'pointer'}}
+                        onClick={onCancel}
+                    />
+                </div>
             </Stack>
-
         </>
 
     )
