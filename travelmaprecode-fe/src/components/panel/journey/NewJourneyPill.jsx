@@ -129,10 +129,13 @@ export default function NewJourneyPill({ travel, editingCancel }) {
      * HashTag
      */
     const onHashTagChange = useCallback((e) => {
-        let map = e.detail.tagify.value.map(e =>
-            e.value
-        );
-        setHashtags(map);
+        const map = e.detail.tagify.value.map(e => e.value);
+        const hashtagsOver7 = map.filter(value => value.length > 10);
+        if (hashtagsOver7.length > 0) {
+            toast.error('해시태그는 10글자 이하여야 합니다.');
+        }
+        const validHashtags = map.filter(value => value.length <= 10);
+        setHashtags(validHashtags);
     }, []);
 
     const addPhotos = (newPhotos) => {
@@ -248,6 +251,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     </div>
                     <div className={style.newJourney_tags}>
                         <Tags
+                            value={hashtags}
                             className={style.newJourney_tag}
                             settings={{maxTags: '5'}}
                             onChange={onHashTagChange}
