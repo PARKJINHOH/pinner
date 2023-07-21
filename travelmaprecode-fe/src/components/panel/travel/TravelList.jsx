@@ -15,22 +15,32 @@ import NewTravelPill from './NewTravelPill';
 import TravelPill from './TravelPill';
 
 // mui
-import {Box, Button, IconButton, List, Paper, Typography} from "@mui/material";
+import {Alert, Box, List, Paper, Stack, Typography} from "@mui/material";
+import {Tooltip} from "@mui/joy";
+import {Divider} from "@mantine/core";
 
 // Icon
 import {ReactComponent as DragIcon} from 'assets/images/drag_icon.svg';
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
 
 // etc
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import {Divider} from "@mantine/core";
+import toast from "react-hot-toast";
 
 
 /**
  * 여행(Travel) 목록을 보여주는 컴포넌트
  */
 export default function TravelList() {
+    const EditMode = {
+        DEFAULT: '',
+        ADD: 'ADD',
+        EDIT: 'EDIT',
+        DELETE: 'DELETE',
+    }
     const apiv1 = useAPIv1();
+    const [editMode, setEditMode] = useState(EditMode.DEFAULT);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -78,7 +88,7 @@ export default function TravelList() {
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
                 if (!response.status === 200) {
-                    setTravelData([...travelData]);
+                    setTravelData(response.data);
                 }
             });
 
@@ -88,7 +98,6 @@ export default function TravelList() {
         setDndState(!dndState);
         setSelectedId(null);
     };
-
 
     return (
         <Paper
@@ -105,62 +114,101 @@ export default function TravelList() {
                                 </Typography>
                             </Box>
 
-                            <div className={style.journey_tool}>
-                                <AddBoxOutlinedIcon
-                                    sx={{fontSize: '30px'}}
-                                    className={style.add_icon}
-                                    onClick={() => {
-                                        setIsEditingNewTravel(!isEditingNewTravel);
-                                        if (dndState === false) {
-                                            setDndState(true);
-                                        }
-                                        setSelectedId(null);
-                                    }}
-                                />
-                                <DragIcon
-                                    className={style.drag_icon}
-                                    onClick={dndHandleClick}
-                                    style={{stroke: !dndState && '#00AEFF'}}
-                                />
+                            <div className={style.travel_tool}>
+                                <Tooltip title="순서변경" variant="outlined" size="lg">
+                                    <DragIcon
+                                        className={style.drag_icon}
+                                        onClick={dndHandleClick}
+                                        style={{stroke: !dndState && '#00AEFF'}}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="여행 추가" variant="outlined" size="lg">
+                                    <AddBoxOutlinedIcon
+                                        sx={{fontSize: '30px'}}
+                                        className={style.add_icon}
+                                        onClick={() => {
+                                            setEditMode(prevMode =>
+                                                prevMode === EditMode.ADD ? EditMode.DEFAULT : EditMode.ADD
+                                            );
+                                            if (dndState === false) {
+                                                setDndState(true);
+                                            }
+                                            setSelectedId(null);
+                                        }}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="여행 삭제" variant="outlined" size="lg">
+                                    <DisabledByDefaultOutlinedIcon
+                                        sx={{fontSize: '30px'}}
+                                        className={style.del_icon}
+                                        style={{ color: editMode === EditMode.DELETE && 'red'}}
+                                        onClick={() => {
+                                            if (travelData.length === 0) {
+                                                toast('삭제할 여행이 없습니다.');
+                                            } else {
+                                                setEditMode(prevMode =>
+                                                    prevMode === EditMode.DELETE ? EditMode.DEFAULT : EditMode.DELETE
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </Tooltip>
                             </div>
 
                             <Divider />
 
                             {
-                                <DragDropContext onDragEnd={onDragEnd}>
-                                    <Droppable droppableId="ROOT">
-                                        {provided => (
-                                            <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                {
-                                                    travelData.map((t) => {
-                                                        return (
-                                                            <Draggable draggableId={String(t.orderKey)} index={t.orderKey} key={t.orderKey} isDragDisabled={dndState}>
-                                                                {
-                                                                    provided => (
-                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
-                                                                             onClick={() => {
-                                                                                 if (dndState === false) {
-                                                                                     setDndState(true);
-                                                                                 }
-                                                                             }}
-                                                                        >
-                                                                            <TravelPill draggable="true" key={t.id} travel={t} />
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                            </Draggable>
-                                                        )
-                                                    })
-                                                }
-                                                {provided.placeholder}
+                                travelData.length !== 0 ?
+                                <>
+                                    <DragDropContext onDragEnd={onDragEnd}>
+                                        <Droppable droppableId="ROOT">
+                                            {provided => (
+                                                <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                    {
+                                                        travelData.map((travel, idx) => {
+                                                            return (
+                                                                <Draggable key={travel.orderKey} draggableId={String(travel.orderKey)} index={idx} isDragDisabled={dndState}>
+                                                                    {
+                                                                        provided => (
+                                                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                                 onClick={() => {
+                                                                                     if (dndState === false) {
+                                                                                         setEditMode(EditMode.DEFAULT);
+                                                                                         setDndState(true);
+                                                                                     }
+                                                                                 }}
+                                                                            >
+                                                                                <TravelPill draggable="true" key={travel.id} editMode={editMode} setEditMode={setEditMode} travel={travel} />
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                </Draggable>
+                                                            )
+                                                        })
+                                                    }
+                                                    {provided.placeholder}
+                                                </div>
+                                            )}
+                                        </Droppable>
+                                    </DragDropContext>
+                                </>
+                                :
+                                <>
+                                    {
+                                        editMode === EditMode.DEFAULT && (
+                                            <div className={style.no_travels}>
+                                                <Stack sx={{width: '80%'}}>
+                                                    <Alert variant="outlined" severity="info" sx={{justifyContent: 'center'}}>
+                                                        여행을 추가해주세요.
+                                                    </Alert>
+                                                </Stack>
                                             </div>
-                                        )}
-                                    </Droppable>
-                                </DragDropContext>
+                                        )
+                                    }
+                                </>
                             }
-
                             {
-                                isEditingNewTravel && <NewTravelPill onCancel={() => setIsEditingNewTravel(false)}/>
+                                editMode === EditMode.ADD && <NewTravelPill onCancel={() => setEditMode(EditMode.DEFAULT)}/>
                             }
                         </>
                         :

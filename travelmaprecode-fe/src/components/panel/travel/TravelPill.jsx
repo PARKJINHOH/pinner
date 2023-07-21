@@ -17,7 +17,10 @@ import { representPhotoIdOfTravel } from '../../../common/travelutils';
 import RepresentImage from '../RepresentImage';
 
 // mui
-import { Box, Chip, Typography } from '@mui/material';
+import {Box, Chip, IconButton, Typography} from '@mui/material';
+
+// icon
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 // etc
 import toast from 'react-hot-toast';
@@ -28,7 +31,7 @@ import toast from 'react-hot-toast';
  * @param travel
  */
 // Todo : 클릭시 맵 중앙으로, centerOfPoints 구현
-export default function TravelPill({ travel }) {
+export default function TravelPill({ travel, editMode, setEditMode }) {
     const apiv1 = useAPIv1();
 
     const [isRenaming, setIsRenaming] = useState(false);
@@ -56,6 +59,7 @@ export default function TravelPill({ travel }) {
     const journeyPhotoCnt = journeyList.reduce((acc, v) => v.photos.length + acc, 0);
 
     function onJourneyClick() {
+        setEditMode('');
         if (selectedTravelId === travel.id) {
             setSelectedTravelId('');
             return;
@@ -101,46 +105,74 @@ export default function TravelPill({ travel }) {
 
     const photoId = representPhotoIdOfTravel(travel);
 
+    async function onDeleteClick() {
+        if(window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)){
+            await apiv1.delete(`/travel/${travel.id}`)
+                .then((response) => {
+                    if (response.status === 200) {
+                        setTravels(response.data);
+                    }
+                });
+        }
+    }
+
     return (
         <>
             <Box className={style.root_box}>
-                <Box
-                    className={style.travel_box}
-                    onClick={onJourneyClick}
-                >
+                <div onClick={onJourneyClick}>
                     {
-                        photoId !== null ?
-                            <RepresentImage photoId={photoId} />
-                            :
-                            <Typography color="textSecondary">
-                                사진 없음
-                            </Typography>
+                        editMode === 'DELETE' && (
+                            <IconButton
+                                aria-label="delete"
+                                sx={{position: 'absolute'}}
+                                className={style.travel_delete_iconBtn}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onDeleteClick();
+                                }}
+                            >
+                                <DeleteForeverOutlinedIcon
+                                    className={style.travel_delete_icon}
+                                    sx={{fontSize: 30, color: 'red'}}
+                                />
+                            </IconButton>
+                        )
                     }
-                    <div className={style.travel_info}>
-                        <Chip
-                            size="small"
-                            sx={{
-                                backgroundColor: '#343434',
-                                borderRadius: '8px',
-                                color: 'white',
-                                cursor: 'pointer'
-                            }}
-                            label={`${journeyCnt} 장소`}
-                        />
-                        <Chip
-                            size="small"
-                            sx={{
-                                backgroundColor: '#343434',
-                                borderRadius: '8px',
-                                color: 'white',
-                                cursor: 'pointer',
-                                marginLeft: '3px'
-                            }}
-                            label={`${journeyPhotoCnt} 이미지`}
-                        />
-                    </div>
-                </Box>
-                {isRenaming ? renameTextInput : travelTitle}
+                    <Box className={style.travel_box} >
+                        {
+                            photoId !== null ?
+                                <RepresentImage photoId={photoId} />
+                                :
+                                <Typography color="textSecondary">
+                                    사진 없음
+                                </Typography>
+                        }
+                        <div className={style.travel_info}>
+                            <Chip
+                                size="small"
+                                sx={{
+                                    backgroundColor: '#343434',
+                                    borderRadius: '8px',
+                                    color: 'white',
+                                    cursor: 'pointer'
+                                }}
+                                label={`${journeyCnt} 장소`}
+                            />
+                            <Chip
+                                size="small"
+                                sx={{
+                                    backgroundColor: '#343434',
+                                    borderRadius: '8px',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                    marginLeft: '3px'
+                                }}
+                                label={`${journeyPhotoCnt} 이미지`}
+                            />
+                        </div>
+                    </Box>
+                    {isRenaming ? renameTextInput : travelTitle}
+                </div>
             </Box>
 
             {

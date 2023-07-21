@@ -39,20 +39,21 @@
     color: grey;
 }
 
-.journey_tool{
+.travel_tool{
     display: flex;
     align-items: center;
     height: 60px;
-    padding: 5px 10px 5px 0;
+    padding: 5px 0 5px 0;
     gap: 20px;
 }
 
-.add_icon{
+.add_icon {
     cursor: pointer;
+    margin-left: auto;
 }
 
 .add_icon:hover {
-    color: #36afb4;
+    color: #c2c2c2;
     transition: color 0.3s ease;
 }
 
@@ -60,5 +61,20 @@
     height: 30px;
     width: 30px;
     cursor: pointer;
-    margin-left: auto;
+}
+
+.del_icon {
+    color: #a94e4e;
+    cursor: pointer;
+}
+
+.del_icon:hover {
+    color: #f61245;
+    transition: color 0.3s ease;
+}
+
+.no_travels {
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
 }

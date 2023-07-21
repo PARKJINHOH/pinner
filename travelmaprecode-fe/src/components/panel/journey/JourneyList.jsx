@@ -16,18 +16,19 @@ import { representPhotoIdOfTravel } from '../../../common/travelutils';
 import RepresentImage from '../RepresentImage';
 
 // mui
-import {IconButton, Paper, Stack, TextField, Typography} from "@mui/material";
+import {Tooltip} from "@mui/joy";
+import {IconButton, Paper, Stack, TextField, Typography, Alert} from "@mui/material";
+import {Divider} from "@mantine/core";
 
-// mui Icon & images
+// icon & images
+import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
 import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
 
 // etc
 import dayjs from "dayjs";
-import Alert from "@mui/material/Alert";
-import {Divider} from "@mantine/core";
-import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
+import toast from "react-hot-toast";
 
 
 /**
@@ -163,32 +164,42 @@ export default function JourneyList({ travel }) {
                                 sx={{fontSize: '30px'}}
                             />
                         </IconButton>
-                        <AddBoxOutlinedIcon
-                            sx={{fontSize: '30px'}}
-                            className={style.add_icon}
-                            onClick={() => {
-                                setIsEditingNewJourneyState(!isEditingNewJourneyState);
-                            }}
-                        />
-                        <EditIcon
-                            className={style.edit_icon}
-                            style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT && 'gray' }}
-                            onClick={() => {
-                                setEditMode(prevMode =>
-                                    prevMode === EditMode.EDIT ? EditMode.DEFAULT : EditMode.EDIT
-                                );
-                            }}
-                        />
-                        <DisabledByDefaultOutlinedIcon
-                            sx={{fontSize: '30px'}}
-                            className={style.del_icon}
-                            style={{ color: editMode === EditMode.DELETE && 'red'}}
-                            onClick={() => {
-                                setEditMode(prevMode =>
-                                    prevMode === EditMode.DELETE ? EditMode.DEFAULT : EditMode.DELETE
-                                );
-                            }}
-                        />
+                        <Tooltip title="여정 추가" variant="outlined" size="lg">
+                            <AddBoxOutlinedIcon
+                                sx={{fontSize: '30px'}}
+                                className={style.add_icon}
+                                onClick={() => {
+                                    setIsEditingNewJourneyState(!isEditingNewJourneyState);
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="여행제목 수정" variant="outlined" size="lg">
+                            <EditIcon
+                                className={style.edit_icon}
+                                style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT && 'gray' }}
+                                onClick={() => {
+                                    setEditMode(prevMode =>
+                                        prevMode === EditMode.EDIT ? EditMode.DEFAULT : EditMode.EDIT
+                                    );
+                                }}
+                            />
+                        </Tooltip>
+                        <Tooltip title="여정 삭제" variant="outlined" size="lg">
+                            <DisabledByDefaultOutlinedIcon
+                                sx={{fontSize: '30px'}}
+                                className={style.del_icon}
+                                style={{ color: editMode === EditMode.DELETE && 'red'}}
+                                onClick={() => {
+                                    if (travel.journeys.length === 0) {
+                                        toast('삭제할 여정이 없습니다.');
+                                    } else {
+                                        setEditMode(prevMode =>
+                                            prevMode === EditMode.DELETE ? EditMode.DEFAULT : EditMode.DELETE
+                                        );
+                                    }
+                                }}
+                            />
+                        </Tooltip>
                     </div>
                 </div>
 
@@ -200,7 +211,7 @@ export default function JourneyList({ travel }) {
                             <JourneyPill key={journey.id} travelId={travel.id} editMode={editMode} setEditMode={setEditMode} journey={journey}/>
                         )
                     :
-                        <div className={style.no_journey_title}>
+                        <div className={style.no_journeys}>
                             <Stack sx={{ width: '80%' }} >
                                 <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>
                                     여정을 추가해주세요.

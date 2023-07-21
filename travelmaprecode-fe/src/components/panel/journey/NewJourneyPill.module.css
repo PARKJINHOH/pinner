@@ -18,13 +18,6 @@
     margin-bottom: 15px;
 }
 
-.newJourney_title {
-    width: 100%;
-    font-size: 16px;
-}
-
-.newJourney_location {
-}
 
 .newJourney_date {
     margin-top: 7px;
@@ -60,10 +53,10 @@
     margin-right: auto;
 }
 
-.save_icon{
+.save_icon {
+    color: #10bb00;
     height: 30px;
     cursor: pointer;
-    margin-left: auto;
 }
 .save_icon:hover {
     color: #2a7bff;
@@ -74,10 +67,11 @@
 .add_icon {
     height: 30px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .add_icon:hover {
-    color: #36afb4;
+    color: #c2c2c2;
     transition: color 0.3s ease;
 }
 

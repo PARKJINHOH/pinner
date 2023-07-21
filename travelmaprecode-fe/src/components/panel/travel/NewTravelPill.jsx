@@ -42,7 +42,11 @@ export default function NewTravelPill({onCancel}) {
         const isEnter = e.key === "Enter";
         const isMouseClick = e.type === "click";
 
-        if (isEsc || isEnter || isMouseClick) {
+        if (isEsc) {
+            onCancel();
+        }
+
+        if (isEnter || isMouseClick) {
             e.preventDefault();
             if (title.trim() === "" || title.trim().length < 2) {
                 toast.error("여행제목을 2글자 이상 입력해주세요.");
@@ -59,7 +63,7 @@ export default function NewTravelPill({onCancel}) {
 
     return (
         <>
-            <Stack spacing={1}>
+            <Stack spacing={1} sx={{marginTop: '20px'}}>
                 <AspectRatio ratio="16/10">
                     <Skeleton variant="rectangular"/>
                 </AspectRatio>
@@ -68,11 +72,10 @@ export default function NewTravelPill({onCancel}) {
                         sx={{width: '90%'}}
                         label="여행제목을 적어주세요(10자)"
                         startDecorator={<ModeOfTravelOutlinedIcon />}
-                        endDecorator={<Button>저장</Button>}
+                        endDecorator={<Button onClick={onKeyDownRename} >저장</Button>}
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         onKeyDown={onKeyDownRename}
-                        onClick={onKeyDownRename}
                     />
                     <WrongLocationOutlinedIcon
                         sx={{marginLeft: 'auto', cursor: 'pointer'}}

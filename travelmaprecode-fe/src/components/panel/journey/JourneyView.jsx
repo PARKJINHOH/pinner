@@ -27,14 +27,12 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 // mantine
 import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import {Divider} from "@mantine/core";
 
 // etc
 import dayjs from "dayjs";
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import toast from "react-hot-toast";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
-import {Divider} from "@mantine/core";
 
 /**
  * Journey 보기 및 수정

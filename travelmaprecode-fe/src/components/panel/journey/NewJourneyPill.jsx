@@ -13,12 +13,16 @@ import {travelState} from "../../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
 
 // mui
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography} from "@mui/material";
+
+import {Tooltip, Input} from "@mui/joy";
+import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper} from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
 
 // mui Icon
+
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -26,13 +30,12 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 // mantine
 import {Divider} from "@mantine/core";
-import {Dropzone, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import {IMAGE_MIME_TYPE} from "@mantine/dropzone";
 
 // etc
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import {toast} from "react-hot-toast";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 
 
 /**
@@ -150,6 +153,15 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         }
     };
 
+    function setLocationTitle(title){
+        if (title.length > 50) {
+            toast("50글자 이내로 입력해주세요");
+            return;
+        }
+
+        setNewLocation({...newLocation, name: title});
+    }
+
     /**
      * DatePicker용 Button 함수
      * @param props
@@ -211,18 +223,20 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 <Box className={style.newJourney_box}>
                     <div className={style.journey_title_group}>
                         <Input
-                            className={style.newJourney_title}
-                            placeholder="여행한 장소를 입력해주세요."
-                            inputProps={{maxLength: 50}}
+                            sx={{'--Input-gap': '1px'}}
+                            label="여행한 장소를 입력해주세요."
+                            startDecorator={
+                                <LocationOnIcon
+                                    sx={{cursor: 'pointer'}}
+                                    onClick={() => {
+                                        toast('지도를 클릭해주세요', {duration: 2000,});
+                                        setNewJourneyStep(NewJourneyStep.LOCATING);
+                                    }}
+                                />
+                            }
                             value={newLocation.name}
-                            onChange={e => setNewLocation({...newLocation, name: e.target.value})}
-                        />
-                        <LocationOnIcon
-                            className={style.newJourney_location}
-                            onClick={() => {
-                                toast('지도를 클릭해주세요', {duration: 2000,});
-                                setNewJourneyStep(NewJourneyStep.LOCATING);
-                            }}
+                            onChange={e => setLocationTitle(e.target.value)}
+                            fullWidth
                         />
                     </div>
                     <div className={style.newJourney_date}>
@@ -253,11 +267,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             sx={{fontSize: '30px'}}
                         />
                     </IconButton>
-                    <CheckBoxOutlinedIcon
-                        className={style.save_icon}
-                        sx={{fontSize: '30px'}}
-                        onClick={onCreate}
-                    />
                     <input
                         ref={inputRef}
                         type="file"
@@ -266,14 +275,21 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         onChange={onClickAddPhotos}
                         multiple
                     />
-                    <label
-                        className={style.add_icon}
-                    >
-                        <AddBoxOutlinedIcon
-                            sx={{fontSize: '30px'}}
-                            onClick={() => inputRef.current.click()}
-                        />
+                    <label className={style.add_icon}>
+                        <Tooltip title="사진 추가" variant="outlined" size="lg">
+                            <AddBoxOutlinedIcon
+                                sx={{fontSize: '30px'}}
+                                onClick={() => inputRef.current.click()}
+                            />
+                        </Tooltip>
                     </label>
+                    <Tooltip title="저장" variant="outlined" size="lg">
+                        <CheckBoxOutlinedIcon
+                            className={style.save_icon}
+                            sx={{fontSize: '30px'}}
+                            onClick={onCreate}
+                        />
+                    </Tooltip>
                 </div>
 
                 <Divider />
