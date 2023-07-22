@@ -58,7 +58,7 @@ public class TravelRepository {
                 .fetch();
     }
 
-    public void deleteTravel(Long travelerId, Long travelId) {
+    public void deleteTravel(Long travelId) {
         log.info("TravelRepository : deleteTravel");
 
         Travel findTravel = em.find(Travel.class, travelId);

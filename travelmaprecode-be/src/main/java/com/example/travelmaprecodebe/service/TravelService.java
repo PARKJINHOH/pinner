@@ -52,7 +52,7 @@ public class TravelService {
     }
 
     public List<NewTravelResponseDto> deleteTravel(Long travelerId, Long travelId) {
-        travelRepository.deleteTravel(travelerId, travelId);
+        travelRepository.deleteTravel(travelId);
         return getTravel(travelerId);
     }
 
