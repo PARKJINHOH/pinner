@@ -273,7 +273,7 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @returns {CustomMarker[]}
      */
     function drawMarkers(selectedTravel) {
-        return selectedTravel.journeys.map((journey) =>
+        return selectedTravel.journeys.filter(is_journey_has_location).map((journey) =>
             <PhotoMarker key={journey.id} journey={journey} />
         );
     }
@@ -314,7 +314,7 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @returns {Polyline[]}
      */
     function drawLine(selectedTravel) {
-        const groups = gruopByDate(selectedTravel.journeys);
+        const groups = gruopByDate(selectedTravel.journeys.filter(is_journey_has_location));
 
         // Note
         //
@@ -353,6 +353,17 @@ function DrawSelectedTravel({ selectedTravel }) {
         {drawMarkers(selectedTravel)}
         {drawLine(selectedTravel)}
     </>
+
+}
+
+/**
+ * Draws a line using Polyline component for each group of journeys by date
+ *
+ * @param {Journey} j
+ * @returns {boolean}
+ */
+function is_journey_has_location(j) {
+    return j.geoLocationDto.lat != 0 && j.geoLocationDto.lng != 0;
 }
 
 /**
