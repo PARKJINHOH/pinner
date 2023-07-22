@@ -75,3 +75,8 @@
     transition: color 0.3s ease;
 }
 
+.no_picture {
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
+}

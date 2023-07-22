@@ -143,6 +143,7 @@ export default function TravelList() {
                                         className={style.del_icon}
                                         style={{ color: editMode === EditMode.DELETE && 'red'}}
                                         onClick={() => {
+                                            setSelectedId(null);
                                             if (travelData.length === 0) {
                                                 toast('삭제할 여행이 없습니다.');
                                             } else {

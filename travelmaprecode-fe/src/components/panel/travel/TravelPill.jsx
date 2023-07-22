@@ -110,6 +110,9 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
             await apiv1.delete(`/travel/${travel.id}`)
                 .then((response) => {
                     if (response.status === 200) {
+                        if (response.data.length === 0) {
+                            setEditMode('');
+                        }
                         setTravels(response.data);
                     }
                 });

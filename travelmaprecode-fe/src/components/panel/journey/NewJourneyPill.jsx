@@ -15,17 +15,16 @@ import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../st
 // mui
 
 import {Tooltip, Input} from "@mui/joy";
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper} from "@mui/material";
+import {Alert, Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper, Stack} from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
 
 // mui Icon
-
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 // mantine
@@ -298,36 +297,47 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
                 <Divider />
                 <Box className={style.newJourney_imageBox}>
-                    <ImageList variant="masonry" cols={2} gap={8}>
-                        {photos.map((file, index) => {
-                            const tmpPhotoUrl = URL.createObjectURL(file);
-                            return (
-                                <ImageListItem key={index}>
-                                    <ImageListItemBar
-                                        sx={{
-                                            background: "transparent"
-                                        }}
-                                        position="top"
-                                        actionPosition="left"
-                                        actionIcon={
-                                            <IconButton
-                                                sx={{color: 'red'}}
-                                                onClick={() => removePhoto(index)}>
-                                                <DeleteForeverIcon fontSize="small"/>
-                                            </IconButton>
-                                        }
-                                    />
-                                    <img
-                                        style={{border: '1px solid #cbcbcb'}}
-                                        src={tmpPhotoUrl}
-                                        srcSet={tmpPhotoUrl}
-                                        loading="lazy"
-                                        alt="tmpImg"
-                                    />
-                                </ImageListItem>
-                            );
-                        })}
-                    </ImageList>
+                    {
+                        photos.length > 0 ?
+                            <ImageList variant="masonry" cols={2} gap={8}>
+                                {photos.map((file, index) => {
+                                    const tmpPhotoUrl = URL.createObjectURL(file);
+                                    return (
+                                        <ImageListItem key={index}>
+                                            <ImageListItemBar
+                                                sx={{
+                                                    background: "transparent"
+                                                }}
+                                                position="top"
+                                                actionPosition="left"
+                                                actionIcon={
+                                                    <IconButton
+                                                        sx={{color: 'red'}}
+                                                        onClick={() => removePhoto(index)}>
+                                                        <DeleteForeverOutlinedIcon />
+                                                    </IconButton>
+                                                }
+                                            />
+                                            <img
+                                                style={{border: '1px solid #cbcbcb'}}
+                                                src={tmpPhotoUrl}
+                                                srcSet={tmpPhotoUrl}
+                                                loading="lazy"
+                                                alt="tmpImg"
+                                            />
+                                        </ImageListItem>
+                                    );
+                                })}
+                            </ImageList>
+                            :
+                            <div className={style.no_picture}>
+                                <Stack sx={{width: '80%'}}>
+                                    <Alert variant="outlined" severity="info" sx={{justifyContent: 'center'}}>
+                                        사진을 추가해주세요.
+                                    </Alert>
+                                </Stack>
+                            </div>
+                    }
                 </Box>
             </Paper>
         </>
