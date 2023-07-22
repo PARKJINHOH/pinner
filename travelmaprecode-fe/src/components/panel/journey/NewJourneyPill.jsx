@@ -3,6 +3,7 @@ import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
 import {useAPIv1} from '../../../apis/apiv1'
+import iso3166_1 from 'apis/iso3166_1.json';
 
 // css
 import style from './NewJourneyPill.module.css';
@@ -13,9 +14,8 @@ import {travelState} from "../../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
 
 // mui
-
 import {Tooltip, Input} from "@mui/joy";
-import {Alert, Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper, Stack} from "@mui/material";
+import {Alert, Autocomplete, Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography} from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
@@ -58,6 +58,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
     const [hashtags, setHashtags] = useState([])
     const [photos, _setPhotos] = useState([]);
+
+    const [countries, setCountries] = useState(iso3166_1);
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
@@ -241,13 +243,48 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             fullWidth
                         />
                     </div>
-                    <div className={style.newJourney_date}>
-                        <ButtonDatePicker
-                            label={`${pickerDate.format('YYYY-MM-DD')}`}
-                            value={pickerDate}
-                            onChange={(newPickerDate) => setPickerDate(newPickerDate)}
+                    <div className={style.journey_country_group}>
+                        <Autocomplete
+                            id="country-select-demo"
+                            sx={{ width: '70%' }}
+                            options={countries}
+                            autoHighlight
+                            getOptionLabel={(option) => option.country_nm}
+                            renderOption={(props, country) => (
+                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                    <img
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${country.country_iso_alp2.toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${country.country_iso_alp2.toLowerCase()}.png 2x`}
+                                        alt=""
+                                    />
+                                    {country.country_nm}
+                                </Box>
+                            )}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Choose a country"
+                                    inputProps={{
+                                        ...params.inputProps,
+                                        autoComplete: 'new-password', // disable autocomplete and autofill
+                                    }}
+                                />
+                            )}
                         />
+                        <Divider sx={{marginLeft : '11px'}} orientation="vertical" flexItem />
+                        <div className={style.newJourney_date_group}>
+                            <Typography sx={{fontSize: '16px'}}>여행날짜</Typography>
+                            <ButtonDatePicker
+                                sx={{cursor: 'pointer'}}
+                                label={`${pickerDate.format('YYYY-MM-DD')}`}
+                                value={pickerDate}
+                                onChange={(newPickerDate) => setPickerDate(newPickerDate)}
+                            />
+                        </div>
                     </div>
+
                     <div className={style.newJourney_tags}>
                         <Tags
                             value={hashtags}

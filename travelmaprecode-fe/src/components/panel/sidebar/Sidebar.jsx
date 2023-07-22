@@ -16,6 +16,7 @@ import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemT
 // mui Icon
 import MapIcon from "@mui/icons-material/Map";
 import LanguageIcon from "@mui/icons-material/Language";
+import {Divider} from "@mantine/core";
 
 /**
  * 사이드바(SideBar) 컴포넌트
@@ -146,17 +147,17 @@ export default function Sidebar() {
                             <ListItemText
                                 primary={
                                     <Typography variant="subtitle2" noWrap>
-                                        둘러보기
+                                        내 여행
                                     </Typography>
                                 }
                             />
                         </ListItemButton>
                     </ListItem>
                 </List>
-                <Button
-                    onClick={travelerClick}
-                    sx={{marginTop: 'auto'}}
-                >
+
+                <Divider sx={{marginTop: 'auto'}}/>
+
+                <Button onClick={travelerClick}>
                     <Avatar {...stringAvatar(traveler ? traveler.name : '')} />
                 </Button>
             </Drawer>

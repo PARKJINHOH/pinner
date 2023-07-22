@@ -1,5 +1,5 @@
 .list_item {
-    min-height: 40px;
+    min-height: 60px;
     justify-content: center;
     flex-direction: column;
 }
