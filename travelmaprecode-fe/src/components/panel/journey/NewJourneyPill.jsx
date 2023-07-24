@@ -273,7 +273,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                                 />
                             )}
                         />
-                        <Divider sx={{marginLeft : '11px'}} orientation="vertical" flexItem />
+                        <Divider sx={{marginLeft : '11px'}} orientation="vertical" />
                         <div className={style.newJourney_date_group}>
                             <Typography sx={{fontSize: '16px'}}>여행날짜</Typography>
                             <ButtonDatePicker
