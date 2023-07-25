@@ -4,9 +4,11 @@ import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
+import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.JourneyRepository;
+import com.example.travelmaprecodebe.repository.PhotoRepository;
 import com.example.travelmaprecodebe.repository.TravelRepository;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final JourneyRepository journeyRepository;
     private final TravelerRepository travelerRepository;
+    private final PhotoRepository photoRepository;
     private final EntityManager em;
 
     public NewTravelResponseDto postTravel(Long travelerId, NewTravelRequestDto newTravel) {
@@ -45,10 +48,14 @@ public class TravelService {
                 .collect(Collectors.toList());
     }
 
-    public List<NewTravelResponseDto> postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
+    public Long postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
         Travel travel = travelRepository.findTravel(travelerId, travelId);
-        newJourney.toEntity().addTravel(travel);
-        return this.getTravel(travelerId);
+
+        Journey newJourneyEntity = newJourney.toEntity();
+        newJourneyEntity.addTravel(travel);
+        Journey savedJourney = journeyRepository.save(newJourneyEntity);
+
+        return savedJourney.getId();
     }
 
     public List<NewTravelResponseDto> deleteTravel(Long travelerId, Long travelId) {

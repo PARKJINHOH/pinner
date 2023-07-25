@@ -1,20 +1,26 @@
 package com.example.travelmaprecodebe.service;
 
+import com.example.travelmaprecodebe.domain.dto.PhotoDto;
+import com.example.travelmaprecodebe.domain.entity.Journey;
+import com.example.travelmaprecodebe.domain.entity.Photo;
+import com.example.travelmaprecodebe.photo.PhotoHandler;
 import com.example.travelmaprecodebe.photo.PhotoProvider;
 import com.example.travelmaprecodebe.photo.SimplePhotoHolder;
+import com.example.travelmaprecodebe.repository.JourneyRepository;
+import com.example.travelmaprecodebe.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 import static java.lang.Math.max;
 import static javax.imageio.ImageIO.read;
@@ -29,25 +35,26 @@ public class PhotoService {
 
     static final int MAX_SIZE = 1080;
 
-    @Autowired
     private final PhotoProvider<String, SimplePhotoHolder> photoProvider;
+    private final JourneyRepository journeyRepository;
+    private final PhotoRepository photoRepository;
+    private final PhotoHandler photoHandler;
 
     /**
      * @param imageStream 이미지 바이트 스트림
      * @return 저장된 이미지의 ID
      * @throws IOException 이미지 프로세싱 중 오류. gif등을 업로드 할 경우 발생.
      */
-    public String save(InputStream imageStream) throws IOException {
-        byte[] imageInBytes = imageStream.readAllBytes();
+    public void save(Long saveJourneyId, List<MultipartFile> photos) throws IOException {
+        Journey findJourney = journeyRepository.findById(saveJourneyId).orElse(null);
 
-        log.debug("업로드된 이미지 크기 {} kb", imageInBytes.length / 1024);
-
-        if (useResize) {
-            imageInBytes = tryResize(new ByteArrayInputStream(imageInBytes));
-            log.debug("리즈사이된 이미지 크기 {} kb", imageInBytes.length / 1024);
+        List<Photo> photoList = photoHandler.parseFileInfo(photos);
+        if(findJourney != null && !photoList.isEmpty()) {
+            for (Photo photo : photoList) {
+                photo.addJourney(findJourney);
+                photoRepository.save(photo);
+            }
         }
-
-        return photoProvider.save(new SimplePhotoHolder(imageInBytes));
     }
 
 
@@ -99,5 +106,16 @@ public class PhotoService {
     @SuppressWarnings("SameParameterValue")
     BufferedImage resize(BufferedImage originalImage, int targetSize) {
         return Scalr.resize(originalImage, Scalr.Method.QUALITY, targetSize);
+    }
+
+    public PhotoDto findPhoto(Long photoId) {
+        Photo entity = photoRepository.findById(photoId).orElseThrow(()
+                -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
+
+        return PhotoDto.builder()
+                .fullPath(entity.getFullPath())
+                .build();
+
+
     }
 }

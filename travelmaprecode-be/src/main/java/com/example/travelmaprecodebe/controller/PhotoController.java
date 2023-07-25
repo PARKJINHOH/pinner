@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.controller;
 
+import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.global.ResponseDto;
 import com.example.travelmaprecodebe.service.PhotoService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,15 +23,11 @@ import java.util.Map;
 public class PhotoController {
     private final PhotoService photoService;
 
-    @PostMapping("/photo")
-    public ResponseEntity<?> postPhoto(
-        @RequestParam("photo") MultipartFile file
-    ) {
+    @PostMapping("/photo/journey/{saveJourneyId}")
+    public ResponseEntity<?> postPhoto(@PathVariable Long saveJourneyId, @RequestParam("photo") List<MultipartFile> photos) {
         try {
-            // 이미 있는 이미지가 올라와도 충돌시키지 않는다.
-            final String photoLink = photoService.save(file.getInputStream());
-            log.info("photo saved: {}", photoLink);
-            return new ResponseEntity<>(Map.of("link", photoLink), HttpStatus.CREATED);
+            photoService.save(saveJourneyId, photos);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IOException e) {
             log.error("failed to save photo" + e);
             return new ResponseEntity<>(
@@ -37,20 +37,25 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("/photo/{id}")
-    public ResponseEntity<?> getPhoto(
-        @PathVariable String id
-    ) {
-        byte[] load = photoService.load(id);
+    @GetMapping(value = "/photo/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getPhoto(@PathVariable Long photoId) throws IOException {
+        PhotoDto photoDto = photoService.findPhoto(photoId);
+        String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
+        String path = photoDto.getFullPath();
 
-        if (load == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .headers(CommonHeader::withImmutableCache)
-                .body(load);
-        }
+        Path imagePath = Paths.get(absolutePath + path);
+        byte[] imageByteArray = Files.readAllBytes(imagePath);
+
+        return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
+
+//        if (load == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } else {
+//            return ResponseEntity
+//                .ok()
+//                .contentType(MediaType.IMAGE_JPEG)
+//                .headers(CommonHeader::withImmutableCache)
+//                .body(load);
+//        }
     }
 }
