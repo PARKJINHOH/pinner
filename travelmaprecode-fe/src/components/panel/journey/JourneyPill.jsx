@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useSetRecoilState} from "recoil";
 
 // api
-import { useAPIv1 } from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 
 // css
 import style from './JourneyPill.module.css';
@@ -39,7 +39,7 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
     const journeyPhotoCnt = journey.photos.length;
     const journeyDate = dayjs(journey.date).format("YYYY년 MM월 DD일");
 
-    const photoId = representPhotoIdOfJourney(journey);
+    const photo = representPhotoIdOfJourney(journey);
 
     function onJourneyViewClick() {
         setEditMode('');
@@ -50,7 +50,8 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
         if(window.confirm(`"${journey.geoLocationDto.name}" 여정을 정말 삭제하실건가요?`)){
             await apiv1.delete(`/travel/${travelId}/journey/${journey.id}`)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === HTTPStatus.OK) {
+                        setEditMode('');
                         setTravels(response.data);
                     }
                 });
@@ -82,8 +83,8 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
                     <Box className={style.preview_box}>
                         <div className={style.preview}>
                             {
-                                photoId !== null ?
-                                    <RepresentImage photoId={photoId}></RepresentImage>
+                                photo !== null ?
+                                    <RepresentImage photo={photo}></RepresentImage>
                                     :
                                     <Typography color="textSecondary">
                                         사진 없음

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
-import {useAPIv1} from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 
 // css
 import style from './JourneyView.module.css';
@@ -11,6 +11,7 @@ import style from './JourneyView.module.css';
 import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
 import {travelState} from "../../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
+import {environmentStatus} from "../../../states/environment";
 
 // mui
 import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography, IconButton} from "@mui/material";
@@ -56,6 +57,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const _setTravels = useSetRecoilState(travelState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
+    const [nowEnv, setNowEnv] = useRecoilState(environmentStatus);
 
     const [pickerDate, setPickerDate] = useState(null);
     const [hashtags, setHashtags] = useState([])
@@ -70,8 +72,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         const hostname = window.location.hostname;
         const port = window.location.port;
         setPhotos([]);
-        journey.photos.map((photoName) => {
-            const imageUrl = `${protocol}//${hostname}${port ? `:${port}` : ''}/photo/${photoName}`;
+        journey.photos.map((photo) => {
+            const imageUrl = `${nowEnv}photo/${photo.id}`;
 
             // 이미지 URL을 Blob 객체로 가져오기
             fetch(imageUrl)
@@ -95,7 +97,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
      * 2. 응답결과가 정상일 경우
      */
     const onCreate = async () => {
-        if (!newLocation.name && !journey.geoLocationDto) {
+        if (!nowEnv.name && !journey.geoLocationDto) {
             toast.error("여행한 지역을 선택해주세요.");
             return;
         }
@@ -117,8 +119,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
 
         const journeyData = {};
-        if (newLocation.name !== "") {
-            journeyData.geoLocation = newLocation;
+        if (nowEnv.name !== "") {
+            journeyData.geoLocation = nowEnv;
         }
         if (pickerDate) {
             journeyData.date = dayjs(pickerDate).format('YYYY-MM-DD');
@@ -134,8 +136,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         if (JSON.stringify(journeyData) !== '{}') {
             await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, JSON.stringify(journeyData))
                 .then((response) => {
-                    if (response.status === 200) {
-                        // 화면이 꺼짐
+                    if (response.status === HTTPStatus.OK) {
                         _setTravels(response.data);
                         setEditMode(EditMode.DEFAULT);
                     }
@@ -250,7 +251,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         className={style.journey_title}
                                         placeholder="여행한 장소를 입력해주세요."
                                         inputProps={{maxLength: 50}}
-                                        value={newLocation.name !== "" ? newLocation.name : journey.geoLocationDto.name}
+                                        value={nowEnv.name !== "" ? nowEnv.name : journey.geoLocationDto.name}
                                         onChange={e => setNewLocation({...journey.geoLocationDto, name: e.target.value})}
                                     />
                                     <LocationOnIcon
@@ -411,8 +412,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                                     <img
                                                         className={style.journey_image}
                                                         alt={index}
-                                                        src={`/photo/${file}`}
-                                                        srcSet={`/photo/${file}`}
+                                                        src={`${nowEnv}photo/${file.id}`}
+                                                        srcSet={`${nowEnv}photo/${file.id}`}
                                                         loading="lazy"
                                                     />
                                                 </ImageListItem>

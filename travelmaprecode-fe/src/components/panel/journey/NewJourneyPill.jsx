@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
-import {useAPIv1} from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 import iso3166_1 from 'apis/iso3166_1.json';
 
 // css
@@ -67,11 +67,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setNewLocation({lat: 0, lng: 0, name: "",});
     }, [])
 
-    /**
-     * 1. POST 요청
-     * 2. 응답결과가 정상일 경우
-     */
-    const onCreate = async () => {
+
+    async function onCreate() {
 
         if(newLocation.name === "") {
             toast.error("여행한 지역을 선택해주세요.");
@@ -82,43 +79,34 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             return;
         }
 
-        saveJourney()
-            .then(saveJourneyId => {
-                if (saveJourneyId) {
-                    const formData = new FormData();
-                    photos.forEach(photo => {
-                        formData.append('photo', photo);
+
+        try {
+            const saveJourneyId = await saveJourney();
+            if (saveJourneyId) {
+                const formData = new FormData();
+                photos.forEach(photo => {
+                    formData.append('photo', photo);
+                });
+                if (photos.length !== 0) {
+                    await fetch(`/photo/journey/${saveJourneyId}`, {
+                        method: "POST",
+                        body: formData,
                     });
-                    if (photos.length !== 0) {
-                        fetch(`/photo/journey/${saveJourneyId}`, {
-                            method: "POST",
-                            body: formData,
-                        })
-                    }
-
                 }
-            })
-            .catch(error => {
-                console.error(error);
-            })
-            .finally(() => {
-                apiv1.get("/travel")
-                    .then(response => {
-                        if (response.status === 200) {
-                            console.log(response.data);
-                            editingCancel();
-                            _setTravels(response.data);
-                        }
-                    })
-            });
+            }
 
+            const response = await apiv1.get("/travel");
+            if (response.status === HTTPStatus.OK) {
+                editingCancel();
+                _setTravels(response.data);
+            }
+        } catch (error){
+            console.error(error);
+        }
     }
 
-    /**
-     * @param {File} file
-     * @returns {String}
-     */
-    async function saveJourney(file) {
+
+    async function saveJourney() {
         const journeyData = JSON.stringify({
             date: dayjs(pickerDate).format('YYYY-MM-DD'),
             geoLocation: newLocation,

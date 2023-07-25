@@ -1,20 +1,24 @@
 import React from 'react'
+import {useRecoilState} from "recoil";
+import {environmentStatus} from "../../states/environment";
 
 /**
  *
  * @param {{photoId: string}} props
  * @returns
  */
-export default function RepresentImage({photoId}) {
+export default function RepresentImage({photo}) {
+    const [nowEnv, setNowEnv] = useRecoilState(environmentStatus);
+
     return (
         <img
             style={{
                 objectFit: 'cover',
                 transform: 'translate3d(0, 0, 1px)',
             }}
-            src={`/photo/${photoId}`}
+            src={`${nowEnv}photo/${photo.id}`}
             loading="lazy"
-            alt={photoId}
+            alt={photo.fileName}
             width="100%"
             height="100%"
         />

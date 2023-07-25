@@ -22,9 +22,9 @@ export function representPhotoIdOfTravel(travel) {
     for (let i = 0; i < travel.journeys.length; i++) {
         const journey = travel.journeys[i];
 
-        const photoId = representPhotoIdOfJourney(journey);
-        if (photoId !== null) {
-            return photoId;
+        const photo = representPhotoIdOfJourney(journey);
+        if (photo !== null) {
+            return photo;
         }
     }
     return null;

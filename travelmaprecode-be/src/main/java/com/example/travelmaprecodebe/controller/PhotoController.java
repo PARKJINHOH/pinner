@@ -40,22 +40,12 @@ public class PhotoController {
     @GetMapping(value = "/photo/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getPhoto(@PathVariable Long photoId) throws IOException {
         PhotoDto photoDto = photoService.findPhoto(photoId);
-        String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
+        String absolutePath = new File("").getAbsolutePath() + File.separator;
         String path = photoDto.getFullPath();
 
         Path imagePath = Paths.get(absolutePath + path);
         byte[] imageByteArray = Files.readAllBytes(imagePath);
 
         return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
-
-//        if (load == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        } else {
-//            return ResponseEntity
-//                .ok()
-//                .contentType(MediaType.IMAGE_JPEG)
-//                .headers(CommonHeader::withImmutableCache)
-//                .body(load);
-//        }
     }
 }

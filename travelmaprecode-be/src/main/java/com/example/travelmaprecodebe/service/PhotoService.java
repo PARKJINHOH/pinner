@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
@@ -40,11 +41,7 @@ public class PhotoService {
     private final PhotoRepository photoRepository;
     private final PhotoHandler photoHandler;
 
-    /**
-     * @param imageStream 이미지 바이트 스트림
-     * @return 저장된 이미지의 ID
-     * @throws IOException 이미지 프로세싱 중 오류. gif등을 업로드 할 경우 발생.
-     */
+    @Transactional
     public void save(Long saveJourneyId, List<MultipartFile> photos) throws IOException {
         Journey findJourney = journeyRepository.findById(saveJourneyId).orElse(null);
 

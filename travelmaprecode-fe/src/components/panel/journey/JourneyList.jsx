@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
-import { useAPIv1 } from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 
 // css
 import style from './JourneyList.module.css';
@@ -86,7 +86,7 @@ export default function JourneyList({ travel }) {
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
-                        if (response.status === 200) {
+                        if (response.status === HTTPStatus.OK) {
                             setTravels(response.data);
                         }
                     });
@@ -105,15 +105,15 @@ export default function JourneyList({ travel }) {
      * @returns {JSX.Element}
      */
     function RepresentImageWithButton({ travel }) {
-        const photoId = representPhotoIdOfTravel(travel);
+        const photo = representPhotoIdOfTravel(travel);
 
-        if (photoId === null) {
+        if (photo === null) {
             return <div className={style.main_preview} />;
         }
 
         return (
             <div style={{ aspectRatio: 16 / 10, }}>
-                <RepresentImage photoId={photoId}></RepresentImage>
+                <RepresentImage photo={photo}></RepresentImage>
             </div >
         )
     }

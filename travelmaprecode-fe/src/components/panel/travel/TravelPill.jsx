@@ -103,7 +103,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
             </Typography>
         </Box>;
 
-    const photoId = representPhotoIdOfTravel(travel);
+    const photo = representPhotoIdOfTravel(travel);
 
     async function onDeleteClick() {
         if(window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)){
@@ -143,8 +143,8 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
                     }
                     <Box className={style.travel_box} >
                         {
-                            photoId !== null ?
-                                <RepresentImage photoId={photoId} />
+                            photo !== null ?
+                                <RepresentImage photo={photo} />
                                 :
                                 <Typography color="textSecondary">
                                     사진 없음

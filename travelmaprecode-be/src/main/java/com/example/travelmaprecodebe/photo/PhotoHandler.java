@@ -2,9 +2,9 @@ package com.example.travelmaprecodebe.photo;
 
 import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.domain.entity.Photo;
-import com.example.travelmaprecodebe.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PhotoHandler {
 
+    // Local, Dev 경로 다름.
+    @Value("${image.path}")
+    private String imagePath;
+
     public List<Photo> parseFileInfo(List<MultipartFile> multipartFiles) throws IOException {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
@@ -38,10 +42,10 @@ public class PhotoHandler {
 
             // 프로젝트 디렉터리 내의 저장을 위한 절대 경로 설정
             // 경로 구분자 File.separator 사용
-            String absolutePath = new File("").getAbsolutePath() + File.separator + File.separator;
+            String absolutePath = new File("").getAbsolutePath() + File.separator;
 
             // 파일을 저장할 세부 경로 지정
-            String path = "images" + File.separator + current_date;
+            String path = imagePath + File.separator + current_date;
             File file = new File(path);
 
             // 디렉터리가 존재하지 않을 경우
@@ -79,12 +83,12 @@ public class PhotoHandler {
                 }
 
                 // 파일명 중복 피하고자 나노초까지 얻어와 지정
-                String newFileName = System.nanoTime() + originalFileExtension;
+                String fileName = System.nanoTime() + originalFileExtension;
 
                 PhotoDto photoDto = PhotoDto.builder()
                         .originFileName(multipartFile.getOriginalFilename())
-                        .newFileName(newFileName)
-                        .fullPath(path + File.separator)
+                        .fileName(fileName)
+                        .fullPath(path + File.separator + fileName)
                         .width(actualWidth)
                         .height(actualHeight)
                         .fileSize(multipartFile.getSize())
@@ -96,7 +100,7 @@ public class PhotoHandler {
                 fileList.add(photo);
 
                 // 업로드 한 파일 데이터를 지정한 파일에 저장
-                file = new File(absolutePath + path + File.separator + newFileName);
+                file = new File(absolutePath + path + File.separator + fileName);
                 try {
                     multipartFile.transferTo(file);
                 } catch (Exception e) {
