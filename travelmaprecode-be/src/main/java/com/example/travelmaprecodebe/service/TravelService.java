@@ -4,7 +4,6 @@ import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
 import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
-import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.JourneyRepository;
@@ -33,23 +32,24 @@ public class TravelService {
     private final PhotoRepository photoRepository;
     private final EntityManager em;
 
-    public NewTravelResponseDto postTravel(Long travelerId, NewTravelRequestDto newTravel) {
-        Traveler traveler = getTraveler(travelerId);
-        Travel travel = traveler.addTravel(newTravel.getTitle());
+    public NewTravelResponseDto postTravel(Traveler traveler, NewTravelRequestDto newTravel) {
+        Traveler findTraveler = getTraveler(traveler.getId());
+        Travel travel = findTraveler.addTravel(newTravel.getTitle());
         em.flush();
         em.clear();
         return new NewTravelResponseDto(travel);
     }
 
-    public List<NewTravelResponseDto> getTravel(Long travelerId) {
-        return travelRepository.findAllTravel(travelerId)
+    @Transactional
+    public List<NewTravelResponseDto> getTravel(Traveler traveler) {
+        return travelRepository.findAllTravel(traveler.getId())
                 .stream()
                 .map(NewTravelResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public Long postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
-        Travel travel = travelRepository.findTravel(travelerId, travelId);
+    public Long postJourney(Traveler traveler, Long travelId, NewJourneyRequestDto newJourney) {
+        Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
 
         Journey newJourneyEntity = newJourney.toEntity();
         newJourneyEntity.addTravel(travel);
@@ -58,22 +58,22 @@ public class TravelService {
         return savedJourney.getId();
     }
 
-    public List<NewTravelResponseDto> deleteTravel(Long travelerId, Long travelId) {
+    public List<NewTravelResponseDto> deleteTravel(Traveler traveler, Long travelId) {
         travelRepository.deleteTravel(travelId);
-        return getTravel(travelerId);
+        return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> patchTravel(Long travelerId, Long travelId, NewTravelRequestDto newTravel) {
-        travelRepository.patchTravel(travelerId, travelId, newTravel.getTitle());
-        return getTravel(travelerId);
+    public List<NewTravelResponseDto> patchTravel(Traveler traveler, Long travelId, NewTravelRequestDto newTravel) {
+        travelRepository.patchTravel(traveler.getId(), travelId, newTravel.getTitle());
+        return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> putOrderKey(Long travelerId, List<NewTravelRequestDto> travelList) {
+    public List<NewTravelResponseDto> putOrderKey(Traveler traveler, List<NewTravelRequestDto> travelList) {
         for (NewTravelRequestDto newTravelRequestDto : travelList) {
-            travelRepository.putOrderKey(travelerId, newTravelRequestDto);
+            travelRepository.putOrderKey(traveler.getId(), newTravelRequestDto);
         }
 
-        return getTravel(travelerId);
+        return getTravel(traveler);
     }
 
     private Traveler getTraveler(Long travelerId) {
@@ -85,13 +85,13 @@ public class TravelService {
     }
 
 
-    public List<NewTravelResponseDto> patchJourney(Long travelId, Long journeyId, NewJourneyRequestDto newJourney) {
+    public List<NewTravelResponseDto> patchJourney(Traveler traveler, Long travelId, Long journeyId, NewJourneyRequestDto newJourney) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
         journey.updateJourney(newJourney);
-        return getTravel(travelId);
+        return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> deleteJourney(Long id, Long travelId, Long journeyId) {
+    public List<NewTravelResponseDto> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
         if (journey == null) {
             // Todo
@@ -104,6 +104,6 @@ public class TravelService {
         }
         journeyRepository.delete(journey);
 
-        return getTravel(travelId);
+        return getTravel(traveler);
     }
 }
