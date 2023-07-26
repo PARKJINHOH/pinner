@@ -11,8 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
 @Slf4j
 @Component
@@ -32,7 +36,7 @@ public class TestIdDataLoader implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws IOException {
         if(profiles.equals("local")){
             // Test 계정 생성
             Traveler testId = Traveler.builder()
@@ -46,20 +50,11 @@ public class TestIdDataLoader implements ApplicationRunner {
             // 기존 이미지 폴더 삭제
             if(profiles.equals("local")){
                 String path = imagePath + File.separator;
-                File deleteFolder = new File(path);
-                if(deleteFolder.exists()){
-                    File[] deleteFolderList = deleteFolder.listFiles();
-
-                    if (deleteFolderList != null) {
-                        for (File file : deleteFolderList) {
-                            file.delete();
-                        }
-                    }
-
-                    if (deleteFolderList != null && deleteFolderList.length == 0 && deleteFolder.isDirectory()) {
-                        deleteFolder.delete();
-                    }
-                }
+                Path directory = Path.of(path);
+                Files.walk(directory)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
             }
         }
     }
