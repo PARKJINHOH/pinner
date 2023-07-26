@@ -404,13 +404,11 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 <ImageList variant="quilted" cols={2} gap={8}>
                                     {
                                         journey.photos.map((photo, index) => {
-                                            // todo : 빈공간이 있을 수 있음.
                                             const aspectRatio = photo.width / photo.height;
-                                            const cols = aspectRatio > 1 ? 2 : 1;
                                             const rows = aspectRatio > 1 ? 1 : 2;
 
                                             return (
-                                                <ImageListItem key={index} cols={cols} rows={rows}>
+                                                <ImageListItem key={index} cols={1} rows={rows}>
                                                     <img
                                                         className={style.journey_image}
                                                         alt={index}
