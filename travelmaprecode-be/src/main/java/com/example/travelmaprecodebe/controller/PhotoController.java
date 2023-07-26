@@ -37,9 +37,9 @@ public class PhotoController {
         }
     }
 
-    @GetMapping(value = "/photo/{photoId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getPhoto(@PathVariable Long photoId) throws IOException {
-        PhotoDto photoDto = photoService.findPhoto(photoId);
+    @GetMapping(value = "/photo/{fileName}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getPhoto(@PathVariable String fileName) throws IOException {
+        PhotoDto photoDto = photoService.findPhotoByFileName(fileName);
         String absolutePath = new File("").getAbsolutePath() + File.separator;
         String path = photoDto.getFullPath();
 

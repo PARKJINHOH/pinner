@@ -68,12 +68,9 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         setNewLocation({lat: 0, lng: 0, name: "",});
         setHashtags(journey.hashtags);
 
-        const protocol = window.location.protocol;
-        const hostname = window.location.hostname;
-        const port = window.location.port;
         setPhotos([]);
         journey.photos.map((photo) => {
-            const imageUrl = `${nowEnv}photo/${photo.id}`;
+            const imageUrl = `${nowEnv}photo/${photo.fileName}`;
 
             // 이미지 URL을 Blob 객체로 가져오기
             fetch(imageUrl)
@@ -406,14 +403,14 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                             <>
                                 <ImageList variant="masonry" cols={2} gap={8}>
                                     {
-                                        journey.photos.map((file, index) => {
+                                        journey.photos.map((photo, index) => {
                                             return (
                                                 <ImageListItem key={index}>
                                                     <img
                                                         className={style.journey_image}
                                                         alt={index}
-                                                        src={`${nowEnv}photo/${file.id}`}
-                                                        srcSet={`${nowEnv}photo/${file.id}`}
+                                                        src={`${nowEnv}photo/${photo.fileName}`}
+                                                        srcSet={`${nowEnv}photo/${photo.fileName}`}
                                                         loading="lazy"
                                                     />
                                                 </ImageListItem>

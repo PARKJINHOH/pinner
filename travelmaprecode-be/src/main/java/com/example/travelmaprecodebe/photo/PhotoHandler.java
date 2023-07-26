@@ -84,10 +84,8 @@ public class PhotoHandler {
                     }
                 }
 
-                // 파일명 중복 피하고자 나노초까지 얻어와 지정
-                String originalFileName = multipartFile.getOriginalFilename();
-                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-                String fileName = UUID.randomUUID() + fileExtension;
+                // 파일명 중복 피하고자 UUID사용.
+                String fileName = UUID.randomUUID().toString();
 
                 PhotoDto photoDto = PhotoDto.builder()
                         .originFileName(multipartFile.getOriginalFilename())

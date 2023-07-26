@@ -16,7 +16,7 @@ export default function RepresentImage({photo}) {
                 objectFit: 'cover',
                 transform: 'translate3d(0, 0, 1px)',
             }}
-            src={`${nowEnv}photo/${photo.id}`}
+            src={`${nowEnv}photo/${photo.fileName}`}
             loading="lazy"
             alt={photo.fileName}
             width="100%"
