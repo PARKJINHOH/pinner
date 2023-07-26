@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -74,16 +75,19 @@ public class PhotoHandler {
                 if (ObjectUtils.isEmpty(contentType)) {
                     break;
                 } else {  // 확장자가 jpeg, png인 파일들만 받아서 처리
-                    if (contentType.contains("image/jpeg"))
+                    if (contentType.contains("image/jpeg")){
                         originalFileExtension = ".jpg";
-                    else if (contentType.contains("image/png"))
+                    } else if (contentType.contains("image/png")){
                         originalFileExtension = ".png";
-                    else  // 다른 확장자일 경우 처리 x
+                    } else {
                         break;
+                    }
                 }
 
                 // 파일명 중복 피하고자 나노초까지 얻어와 지정
-                String fileName = System.nanoTime() + originalFileExtension;
+                String originalFileName = multipartFile.getOriginalFilename();
+                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                String fileName = UUID.randomUUID() + fileExtension;
 
                 PhotoDto photoDto = PhotoDto.builder()
                         .originFileName(multipartFile.getOriginalFilename())
