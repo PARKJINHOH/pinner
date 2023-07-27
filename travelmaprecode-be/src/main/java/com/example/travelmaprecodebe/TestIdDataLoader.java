@@ -51,10 +51,23 @@ public class TestIdDataLoader implements ApplicationRunner {
             if(profiles.equals("local")){
                 String path = imagePath + File.separator;
                 Path directory = Path.of(path);
-                Files.walk(directory)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+                try {
+                    Files.walk(directory)
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                } catch (Exception e) {
+                    log.error("폴더가 없습니다.");
+                } finally {
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        boolean wasSuccessful = file.mkdirs();
+
+                        if (!wasSuccessful) {
+                            log.error("file: was not successful");
+                        }
+                    }
+                }
             }
         }
     }
