@@ -90,7 +90,7 @@ public class PhotoHandler {
                 PhotoDto photoDto = PhotoDto.builder()
                         .originFileName(multipartFile.getOriginalFilename())
                         .fileName(fileName)
-                        .fullPath(path + File.separator + fileName)
+                        .fullPath(path + File.separator + fileName + originalFileExtension)
                         .width(actualWidth)
                         .height(actualHeight)
                         .fileSize(multipartFile.getSize())
@@ -102,7 +102,7 @@ public class PhotoHandler {
                 fileList.add(photo);
 
                 // 업로드 한 파일 데이터를 지정한 파일에 저장
-                file = new File(absolutePath + path + File.separator + fileName);
+                file = new File(absolutePath + path + File.separator + fileName + originalFileExtension);
                 try {
                     multipartFile.transferTo(file);
                 } catch (Exception e) {
