@@ -12,15 +12,17 @@ public class PhotoDto {
     private String originFileName;
     private String fileName;
     private String fullPath;
+    private String src;
     private Long fileSize;
     private int width;
     private int height;
 
     @Builder
-    public PhotoDto(String originFileName, String fileName, String fullPath, Long fileSize, int width, int height) {
+    public PhotoDto(String originFileName, String fileName, String fullPath, String src, Long fileSize, int width, int height) {
         this.originFileName = originFileName;
         this.fileName = fileName;
         this.fullPath = fullPath;
+        this.src = src;
         this.fileSize = fileSize;
         this.width = width;
         this.height = height;
@@ -28,10 +30,8 @@ public class PhotoDto {
 
     public PhotoDto(Photo photo) {
         this.id = photo.getId();
-        this.originFileName = photo.getOriginFileName();
+        this.src = photo.getSrc();
         this.fileName = photo.getFileName();
-        this.fullPath = photo.getFullPath();
-        this.fileSize = photo.getFileSize();
         this.width = photo.getWidth();
         this.height = photo.getHeight();
     }
@@ -41,6 +41,7 @@ public class PhotoDto {
                 .fileName(fileName)
                 .originFileName(originFileName)
                 .fullPath(fullPath)
+                .src(src)
                 .fileSize(fileSize)
                 .width(width)
                 .height(height)

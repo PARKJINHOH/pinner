@@ -26,6 +26,9 @@ public class Photo {
     @Column(nullable = false)
     private String fullPath;
 
+    @Column(nullable = false)
+    private String src;
+
     private Long fileSize;
 
     private int width;
@@ -38,10 +41,11 @@ public class Photo {
     private Journey journey;
 
     @Builder
-    public Photo(String originFileName, String fileName, String fullPath, Long fileSize, int width, int height) {
+    public Photo(String originFileName, String fileName, String fullPath, String src, Long fileSize, int width, int height) {
         this.fileName = fileName;
         this.originFileName = originFileName;
         this.fullPath = fullPath;
+        this.src = src;
         this.fileSize = fileSize;
         this.width = width;
         this.height = height;

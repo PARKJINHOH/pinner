@@ -32,5 +32,6 @@ spring:
 #    org.hibernate.type: trace
 #    org.springframework.security: DEBUG
 
-image:
-  path: "images"
+path:
+  image: images
+  url: http://localhost:8080

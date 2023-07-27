@@ -70,7 +70,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
         setPhotos([]);
         journey.photos.map((photo) => {
-            const imageUrl = `${nowEnv}photo/${photo.fileName}`;
+            const imageUrl = photo.src;
 
             // 이미지 URL을 Blob 객체로 가져오기
             fetch(imageUrl)
@@ -412,8 +412,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                                     <img
                                                         className={style.journey_image}
                                                         alt={index}
-                                                        src={`${nowEnv}photo/${photo.fileName}`}
-                                                        srcSet={`${nowEnv}photo/${photo.fileName}`}
+                                                        src={photo.src}
+                                                        srcSet={photo.src}
                                                         loading="lazy"
                                                     />
                                                 </ImageListItem>

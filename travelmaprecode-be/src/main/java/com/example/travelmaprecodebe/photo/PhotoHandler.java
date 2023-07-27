@@ -26,8 +26,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PhotoHandler {
 
-    // Local, Dev 경로 다름.
-    @Value("${image.path}")
+    @Value("${path.url}")
+    private String urlPath;
+
+    @Value("${path.image}")
     private String imagePath;
 
     public List<Photo> parseFileInfo(List<MultipartFile> multipartFiles) throws IOException {
@@ -91,6 +93,7 @@ public class PhotoHandler {
                         .originFileName(multipartFile.getOriginalFilename())
                         .fileName(fileName)
                         .fullPath(path + File.separator + fileName + originalFileExtension)
+                        .src(urlPath + File.separator + "photo" + File.separator + fileName)
                         .width(actualWidth)
                         .height(actualHeight)
                         .fileSize(multipartFile.getSize())

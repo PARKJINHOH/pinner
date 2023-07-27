@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 @Slf4j
@@ -24,7 +22,7 @@ public class TestIdDataLoader implements ApplicationRunner {
     @Value("${spring.profiles.active}")
     private String profiles;
 
-    @Value("${image.path}")
+    @Value("${path.image}")
     private String imagePath;
 
     private final TravelerRepository travelerRepository;

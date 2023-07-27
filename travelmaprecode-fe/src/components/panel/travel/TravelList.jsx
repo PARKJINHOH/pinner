@@ -62,6 +62,7 @@ export default function TravelList() {
 
         apiv1.get("/travel")
             .then(resp => {
+                console.log(resp.data);
                 setTravelData(resp.data);
             })
             .catch(error => {
