@@ -2,15 +2,13 @@ package com.example.travelmaprecodebe.domain.entity;
 
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
-import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.travelmaprecodebe.domain.dto.JourneyDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -70,20 +68,12 @@ public class Journey extends AuditEntity {
         }
     }
 
-    public void updateJourney(NewJourneyRequestDto newJourneyRequestDto) {
-        if (newJourneyRequestDto.getDate() != null) {
-            this.date = newJourneyRequestDto.getDate();
-        }
-        if (newJourneyRequestDto.getHashtags() != null) {
-            this.hashtags = newJourneyRequestDto.getHashtags();
-        }
-        if (newJourneyRequestDto.getGeoLocation() != null) {
-            this.geoLocation = newJourneyRequestDto.getGeoLocation().toEntity();
-        }
-        // todo
-//        if (newJourneyRequestDto.getPhotos() != null) {
-//            this.photo = newJourneyRequestDto.getPhotos();
-//        }
+    public void updateJourney(JourneyDto.Request newJourney) {
+        this.date = newJourney.getDate();
+        this.hashtags = newJourney.getHashtags();
+        this.geoLocation = newJourney.getGeoLocation().toEntity();
+//        Todo
+//        this.photos = newJourney.getPhotos();
     }
 
     @Builder

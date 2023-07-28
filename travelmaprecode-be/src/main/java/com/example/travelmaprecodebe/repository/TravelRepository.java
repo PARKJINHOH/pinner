@@ -1,6 +1,6 @@
 package com.example.travelmaprecodebe.repository;
 
-import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
+import com.example.travelmaprecodebe.domain.dto.TravelDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -80,7 +80,7 @@ public class TravelRepository {
         return resultL;
     }
 
-    public Long putOrderKey(Long travelerId, NewTravelRequestDto newTravelRequestDto) {
+    public Long putOrderKey(Long travelerId, TravelDto.Request newTravelRequestDto) {
         log.info("TravelRepository : putOrderKey");
         Long resultL = queryFactory
                 .update(travel)

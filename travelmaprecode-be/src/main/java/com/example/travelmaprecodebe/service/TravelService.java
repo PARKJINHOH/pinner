@@ -1,8 +1,7 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
-import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
-import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
+import com.example.travelmaprecodebe.domain.dto.JourneyDto;
+import com.example.travelmaprecodebe.domain.dto.TravelDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
@@ -32,23 +31,23 @@ public class TravelService {
     private final PhotoRepository photoRepository;
     private final EntityManager em;
 
-    public NewTravelResponseDto postTravel(Traveler traveler, NewTravelRequestDto newTravel) {
+    public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
         Traveler findTraveler = getTraveler(traveler.getId());
         Travel travel = findTraveler.addTravel(newTravel.getTitle());
         em.flush();
         em.clear();
-        return new NewTravelResponseDto(travel);
+        return new TravelDto.Response(travel);
     }
 
     @Transactional
-    public List<NewTravelResponseDto> getTravel(Traveler traveler) {
+    public List<TravelDto.Response> getTravel(Traveler traveler) {
         return travelRepository.findAllTravel(traveler.getId())
                 .stream()
-                .map(NewTravelResponseDto::new)
+                .map(TravelDto.Response::new)
                 .collect(Collectors.toList());
     }
 
-    public Long postJourney(Traveler traveler, Long travelId, NewJourneyRequestDto newJourney) {
+    public Long postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney) {
         Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
 
         Journey newJourneyEntity = newJourney.toEntity();
@@ -58,18 +57,18 @@ public class TravelService {
         return savedJourney.getId();
     }
 
-    public List<NewTravelResponseDto> deleteTravel(Traveler traveler, Long travelId) {
+    public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
         travelRepository.deleteTravel(travelId);
         return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> patchTravel(Traveler traveler, Long travelId, NewTravelRequestDto newTravel) {
+    public List<TravelDto.Response> patchTravel(Traveler traveler, Long travelId, TravelDto.Request newTravel) {
         travelRepository.patchTravel(traveler.getId(), travelId, newTravel.getTitle());
         return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> putOrderKey(Traveler traveler, List<NewTravelRequestDto> travelList) {
-        for (NewTravelRequestDto newTravelRequestDto : travelList) {
+    public List<TravelDto.Response> putOrderKey(Traveler traveler, List<TravelDto.Request> travelList) {
+        for (TravelDto.Request newTravelRequestDto : travelList) {
             travelRepository.putOrderKey(traveler.getId(), newTravelRequestDto);
         }
 
@@ -85,13 +84,13 @@ public class TravelService {
     }
 
 
-    public List<NewTravelResponseDto> patchJourney(Traveler traveler, Long travelId, Long journeyId, NewJourneyRequestDto newJourney) {
+    public List<TravelDto.Response> patchJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
         journey.updateJourney(newJourney);
         return getTravel(traveler);
     }
 
-    public List<NewTravelResponseDto> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
+    public List<TravelDto.Response> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
         if (journey == null) {
             // Todo
