@@ -61,7 +61,6 @@
 }
 
 .save_icon {
-    color: #10bb00;
     height: 30px;
     cursor: pointer;
 }
@@ -86,4 +85,11 @@
     display: flex;
     margin-top: 30%;
     justify-content: center;
+}
+
+.saving_icon{
+    top: 50%;
+    left: 44%;
+    margin: 0 auto;
+    position: absolute;
 }

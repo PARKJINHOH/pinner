@@ -15,7 +15,7 @@ import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../st
 
 // mui
 import {Tooltip, Input} from "@mui/joy";
-import {Alert, Autocomplete, Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography} from "@mui/material";
+import {Alert, Autocomplete, Box, Button, CircularProgress, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography} from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import IconButton from "@mui/material/IconButton";
@@ -59,6 +59,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const [hashtags, setHashtags] = useState([])
     const [photos, _setPhotos] = useState([]);
 
+    const [saving, setSaving] = useState(false);
+
     const [countries, setCountries] = useState(iso3166_1);
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
@@ -71,6 +73,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     async function onCreate() {
         // 사진 최대 용량 (10MB)
         const maxPhotoSize = 10475274;
+
+        if (saving) {
+            return;
+        }
 
         if(newLocation.name === "") {
             toast.error("여행한 지역을 선택해주세요.");
@@ -98,6 +104,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
 
         try {
+            setSaving(true);
             const saveJourneyId = await saveJourney();
             if (saveJourneyId) {
                 const formData = new FormData();
@@ -119,6 +126,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             }
         } catch (error){
             console.error(error);
+        } finally {
+            setSaving(false);
         }
     }
 
@@ -154,21 +163,23 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setHashtags(validHashtags);
     }, []);
 
-    const addPhotos = (newPhotos) => {
+    const onClickAddPhotos = (event) => {
+        // 개별사진 10MB, 총합 최대 100MB
         let limitPhoto = 10; // 최대 사진 갯수
 
-        const currentPhotoCount = photos.length;
-        const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
-        const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
-        const combinedPhotos = [...photos, ...additionalPhotos];
-        _setPhotos(combinedPhotos);
-    };
-
-    const onClickAddPhotos = (event) => {
         const files = event.target.files;
         if (files && files.length > 0) {
             const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
-            addPhotos(newPhotos);
+
+            if(newPhotos.length + photos.length > 10) {
+                toast.error('사진 갯수는 최대 10장입니다.');
+                return;
+            }
+            const currentPhotoCount = photos.length;
+            const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
+            const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
+            const combinedPhotos = [...photos, ...additionalPhotos];
+            _setPhotos(combinedPhotos);
         }
     };
 
@@ -341,7 +352,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     <Tooltip title="저장" variant="outlined" size="lg">
                         <CheckBoxOutlinedIcon
                             className={style.save_icon}
-                            sx={{fontSize: '30px'}}
+                            sx={{
+                                fontSize: '30px',
+                                color: saving ? 'gray' : '#10bb00',
+                                pointerEvents: saving ? 'none' : 'auto',
+                            }}
                             onClick={onCreate}
                         />
                     </Tooltip>
@@ -349,11 +364,17 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
                 <Divider />
                 <Box className={style.newJourney_imageBox}>
+                    {saving && (
+                        <CircularProgress
+                            className={style.saving_icon}
+                            size={48}
+                        />
+                    )}
                     {
                         photos.length > 0 ?
                             <ImageList variant="masonry" cols={2} gap={8}>
-                                {photos.map((file, index) => {
-                                    const tmpPhotoUrl = URL.createObjectURL(file);
+                                {photos.map((photo, index) => {
+                                    const tmpPhotoUrl = URL.createObjectURL(photo);
                                     return (
                                         <ImageListItem key={index}>
                                             <ImageListItemBar
@@ -371,7 +392,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                                                 }
                                             />
                                             <img
-                                                style={{border: '1px solid #cbcbcb'}}
+                                                style={{ border: photo.size > 10400000 ? '3px solid red' : '1px solid #cbcbcb' }}
                                                 src={tmpPhotoUrl}
                                                 srcSet={tmpPhotoUrl}
                                                 loading="lazy"
