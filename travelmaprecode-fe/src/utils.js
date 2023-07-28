@@ -2,10 +2,21 @@
 // Internal utils
 //
 
-// Convert degrees to radians
+/**
+ * Convert degrees to radians
+ *
+ * @param {number} degrees
+ * @returns
+ */
 const radians = (degrees) => degrees * Math.PI / 180;
 
-// 두 좌표간의 거리를 구한다.
+/**
+ * 두 좌표간의 거리를 구한다.
+ *
+ * @param {Point} c1
+ * @param {Point} c2
+ * @returns distance
+ */
 function distance(c1, c2) {
     // Convert latitude and longitude to radians
     const lat1 = radians(c1.lat);
@@ -22,7 +33,12 @@ function distance(c1, c2) {
     return distance;
 }
 
-// 여러 좌표들의 경계를 구한다.
+/**
+ * 여러 좌표들의 경계를 구한다.
+ *
+ * @param {Point[]} points
+ * @returns
+ */
 function bounds(points) {
     const minLat = Math.min(...points.map(p => p.lat));
     const maxLat = Math.max(...points.map(p => p.lat));
@@ -41,7 +57,12 @@ function bounds(points) {
 // Exported
 //
 
-// 여러 좌표들의 중심점을 구한다.
+/**
+ * 여러 좌표들의 중심점을 구한다.
+ *
+ * @param {Point[]} points
+ * @returns {Point}
+ */
 export function centerOfPoints(points) {
     let latMin = Infinity;
     let latMax = -Infinity;
@@ -61,7 +82,12 @@ export function centerOfPoints(points) {
     return { lat: lat, lng: lng };
 }
 
-// 여러 좌표들의 중심점과 가장 멀리 떨어진 좌표의 거리를 구한다.
+/**
+ * 여러 좌표들의 중심점과 가장 멀리 떨어진 좌표의 거리를 구한다.
+ *
+ * @param {Point[]} points
+ * @returns {Point}
+ */
 export function radiusOfPoints(points) {
     const center = centerOfPoints(points);
 

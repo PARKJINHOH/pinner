@@ -22,3 +22,9 @@
 * @property {number} lng
 * @property {string} name
 */
+
+/**
+* @typedef {object} Point
+* @property {number} lat
+* @property {number} lng
+*/
