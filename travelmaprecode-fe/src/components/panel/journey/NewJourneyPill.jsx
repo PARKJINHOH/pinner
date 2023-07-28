@@ -313,7 +313,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
                     <div className={style.newJourney_tags}>
                         <Tags
-                            value={hashtags}
                             className={style.newJourney_tag}
                             settings={{maxTags: '5'}}
                             onChange={onHashTagChange}
