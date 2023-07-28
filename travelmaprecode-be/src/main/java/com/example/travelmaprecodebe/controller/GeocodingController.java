@@ -1,9 +1,7 @@
 package com.example.travelmaprecodebe.controller;
 
+import com.example.travelmaprecodebe.domain.dto.GeocodingApiDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -227,88 +225,26 @@ public class GeocodingController {
 
         HttpRequest request = HttpRequest.newBuilder(uri).build();
         HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-        GeocodingResponse response = objectMapper.readValue(responseStream.body(), GeocodingResponse.class);
+        GeocodingApiDto response = objectMapper.readValue(responseStream.body(), GeocodingApiDto.class);
 
-        switch (ResponseStatus.valueOf(response.status)) {
+        switch (ResponseStatus.valueOf(response.getStatus())) {
             case OK:
                 // compound code가 두 파츠 이상일 경우 해당값 사용
-                if (response.plusCode.compoundCode != null) {
-                    String[] compoundCodes = response.plusCode.compoundCode.split(" ");
+                if (response.getPlusCode().getCompoundCode() != null) {
+                    String[] compoundCodes = response.getPlusCode().getCompoundCode().split(" ");
                     if (compoundCodes.length >= 2) {
                         return Arrays.stream(compoundCodes).skip(1).collect(joining(" "));
                     }
                 }
 
-                return response.results[0].formattedAddress;
+                return response.getResults()[0].getFormattedAddress();
 
             case ZERO_RESULTS:
                 return null;
 
             default:
-                log.error("역지오코딩 API를 사용 할 수 없습니다: {}, {}", response.status, response.errorMessage);
+                log.error("역지오코딩 API를 사용 할 수 없습니다: {}, {}", response.getStatus(), response.getErrorMessage());
                 throw new RuntimeException("역지오코딩 API를 사용 할 수 없습니다");
-        }
-    }
-
-
-    /**
-     * Response DTO of google reverse geocoding.
-     */
-    @Data
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    private static class GeocodingResponse {
-
-        private String errorMessage;
-        private PlusCode plusCode;
-        private Result[] results;
-        private String status;
-
-        @Data
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class PlusCode {
-            private String compoundCode;
-            private String globalCode;
-        }
-
-        @Data
-        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-        public static class Result {
-            private AddressComponent[] addressComponents;
-            private String formattedAddress;
-            private Geometry geometry;
-            private String placeID;
-            private String[] types;
-
-            @Data
-            @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-            public static class AddressComponent {
-                private String longName;
-                private String shortName;
-                private String[] types;
-            }
-
-            @Data
-            @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-            public static class Geometry {
-                private Bounds bounds;
-                private Location location;
-                private String locationType;
-                private Bounds viewport;
-
-                @Data
-                @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-                public static class Bounds {
-                    private Location northeast;
-                    private Location southwest;
-                }
-
-                @Data
-                @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-                public static class Location {
-                    private double lat;
-                    private double lng;
-                }
-            }
         }
     }
 }
