@@ -1,6 +1,7 @@
 package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.GeocodingApiDto;
+import com.example.travelmaprecodebe.global.GeocodingStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,26 +35,6 @@ public class GeocodingController {
 
     public GeocodingController(@Value("${google-api-key}") String googleApiKey) throws MalformedURLException {
         this.googleApiKey = googleApiKey;
-    }
-
-
-    /**
-     * 역 지오코딩 API 응답 상태<p>
-     * 코드에 관해서는 <a href="https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding#reverse-status-codes">문서</a> 참조
-     */
-    private enum ResponseStatus {
-        OK("OK"),
-        ZERO_RESULTS("ZERO_RESULTS"),
-        OVER_QUERY_LIMIT("OVER_QUERY_LIMIT"),
-        REQUEST_DENIED("REQUEST_DENIED"),
-        INVALID_REQUEST("INVALID_REQUEST"),
-        UNKNOWN_ERROR("UNKNOWN_ERROR");
-
-        ResponseStatus(String name) {
-            this.name = name;
-        }
-
-        private final String name;
     }
 
     /**
@@ -227,7 +208,7 @@ public class GeocodingController {
         HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         GeocodingApiDto response = objectMapper.readValue(responseStream.body(), GeocodingApiDto.class);
 
-        switch (ResponseStatus.valueOf(response.getStatus())) {
+        switch (GeocodingStatus.valueOf(response.getStatus())) {
             case OK:
                 // compound code가 두 파츠 이상일 경우 해당값 사용
                 if (response.getPlusCode().getCompoundCode() != null) {
