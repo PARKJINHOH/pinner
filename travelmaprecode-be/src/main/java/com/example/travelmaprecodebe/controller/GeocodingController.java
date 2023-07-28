@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -29,13 +29,11 @@ import static java.util.stream.Collectors.joining;
 @RequestMapping("/api/v1/geocoding")
 public class GeocodingController {
     private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final String googleApiKey;
+
+    @Value("${google-api-key}")
+    private String googleApiKey;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public GeocodingController(@Value("${google-api-key}") String googleApiKey) throws MalformedURLException {
-        this.googleApiKey = googleApiKey;
-    }
 
     /**
      * 주어진 위도와 경도를 기반으로 국가와 시로 구성된 문자열 반환
@@ -202,9 +200,14 @@ public class GeocodingController {
      */
     private String reverseGeocoding(double lat, double lng) throws IOException, InterruptedException {
 
-        URI uri = URI.create(String.format("https://maps.googleapis.com/maps/api/geocode/json?language=ko&result_type=locality&key=%s&latlng=%f,%f", googleApiKey, lat, lng));
+        UriComponents googleMapUrl = UriComponentsBuilder.fromHttpUrl("https://maps.googleapis.com/maps/api/geocode/json")
+                .queryParam("language", "ko")
+                .queryParam("result_type", "locality")
+                .queryParam("key", googleApiKey)
+                .queryParam("latlng", String.format("%f,%f", lat, lng))
+                .build();
 
-        HttpRequest request = HttpRequest.newBuilder(uri).build();
+        HttpRequest request = HttpRequest.newBuilder(googleMapUrl.toUri()).build();
         HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         GeocodingApiDto response = objectMapper.readValue(responseStream.body(), GeocodingApiDto.class);
 

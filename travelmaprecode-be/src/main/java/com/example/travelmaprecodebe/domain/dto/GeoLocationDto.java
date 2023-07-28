@@ -10,6 +10,7 @@ public class GeoLocationDto {
     private double lat;
     private double lng;
     private String name;
+    private String country_iso_alp2;
 
     public GeoLocation toEntity(){
         return GeoLocation.builder()
@@ -19,9 +20,9 @@ public class GeoLocationDto {
                 .build();
     }
 
-    public GeoLocationDto(double lat, double lng, String name) {
-        this.lat = lat;
-        this.lng = lng;
-        this.name = name;
+    public GeoLocationDto(GeoLocation geoLocation) {
+        this.lat = geoLocation.getLat();
+        this.lng = geoLocation.getLng();
+        this.name = geoLocation.getName();
     }
 }

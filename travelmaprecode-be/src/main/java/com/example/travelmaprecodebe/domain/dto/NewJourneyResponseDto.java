@@ -1,7 +1,6 @@
 package com.example.travelmaprecodebe.domain.dto;
 
 import com.example.travelmaprecodebe.domain.entity.Journey;
-import com.example.travelmaprecodebe.domain.entity.Photo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +27,6 @@ public class NewJourneyResponseDto {
         photos = journey.getPhotos().stream()
                 .map(PhotoDto::new)
                 .collect(Collectors.toList());
-        geoLocationDto = new GeoLocationDto(journey.getGeoLocation().getLat(), journey.getGeoLocation().getLng(), journey.getGeoLocation().getName());
+        geoLocationDto = new GeoLocationDto(journey.getGeoLocation());
     }
 }
