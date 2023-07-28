@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // api
-import {useAPIv1} from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 import iso3166_1 from 'apis/iso3166_1.json';
 
 // css
@@ -67,11 +67,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setNewLocation({lat: 0, lng: 0, name: "",});
     }, [])
 
-    /**
-     * 1. POST 요청
-     * 2. 응답결과가 정상일 경우
-     */
-    const onCreate = async () => {
+
+    async function onCreate() {
 
         if(newLocation.name === "") {
             toast.error("여행한 지역을 선택해주세요.");
@@ -83,48 +80,49 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         }
 
 
-        // 사진 업로드
-        let photoIds = [];
         try {
-            photoIds = await Promise.all(photos.map(uploadImage));
-        } catch (err) {
-            console.error(`failed to upload photos: ${err}`);
-            toast.error("사진을 업로드 하지 못했어요.")
-            return;
-        }
+            const saveJourneyId = await saveJourney();
+            if (saveJourneyId) {
+                const formData = new FormData();
+                photos.forEach(photo => {
+                    formData.append('photo', photo);
+                });
+                if (photos.length !== 0) {
+                    await fetch(`/photo/journey/${saveJourneyId}`, {
+                        method: "POST",
+                        body: formData,
+                    });
+                }
+            }
 
-        // Journey 생성
+            const response = await apiv1.get("/travel");
+            if (response.status === HTTPStatus.OK) {
+                editingCancel();
+                _setTravels(response.data);
+            }
+        } catch (error){
+            console.error(error);
+        }
+    }
+
+
+    async function saveJourney() {
         const journeyData = JSON.stringify({
             date: dayjs(pickerDate).format('YYYY-MM-DD'),
             geoLocation: newLocation,
-            photos: photoIds,
             hashtags: hashtags
         });
 
-        await apiv1.post("/travel/" + travel.id + "/journey", journeyData)
-            .then((response) => {
-                if (response.status === 200) {
-                    _setTravels(response.data);
-                    editingCancel();
-                }
-            });
+        try {
+            const res = await apiv1.post("/travel/" + travel.id + "/journey", journeyData);
+            return res.data;
+        } catch (error) {
+            toast.error('여정을 저장하지 못했습니다.');
+            console.error(error);
+            throw error;
+        }
     }
 
-    /**
-     * @param {File} file
-     * @returns {String}
-     */
-    async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append("photo", file);
-
-        const resp = await fetch("/photo", {
-            method: "POST",
-            body: formData,
-        });
-
-        return (await resp.json()).link;
-    }
 
     /**
      * HashTag

@@ -20,39 +20,41 @@ import java.util.List;
 @RequestMapping("/api/v1/travel")
 @RequiredArgsConstructor
 public class TravelController {
+    // Todo : Travel, Journey 분리
+    // @Transactional 사용.
 
     private final TravelService travelService;
 
     @GetMapping()
     public ResponseEntity<?> getTravel(@AuthenticationPrincipal Traveler traveler) {
-        return ResponseEntity.ok(travelService.getTravel(traveler.getId()));
+        return ResponseEntity.ok(travelService.getTravel(traveler));
     }
 
     @PostMapping()
     public ResponseEntity<?> postTravel(@AuthenticationPrincipal Traveler traveler,
                                         @RequestBody @Valid NewTravelRequestDto newTravel) {
-        return ResponseEntity.ok(travelService.postTravel(traveler.getId(), newTravel));
+        return ResponseEntity.ok(travelService.postTravel(traveler, newTravel));
     }
 
     @PostMapping("/{travelId}/journey")
     public ResponseEntity<?> postJourney(@AuthenticationPrincipal Traveler traveler,
                                          @PathVariable Long travelId,
                                          @RequestBody NewJourneyRequestDto newJourney) {
-        return ResponseEntity.ok(travelService.postJourney(traveler.getId(), travelId, newJourney));
+        return ResponseEntity.ok(travelService.postJourney(traveler, travelId, newJourney));
     }
 
     @PutMapping("/{travelId}/journey/{journeyId}")
     public ResponseEntity<?> pathJourney(@AuthenticationPrincipal Traveler traveler,
                                          @PathVariable Long travelId, @PathVariable Long journeyId,
                                          @RequestBody NewJourneyRequestDto journey) {
-        return ResponseEntity.ok(travelService.patchJourney(travelId, journeyId, journey));
+        return ResponseEntity.ok(travelService.patchJourney(traveler, travelId, journeyId, journey));
     }
 
     @DeleteMapping("/{travelId}/journey/{journeyId}")
     public ResponseEntity<?> deleteJourney(@AuthenticationPrincipal Traveler traveler,
                                           @PathVariable Long travelId, @PathVariable Long journeyId) {
         try {
-            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteJourney(traveler.getId(), travelId, journeyId);
+            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteJourney(traveler, travelId, journeyId);
             return ResponseEntity.ok(newTravelResponseDtos);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -64,7 +66,7 @@ public class TravelController {
     public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler,
                                           @PathVariable Long travelId) {
         try {
-            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteTravel(traveler.getId(), travelId);
+            List<NewTravelResponseDto> newTravelResponseDtos = travelService.deleteTravel(traveler, travelId);
             return ResponseEntity.ok(newTravelResponseDtos);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -73,17 +75,17 @@ public class TravelController {
     }
 
     @PutMapping("/orderKey")
-    public ResponseEntity putTravel(@AuthenticationPrincipal Traveler traveler,
+    public ResponseEntity<?> putTravel(@AuthenticationPrincipal Traveler traveler,
                                       @RequestBody @Valid List<NewTravelRequestDto> travelList) {
-        List<NewTravelResponseDto> newTravelResponseDtos = travelService.putOrderKey(traveler.getId(), travelList);
+        List<NewTravelResponseDto> newTravelResponseDtos = travelService.putOrderKey(traveler, travelList);
         return new ResponseEntity<>(newTravelResponseDtos, HttpStatus.OK);
     }
 
     @PatchMapping("/{travelId}")
-    public ResponseEntity patchTravel(@AuthenticationPrincipal Traveler traveler,
+    public ResponseEntity<?> patchTravel(@AuthenticationPrincipal Traveler traveler,
                                       @PathVariable Long travelId,
                                       @RequestBody @Valid NewTravelRequestDto newTravel) {
-        List<NewTravelResponseDto> newTravelResponseDtos = travelService.patchTravel(traveler.getId(), travelId, newTravel);
+        List<NewTravelResponseDto> newTravelResponseDtos = travelService.patchTravel(traveler, travelId, newTravel);
         return new ResponseEntity<>(newTravelResponseDtos, HttpStatus.OK);
     }
 }

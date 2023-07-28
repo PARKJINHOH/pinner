@@ -3,16 +3,20 @@ package com.example.travelmaprecodebe.domain.entity;
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
 import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,11 +49,8 @@ public class Journey extends AuditEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
-
-    @ElementCollection
-    @JoinColumn(name = "PHOTO")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<String> photos;
+    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL)
+    private List<Photo> photos = new ArrayList<>();
 
     public void addTravel(Travel travel) {
         // 연관 관계 편의 메소드
@@ -59,6 +60,14 @@ public class Journey extends AuditEntity {
 
         this.travel = travel;
         travel.getJourneys().add(this);
+    }
+
+    public void addPhoto(Photo photo) {
+        this.photos.add(photo);
+
+        if (photo.getJourney() != this) {
+            photo.addJourney(this);
+        }
     }
 
     public void updateJourney(NewJourneyRequestDto newJourneyRequestDto) {
@@ -71,21 +80,21 @@ public class Journey extends AuditEntity {
         if (newJourneyRequestDto.getGeoLocation() != null) {
             this.geoLocation = newJourneyRequestDto.getGeoLocation().toEntity();
         }
-        if (newJourneyRequestDto.getPhotos() != null) {
-            this.photos = newJourneyRequestDto.getPhotos();
-        }
+        // todo
+//        if (newJourneyRequestDto.getPhotos() != null) {
+//            this.photo = newJourneyRequestDto.getPhotos();
+//        }
     }
 
     @Builder
-    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags, Set<String> photos) {
+    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags) {
         this.date = date;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
         this.orderKey = orderKey;
-        this.photos = photos;
     }
 
-    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey, Set<String> photos) {
+    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey,  List<Photo> photos) {
         this.date = date;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;

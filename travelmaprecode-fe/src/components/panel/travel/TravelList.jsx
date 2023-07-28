@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useRecoilState, useRecoilValue} from 'recoil';
 
 // api
-import {useAPIv1} from '../../../apis/apiv1';
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
 
 // css
 import style from './TravelList.module.css';
@@ -62,6 +62,7 @@ export default function TravelList() {
 
         apiv1.get("/travel")
             .then(resp => {
+                console.log(resp.data);
                 setTravelData(resp.data);
             })
             .catch(error => {
@@ -87,7 +88,7 @@ export default function TravelList() {
         // PUT /api/v1/travel/orderKey
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
-                if (!response.status === 200) {
+                if (!response.status === HTTPStatus.OK) {
                     setTravelData(response.data);
                 }
             });
