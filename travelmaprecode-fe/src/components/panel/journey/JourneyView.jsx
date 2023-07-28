@@ -12,6 +12,7 @@ import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../../
 import {travelState} from "../../../states/travel";
 import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
 import {environmentStatus} from "../../../states/environment";
+import LightBoxPill from "./LightBoxPill";
 
 // mui
 import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Input, Paper, Typography, IconButton} from "@mui/material";
@@ -62,6 +63,10 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const [pickerDate, setPickerDate] = useState(null);
     const [hashtags, setHashtags] = useState([])
     const [photos, setPhotos] = useState([]);
+
+    const [lightBoxOpen, setLightBoxOpen] = useState(false);
+    const [lightBoxPhotos, setLightBoxPhotos] = useState([]);
+
     const removePhoto = (idx) => setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     useEffect(() => {
@@ -231,6 +236,16 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                 />
             </LocalizationProvider>
         );
+    }
+
+    function fnLightBoxOpen(photoId) {
+        if (journey.photos) {
+            const tempPhotos = journey.photos.slice();
+            const clickedPhotoIndex = tempPhotos.findIndex((photo) => photo.id === photoId);
+            const clickedPhoto = tempPhotos.splice(clickedPhotoIndex, 1)[0];
+            setLightBoxPhotos([clickedPhoto, ...tempPhotos]);
+            setLightBoxOpen(true);
+        }
     }
 
     return (
@@ -415,6 +430,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                                         src={photo.src}
                                                         srcSet={photo.src}
                                                         loading="lazy"
+                                                        onClick={() => fnLightBoxOpen(photo.id)}
                                                     />
                                                 </ImageListItem>
                                             )
@@ -425,6 +441,14 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                     }
                 </Box>
             </Paper>
+
+            {lightBoxOpen && (
+                <LightBoxPill
+                    photo={lightBoxPhotos}
+                    open={lightBoxOpen}
+                    setOpen={setLightBoxOpen}
+                />
+            )}
         </>
     );
 }
