@@ -2,7 +2,7 @@ package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.service.TravelerService;
-import com.example.travelmaprecodebe.global.ResponseDto;
+import com.example.travelmaprecodebe.domain.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

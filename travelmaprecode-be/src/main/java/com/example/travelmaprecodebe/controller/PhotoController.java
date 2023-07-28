@@ -1,7 +1,7 @@
 package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.PhotoDto;
-import com.example.travelmaprecodebe.global.ResponseDto;
+import com.example.travelmaprecodebe.domain.dto.ResponseDto;
 import com.example.travelmaprecodebe.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
