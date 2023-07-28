@@ -1,9 +1,15 @@
-import './style/globals.css';
-import {RecoilRoot} from 'recoil';
 import React from 'react';
+import {RecoilRoot} from 'recoil';
+
+// css
+import './style/globals.css';
+
+// component
 import BasePage from './pages/BasePage';
-import { Box,  CssBaseline} from "@mui/material";
 import Sidebar from "./components/panel/sidebar/Sidebar";
+
+// mui
+import { Box,  CssBaseline} from "@mui/material";
 
 function App() {
     return (
