@@ -69,6 +69,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
 
     async function onCreate() {
+        // 사진 최대 용량 (10MB)
+        const maxPhotoSize = 10475274;
 
         if(newLocation.name === "") {
             toast.error("여행한 지역을 선택해주세요.");
@@ -77,6 +79,21 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         if(hashtags.length === 0) {
             toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
             return;
+        }
+        if(photos.length !== 0){
+            let hasExceededSize = false;
+
+            photos.forEach(photo => {
+                let photoSize = photo.size;
+                if(photoSize > maxPhotoSize){
+                    hasExceededSize = true;
+                }
+            });
+
+            if (hasExceededSize) {
+                toast.error('10MB 이하 파일만 등록할 수 있습니다.');
+                return;
+            }
         }
 
 
