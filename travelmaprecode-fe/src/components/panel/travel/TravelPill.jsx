@@ -28,9 +28,8 @@ import toast from 'react-hot-toast';
 
 /**
  * 여행 목록(Travel List)에서의 여행(Travel) 컴포넌트
- * @param travel
+ * @param {{"travel": Travel, "editMode": any, setEditMode: any}} props
  */
-// Todo : 클릭시 맵 중앙으로, centerOfPoints 구현
 export default function TravelPill({ travel, editMode, setEditMode }) {
     const apiv1 = useAPIv1();
 
@@ -58,13 +57,31 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
     const journeyCnt = travel.journeys.length;
     const journeyPhotoCnt = journeyList.reduce((acc, v) => v.photos.length + acc, 0);
 
+    // Journey를 클릭하게 되면 아래와 같은 행동을 수행함.
+    //
+    //   1. 선택된 Travel을 다시 클릭하면 선택을 해제함
+    //   2. 선택되지 않은 Travel을 클릭하면 해당 Travel을 SelectedTravelId로 설정하고,
+    //      지도를 해당 Travel의 중앙으로 이동함.
     function onJourneyClick() {
         setEditMode('');
+
+        // 1. 선택된 Travel을 다시 클릭하면 선택을 해제함
         if (selectedTravelId === travel.id) {
             setSelectedTravelId('');
             return;
         }
+
+        // 2. 선택되지 않은 Travel을 클릭하면 해당 Travel을 SelectedTravelId로 설정하고,
+        //    지도를 해당 Travel의 중앙으로 이동함.
         setSelectedTravelId(travel.id);
+        const points = journeyList
+            .map(j => j.geoLocationDto)
+            .filter(point => point.lat !== 0 && point.lat !== 0);
+
+        if (points.length !== 0) {
+            const centerOfTravel = centerOfPoints(points);
+            setGMap({ center: centerOfTravel });
+        }
     }
 
     /**
