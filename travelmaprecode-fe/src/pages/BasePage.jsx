@@ -185,6 +185,7 @@ export default function BasePage() {
             <LoadScript
                 libraries={libraries}
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                region={'KR'}
             >
                 {/* https://react-google-maps-api-docs.netlify.app/ */}
                 <GoogleMap
