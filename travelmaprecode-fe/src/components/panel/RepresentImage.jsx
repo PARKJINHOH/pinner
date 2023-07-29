@@ -18,7 +18,6 @@ export default function RepresentImage({photo}) {
             }}
             src={photo.src}
             loading="lazy"
-            alt={photo.fileName}
             width="100%"
             height="100%"
         />

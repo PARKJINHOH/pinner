@@ -89,7 +89,7 @@ public class PhotoHandler {
                 // 파일명 중복 피하고자 UUID사용.
                 String fileName = UUID.randomUUID().toString();
 
-                PhotoDto photoDto = PhotoDto.builder()
+                PhotoDto.Request photoDto = PhotoDto.Request.builder()
                         .originFileName(multipartFile.getOriginalFilename())
                         .fileName(fileName)
                         .fullPath(path + File.separator + fileName + originalFileExtension)

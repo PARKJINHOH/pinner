@@ -1,6 +1,5 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.photo.PhotoHandler;
@@ -105,15 +104,10 @@ public class PhotoService {
         return Scalr.resize(originalImage, Scalr.Method.QUALITY, targetSize);
     }
 
-    public PhotoDto findPhotoByFileName(String fileName) {
-        Photo entity = photoRepository.findByFileName(fileName).orElseThrow(()
-                -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
+    public String findPhotoByFileName(String fileName) {
+        Photo entity = photoRepository.findByFileName(fileName).orElseThrow(() -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
         // Todo : 존재하지 않는 이미지 일 경우 대체 이미지
-
-        return PhotoDto.builder()
-                .fullPath(entity.getFullPath())
-                .build();
-
+        return entity.getFullPath();
 
     }
 }

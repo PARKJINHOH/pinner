@@ -1,6 +1,5 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.domain.dto.ResponseDto;
 import com.example.travelmaprecodebe.service.PhotoService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,11 +39,10 @@ public class PhotoController {
 
     @GetMapping(value = "/photo/{fileName}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getPhoto(@PathVariable String fileName) throws IOException {
-        PhotoDto photoDto = photoService.findPhotoByFileName(fileName);
+        String pullPath = photoService.findPhotoByFileName(fileName);
         String absolutePath = new File("").getAbsolutePath() + File.separator;
-        String path = photoDto.getFullPath();
 
-        Path imagePath = Paths.get(absolutePath + path);
+        Path imagePath = Paths.get(absolutePath + pullPath);
         byte[] imageByteArray = Files.readAllBytes(imagePath);
 
         return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
