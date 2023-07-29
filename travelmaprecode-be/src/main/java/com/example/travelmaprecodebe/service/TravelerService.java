@@ -30,7 +30,7 @@ public class TravelerService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public String register(TravelerDto travelerDto) {
+    public String register(TravelerDto.Request travelerDto) {
         if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
@@ -40,7 +40,7 @@ public class TravelerService {
         }
     }
 
-    public TravelerDto doLogin(TravelerDto travelerDto) {
+    public TravelerDto.Response doLogin(TravelerDto.Request travelerDto) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
@@ -51,12 +51,12 @@ public class TravelerService {
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
             String accessToken = jwtUtils.generateJwtToken(traveler);
 
-            TravelerDto responseTraveler = new TravelerDto();
-            responseTraveler.setAccessToken(accessToken);
-            responseTraveler.setRefreshToken(refreshToken.getToken());
-            responseTraveler.setName(traveler.getName());
-            responseTraveler.setEmail(traveler.getEmail());
-            return responseTraveler;
+            return TravelerDto.Response.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken.getToken())
+                    .name(traveler.getName())
+                    .email(traveler.getEmail())
+                    .build();
 
         } catch (Exception e) {
             log.error("로그인 실패 : {}", e.getMessage());
@@ -64,12 +64,12 @@ public class TravelerService {
         }
     }
 
-    public void doLogout(TravelerDto travelerDto) {
+    public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
         refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
     }
 
-    public TravelerDto getRefreshToken(TravelerDto travelerDto) {
+    public TravelerDto.Response getRefreshToken(TravelerDto.Request travelerDto) {
         String requestRefreshToken = travelerDto.getRefreshToken();
 
         // Refresh Token
@@ -79,10 +79,10 @@ public class TravelerService {
         // Access Token
         String validAccessToken = jwtUtils.generateTokenFromUsername(validRefreshToken.getTraveler().getEmail());
 
-        travelerDto.setRefreshToken(validRefreshToken.getToken());
-        travelerDto.setAccessToken(validAccessToken);
-
-        return travelerDto;
+        return TravelerDto.Response.builder()
+                .refreshToken(validRefreshToken.getToken())
+                .accessToken(validAccessToken)
+                .build();
 
     }
 }
