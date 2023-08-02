@@ -58,6 +58,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
     const [hashtags, setHashtags] = useState([])
     const [photos, _setPhotos] = useState([]);
+    const [countryKrNm, setCountryKrNm] = useState(null);
 
     const [saving, setSaving] = useState(false);
 
@@ -66,8 +67,17 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     useEffect(() => {
-        setNewLocation({lat: 0, lng: 0, name: "",});
-    }, [])
+        setNewLocation({lat: 0, lng: 0, name: "", countryCd: ""});
+    }, []);
+    useEffect(() => {
+        const countryCdToFind = newLocation.countryCd;
+        const hasCountry = countries.find((country) => country.country_iso_alp2 === countryCdToFind);
+
+        if (hasCountry) {
+            setCountryKrNm(hasCountry.country_nm);
+        }
+
+    }, [newLocation]);
 
 
     async function onCreate() {
@@ -86,37 +96,30 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
             return;
         }
-        if(photos.length !== 0){
-            let hasExceededSize = false;
-
-            photos.forEach(photo => {
-                let photoSize = photo.size;
-                if(photoSize > maxPhotoSize){
-                    hasExceededSize = true;
-                }
-            });
-
-            if (hasExceededSize) {
-                toast.error('10MB 이하 파일만 등록할 수 있습니다.');
-                return;
-            }
+        if (photos.length !== 0 && hasExceededSize(photos, maxPhotoSize)) {
+            toast.error('10MB 이하 파일만 등록할 수 있습니다.');
+            return;
+        } else if (photos.length === 0 && !window.confirm('사진이 없습니다. 그래도 저장하시겠습니까?\n(저장 후 수정으로 사진 추가가 가능합니다.)')) {
+            return;
         }
-
 
         try {
             setSaving(true);
+
+            // Journey 저장(후 사진 저장)
             const saveJourneyId = await saveJourney();
-            if (saveJourneyId) {
+
+            if (photos.length != 0 && saveJourneyId) {
                 const formData = new FormData();
                 photos.forEach(photo => {
                     formData.append('photo', photo);
                 });
-                if (photos.length !== 0) {
-                    await fetch(`/photo/journey/${saveJourneyId}`, {
-                        method: "POST",
-                        body: formData,
-                    });
-                }
+
+                await fetch(`/photo/journey/${saveJourneyId}`, {
+                    method: "POST",
+                    body: formData,
+                });
+
             }
 
             const response = await apiv1.get("/travel");
@@ -129,6 +132,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         } finally {
             setSaving(false);
         }
+    }
+
+    function hasExceededSize(photos, maxPhotoSize) {
+        return photos.some(photo => photo.size > maxPhotoSize);
     }
 
 
@@ -271,11 +278,17 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     </div>
                     <div className={style.journey_country_group}>
                         <Autocomplete
-                            id="country-select-demo"
+                            value={countryKrNm}
+                            onChange={(event, newValue) => {
+                                setCountryKrNm(newValue.country_nm);
+                            }}
                             sx={{ width: '70%' }}
                             options={countries}
                             autoHighlight
-                            getOptionLabel={(option) => option.country_nm}
+                            getOptionLabel={(option) => option.country_nm || option}
+                            isOptionEqualToValue={(option, newValue) => {
+                                return option.country_nm === newValue;
+                            }}
                             renderOption={(props, country) => (
                                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
                                     <img
@@ -291,11 +304,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="Choose a country"
-                                    inputProps={{
-                                        ...params.inputProps,
-                                        autoComplete: 'new-password', // disable autocomplete and autofill
-                                    }}
+                                    placeholder="국가를 선택해주세요."
                                 />
                             )}
                         />

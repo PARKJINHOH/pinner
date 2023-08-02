@@ -199,6 +199,7 @@ export default function BasePage() {
                         const loc = {
                             lat: e.latLng.lat(),
                             lng: e.latLng.lng(),
+                            countryCd: "",
                             name: "",
                         };
 
@@ -218,6 +219,7 @@ export default function BasePage() {
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
                             } else {
                                 loc.name = resp.data.name;
+                                loc.countryCd = resp.data.countryCd;
                             }
 
                             setNewLocationState(loc);

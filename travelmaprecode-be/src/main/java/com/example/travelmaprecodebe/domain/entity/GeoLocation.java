@@ -20,22 +20,23 @@ public class GeoLocation extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
     private double lat;
-
-    @NotNull
     private double lng;
 
     @NotNull
     private String name;
 
+    @NotNull
+    private String countryCd;
+
     @OneToOne(mappedBy = "geoLocation")
     private Journey journey;
 
     @Builder
-    public GeoLocation(double lat, double lng, String name) {
+    public GeoLocation(double lat, double lng, String name, String countryCd) {
         this.lat = lat;
         this.lng = lng;
         this.name = name;
+        this.countryCd = countryCd;
     }
 }

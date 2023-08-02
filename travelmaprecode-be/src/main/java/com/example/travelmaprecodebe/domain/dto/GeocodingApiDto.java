@@ -38,6 +38,16 @@ public class GeocodingApiDto {
             private String longName;
             private String shortName;
             private String[] types;
+
+            public boolean containCountryType() {
+                for (String type : types) {
+                    if (type.equals("country")) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         }
 
         @Data

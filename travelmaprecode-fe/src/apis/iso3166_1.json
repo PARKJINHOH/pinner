@@ -65,7 +65,7 @@
     {
       "country_eng_nm": "",
       "country_iso_alp2": "UN",
-      "country_nm": "국제연합",
+      "country_nm": "국제연합(유엔)",
       "iso_alp3": "   ",
       "iso_num": "   "
     },
@@ -499,7 +499,7 @@
     {
       "country_eng_nm": "United States of America",
       "country_iso_alp2": "US",
-      "country_nm": "미합중국",
+      "country_nm": "미국",
       "iso_alp3": "USA",
       "iso_num": "840"
     },
@@ -1465,7 +1465,7 @@
     {
       "country_eng_nm": "Republic of Turkiye",
       "country_iso_alp2": "TR",
-      "country_nm": "튀르키예공화국",
+      "country_nm": "튀르키예공화국(터키)",
       "iso_alp3": "TUR",
       "iso_num": "792"
     },

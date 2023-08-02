@@ -17,7 +17,7 @@ public class JourneyDto {
     @AllArgsConstructor
     public static class Request {
         private LocalDate date;
-        private GeoLocationDto geoLocation;
+        private GeoLocationDto.Request geoLocation;
         private Set<String> hashtags;
         private List<Long> photos;
 
@@ -39,7 +39,7 @@ public class JourneyDto {
         private LocalDate date;
         private Set<String> hashtags;
         private List<PhotoDto.Response> photos;
-        private GeoLocationDto geoLocationDto;
+        private GeoLocationDto.Response geoLocationDto;
 
         public Response(Journey journey) {
             id = journey.getId();
@@ -49,7 +49,7 @@ public class JourneyDto {
             photos = journey.getPhotos().stream()
                     .map(PhotoDto.Response::new)
                     .collect(Collectors.toList());
-            geoLocationDto = new GeoLocationDto(journey.getGeoLocation());
+            geoLocationDto = new GeoLocationDto.Response(journey.getGeoLocation());
         }
     }
 }
