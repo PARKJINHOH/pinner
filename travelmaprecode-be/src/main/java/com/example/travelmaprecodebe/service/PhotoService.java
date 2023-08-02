@@ -3,8 +3,6 @@ package com.example.travelmaprecodebe.service;
 import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Photo;
-import com.example.travelmaprecodebe.photo.PhotoProvider;
-import com.example.travelmaprecodebe.photo.SimplePhotoHolder;
 import com.example.travelmaprecodebe.repository.JourneyRepository;
 import com.example.travelmaprecodebe.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,12 +42,8 @@ public class PhotoService {
     @Value("${path.image}")
     private String imageFolder;
 
-    @Value("${photo-service.resize:false}")
-    public boolean useResize;
-
     static final int MAX_SIZE = 1080;
 
-    private final PhotoProvider<String, SimplePhotoHolder> photoProvider;
     private final JourneyRepository journeyRepository;
     private final PhotoRepository photoRepository;
 
@@ -64,11 +58,6 @@ public class PhotoService {
                 photoRepository.save(photo);
             }
         }
-    }
-
-
-    public byte[] load(String s) {
-        return photoProvider.load(s).getData();
     }
 
     private byte[] tryResize(ByteArrayInputStream imageStream) throws IOException {
@@ -197,7 +186,7 @@ public class PhotoService {
         return originalFileExtension;
     }
 
-    public String createImagePath() {
+    private String createImagePath() {
         // 파일명을 업로드 한 날짜로 변환하여 저장
         String current_date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
@@ -217,11 +206,11 @@ public class PhotoService {
         return path;
     }
 
-    public String getFullImagePath(String imagePath, String fileName, String originalFileExtension) {
+    private String getFullImagePath(String imagePath, String fileName, String originalFileExtension) {
         return imagePath + File.separator + fileName + originalFileExtension;
     }
 
-    public String getSrcPath(String fileName) {
+    private String getSrcPath(String fileName) {
         return urlPath + File.separator + "photo" + File.separator + fileName;
     }
 }
