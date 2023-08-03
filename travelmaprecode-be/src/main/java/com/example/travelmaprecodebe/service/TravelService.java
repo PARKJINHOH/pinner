@@ -97,9 +97,15 @@ public class TravelService {
     }
 
 
-    public List<TravelDto.Response> patchJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney) {
-        Journey journey = travelRepository.findJourney(travelId, journeyId);
-        journey.updateJourney(newJourney);
+    public List<TravelDto.Response> putJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+        Optional<Journey> findJourney = journeyRepository.findById(journeyId);
+
+        if (findJourney.isPresent()) {
+            List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
+            // todo : Photo 삭제해야함
+            findJourney.get().updateJourney(newJourney, photoList);
+        }
+
         return getTravel(traveler);
     }
 

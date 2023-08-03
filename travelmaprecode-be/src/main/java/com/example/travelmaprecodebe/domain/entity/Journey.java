@@ -60,12 +60,11 @@ public class Journey extends AuditEntity {
         travel.getJourneys().add(this);
     }
 
-    public void updateJourney(JourneyDto.Request newJourney) {
+    public void updateJourney(JourneyDto.Request newJourney, List<Photo> photoList) {
         this.date = newJourney.getDate();
         this.hashtags = newJourney.getHashtags();
         this.geoLocation = newJourney.getGeoLocation().toEntity();
-//        Todo
-//        this.photos = newJourney.getPhotos();
+        this.photos = photoList;
     }
 
     @Builder

@@ -58,7 +58,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     const _travelListViewWidth = useRecoilValue(travelListViewWidth);
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
-    const _setTravels = useSetRecoilState(travelState);
+    const setTravels = useSetRecoilState(travelState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
 
@@ -142,33 +142,30 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         try {
             setSaving(true);
 
-            // Journey 저장(후 사진 저장)
-            const responseData = await putJourney();
-            debugger
-            if (responseData.status === 200) {
-                if (photos.length !== 0) {
-                    const formData = new FormData();
-                    photos.forEach(photo => {
-                        formData.append('photo', photo);
-                    });
-
-                    await fetch(`/photo/journey/${journey.id}`, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                }
-
-                const response = await apiv1.get("/travel");
-                if (response.status === HTTPStatus.OK) {
-                    viewCancel();
-                    _setTravels(response.data);
-                }
-            } else {
-                toast.error(responseData.statusText);
+            const formData = new FormData();
+            if (photos.length !== 0) {
+                photos.forEach(photo => {
+                    formData.append('photo', photo);
+                });
             }
+            const journeyData = JSON.stringify({
+                date: dayjs(pickerDate || journey.date).format('YYYY-MM-DD'),
+                geoLocation: newLocation.name !== "" ? newLocation : journey.geoLocationDto,
+                hashtags: hashtags
+            });
+            formData.append('newJourney', new Blob([journeyData], {type: 'application/json'}));
+
+            await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, formData)
+                .then((response) => {
+                    if (response.status === 200) {
+                        setTravels(response.data);
+                        viewCancel();
+                    }
+                });
+            
         } catch (error){
-            console.error(error);
+            console.error('error : ', error);
+            toast.error('여정을 수정하지 못했습니다.');
         } finally {
             setSaving(false);
         }
@@ -177,24 +174,6 @@ export default function JourneyView({travelId, journey, viewCancel}) {
     function hasExceededSize(photos, maxPhotoSize) {
         return photos.some(photo => photo.size > maxPhotoSize);
     }
-
-
-    async function putJourney() {
-        const journeyData = JSON.stringify({
-            date: dayjs(pickerDate || journey.date).format('YYYY-MM-DD'),
-            geoLocation: newLocation.name !== "" ? newLocation : journey.geoLocationDto,
-            hashtags: hashtags
-        });
-
-        try {
-            return await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, journeyData);
-        } catch (error) {
-            toast.error('여정을 수정하지 못했습니다.');
-            console.error(error);
-            throw error;
-        }
-    }
-
 
     const onClickAddPhotos = (event) => {
         // 개별사진 10MB, 총합 최대 100MB

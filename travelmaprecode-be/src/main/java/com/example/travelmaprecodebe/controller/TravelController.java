@@ -47,9 +47,11 @@ public class TravelController {
 
     @PutMapping("/{travelId}/journey/{journeyId}")
     public ResponseEntity<?> pathJourney(@AuthenticationPrincipal Traveler traveler,
-                                         @PathVariable Long travelId, @PathVariable Long journeyId,
-                                         @RequestBody JourneyDto.Request journey) {
-        return ResponseEntity.ok(travelService.patchJourney(traveler, travelId, journeyId, journey));
+                                         @PathVariable Long travelId,
+                                         @PathVariable Long journeyId,
+                                         @RequestPart("newJourney") JourneyDto.Request newJourney,
+                                         @RequestPart(value = "photo", required = false) List<MultipartFile> photos) throws IOException {
+        return ResponseEntity.ok(travelService.putJourney(traveler, travelId, journeyId, newJourney, photos));
     }
 
     @DeleteMapping("/{travelId}/journey/{journeyId}")
