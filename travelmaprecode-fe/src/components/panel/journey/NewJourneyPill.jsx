@@ -240,6 +240,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         return (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                    dayOfWeekFormatter={(day) => day}
                     slots={{ field: ButtonField, ...props.slots }}
                     slotProps={{ field: { setOpen } }}
                     {...props}
