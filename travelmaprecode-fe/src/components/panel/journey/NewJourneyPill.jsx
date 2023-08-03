@@ -50,7 +50,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const _travelListViewWidth = useRecoilValue(travelListViewWidth);
     const _journeyPanelWidth = useRecoilValue(journeyListViewWidth);
 
-    const _setTravels = useSetRecoilState(travelState);
+    const setTravels = useSetRecoilState(travelState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const [newLocation, setNewLocation] = useRecoilState(newLocationState);
 
@@ -88,11 +88,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             return;
         }
 
-        if(newLocation.name === "") {
+        if (newLocation.name === "") {
             toast.error("여행한 지역을 선택해주세요.");
             return;
         }
-        if(hashtags.length === 0) {
+        if (hashtags.length === 0) {
             toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
             return;
         }
@@ -106,29 +106,29 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         try {
             setSaving(true);
 
-            // Journey 저장(후 사진 저장)
-            const saveJourneyId = await saveJourney();
-
-            if (photos.length != 0 && saveJourneyId) {
-                const formData = new FormData();
+            const formData = new FormData();
+            if (photos.length !== 0) {
                 photos.forEach(photo => {
                     formData.append('photo', photo);
                 });
+            }
+            const journeyData = JSON.stringify({
+                date: dayjs(pickerDate).format('YYYY-MM-DD'),
+                geoLocation: newLocation,
+                hashtags: hashtags
+            });
+            formData.append('newJourney', new Blob([journeyData], {type: 'application/json'}));
 
-                await fetch(`/photo/journey/${saveJourneyId}`, {
-                    method: "POST",
-                    body: formData,
+            await apiv1.post(`/travel/${travel.id}/journey`, formData)
+                .then((response) => {
+                    if (response.status === 200) {
+                        setTravels(response.data);
+                        editingCancel();
+                    }
                 });
-
-            }
-
-            const response = await apiv1.get("/travel");
-            if (response.status === HTTPStatus.OK) {
-                editingCancel();
-                _setTravels(response.data);
-            }
-        } catch (error){
-            console.error(error);
+        } catch (error) {
+            console.error('error : ', error);
+            toast.error('여정을 저장하지 못했습니다.');
         } finally {
             setSaving(false);
         }
@@ -137,25 +137,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     function hasExceededSize(photos, maxPhotoSize) {
         return photos.some(photo => photo.size > maxPhotoSize);
     }
-
-
-    async function saveJourney() {
-        const journeyData = JSON.stringify({
-            date: dayjs(pickerDate).format('YYYY-MM-DD'),
-            geoLocation: newLocation,
-            hashtags: hashtags
-        });
-
-        try {
-            const res = await apiv1.post("/travel/" + travel.id + "/journey", journeyData);
-            return res.data;
-        } catch (error) {
-            toast.error('여정을 저장하지 못했습니다.');
-            console.error(error);
-            throw error;
-        }
-    }
-
 
     /**
      * HashTag

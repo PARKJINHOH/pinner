@@ -3,7 +3,7 @@ package com.example.travelmaprecodebe.domain.dto;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class TravelDto {
 
-    @Getter
+    @Data
     @Builder
     @AllArgsConstructor
     public static class Request{
@@ -20,7 +20,7 @@ public class TravelDto {
         Integer orderKey;
     }
 
-    @Getter
+    @Data
     @Builder
     @AllArgsConstructor
     public static class Response{

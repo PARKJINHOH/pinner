@@ -60,14 +60,6 @@ public class Journey extends AuditEntity {
         travel.getJourneys().add(this);
     }
 
-    public void addPhoto(Photo photo) {
-        this.photos.add(photo);
-
-        if (photo.getJourney() != this) {
-            photo.addJourney(this);
-        }
-    }
-
     public void updateJourney(JourneyDto.Request newJourney) {
         this.date = newJourney.getDate();
         this.hashtags = newJourney.getHashtags();
@@ -77,14 +69,14 @@ public class Journey extends AuditEntity {
     }
 
     @Builder
-    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags) {
+    public Journey(LocalDate date, Travel travel, GeoLocation geoLocation, Set<String> hashtags) {
         this.date = date;
+        this.travel = travel;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
-        this.orderKey = orderKey;
     }
 
-    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey,  List<Photo> photos) {
+    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey, List<Photo> photos) {
         this.date = date;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;

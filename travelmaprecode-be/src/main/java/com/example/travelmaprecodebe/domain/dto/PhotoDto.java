@@ -1,5 +1,6 @@
 package com.example.travelmaprecodebe.domain.dto;
 
+import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Photo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class PhotoDto {
         private int width;
         private int height;
 
-        public Photo toEntity() {
+        public Photo toEntity(Journey journey) {
             return Photo.builder()
                     .fileName(fileName)
                     .originFileName(originFileName)
@@ -30,6 +31,7 @@ public class PhotoDto {
                     .fileSize(fileSize)
                     .width(width)
                     .height(height)
+                    .journey(journey)
                     .build();
         }
     }

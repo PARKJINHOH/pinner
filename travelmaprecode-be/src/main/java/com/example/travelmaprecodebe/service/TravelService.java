@@ -3,6 +3,7 @@ package com.example.travelmaprecodebe.service;
 import com.example.travelmaprecodebe.domain.dto.JourneyDto;
 import com.example.travelmaprecodebe.domain.dto.TravelDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
+import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.repository.JourneyRepository;
@@ -13,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,8 +32,10 @@ public class TravelService {
     private final JourneyRepository journeyRepository;
     private final TravelerRepository travelerRepository;
     private final PhotoRepository photoRepository;
+    private final PhotoService photoService;
     private final EntityManager em;
 
+    @Transactional
     public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
         Traveler findTraveler = getTraveler(traveler.getId());
         Travel travel = findTraveler.addTravel(newTravel.getTitle());
@@ -47,16 +52,24 @@ public class TravelService {
                 .collect(Collectors.toList());
     }
 
-    public Long postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney) {
+    @Transactional
+    public List<TravelDto.Response> postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
 
         Journey newJourneyEntity = newJourney.toEntity();
         newJourneyEntity.addTravel(travel);
-        Journey savedJourney = journeyRepository.save(newJourneyEntity);
 
-        return savedJourney.getId();
+        Journey saveJourney = journeyRepository.save(newJourneyEntity);
+
+        if (photos != null) {
+            List<Photo> photoList = photoService.saveImage(photos, saveJourney);
+            photoRepository.saveAll(photoList);
+        }
+
+        return getTravel(traveler);
     }
 
+    @Transactional
     public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
         travelRepository.deleteTravel(travelId);
         return getTravel(traveler);

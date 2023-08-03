@@ -3,7 +3,7 @@ package com.example.travelmaprecodebe.domain.dto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,14 +12,13 @@ import java.util.stream.Collectors;
 
 public class JourneyDto {
 
-    @Getter
+    @Data
     @Builder
     @AllArgsConstructor
     public static class Request {
         private LocalDate date;
         private GeoLocationDto.Request geoLocation;
         private Set<String> hashtags;
-        private List<Long> photos;
 
         public Journey toEntity() {
             return Journey.builder()
@@ -30,7 +29,7 @@ public class JourneyDto {
         }
     }
 
-    @Getter
+    @Data
     @Builder
     @AllArgsConstructor
     public static class Response {

@@ -35,13 +35,12 @@ public class Photo {
 
     private int height;
 
-//    @JsonIgnore // 순환 참조 방지 (데이터가 없을 경우)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOURNEY_ID")
     private Journey journey;
 
     @Builder
-    public Photo(String originFileName, String fileName, String fullPath, String src, Long fileSize, int width, int height) {
+    public Photo(String originFileName, String fileName, String fullPath, String src, Long fileSize, int width, int height, Journey journey) {
         this.fileName = fileName;
         this.originFileName = originFileName;
         this.fullPath = fullPath;
@@ -49,6 +48,14 @@ public class Photo {
         this.fileSize = fileSize;
         this.width = width;
         this.height = height;
+        if (journey != null) {
+            changeJourney(journey);
+        }
+    }
+
+    public void changeJourney(Journey journey){
+        this.journey = journey;
+        journey.getPhotos().add(this);
     }
 
     // Board 정보 저장

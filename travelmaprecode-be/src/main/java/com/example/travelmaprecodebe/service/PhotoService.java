@@ -50,14 +50,14 @@ public class PhotoService {
     @Transactional
     public void save(Long saveJourneyId, List<MultipartFile> photos) throws IOException {
         Journey findJourney = journeyRepository.findById(saveJourneyId).orElse(null);
-
-        List<Photo> photoList = saveImage(photos);
-        if(findJourney != null && !photoList.isEmpty()) {
-            for (Photo photo : photoList) {
-                photo.addJourney(findJourney);
-                photoRepository.save(photo);
-            }
-        }
+//
+//        List<Photo> photoList = saveImage(photos);
+//        if(findJourney != null && !photoList.isEmpty()) {
+//            for (Photo photo : photoList) {
+//                photo.addJourney(findJourney);
+//                photoRepository.save(photo);
+//            }
+//        }
     }
 
     private byte[] tryResize(ByteArrayInputStream imageStream) throws IOException {
@@ -113,7 +113,7 @@ public class PhotoService {
 
     }
 
-    public List<Photo> saveImage(List<MultipartFile> multipartFiles) throws IOException {
+    public List<Photo> saveImage(List<MultipartFile> multipartFiles, Journey saveJourney) throws IOException {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class PhotoService {
                     .fileSize(multipartFile.getSize())
                     .build();
 
-            Photo photo = photoDto.toEntity();
+            Photo photo = photoDto.toEntity(saveJourney);
 
             // 생성 후 리스트에 추가
             fileList.add(photo);
