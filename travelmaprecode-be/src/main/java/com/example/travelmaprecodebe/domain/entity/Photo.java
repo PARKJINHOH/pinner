@@ -57,14 +57,4 @@ public class Photo {
         this.journey = journey;
         journey.getPhotos().add(this);
     }
-
-    // Board 정보 저장
-    public void addJourney(Journey journey){
-        this.journey = journey;
-
-        // 게시글에 현재 파일이 존재하지 않는다면
-        if(!journey.getPhotos().contains(this))
-            // 파일 추가
-            journey.getPhotos().add(this);
-    }
 }

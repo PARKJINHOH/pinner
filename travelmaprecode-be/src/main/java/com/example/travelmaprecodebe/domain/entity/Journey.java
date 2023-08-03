@@ -75,12 +75,4 @@ public class Journey extends AuditEntity {
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
     }
-
-    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey, List<Photo> photos) {
-        this.date = date;
-        this.geoLocation = geoLocation;
-        this.hashtags = hashtags;
-        this.orderKey = orderKey;
-        this.photos = photos;
-    }
 }

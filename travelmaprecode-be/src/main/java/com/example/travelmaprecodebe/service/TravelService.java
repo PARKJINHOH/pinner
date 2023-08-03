@@ -36,20 +36,20 @@ public class TravelService {
     private final EntityManager em;
 
     @Transactional
+    public List<TravelDto.Response> getTravel(Traveler traveler) {
+        return travelRepository.findAllTravel(traveler.getId())
+                .stream()
+                .map(TravelDto.Response::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
         Traveler findTraveler = getTraveler(traveler.getId());
         Travel travel = findTraveler.addTravel(newTravel.getTitle());
         em.flush();
         em.clear();
         return new TravelDto.Response(travel);
-    }
-
-    @Transactional
-    public List<TravelDto.Response> getTravel(Traveler traveler) {
-        return travelRepository.findAllTravel(traveler.getId())
-                .stream()
-                .map(TravelDto.Response::new)
-                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class TravelService {
         Journey saveJourney = journeyRepository.save(newJourneyEntity);
 
         if (photos != null) {
-            List<Photo> photoList = photoService.saveImage(photos, saveJourney);
+            List<Photo> photoList = photoService.processPhotosForJourney(photos, saveJourney);
             photoRepository.saveAll(photoList);
         }
 

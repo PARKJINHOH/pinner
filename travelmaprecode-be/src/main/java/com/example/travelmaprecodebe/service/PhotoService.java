@@ -3,14 +3,12 @@ package com.example.travelmaprecodebe.service;
 import com.example.travelmaprecodebe.domain.dto.PhotoDto;
 import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Photo;
-import com.example.travelmaprecodebe.repository.JourneyRepository;
 import com.example.travelmaprecodebe.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,21 +42,7 @@ public class PhotoService {
 
     static final int MAX_SIZE = 1080;
 
-    private final JourneyRepository journeyRepository;
     private final PhotoRepository photoRepository;
-
-    @Transactional
-    public void save(Long saveJourneyId, List<MultipartFile> photos) throws IOException {
-        Journey findJourney = journeyRepository.findById(saveJourneyId).orElse(null);
-//
-//        List<Photo> photoList = saveImage(photos);
-//        if(findJourney != null && !photoList.isEmpty()) {
-//            for (Photo photo : photoList) {
-//                photo.addJourney(findJourney);
-//                photoRepository.save(photo);
-//            }
-//        }
-    }
 
     private byte[] tryResize(ByteArrayInputStream imageStream) throws IOException {
         BufferedImage originImage = read(imageStream);
@@ -113,7 +97,7 @@ public class PhotoService {
 
     }
 
-    public List<Photo> saveImage(List<MultipartFile> multipartFiles, Journey saveJourney) throws IOException {
+    public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles, Journey saveJourney) throws IOException {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
 
