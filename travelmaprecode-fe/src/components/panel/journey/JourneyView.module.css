@@ -8,18 +8,29 @@
     overflow-y: auto;
 }
 
-.journey_title {
+.journey_title_group {
     display: flex;
     justify-content: center;
-    margin: 5px 0 5px 0;
+    margin-bottom: 15px;
 }
 
-.journey_date {
+.journey_country_group {
     display: flex;
     justify-content: center;
 }
 
-.journey_tags {
+.journey_date_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.edit_tags {
+    margin-top: 12px;
+}
+
+.view_tags{
     display: flex;
     justify-content: center;
 }
@@ -42,9 +53,27 @@
 .journey_tool {
     display: flex;
     align-items: center;
+    margin-top: 10px;
     height: 60px;
     padding: 5px 10px 5px 0;
     gap: 20px;
+}
+.edit_tool{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+    gap: 20px;
+}
+.add_icon{
+    height: 30px;
+    cursor: pointer;
+    margin-left: auto;
+}
+.save_icon{
+    height: 30px;
+    cursor: pointer;
 }
 .arrow_icon_btn{
     cursor: pointer;
@@ -56,13 +85,18 @@
     margin-left: auto;
 }
 .edit_icon:hover {
-    fill: #c2c2c2;
-    transition: fill 0.3s ease;
+    color: #2a7bff;
+    transition: color 0.3s ease;
 }
 .journey_image {
     border: 1px solid #cbcbcb;
     border-radius: 6px;
     cursor: pointer;
+}
+.no_picture {
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
 }
 
 
@@ -74,12 +108,10 @@
 
 .journeyView_tags {
     --tag-pad: 0.1em;
-    --tag-inset-shadow-size: 2em;
-    font-size: 5px;
+    font-size: 14px;
     width: 100%;
-    max-width: 300px;
-    border: 0;
-    border-bottom: 1px solid black;
+    border-radius: 5px;
+    padding: 2px;
 }
 
 .journeyView_add_picture {

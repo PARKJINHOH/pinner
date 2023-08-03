@@ -258,7 +258,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 className={style.root_paper}
                 sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
             >
-                <Box className={style.newJourney_box}>
+                <Box>
                     <div className={style.journey_title_group}>
                         <Input
                             sx={{'--Input-gap': '1px'}}
