@@ -76,7 +76,7 @@ export default function BasePage() {
     * @type Object
     *
     * @property {Ua} Ua
-    * @property {Ia} Ia
+    * @property {Ia} Ga
     **/
 
     /**
@@ -103,7 +103,7 @@ export default function BasePage() {
     function middleOfViewport(viewport) {
         return {
             "ua": (viewport.Ua.lo + viewport.Ua.hi) / 2,
-            "ia": (viewport.Ia.lo + viewport.Ia.hi) / 2,
+            "ga": (viewport.Ga.lo + viewport.Ga.hi) / 2,
         };
     }
 
@@ -168,7 +168,7 @@ export default function BasePage() {
         const place = places[0];
 
         const ua_ia = middleOfViewport(place.geometry.viewport);
-        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ia } })
+        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga } })
     }
 
     return (
