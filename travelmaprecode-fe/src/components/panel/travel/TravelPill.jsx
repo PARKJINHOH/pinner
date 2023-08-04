@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 // api
-import { useAPIv1 } from '../../../apis/apiv1';
+import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
 
 // css
 import style from './TravelPill.module.css';
@@ -101,7 +101,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
-                        if (response.status === 200) {
+                        if (response.status === HTTPStatus.OK) {
                             setTravels(response.data);
 
                         }
@@ -126,7 +126,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
         if(window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)){
             await apiv1.delete(`/travel/${travel.id}`)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === HTTPStatus.OK) {
                         if (response.data.length === 0) {
                             setEditMode('');
                         }

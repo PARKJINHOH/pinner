@@ -157,7 +157,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
             await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, formData)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === HTTPStatus.OK) {
                         setTravels(response.data);
                         viewCancel();
                     }

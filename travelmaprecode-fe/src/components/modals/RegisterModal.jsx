@@ -14,6 +14,7 @@ import {Modal, Button, Stack, Box, Typography, TextField} from "@mui/material";
 
 // mantine
 import {Divider} from "@mantine/core";
+import {HTTPStatus} from "../../apis/apiv1";
 
 
 export default function RegisterModal() {
@@ -83,7 +84,7 @@ export default function RegisterModal() {
 
         postRegister(data)
             .then((response) => {
-                if (response.status === 201) {
+                if (response.status === HTTPStatus.CREATED) {
                     alert(response.data.message);
 
                     setModalVisibility(AuthModalVisibility.SHOW_LOGIN);

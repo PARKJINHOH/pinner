@@ -40,6 +40,7 @@ import {toast} from "react-hot-toast";
 /**
  * Journey 글쓰기 컴포넌트
  * @param travel
+ * @param editingCancel
  */
 export default function NewJourneyPill({ travel, editingCancel }) {
     const apiv1 = useAPIv1();
@@ -121,7 +122,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
             await apiv1.post(`/travel/${travel.id}/journey`, formData)
                 .then((response) => {
-                    if (response.status === 200) {
+                    if (response.status === HTTPStatus.OK) {
                         setTravels(response.data);
                         editingCancel();
                     }
