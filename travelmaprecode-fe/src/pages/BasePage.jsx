@@ -182,7 +182,10 @@ export default function BasePage() {
 
     return (
         <div>
-            <ToastContainer />
+            <ToastContainer
+                autoClose={3000}
+                pauseOnFocusLoss={false}
+            />
             <RegisterModal />
             <LoginModal />
             {/*{*/}
