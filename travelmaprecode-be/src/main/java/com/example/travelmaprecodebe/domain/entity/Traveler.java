@@ -43,7 +43,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     private boolean state;
 
 
-    @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL)
     private List<Travel> travels = new ArrayList<>();
 
     public Travel addTravel(String title) {

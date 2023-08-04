@@ -1,6 +1,7 @@
 package com.example.travelmaprecodebe.repository;
 
-import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
+import com.example.travelmaprecodebe.domain.dto.TravelDto;
+import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,16 @@ public class TravelRepository {
 
     }
 
+    public Journey findJourney(Long travelId, Long journeyId) {
+        /*selectFrom */
+        log.info("TravelRepository : findJourney");
+        return queryFactory
+                .selectFrom(journey)
+                .where(travel.id.eq(travelId)
+                        .and(journey.id.eq(journeyId)))
+                .fetchOne();
+    }
+
     public List<Travel> findAllTravel(Long travelerId) {
         log.info("TravelRepository : findAllTravel");
         em.flush();
@@ -47,18 +58,13 @@ public class TravelRepository {
                 .fetch();
     }
 
-    public Long deleteTravel(Long travelerId, Long travelId) {
+    public void deleteTravel(Long travelId) {
         log.info("TravelRepository : deleteTravel");
-        queryFactory
-                .delete(journey)
-                .where(journey.travel.id.eq(travelId))
-                .execute();
 
-        return queryFactory
-                .delete(travel)
-                .where(travel.id.eq(travelId),
-                        travel.traveler.id.eq(travelerId))
-                .execute();
+        Travel findTravel = em.find(Travel.class, travelId);
+        if (findTravel != null) {
+            em.remove(findTravel);
+        }
     }
 
     public Long patchTravel(Long travelerId, Long travelId, String title) {
@@ -74,7 +80,7 @@ public class TravelRepository {
         return resultL;
     }
 
-    public Long putOrderKey(Long travelerId, NewTravelRequestDto newTravelRequestDto) {
+    public Long putOrderKey(Long travelerId, TravelDto.Request newTravelRequestDto) {
         log.info("TravelRepository : putOrderKey");
         Long resultL = queryFactory
                 .update(travel)
@@ -86,4 +92,5 @@ public class TravelRepository {
         em.clear();
         return resultL;
     }
+
 }

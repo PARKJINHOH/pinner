@@ -2,7 +2,7 @@ package com.example.travelmaprecodebe.controller;
 
 import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.service.TravelerService;
-import com.example.travelmaprecodebe.global.ResponseDto;
+import com.example.travelmaprecodebe.domain.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class TravelerController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto travelerDto) {
+    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto.Request travelerDto) {
         String getResult = travelerService.register(travelerDto);
         ResponseDto responseDto = new ResponseDto();
 
@@ -48,8 +48,8 @@ public class TravelerController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto travelerDto) {
-        TravelerDto getResult = travelerService.doLogin(travelerDto);
+    public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto.Request travelerDto) {
+        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
         ResponseDto responseDto = new ResponseDto();
 
         if (getResult == null) {
@@ -66,14 +66,14 @@ public class TravelerController {
 
     // github Login
     @PostMapping("/github")
-    public ResponseEntity<ResponseDto> githubLogin(@RequestBody TravelerDto travelerDto) {
+    public ResponseEntity<ResponseDto> githubLogin(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping("/renewal/token")
-    public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto travelerDto) {
-        TravelerDto getResult = travelerService.getRefreshToken(travelerDto);
+    public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
+        TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setData(new HashMap<>() {{
             put("payload", getResult);
@@ -82,7 +82,7 @@ public class TravelerController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto travelerDto) {
+    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();
         try {
             travelerService.doLogout(travelerDto);

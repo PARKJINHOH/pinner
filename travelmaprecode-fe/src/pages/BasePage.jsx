@@ -1,15 +1,25 @@
-import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
 import React, { useRef, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
+// api
 import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
+
+// css
+
+// component
 import LoginModal from '../components/modals/LoginModal';
-import NewJourneyModal from '../components/modals/NewJourneyModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
 import { selectedTravelState } from '../states/travel';
+
+// etc
+import toast, { Toaster } from 'react-hot-toast';
+import "@yaireo/tagify/dist/tagify.css";
+
+// google map
+import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+
 
 export default function BasePage() {
     const containerStyle = {
@@ -66,7 +76,7 @@ export default function BasePage() {
     * @type Object
     *
     * @property {Ua} Ua
-    * @property {Ia} Ia
+    * @property {Ia} Ga
     **/
 
     /**
@@ -93,7 +103,7 @@ export default function BasePage() {
     function middleOfViewport(viewport) {
         return {
             "ua": (viewport.Ua.lo + viewport.Ua.hi) / 2,
-            "ia": (viewport.Ia.lo + viewport.Ia.hi) / 2,
+            "ga": (viewport.Ga.lo + viewport.Ga.hi) / 2,
         };
     }
 
@@ -157,10 +167,8 @@ export default function BasePage() {
         if (places === undefined || places.length === 0) return;
         const place = places[0];
 
-
-        console.log(place);
         const ua_ia = middleOfViewport(place.geometry.viewport);
-        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ia } })
+        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga } })
     }
 
     return (
@@ -168,15 +176,16 @@ export default function BasePage() {
             <Toaster />
             <RegisterModal />
             <LoginModal />
-            {
-                // selectedTravel가 undefinded인 상태가 있을 수 있음.
-                // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.
-                newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />
-            }
+            {/*{*/}
+            {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
+            {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
+            {/*    newJourneyStep === NewJourneyStep.EDITTING && <NewJourneyModal travelId={selectedTravel.id} />*/}
+            {/*}*/}
 
             <LoadScript
                 libraries={libraries}
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                region={'KR'}
             >
                 {/* https://react-google-maps-api-docs.netlify.app/ */}
                 <GoogleMap
@@ -190,6 +199,7 @@ export default function BasePage() {
                         const loc = {
                             lat: e.latLng.lat(),
                             lng: e.latLng.lng(),
+                            countryCd: "",
                             name: "",
                         };
 
@@ -209,6 +219,7 @@ export default function BasePage() {
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
                             } else {
                                 loc.name = resp.data.name;
+                                loc.countryCd = resp.data.countryCd;
                             }
 
                             setNewLocationState(loc);
@@ -265,7 +276,7 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @returns {CustomMarker[]}
      */
     function drawMarkers(selectedTravel) {
-        return selectedTravel.journeys.map((journey) =>
+        return selectedTravel.journeys.filter(is_journey_has_location).map((journey) =>
             <PhotoMarker key={journey.id} journey={journey} />
         );
     }
@@ -306,7 +317,7 @@ function DrawSelectedTravel({ selectedTravel }) {
      * @returns {Polyline[]}
      */
     function drawLine(selectedTravel) {
-        const groups = gruopByDate(selectedTravel.journeys);
+        const groups = gruopByDate(selectedTravel.journeys.filter(is_journey_has_location));
 
         // Note
         //
@@ -345,6 +356,17 @@ function DrawSelectedTravel({ selectedTravel }) {
         {drawMarkers(selectedTravel)}
         {drawLine(selectedTravel)}
     </>
+
+}
+
+/**
+ * Draws a line using Polyline component for each group of journeys by date
+ *
+ * @param {Journey} j
+ * @returns {boolean}
+ */
+function is_journey_has_location(j) {
+    return j.geoLocationDto.lat != 0 && j.geoLocationDto.lng != 0;
 }
 
 /**

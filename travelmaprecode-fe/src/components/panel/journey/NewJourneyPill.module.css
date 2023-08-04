@@ -1,0 +1,91 @@
+.root_paper {
+    position: fixed;
+    padding: 10px 15px 0 15px;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow-y: auto;
+}
+
+.journey_title_group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.journey_country_group{
+    display: flex;
+    align-items: center;
+}
+
+.newJourney_date_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.newJourney_tags {
+    margin-top: 12px;
+}
+
+.newJourney_tag {
+    --tag-pad: 0.1em;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.newJourney_imageBox {
+    margin-top: 20px;
+}
+
+.newJourney_tool {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+    gap: 20px;
+}
+
+.arrow_icon_btn {
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.save_icon {
+    height: 30px;
+    cursor: pointer;
+}
+.save_icon:hover {
+    color: #2a7bff;
+    transition: color 0.3s ease;
+}
+
+
+.add_icon {
+    height: 30px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.add_icon:hover {
+    color: #c2c2c2;
+    transition: color 0.3s ease;
+}
+
+.no_picture {
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
+}
+
+.saving_icon{
+    top: 50%;
+    left: 44%;
+    margin: 0 auto;
+    position: absolute;
+}

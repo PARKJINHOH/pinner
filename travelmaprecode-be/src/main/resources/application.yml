@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
   servlet:
-    multipart: # 이미지 업로드 파일 제한 설정(기본 1MB)
-      max-file-size: 10MB
-      max-request-size: 10MB
+    multipart:
+      max-file-size: 10MB # 개별 이미지에 최대 용량 제한
+      max-request-size: 110MB # 요청에 대한 최대 용량 제한
 token:
   app:
     jwtSecret: travelSecretKey

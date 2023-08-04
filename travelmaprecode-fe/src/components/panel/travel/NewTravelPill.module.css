@@ -1,0 +1,10 @@
+.travel_title_group {
+    display: flex;
+    align-items: center;
+}
+
+.travel_cancel{
+    margin: 0 auto 0 auto;
+    cursor: pointer;
+    fill: #a94e4e;
+}

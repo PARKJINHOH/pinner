@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-
 import { useRecoilState } from 'recoil';
+
+// css
+import style from './LoginModal.module.css';
+
+// component
+import { useDoLogin } from '../../states/traveler';
+import {errorAlert} from "../alert/AlertComponent";
 import { postLogin } from '../../apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
-import { useDoLogin } from '../../states/traveler';
-import {errorAlert} from "../alert/AlertComponent";
-import {Box, Modal, Stack, TextField, Typography} from "@mui/material";
+// mui
+import {Box, Modal, Stack, TextField, Typography, Button} from "@mui/material";
+
+// mantine
 import {Divider} from "@mantine/core";
 
-function LoginModal() {
+export default function LoginModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState("");
@@ -45,7 +51,6 @@ function LoginModal() {
         postLogin(data)
             .then((response) => {
                 const payload = response.data.data.payload;
-                // console.log({ payload });
 
                 doLogin({
                     email: payload.email,
@@ -58,21 +63,8 @@ function LoginModal() {
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
-                console.log(error)
                 setErrorMessage(error.response.data.message);
             });
-    };
-
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 800,
-        bgcolor: 'background.paper',
-        border: '3px solid #000',
-        boxShadow: 48,
-        p: 3,
     };
 
     return (
@@ -81,7 +73,7 @@ function LoginModal() {
                 open={modalVisibility === AuthModalVisibility.SHOW_LOGIN}
                 onClose={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             >
-                <Box sx={style}>
+                <Box className={style.login_box}>
                     <Typography id="modal-modal-title" variant="h5" gutterBottom>
                         로그인
                     </Typography>
@@ -108,5 +100,3 @@ function LoginModal() {
         </div>
     );
 }
-
-export default LoginModal;

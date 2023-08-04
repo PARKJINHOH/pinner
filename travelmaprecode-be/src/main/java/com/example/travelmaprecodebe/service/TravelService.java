@@ -1,18 +1,23 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.domain.dto.NewJourneyRequestDto;
-import com.example.travelmaprecodebe.domain.dto.NewTravelRequestDto;
-import com.example.travelmaprecodebe.domain.dto.NewTravelResponseDto;
+import com.example.travelmaprecodebe.domain.dto.JourneyDto;
+import com.example.travelmaprecodebe.domain.dto.TravelDto;
+import com.example.travelmaprecodebe.domain.entity.Journey;
+import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
+import com.example.travelmaprecodebe.repository.JourneyRepository;
+import com.example.travelmaprecodebe.repository.PhotoRepository;
 import com.example.travelmaprecodebe.repository.TravelRepository;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,46 +29,59 @@ import java.util.stream.Collectors;
 public class TravelService {
 
     private final TravelRepository travelRepository;
+    private final JourneyRepository journeyRepository;
     private final TravelerRepository travelerRepository;
+    private final PhotoRepository photoRepository;
+    private final PhotoService photoService;
     private final EntityManager em;
 
-    public NewTravelResponseDto postTravel(Long travelerId, NewTravelRequestDto newTravel) {
-        Traveler traveler = getTraveler(travelerId);
-        Travel travel = traveler.addTravel(newTravel.getTitle());
-        em.flush();
-        em.clear();
-        return new NewTravelResponseDto(travel);
-    }
-
-    public List<NewTravelResponseDto> getTravel(Long travelerId) {
-        return travelRepository.findAllTravel(travelerId)
+    public List<TravelDto.Response> getTravel(Traveler traveler) {
+        return travelRepository.findAllTravel(traveler.getId())
                 .stream()
-                .map(NewTravelResponseDto::new)
+                .map(TravelDto.Response::new)
                 .collect(Collectors.toList());
     }
 
-    public List<NewTravelResponseDto> postJourney(Long travelerId, Long travelId, NewJourneyRequestDto newJourney) {
-        Travel travel = travelRepository.findTravel(travelerId, travelId);
-        newJourney.toEntity().addTravel(travel);
-        return this.getTravel(travelerId);
+    public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
+        Traveler findTraveler = getTraveler(traveler.getId());
+        Travel travel = findTraveler.addTravel(newTravel.getTitle());
+        em.flush();
+        em.clear();
+        return new TravelDto.Response(travel);
     }
 
-    public List<NewTravelResponseDto> deleteTravel(Long travelerId, Long travelId) {
-        travelRepository.deleteTravel(travelerId, travelId);
-        return getTravel(travelerId);
-    }
+    public List<TravelDto.Response> postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+        Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
 
-    public List<NewTravelResponseDto> patchTravel(Long travelerId, Long travelId, NewTravelRequestDto newTravel) {
-        travelRepository.patchTravel(travelerId, travelId, newTravel.getTitle());
-        return getTravel(travelerId);
-    }
+        Journey newJourneyEntity = newJourney.toEntity();
+        newJourneyEntity.addTravel(travel);
 
-    public List<NewTravelResponseDto> putOrderKey(Long travelerId, List<NewTravelRequestDto> travelList) {
-        for (NewTravelRequestDto newTravelRequestDto : travelList) {
-            travelRepository.putOrderKey(travelerId, newTravelRequestDto);
+        Journey saveJourney = journeyRepository.save(newJourneyEntity);
+
+        if (photos != null) {
+            List<Photo> photoList = photoService.processPhotosForJourney(photos, saveJourney);
+            photoRepository.saveAll(photoList);
         }
 
-        return getTravel(travelerId);
+        return getTravel(traveler);
+    }
+
+    public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
+        travelRepository.deleteTravel(travelId);
+        return getTravel(traveler);
+    }
+
+    public List<TravelDto.Response> patchTravel(Traveler traveler, Long travelId, TravelDto.Request newTravel) {
+        travelRepository.patchTravel(traveler.getId(), travelId, newTravel.getTitle());
+        return getTravel(traveler);
+    }
+
+    public List<TravelDto.Response> putOrderKey(Traveler traveler, List<TravelDto.Request> travelList) {
+        for (TravelDto.Request newTravelRequestDto : travelList) {
+            travelRepository.putOrderKey(traveler.getId(), newTravelRequestDto);
+        }
+
+        return getTravel(traveler);
     }
 
     private Traveler getTraveler(Long travelerId) {
@@ -74,6 +92,33 @@ public class TravelService {
         return traveler.get();
     }
 
+    public List<TravelDto.Response> putJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+        Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
+        if (findJourney.isPresent()) {
+            // 필요시 Journey, Travel 삭제 시에도 추가하기
+            List<Photo> existingPhotos = findJourney.get().getPhotos();
+            for (Photo existingPhoto : existingPhotos) {
+                findJourney.get().removePhoto(existingPhoto);
+            }
 
+            List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
+            findJourney.get().updateJourney(newJourney, photoList);
+        }
+
+        return getTravel(traveler);
+    }
+
+    public List<TravelDto.Response> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
+        Journey journey = travelRepository.findJourney(travelId, journeyId);
+        if (journey != null) {
+            Travel travel = journey.getTravel();
+            if (travel != null) {
+                travel.getJourneys().remove(journey);
+            }
+            journeyRepository.delete(journey);
+        }
+
+        return getTravel(traveler);
+    }
 }

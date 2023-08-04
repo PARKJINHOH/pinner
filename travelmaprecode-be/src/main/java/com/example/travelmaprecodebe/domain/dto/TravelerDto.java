@@ -2,26 +2,43 @@ package com.example.travelmaprecodebe.domain.dto;
 
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.global.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
+
 public class TravelerDto {
+    // Todo : token용 dto
 
-    private String email;
-    private String name; // 닉네임
-    private String password;
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class Request {
+        private String email;
+        private String name;
+        private String password;
+        private String accessToken;
+        private String refreshToken;
 
-    private String accessToken;
-    private String refreshToken;
-
-    public Traveler toEntity() {
-        return Traveler.builder()
-                .email(email)
-                .name(name)
-                .password(password)
-                .role(Role.USER) // Default User
-                .build();
+        public Traveler toEntity() {
+            return Traveler.builder()
+                    .email(email)
+                    .name(name)
+                    .password(password)
+                    .role(Role.USER) // Default User
+                    .build();
+        }
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class Response {
+        private String email;
+        private String name;
+        private String password;
+        private String accessToken;
+        private String refreshToken;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.travelmaprecodebe.domain.entity;
 
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
+import com.example.travelmaprecodebe.domain.dto.JourneyDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,13 +47,11 @@ public class Journey extends AuditEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
-
-    @ElementCollection
-    @JoinColumn(name = "PHOTO")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<String> photos;
+    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photos = new ArrayList<>();
 
     public void addTravel(Travel travel) {
+        // 연관 관계 편의 메소드
         if (this.travel != null) {
             this.travel.getJourneys().remove(this);
         }
@@ -59,20 +60,26 @@ public class Journey extends AuditEntity {
         travel.getJourneys().add(this);
     }
 
-    @Builder
-    public Journey(int orderKey, LocalDate date, GeoLocation geoLocation, Set<String> hashtags, Set<String> photos) {
-        this.date = date;
-        this.geoLocation = geoLocation;
-        this.hashtags = hashtags;
-        this.orderKey = orderKey;
-        this.photos = photos;
+    public void updateJourney(JourneyDto.Request newJourney, List<Photo> photoList) {
+        this.date = newJourney.getDate();
+        this.hashtags = newJourney.getHashtags();
+        this.geoLocation = newJourney.getGeoLocation().toEntity();
+
+        this.photos.clear();
+        if (photoList != null) {
+            this.photos.addAll(photoList);
+        }
     }
 
-    public Journey(LocalDate date, GeoLocation geoLocation, Set<String> hashtags, int orderKey, Set<String> photos) {
+    public void removePhoto(Photo photo) {
+        photo.deleteImageFile();
+    }
+
+    @Builder
+    public Journey(LocalDate date, Travel travel, GeoLocation geoLocation, Set<String> hashtags) {
         this.date = date;
+        this.travel = travel;
         this.geoLocation = geoLocation;
         this.hashtags = hashtags;
-        this.orderKey = orderKey;
-        this.photos = photos;
     }
 }

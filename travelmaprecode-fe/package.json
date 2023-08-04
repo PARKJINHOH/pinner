@@ -20,7 +20,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
-    "@yaireo/tagify": "^4.16.4",
+    "@yaireo/tagify": "^4.17.8",
     "axios": "^0.27.2",
     "dayjs": "^1.11.7",
     "react": "^18.2.0",
@@ -31,7 +31,7 @@
     "react-photo-album": "^1.16.1",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.4",
-    "web-vitals": "^2.1.4"
+    "yet-another-react-lightbox": "^3.11.4"
   },
   "scripts": {
     "start": "react-scripts start",
