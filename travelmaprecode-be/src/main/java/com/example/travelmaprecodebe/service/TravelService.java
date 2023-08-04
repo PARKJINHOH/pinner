@@ -35,7 +35,6 @@ public class TravelService {
     private final PhotoService photoService;
     private final EntityManager em;
 
-    @Transactional
     public List<TravelDto.Response> getTravel(Traveler traveler) {
         return travelRepository.findAllTravel(traveler.getId())
                 .stream()
@@ -43,7 +42,6 @@ public class TravelService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
         Traveler findTraveler = getTraveler(traveler.getId());
         Travel travel = findTraveler.addTravel(newTravel.getTitle());
@@ -52,7 +50,6 @@ public class TravelService {
         return new TravelDto.Response(travel);
     }
 
-    @Transactional
     public List<TravelDto.Response> postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
 
@@ -95,8 +92,6 @@ public class TravelService {
         return traveler.get();
     }
 
-
-    @Transactional
     public List<TravelDto.Response> putJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
@@ -116,16 +111,13 @@ public class TravelService {
 
     public List<TravelDto.Response> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
         Journey journey = travelRepository.findJourney(travelId, journeyId);
-        if (journey == null) {
-            // Todo
-            return null;
+        if (journey != null) {
+            Travel travel = journey.getTravel();
+            if (travel != null) {
+                travel.getJourneys().remove(journey);
+            }
+            journeyRepository.delete(journey);
         }
-
-        Travel travel = journey.getTravel();
-        if (travel != null) {
-            travel.getJourneys().remove(journey);
-        }
-        journeyRepository.delete(journey);
 
         return getTravel(traveler);
     }
