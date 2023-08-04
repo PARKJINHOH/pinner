@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
@@ -14,8 +14,9 @@ import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states
 import { selectedTravelState } from '../states/travel';
 
 // etc
-import toast, { Toaster } from 'react-hot-toast';
 import "@yaireo/tagify/dist/tagify.css";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
@@ -173,7 +174,7 @@ export default function BasePage() {
 
     return (
         <div>
-            <Toaster />
+            <ToastContainer />
             <RegisterModal />
             <LoginModal />
             {/*{*/}

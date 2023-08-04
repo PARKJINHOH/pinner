@@ -1,34 +1,35 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import { useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
+import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './JourneyList.module.css';
 
 // component
-import {selectedTravelIdState, travelState} from "../../../states/travel";
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import NewJourneyPill from "./NewJourneyPill";
-import JourneyPill from "./JourneyPill";
 import { representPhotoIdOfTravel } from '../../../common/travelutils';
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
+import { selectedTravelIdState, travelState } from "../../../states/travel";
 import RepresentImage from '../RepresentImage';
+import JourneyPill from "./JourneyPill";
+import NewJourneyPill from "./NewJourneyPill";
 
 // mui
-import {Tooltip} from "@mui/joy";
-import {IconButton, Paper, Stack, TextField, Typography, Alert} from "@mui/material";
-import {Divider} from "@mantine/core";
+import { Divider } from "@mantine/core";
+import { Tooltip } from "@mui/joy";
+import { Alert, IconButton, Paper, Stack, TextField, Typography } from "@mui/material";
 
 // icon & images
-import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import DisabledByDefaultOutlinedIcon from '@mui/icons-material/DisabledByDefaultOutlined';
-import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
+import { ReactComponent as EditIcon } from 'assets/images/edit-outline-icon.svg';
 
 // etc
 import dayjs from "dayjs";
-import toast from "react-hot-toast";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 /**
@@ -122,17 +123,17 @@ export default function JourneyList({ travel }) {
         <>
             <Paper
                 className={style.root_paper}
-                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
+                sx={{ width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth, }}
             >
                 <div>
-                    <RepresentImageWithButton travel={travel}/>
+                    <RepresentImageWithButton travel={travel} />
 
                     <div align="center" className={style.travel_title_group}>
                         {
                             editMode === EditMode.EDIT ?
                                 <>
                                     <TextField
-                                        inputProps={{ maxLength: 10, style: {fontSize: 20} }}
+                                        inputProps={{ maxLength: 10, style: { fontSize: 20 } }}
                                         style={{ width: 250 }}
                                         defaultValue={travel.title}
                                         variant="standard"
@@ -143,7 +144,7 @@ export default function JourneyList({ travel }) {
                                 </>
                                 :
                                 <>
-                                    <Typography sx={{fontSize: '25px', fontWeight: 'bold'}}>
+                                    <Typography sx={{ fontSize: '25px', fontWeight: 'bold' }}>
                                         {travel.title}
                                     </Typography>
                                 </>
@@ -161,12 +162,12 @@ export default function JourneyList({ travel }) {
                             }}
                         >
                             <ArrowBackIosOutlinedIcon
-                                sx={{fontSize: '30px'}}
+                                sx={{ fontSize: '30px' }}
                             />
                         </IconButton>
                         <Tooltip title="여정 추가" variant="outlined" size="lg">
                             <AddBoxOutlinedIcon
-                                sx={{fontSize: '30px'}}
+                                sx={{ fontSize: '30px' }}
                                 className={style.add_icon}
                                 onClick={() => {
                                     setIsEditingNewJourneyState(!isEditingNewJourneyState);
@@ -186,9 +187,9 @@ export default function JourneyList({ travel }) {
                         </Tooltip>
                         <Tooltip title="여정 삭제" variant="outlined" size="lg">
                             <DisabledByDefaultOutlinedIcon
-                                sx={{fontSize: '30px'}}
+                                sx={{ fontSize: '30px' }}
                                 className={style.del_icon}
-                                style={{ color: editMode === EditMode.DELETE && 'red'}}
+                                style={{ color: editMode === EditMode.DELETE && 'red' }}
                                 onClick={() => {
                                     if (travel.journeys.length === 0) {
                                         toast('삭제할 여정이 없습니다.');
@@ -208,9 +209,9 @@ export default function JourneyList({ travel }) {
                 {
                     travel.journeys.length !== 0 ?
                         travel.journeys.map(journey =>
-                            <JourneyPill key={journey.id} travelId={travel.id} editMode={editMode} setEditMode={setEditMode} journey={journey}/>
+                            <JourneyPill key={journey.id} travelId={travel.id} editMode={editMode} setEditMode={setEditMode} journey={journey} />
                         )
-                    :
+                        :
                         <div className={style.no_journeys}>
                             <Stack sx={{ width: '80%' }} >
                                 <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>

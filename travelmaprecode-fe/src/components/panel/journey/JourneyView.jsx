@@ -1,48 +1,48 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
+import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './JourneyView.module.css';
 
 // component
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
-import {travelState} from "../../../states/travel";
-import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
-import {environmentStatus} from "../../../states/environment";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
+import { travelState } from "../../../states/travel";
 import LightBoxPill from "./LightBoxPill";
 
 // mui
-import {Tooltip, Input} from "@mui/joy";
-import {Box, Button, ImageList, ImageListItem, ImageListItemBar, Paper, Typography, IconButton, Autocomplete, TextField, CircularProgress, Stack, Alert} from "@mui/material";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import { Input, Tooltip } from "@mui/joy";
+import { Alert, Autocomplete, Box, Button, CircularProgress, IconButton, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // Icon
-import {ReactComponent as EditIcon} from 'assets/images/edit-outline-icon.svg';
-import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { ReactComponent as EditIcon } from 'assets/images/edit-outline-icon.svg';
 
 // mantine
-import {IMAGE_MIME_TYPE} from "@mantine/dropzone";
-import {Divider} from "@mantine/core";
+import { Divider } from "@mantine/core";
+import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 // etc
-import dayjs from "dayjs";
 import Tags from "@yaireo/tagify/dist/react.tagify";
-import toast from "react-hot-toast";
+import dayjs from "dayjs";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import iso3166_1 from "../../../apis/iso3166_1.json";
 
 /**
  * Journey 보기 및 수정
  * @param travel
  */
-export default function JourneyView({travelId, journey, viewCancel}) {
+export default function JourneyView({ travelId, journey, viewCancel }) {
     const apiv1 = useAPIv1();
     const inputRef = useRef(null);
 
@@ -78,7 +78,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
 
     useEffect(() => {
         // Edit 데이터 세팅
-        setNewLocation({lat: 0, lng: 0, name: "", countryCd: ""});
+        setNewLocation({ lat: 0, lng: 0, name: "", countryCd: "" });
         setHashtags(journey.hashtags);
         setPhotos([]);
         const hasCountry = countries.find((country) => country.country_iso_alp2 === journey.geoLocationDto.countryCd);
@@ -128,7 +128,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
             toast.error("여행한 지역을 선택해주세요.");
             return;
         }
-        if(hashtags.length === 0) {
+        if (hashtags.length === 0) {
             toast.error("여행을 대표하는 태그를 1개 이상 입력해주세요.");
             return;
         }
@@ -153,7 +153,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                 geoLocation: newLocation.name !== "" ? newLocation : journey.geoLocationDto,
                 hashtags: hashtags
             });
-            formData.append('newJourney', new Blob([journeyData], {type: 'application/json'}));
+            formData.append('newJourney', new Blob([journeyData], { type: 'application/json' }));
 
             await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, formData)
                 .then((response) => {
@@ -162,8 +162,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                         viewCancel();
                     }
                 });
-            
-        } catch (error){
+
+        } catch (error) {
             console.error('error : ', error);
             toast.error('여정을 수정하지 못했습니다.');
         } finally {
@@ -183,7 +183,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         if (files && files.length > 0) {
             const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
 
-            if(newPhotos.length + photos.length > 10) {
+            if (newPhotos.length + photos.length > 10) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
@@ -260,13 +260,13 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         );
     }
 
-    function setLocationTitle(title){
+    function setLocationTitle(title) {
         if (title.length > 50) {
             toast("50글자 이내로 입력해주세요");
             return;
         }
 
-        setNewLocation({...newLocation, name: title});
+        setNewLocation({ ...newLocation, name: title });
     }
 
     function fnLightBoxOpen(photoId) {
@@ -283,7 +283,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
         <>
             <Paper
                 className={style.root_paper}
-                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth}}
+                sx={{ width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth }}
             >
                 <Box>
                     <>
@@ -291,13 +291,13 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                             editMode === EditMode.EDIT ?
                                 <div className={style.edit_location}>
                                     <Input
-                                        sx={{'--Input-gap': '1px'}}
+                                        sx={{ '--Input-gap': '1px' }}
                                         label="여행한 장소를 입력해주세요."
                                         startDecorator={
                                             <LocationOnIcon
-                                                sx={{cursor: 'pointer'}}
+                                                sx={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    toast('지도를 클릭해주세요', {duration: 2000,});
+                                                    toast.info('지도를 클릭해주세요', { duration: 2000, });
                                                     setNewJourneyStep(NewJourneyStep.LOCATING);
                                                 }}
                                             />
@@ -309,7 +309,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 </div>
                                 :
                                 <div className={style.view_location}>
-                                    <Typography sx={{fontSize: '21px', fontWeight: 'bold'}}>
+                                    <Typography sx={{ fontSize: '21px', fontWeight: 'bold' }}>
                                         {journey.geoLocationDto.name}
                                     </Typography>
                                 </div>
@@ -350,11 +350,11 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                             />
                                         )}
                                     />
-                                    <Divider sx={{marginLeft : '11px'}} orientation="vertical" />
+                                    <Divider sx={{ marginLeft: '11px' }} orientation="vertical" />
                                     <div className={style.edit_date}>
-                                        <Typography sx={{fontSize: '16px'}}>여행날짜</Typography>
+                                        <Typography sx={{ fontSize: '16px' }}>여행날짜</Typography>
                                         <ButtonDatePicker
-                                            sx={{cursor: 'pointer'}}
+                                            sx={{ cursor: 'pointer' }}
                                             label={pickerDate ? `${pickerDate.format('YYYY-MM-DD')}` : dayjs(journey.date).format('YYYY-MM-DD')}
                                             value={dayjs(journey.date)}
                                             onChange={(newPickerDate) => setPickerDate(newPickerDate)}
@@ -373,24 +373,24 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                     <>
                         {
                             editMode === EditMode.EDIT ?
-                            <div>
-                                <Tags
-                                    className={style.edit_tags}
-                                    settings={{maxTags: '5'}}
-                                    onChange={onHashTagChange}
-                                    placeholder='태그 최대 5개'
-                                    defaultValue={hashtags.length !== 0 ? hashtags : journey.hashtags}
-                                />
-                            </div>
-                            :
-                            <div className={style.view_tags}>
-                                {
-                                    journey.hashtags.map((tag, index) => (
+                                <div>
+                                    <Tags
+                                        className={style.edit_tags}
+                                        settings={{ maxTags: '5' }}
+                                        onChange={onHashTagChange}
+                                        placeholder='태그 최대 5개'
+                                        defaultValue={hashtags.length !== 0 ? hashtags : journey.hashtags}
+                                    />
+                                </div>
+                                :
+                                <div className={style.view_tags}>
+                                    {
+                                        journey.hashtags.map((tag, index) => (
                                             <div key={index} className={style.view_tag}>{tag}</div>
                                         )
-                                    )
-                                }
-                            </div>
+                                        )
+                                    }
+                                </div>
                         }
                     </>
                 </Box>
@@ -405,7 +405,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     }}
                                 >
                                     <ArrowBackIosOutlinedIcon
-                                        sx={{fontSize: '30px'}}
+                                        sx={{ fontSize: '30px' }}
                                     />
                                 </IconButton>
                                 <input
@@ -419,7 +419,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 <label className={style.add_icon}>
                                     <Tooltip title="사진 추가" variant="outlined" size="lg">
                                         <AddBoxOutlinedIcon
-                                            sx={{fontSize: '30px'}}
+                                            sx={{ fontSize: '30px' }}
                                             onClick={() => inputRef.current.click()}
                                         />
                                     </Tooltip>
@@ -445,7 +445,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                     }}
                                 >
                                     <ArrowBackIosOutlinedIcon
-                                        sx={{fontSize: '30px'}}
+                                        sx={{ fontSize: '30px' }}
                                     />
                                 </IconButton>
                                 <Tooltip title="여정 수정" variant="outlined" size="lg">
@@ -487,7 +487,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                                             actionPosition="left"
                                                             actionIcon={
                                                                 <IconButton
-                                                                    sx={{color: 'red'}}
+                                                                    sx={{ color: 'red' }}
                                                                     onClick={() => removePhoto(index)}>
                                                                     <DeleteForeverOutlinedIcon />
                                                                 </IconButton>
@@ -506,8 +506,8 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         </ImageList>
                                         :
                                         <div className={style.no_picture}>
-                                            <Stack sx={{width: '80%'}}>
-                                                <Alert variant="outlined" severity="info" sx={{justifyContent: 'center'}}>
+                                            <Stack sx={{ width: '80%' }}>
+                                                <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>
                                                     사진을 추가해주세요.
                                                 </Alert>
                                             </Stack>
