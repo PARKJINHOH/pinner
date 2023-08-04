@@ -96,14 +96,14 @@ public class TravelService {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
         if (findJourney.isPresent()) {
-            List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
-            findJourney.get().updateJourney(newJourney, photoList);
-
             // 필요시 Journey, Travel 삭제 시에도 추가하기
             List<Photo> existingPhotos = findJourney.get().getPhotos();
             for (Photo existingPhoto : existingPhotos) {
                 findJourney.get().removePhoto(existingPhoto);
             }
+
+            List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
+            findJourney.get().updateJourney(newJourney, photoList);
         }
 
         return getTravel(traveler);

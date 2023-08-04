@@ -8,18 +8,28 @@
     overflow-y: auto;
 }
 
-.journey_title_group {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
+.edit_location{
+    margin-bottom: 10px;
 }
 
-.journey_country_group {
+.view_location {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.edit_country_date{
     display: flex;
     justify-content: center;
 }
 
-.journey_date_group {
+.view_country_date {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.edit_date {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,7 +37,12 @@
 }
 
 .edit_tags {
-    margin-top: 12px;
+    margin-top: 10px;
+    --tag-pad: 0.1em;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 2px;
 }
 
 .view_tags{
@@ -35,22 +50,21 @@
     justify-content: center;
 }
 
-.journey_tag {
+.view_tag {
     display: inline-block;
-    padding: 2px;
+    padding: 3px;
     margin-right: 4px;
-    border-radius: 7px;
-    background-color: #f2f2f2;
-    color: #333;
+    border-radius: 5px;
+    background-color: #eaeaea;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .journeyView_imageBox {
     margin-top: 20px;
 }
 
-.journey_tool {
+.view_tool {
     display: flex;
     align-items: center;
     margin-top: 10px;
@@ -85,10 +99,10 @@
     margin-left: auto;
 }
 .edit_icon:hover {
-    color: #2a7bff;
-    transition: color 0.3s ease;
+    fill: #c2c2c2;
+    transition: fill 0.3s ease;
 }
-.journey_image {
+.view_photo {
     border: 1px solid #cbcbcb;
     border-radius: 6px;
     cursor: pointer;
@@ -99,27 +113,9 @@
     justify-content: center;
 }
 
-
-/*--------------------------------------*/
-/*수정 CSS*/
-.journeyView_location {
+.saving_icon{
+    top: 50%;
+    left: 44%;
     margin: 0 auto;
-}
-
-.journeyView_tags {
-    --tag-pad: 0.1em;
-    font-size: 14px;
-    width: 100%;
-    border-radius: 5px;
-    padding: 2px;
-}
-
-.journeyView_add_picture {
-    height: 180px;
-    margin: 25px 25px 5px;
-    border-radius: 5px;
-    background-color: #cecece;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: absolute;
 }

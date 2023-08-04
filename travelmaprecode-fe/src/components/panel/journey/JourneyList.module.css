@@ -36,15 +36,13 @@
     cursor: pointer;
 }
 
+.add_icon:hover {
+    color: #c2c2c2;
+    transition: color 0.3s ease;
+}
 .edit_icon:hover {
     fill: #c2c2c2;
     transition: fill 0.3s ease;
-}
-
-.add_icon:hover,
-.edit_icon:hover {
-    color: #c2c2c2;
-    transition: color 0.3s ease;
 }
 .del_icon:hover {
     color: #f61245;

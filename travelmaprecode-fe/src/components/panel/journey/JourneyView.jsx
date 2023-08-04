@@ -286,10 +286,10 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                 sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth}}
             >
                 <Box>
-                    <div className={style.journey_title_group}>
+                    <>
                         {
                             editMode === EditMode.EDIT ?
-                                <>
+                                <div className={style.edit_location}>
                                     <Input
                                         sx={{'--Input-gap': '1px'}}
                                         label="여행한 장소를 입력해주세요."
@@ -306,17 +306,19 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         onChange={e => setLocationTitle(e.target.value)}
                                         fullWidth
                                     />
-                                </>
+                                </div>
                                 :
-                                <Typography sx={{fontSize: '21px', fontWeight: 'bold'}}>
-                                    {journey.geoLocationDto.name}
-                                </Typography>
+                                <div className={style.view_location}>
+                                    <Typography sx={{fontSize: '21px', fontWeight: 'bold'}}>
+                                        {journey.geoLocationDto.name}
+                                    </Typography>
+                                </div>
                         }
-                    </div>
-                    <div className={style.journey_country_group}>
+                    </>
+                    <>
                         {
                             editMode === EditMode.EDIT ?
-                                <>
+                                <div className={style.edit_country_date}>
                                     <Autocomplete
                                         value={countryKrNm}
                                         onChange={(event, newValue) => {
@@ -349,7 +351,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         )}
                                     />
                                     <Divider sx={{marginLeft : '11px'}} orientation="vertical" />
-                                    <div className={style.journey_date_group}>
+                                    <div className={style.edit_date}>
                                         <Typography sx={{fontSize: '16px'}}>여행날짜</Typography>
                                         <ButtonDatePicker
                                             sx={{cursor: 'pointer'}}
@@ -358,22 +360,22 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                             onChange={(newPickerDate) => setPickerDate(newPickerDate)}
                                         />
                                     </div>
-                                </>
+                                </div>
                                 :
-                                <div>
+                                <div className={style.view_country_date}>
                                     <Typography>
                                         {dayjs(journey.date).format("YYYY.MM.DD")}
                                     </Typography>
                                 </div>
                         }
 
-                    </div>
-                    <div>
+                    </>
+                    <>
                         {
                             editMode === EditMode.EDIT ?
-                            <div className={style.edit_tags}>
+                            <div>
                                 <Tags
-                                    className={style.journeyView_tags}
+                                    className={style.edit_tags}
                                     settings={{maxTags: '5'}}
                                     onChange={onHashTagChange}
                                     placeholder='태그 최대 5개'
@@ -381,16 +383,16 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 />
                             </div>
                             :
-                                <div className={style.view_tags}>
+                            <div className={style.view_tags}>
                                 {
                                     journey.hashtags.map((tag, index) => (
-                                            <div key={index} className={style.journey_tag}>{tag}</div>
+                                            <div key={index} className={style.view_tag}>{tag}</div>
                                         )
                                     )
                                 }
                             </div>
                         }
-                    </div>
+                    </>
                 </Box>
                 <Box>
                     {
@@ -435,7 +437,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                 </Tooltip>
                             </div>
                             :
-                            <div className={style.journey_tool}>
+                            <div className={style.view_tool}>
                                 <IconButton
                                     className={style.arrow_icon_btn}
                                     onClick={() => {
@@ -446,13 +448,14 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                         sx={{fontSize: '30px'}}
                                     />
                                 </IconButton>
-                                <EditIcon
-                                    className={style.edit_icon}
-                                    style={{ pointerEvents: editMode === EditMode.EDIT ? 'none' : 'auto', fill: editMode === EditMode.EDIT && 'gray' }}
-                                    onClick={() => {
-                                        setEditMode(EditMode.EDIT);
-                                    }}
-                                />
+                                <Tooltip title="여정 수정" variant="outlined" size="lg">
+                                    <EditIcon
+                                        className={style.edit_icon}
+                                        onClick={() => {
+                                            setEditMode(EditMode.EDIT);
+                                        }}
+                                    />
+                                </Tooltip>
                             </div>
                     }
                 </Box>
@@ -522,7 +525,7 @@ export default function JourneyView({travelId, journey, viewCancel}) {
                                             return (
                                                 <ImageListItem key={index} cols={1} rows={rows}>
                                                     <img
-                                                        className={style.journey_image}
+                                                        className={style.view_photo}
                                                         alt={index}
                                                         src={photo.src}
                                                         srcSet={photo.src}
