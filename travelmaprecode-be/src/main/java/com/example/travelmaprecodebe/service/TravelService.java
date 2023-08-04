@@ -69,7 +69,6 @@ public class TravelService {
         return getTravel(traveler);
     }
 
-    @Transactional
     public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
         travelRepository.deleteTravel(travelId);
         return getTravel(traveler);
@@ -97,13 +96,19 @@ public class TravelService {
     }
 
 
+    @Transactional
     public List<TravelDto.Response> putJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
         if (findJourney.isPresent()) {
             List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
-            // todo : Photo 삭제해야함
             findJourney.get().updateJourney(newJourney, photoList);
+
+            // 필요시 Journey, Travel 삭제 시에도 추가하기
+            List<Photo> existingPhotos = findJourney.get().getPhotos();
+            for (Photo existingPhoto : existingPhotos) {
+                findJourney.get().removePhoto(existingPhoto);
+            }
         }
 
         return getTravel(traveler);

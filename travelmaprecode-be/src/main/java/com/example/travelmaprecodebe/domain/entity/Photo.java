@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.File;
 
 @Entity
 @Getter
@@ -56,5 +57,22 @@ public class Photo {
     public void changeJourney(Journey journey){
         this.journey = journey;
         journey.getPhotos().add(this);
+    }
+
+    public void deleteImageFile() {
+        if (fullPath != null) {
+            try {
+                String absolutePath = new File("").getAbsolutePath() + File.separator;
+                File fileToDelete = new File(absolutePath + fullPath);
+                if (fileToDelete.delete()) {
+                    System.out.println("Image file deleted successfully: " + absolutePath + fullPath);
+                } else {
+                    System.out.println("Failed to delete image file: " + absolutePath + fullPath);
+                }
+            } catch (Exception e) {
+                System.out.println("Error deleting image file");
+                e.printStackTrace();
+            }
+        }
     }
 }

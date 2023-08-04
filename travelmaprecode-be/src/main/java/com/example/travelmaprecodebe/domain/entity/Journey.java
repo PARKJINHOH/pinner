@@ -47,7 +47,7 @@ public class Journey extends AuditEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
-    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
     public void addTravel(Travel travel) {
@@ -64,7 +64,15 @@ public class Journey extends AuditEntity {
         this.date = newJourney.getDate();
         this.hashtags = newJourney.getHashtags();
         this.geoLocation = newJourney.getGeoLocation().toEntity();
-        this.photos = photoList;
+
+        this.photos.clear();
+        if (photoList != null) {
+            this.photos.addAll(photoList);
+        }
+    }
+
+    public void removePhoto(Photo photo) {
+        photo.deleteImageFile();
     }
 
     @Builder
