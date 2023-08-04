@@ -19,6 +19,8 @@ import "@yaireo/tagify/dist/tagify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import { boundsHasInfo, boundsOfTravel, is_journey_has_location } from 'utils';
+import { padding } from '@mui/system';
 
 
 export default function BasePage() {
@@ -26,6 +28,8 @@ export default function BasePage() {
         width: '100%',
         height: '100vh',
     };
+
+    const [map, setMap] = useState(/** @type {google.maps.Map|null} */(null));
 
     const [gMap, setGMap] = useRecoilState(googleMapState);
     const [libraries] = useState(['places']);
@@ -194,6 +198,8 @@ export default function BasePage() {
                     zoom={gMap.zoom}
                     center={gMap.center}
 
+                    onLoad={setMap}
+
                     // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {
                         const loc = {
@@ -232,7 +238,7 @@ export default function BasePage() {
                         onPlacesChanged={onPlacesChanged}
                     ></SearchBar>
 
-                    {selectedTravel && <DrawSelectedTravel selectedTravel={selectedTravel} />}
+                    {selectedTravel && <DrawSelectedTravel selectedTravel={selectedTravel} mapInstance={map} />}
                 </GoogleMap>
 
             </LoadScript>
@@ -267,7 +273,11 @@ function SearchBar(params) {
     </StandaloneSearchBox>
 }
 
-function DrawSelectedTravel({ selectedTravel }) {
+/**
+ *
+ * @param {{selectedTravel: Travel, mapInstance: google.maps.Map}} props
+ */
+function DrawSelectedTravel({ selectedTravel, mapInstance }) {
 
     /**
      * Draws markers on map
@@ -352,6 +362,11 @@ function DrawSelectedTravel({ selectedTravel }) {
         return lines;
     }
 
+    const bounds = boundsOfTravel(selectedTravel);
+    if (boundsHasInfo(bounds)) {
+        mapInstance.fitBounds(bounds, 300);
+    }
+
     return <>
         {drawMarkers(selectedTravel)}
         {drawLine(selectedTravel)}
@@ -359,15 +374,6 @@ function DrawSelectedTravel({ selectedTravel }) {
 
 }
 
-/**
- * Draws a line using Polyline component for each group of journeys by date
- *
- * @param {Journey} j
- * @returns {boolean}
- */
-function is_journey_has_location(j) {
-    return j.geoLocationDto.lat != 0 && j.geoLocationDto.lng != 0;
-}
 
 /**
  *

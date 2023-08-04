@@ -34,10 +34,20 @@ function distance(c1, c2) {
 }
 
 /**
+ * Draws a line using Polyline component for each group of journeys by date
+ *
+ * @param {Journey} j
+ * @returns {boolean}
+ */
+export function is_journey_has_location(j) {
+    return j.geoLocationDto.lat !== 0 && j.geoLocationDto.lng !== 0;
+}
+
+/**
  * 여러 좌표들의 경계를 구한다.
  *
  * @param {Point[]} points
- * @returns
+ * @returns {google.maps.LatLngBoundsLiteral}
  */
 function bounds(points) {
     const minLat = Math.min(...points.map(p => p.lat));
@@ -46,11 +56,38 @@ function bounds(points) {
     const maxLng = Math.max(...points.map(p => p.lng));
 
     return {
-        minLat: minLat,
-        maxLat: maxLat,
-        minLng: minLng,
-        maxLng: maxLng
+        south: minLat,
+        north: maxLat,
+        west: minLng,
+        east: maxLng
     }
+}
+
+/**
+ * 여러 좌표들의 경계를 구한다.
+ *
+ * @param {Travel} travel
+ * @returns {google.maps.LatLngBoundsLiteral}
+ */
+export function boundsOfTravel(travel) {
+    const points = travel.journeys
+        .map(j => j.geoLocationDto)
+        .filter(is_journey_has_location);
+
+    return bounds(points);
+}
+
+/**
+ * 여러 좌표들의 경계를 구한다.
+ *
+ * @param {google.maps.LatLngBoundsLiteral} bounds
+ * @returns {boolean}
+ */
+export function boundsHasInfo(bounds) {
+    return bounds.south !== 0 &&
+        bounds.north !== 0 &&
+        bounds.west !== 0 &&
+        bounds.east !== 0;
 }
 
 //
