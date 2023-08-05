@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
@@ -11,7 +11,7 @@ import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelState } from '../states/travel';
+import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
 
 // etc
 import "@yaireo/tagify/dist/tagify.css";
@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import { boundsHasInfo, is_journey_has_location } from 'utils';
 
 
 export default function BasePage() {
@@ -27,6 +28,8 @@ export default function BasePage() {
         width: '100%',
         height: '100vh',
     };
+
+    const [map, setMap] = useState(/** @type {google.maps.Map|null} */(null));
 
     const [gMap, setGMap] = useRecoilState(googleMapState);
     const [libraries] = useState(['places']);
@@ -52,6 +55,17 @@ export default function BasePage() {
      * @type {import('../states/travel').Travel}
      */
     const selectedTravel = useRecoilValue(selectedTravelState);
+
+
+    const bounds = useRecoilValue(selectedTravelBoundsState);
+
+
+    useEffect(() => {
+        if (boundsHasInfo(bounds)) {
+            map.fitBounds(bounds, 300);
+        }
+    }, [bounds]);
+
 
 
     // 검색창
@@ -206,6 +220,8 @@ export default function BasePage() {
                     zoom={gMap.zoom}
                     center={gMap.center}
 
+                    onLoad={setMap}
+
                     // 맵 클릭시 위치 정보 획득
                     onClick={async (e) => {
                         const loc = {
@@ -279,6 +295,10 @@ function SearchBar(params) {
     </StandaloneSearchBox>
 }
 
+/**
+ *
+ * @param {{selectedTravel: Travel}} props
+ */
 function DrawSelectedTravel({ selectedTravel }) {
 
     /**
@@ -371,15 +391,6 @@ function DrawSelectedTravel({ selectedTravel }) {
 
 }
 
-/**
- * Draws a line using Polyline component for each group of journeys by date
- *
- * @param {Journey} j
- * @returns {boolean}
- */
-function is_journey_has_location(j) {
-    return j.geoLocationDto.lat != 0 && j.geoLocationDto.lng != 0;
-}
 
 /**
  *
