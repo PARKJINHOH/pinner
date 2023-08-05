@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
@@ -14,8 +14,9 @@ import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states
 import { selectedTravelState } from '../states/travel';
 
 // etc
-import toast, { Toaster } from 'react-hot-toast';
 import "@yaireo/tagify/dist/tagify.css";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
@@ -30,13 +31,21 @@ export default function BasePage() {
     const [gMap, setGMap] = useRecoilState(googleMapState);
     const [libraries] = useState(['places']);
 
-    const mapOptions = {
-        fullscreenControl: false,
-    };
-
     const apiv1 = useAPIv1();
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
+
+    /**
+     * NOTE: 위치 선택시 커서 모양 변경의 구현에 관하여
+     *
+     * - Google map은 특정 상황일 때 커서 모양을 변경하는 기능을 제공하지 않음
+     * - 하지만 draggableCursor 옵션을 제공
+     * - draggableCursor 옵션을 newJourneyStep 상태에 따라 default와 crosshair로 전환하는것을 통해 우회하여 구현
+     */
+    const mapOptions = {
+        fullscreenControl: false,
+        draggableCursor: newJourneyStep === NewJourneyStep.LOCATING ? 'crosshair' : 'default',
+    };
 
     // 선택된 Travel/Journey Id
     /**
@@ -173,7 +182,10 @@ export default function BasePage() {
 
     return (
         <div>
-            <Toaster />
+            <ToastContainer
+                autoClose={3000}
+                pauseOnFocusLoss={false}
+            />
             <RegisterModal />
             <LoginModal />
             {/*{*/}

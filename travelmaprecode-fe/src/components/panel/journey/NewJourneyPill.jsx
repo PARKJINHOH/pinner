@@ -1,24 +1,24 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
 import iso3166_1 from 'apis/iso3166_1.json';
+import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './NewJourneyPill.module.css';
 
 // component
-import {journeyListViewWidth, sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
-import {travelState} from "../../../states/travel";
-import {NewJourneyStep, newJourneyStepState, newLocationState} from "../../../states/modal";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
+import { travelState } from "../../../states/travel";
 
 // mui
-import {Tooltip, Input} from "@mui/joy";
-import {Alert, Autocomplete, Box, Button, CircularProgress, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography} from "@mui/material";
-import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import { Input, Tooltip } from "@mui/joy";
+import { Alert, Autocomplete, Box, Button, CircularProgress, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 // mui Icon
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
@@ -28,13 +28,14 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 // mantine
-import {Divider} from "@mantine/core";
-import {IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import { Divider } from "@mantine/core";
+import { IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 // etc
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
-import {toast} from "react-hot-toast";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 /**
@@ -68,7 +69,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
     useEffect(() => {
-        setNewLocation({lat: 0, lng: 0, name: "", countryCd: ""});
+        setNewLocation({ lat: 0, lng: 0, name: "", countryCd: "" });
     }, []);
     useEffect(() => {
         const countryCdToFind = newLocation.countryCd;
@@ -118,7 +119,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 geoLocation: newLocation,
                 hashtags: hashtags
             });
-            formData.append('newJourney', new Blob([journeyData], {type: 'application/json'}));
+            formData.append('newJourney', new Blob([journeyData], { type: 'application/json' }));
 
             await apiv1.post(`/travel/${travel.id}/journey`, formData)
                 .then((response) => {
@@ -160,7 +161,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         if (files && files.length > 0) {
             const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
 
-            if(newPhotos.length + photos.length > 10) {
+            if (newPhotos.length + photos.length > 10) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
@@ -172,13 +173,13 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         }
     };
 
-    function setLocationTitle(title){
+    function setLocationTitle(title) {
         if (title.length > 50) {
             toast("50글자 이내로 입력해주세요");
             return;
         }
 
-        setNewLocation({...newLocation, name: title});
+        setNewLocation({ ...newLocation, name: title });
     }
 
     /**
@@ -198,7 +199,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
         return (
             <Button
-                sx={{padding: 0, width: '100%'}}
+                sx={{ padding: 0, width: '100%' }}
                 variant="text"
                 id={id}
                 disabled={disabled}
@@ -238,18 +239,18 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         <>
             <Paper
                 className={style.root_paper}
-                sx={{width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth,}}
+                sx={{ width: _journeyPanelWidth, left: _sidebarWidth + _travelListViewWidth, }}
             >
                 <Box>
                     <div className={style.journey_title_group}>
                         <Input
-                            sx={{'--Input-gap': '1px'}}
+                            sx={{ '--Input-gap': '1px' }}
                             label="여행한 장소를 입력해주세요."
                             startDecorator={
                                 <LocationOnIcon
-                                    sx={{cursor: 'pointer'}}
+                                    sx={{ cursor: 'pointer' }}
                                     onClick={() => {
-                                        toast('지도를 클릭해주세요', {duration: 2000,});
+                                        toast.info('지도를 클릭해주세요', { duration: 2000, });
                                         setNewJourneyStep(NewJourneyStep.LOCATING);
                                     }}
                                 />
@@ -291,11 +292,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                                 />
                             )}
                         />
-                        <Divider sx={{marginLeft : '11px'}} orientation="vertical" />
+                        <Divider sx={{ marginLeft: '11px' }} orientation="vertical" />
                         <div className={style.newJourney_date_group}>
-                            <Typography sx={{fontSize: '16px'}}>여행날짜</Typography>
+                            <Typography sx={{ fontSize: '16px' }}>여행날짜</Typography>
                             <ButtonDatePicker
-                                sx={{cursor: 'pointer'}}
+                                sx={{ cursor: 'pointer' }}
                                 label={`${pickerDate.format('YYYY-MM-DD')}`}
                                 value={pickerDate}
                                 onChange={(newPickerDate) => setPickerDate(newPickerDate)}
@@ -306,7 +307,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     <div className={style.newJourney_tags}>
                         <Tags
                             className={style.newJourney_tag}
-                            settings={{maxTags: '5'}}
+                            settings={{ maxTags: '5' }}
                             onChange={onHashTagChange}
                             placeholder='태그 최대 5개'
                         />
@@ -321,7 +322,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         }}
                     >
                         <ArrowBackIosOutlinedIcon
-                            sx={{fontSize: '30px'}}
+                            sx={{ fontSize: '30px' }}
                         />
                     </IconButton>
                     <input
@@ -335,7 +336,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     <label className={style.add_icon}>
                         <Tooltip title="사진 추가" variant="outlined" size="lg">
                             <AddBoxOutlinedIcon
-                                sx={{fontSize: '30px'}}
+                                sx={{ fontSize: '30px' }}
                                 onClick={() => inputRef.current.click()}
                             />
                         </Tooltip>
@@ -376,7 +377,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                                                 actionPosition="left"
                                                 actionIcon={
                                                     <IconButton
-                                                        sx={{color: 'red'}}
+                                                        sx={{ color: 'red' }}
                                                         onClick={() => removePhoto(index)}>
                                                         <DeleteForeverOutlinedIcon />
                                                     </IconButton>
@@ -395,8 +396,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                             </ImageList>
                             :
                             <div className={style.no_picture}>
-                                <Stack sx={{width: '80%'}}>
-                                    <Alert variant="outlined" severity="info" sx={{justifyContent: 'center'}}>
+                                <Stack sx={{ width: '80%' }}>
+                                    <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>
                                         사진을 추가해주세요.
                                     </Alert>
                                 </Stack>

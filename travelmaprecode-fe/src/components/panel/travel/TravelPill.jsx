@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './TravelPill.module.css';
 
 // component
+import { representPhotoIdOfTravel } from '../../../common/travelutils';
+import { googleMapState } from '../../../states/map';
 import { newJourneyStepState } from '../../../states/modal';
 import { selectedTravelIdState, travelState } from '../../../states/travel';
-import JourneyList from "../journey/JourneyList";
-import { googleMapState } from '../../../states/map';
 import { centerOfPoints } from '../../../utils';
-import { representPhotoIdOfTravel } from '../../../common/travelutils';
+import JourneyList from "../journey/JourneyList";
 import RepresentImage from '../RepresentImage';
 
 // mui
-import {Box, Chip, IconButton, Typography} from '@mui/material';
+import { Box, Chip, IconButton, Typography } from '@mui/material';
 
 // icon
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 // etc
-import toast from 'react-hot-toast';
+import "react-toastify/dist/ReactToastify.css";
 
 
 /**
@@ -123,7 +123,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
     const photo = representPhotoIdOfTravel(travel);
 
     async function onDeleteClick() {
-        if(window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)){
+        if (window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)) {
             await apiv1.delete(`/travel/${travel.id}`)
                 .then((response) => {
                     if (response.status === HTTPStatus.OK) {
@@ -144,7 +144,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
                         editMode === 'DELETE' && (
                             <IconButton
                                 aria-label="delete"
-                                sx={{position: 'absolute'}}
+                                sx={{ position: 'absolute' }}
                                 className={style.travel_delete_iconBtn}
                                 onClick={(event) => {
                                     event.stopPropagation();
@@ -153,7 +153,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
                             >
                                 <DeleteForeverOutlinedIcon
                                     className={style.travel_delete_icon}
-                                    sx={{fontSize: 30, color: 'red'}}
+                                    sx={{ fontSize: 30, color: 'red' }}
                                 />
                             </IconButton>
                         )

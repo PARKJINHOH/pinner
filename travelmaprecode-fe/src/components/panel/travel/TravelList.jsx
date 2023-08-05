@@ -1,32 +1,33 @@
-import React, {useEffect, useState} from 'react';
-import {useRecoilState, useRecoilValue} from 'recoil';
+import { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './TravelList.module.css';
 
 // component
-import {selectedTravelIdState, travelState} from '../../../states/travel';
-import {sidebarWidth, travelListViewWidth} from "../../../states/panel/panelWidth";
-import {isLoggedInState, travelerState} from '../../../states/traveler';
+import { sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
+import { selectedTravelIdState, travelState } from '../../../states/travel';
+import { isLoggedInState, travelerState } from '../../../states/traveler';
 import NewTravelPill from './NewTravelPill';
 import TravelPill from './TravelPill';
 
 // mui
-import {Alert, Box, List, Paper, Stack, Typography} from "@mui/material";
-import {Tooltip} from "@mui/joy";
-import {Divider} from "@mantine/core";
+import { Divider } from "@mantine/core";
+import { Tooltip } from "@mui/joy";
+import { Alert, Box, List, Paper, Stack, Typography } from "@mui/material";
 
 // Icon
-import {ReactComponent as DragIcon} from 'assets/images/drag_icon.svg';
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import DisabledByDefaultOutlinedIcon from "@mui/icons-material/DisabledByDefaultOutlined";
+import { ReactComponent as DragIcon } from 'assets/images/drag_icon.svg';
 
 // etc
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import toast from "react-hot-toast";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 /**
@@ -103,7 +104,7 @@ export default function TravelList() {
     return (
         <Paper
             className={style.root_paper}
-            sx={{width: _travelListViewWidth, left: _sidebarWidth}}
+            sx={{ width: _travelListViewWidth, left: _sidebarWidth }}
         >
             <List className={style.sidebar_list_div}>
                 {
@@ -120,12 +121,12 @@ export default function TravelList() {
                                     <DragIcon
                                         className={style.drag_icon}
                                         onClick={dndHandleClick}
-                                        style={{stroke: !dndState && '#00AEFF'}}
+                                        style={{ stroke: !dndState && '#00AEFF' }}
                                     />
                                 </Tooltip>
                                 <Tooltip title="여행 추가" variant="outlined" size="lg">
                                     <AddBoxOutlinedIcon
-                                        sx={{fontSize: '30px'}}
+                                        sx={{ fontSize: '30px' }}
                                         className={style.add_icon}
                                         onClick={() => {
                                             setEditMode(prevMode =>
@@ -140,9 +141,9 @@ export default function TravelList() {
                                 </Tooltip>
                                 <Tooltip title="여행 삭제" variant="outlined" size="lg">
                                     <DisabledByDefaultOutlinedIcon
-                                        sx={{fontSize: '30px'}}
+                                        sx={{ fontSize: '30px' }}
                                         className={style.del_icon}
-                                        style={{ color: editMode === EditMode.DELETE && 'red'}}
+                                        style={{ color: editMode === EditMode.DELETE && 'red' }}
                                         onClick={() => {
                                             setSelectedId(null);
                                             if (travelData.length === 0) {
@@ -161,56 +162,56 @@ export default function TravelList() {
 
                             {
                                 travelData.length !== 0 ?
-                                <>
-                                    <DragDropContext onDragEnd={onDragEnd}>
-                                        <Droppable droppableId="ROOT">
-                                            {provided => (
-                                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                    {
-                                                        travelData.map((travel, idx) => {
-                                                            return (
-                                                                <Draggable key={travel.orderKey} draggableId={String(travel.orderKey)} index={idx} isDragDisabled={dndState}>
-                                                                    {
-                                                                        provided => (
-                                                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
-                                                                                 onClick={() => {
-                                                                                     if (dndState === false) {
-                                                                                         setEditMode(EditMode.DEFAULT);
-                                                                                         setDndState(true);
-                                                                                     }
-                                                                                 }}
-                                                                            >
-                                                                                <TravelPill draggable="true" key={travel.id} editMode={editMode} setEditMode={setEditMode} travel={travel} />
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                </Draggable>
-                                                            )
-                                                        })
-                                                    }
-                                                    {provided.placeholder}
+                                    <>
+                                        <DragDropContext onDragEnd={onDragEnd}>
+                                            <Droppable droppableId="ROOT">
+                                                {provided => (
+                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                        {
+                                                            travelData.map((travel, idx) => {
+                                                                return (
+                                                                    <Draggable key={travel.orderKey} draggableId={String(travel.orderKey)} index={idx} isDragDisabled={dndState}>
+                                                                        {
+                                                                            provided => (
+                                                                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}
+                                                                                    onClick={() => {
+                                                                                        if (dndState === false) {
+                                                                                            setEditMode(EditMode.DEFAULT);
+                                                                                            setDndState(true);
+                                                                                        }
+                                                                                    }}
+                                                                                >
+                                                                                    <TravelPill draggable="true" key={travel.id} editMode={editMode} setEditMode={setEditMode} travel={travel} />
+                                                                                </div>
+                                                                            )
+                                                                        }
+                                                                    </Draggable>
+                                                                )
+                                                            })
+                                                        }
+                                                        {provided.placeholder}
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        </DragDropContext>
+                                    </>
+                                    :
+                                    <>
+                                        {
+                                            editMode === EditMode.DEFAULT && (
+                                                <div className={style.no_travels}>
+                                                    <Stack sx={{ width: '80%' }}>
+                                                        <Alert variant="outlined" severity="info" sx={{ justifyContent: 'center' }}>
+                                                            여행을 추가해주세요.
+                                                        </Alert>
+                                                    </Stack>
                                                 </div>
-                                            )}
-                                        </Droppable>
-                                    </DragDropContext>
-                                </>
-                                :
-                                <>
-                                    {
-                                        editMode === EditMode.DEFAULT && (
-                                            <div className={style.no_travels}>
-                                                <Stack sx={{width: '80%'}}>
-                                                    <Alert variant="outlined" severity="info" sx={{justifyContent: 'center'}}>
-                                                        여행을 추가해주세요.
-                                                    </Alert>
-                                                </Stack>
-                                            </div>
-                                        )
-                                    }
-                                </>
+                                            )
+                                        }
+                                    </>
                             }
                             {
-                                editMode === EditMode.ADD && <NewTravelPill onCancel={() => setEditMode(EditMode.DEFAULT)}/>
+                                editMode === EditMode.ADD && <NewTravelPill onCancel={() => setEditMode(EditMode.DEFAULT)} />
                             }
                         </>
                         :

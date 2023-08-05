@@ -1,33 +1,34 @@
-import React, {useCallback, useState} from 'react';
-import {useRecoilState} from 'recoil';
+import { useCallback, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 // api
-import {useAPIv1} from '../../../apis/apiv1';
+import { useAPIv1 } from '../../../apis/apiv1';
 
 // css
 import style from './NewTravelPill.module.css';
 
 // component
-import {travelState} from '../../../states/travel';
+import { travelState } from '../../../states/travel';
 
 // mui
-import Stack from "@mui/material/Stack";
+import { AspectRatio } from "@mui/joy";
 import Input from '@mui/joy/Input';
-import {IconButton, Button, Skeleton} from "@mui/material";
-import {AspectRatio} from "@mui/joy";
+import { Button, IconButton, Skeleton } from "@mui/material";
+import Stack from "@mui/material/Stack";
 
 // icon
-import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
 import ModeOfTravelOutlinedIcon from '@mui/icons-material/ModeOfTravelOutlined';
+import WrongLocationOutlinedIcon from '@mui/icons-material/WrongLocationOutlined';
 
 // etc
-import toast from "react-hot-toast";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 /**
  * 'Click to add new Travel'클릭시 나오는 컴포넌트
  * @param onCancel
  */
-export default function NewTravelPill({onCancel}) {
+export default function NewTravelPill({ onCancel }) {
     const apiv1 = useAPIv1();
 
     const [title, setTitle] = useState("");
@@ -41,7 +42,7 @@ export default function NewTravelPill({onCancel}) {
         if (newTitleTrimStart.length > titleLength) {
             toast.error(`여행제목은 ${titleLength}글자 이하여야 합니다.`);
         }
-        if (newTitleTrimStart.length <= titleLength){
+        if (newTitleTrimStart.length <= titleLength) {
             setTitle(newTitleTrimStart);
         }
     }, []);
@@ -66,7 +67,7 @@ export default function NewTravelPill({onCancel}) {
                 return;
             }
             if (isEnter || isMouseClick) {
-                const resp = await apiv1.post("/travel", JSON.stringify({title: title.trim()}));
+                const resp = await apiv1.post("/travel", JSON.stringify({ title: title.trim() }));
                 const travel = resp.data;
                 setTravels([...travels, travel]);
             }
@@ -76,13 +77,13 @@ export default function NewTravelPill({onCancel}) {
 
     return (
         <>
-            <Stack spacing={1} sx={{marginTop: '20px'}}>
+            <Stack spacing={1} sx={{ marginTop: '20px' }}>
                 <AspectRatio ratio="16/10">
-                    <Skeleton variant="rectangular"/>
+                    <Skeleton variant="rectangular" />
                 </AspectRatio>
                 <div className={style.travel_title_group}>
                     <Input
-                        sx={{width: '90%'}}
+                        sx={{ width: '90%' }}
                         placeholder="2023년 유럽 여행"
                         startDecorator={<ModeOfTravelOutlinedIcon />}
                         endDecorator={<Button onClick={onKeyDownRename} >저장</Button>}
