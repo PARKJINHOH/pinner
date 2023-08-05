@@ -67,9 +67,6 @@ export default function NewTravelPill({ onCancel }) {
                 return;
             }
             if (isEnter || isMouseClick) {
-                // const resp = await apiv1.post("/travel", JSON.stringify({ title: title.trim() }));
-                // const travel = resp.data;
-                // setTravels([...travels, travel]);
                 await apiv1.post("/travel", JSON.stringify({ title: title.trim() }))
                     .then((response) => {
                         if (response.status === HTTPStatus.OK) {

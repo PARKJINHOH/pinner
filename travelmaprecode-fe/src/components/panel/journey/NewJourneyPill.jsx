@@ -115,13 +115,14 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 });
             }
             const journeyData = JSON.stringify({
+                travelId: travel.id,
                 date: dayjs(pickerDate).format('YYYY-MM-DD'),
                 geoLocation: newLocation,
                 hashtags: hashtags
             });
             formData.append('newJourney', new Blob([journeyData], { type: 'application/json' }));
 
-            await apiv1.post(`/travel/${travel.id}/journey`, formData)
+            await apiv1.post(`/journey`, formData)
                 .then((response) => {
                     if (response.status === HTTPStatus.OK) {
                         setTravels(response.data);

@@ -48,7 +48,7 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
 
     async function onDeleteClick() {
         if(window.confirm(`"${journey.geoLocationDto.name}" 여정을 정말 삭제하실건가요?`)){
-            await apiv1.delete(`/travel/${travelId}/journey/${journey.id}`)
+            await apiv1.delete(`/journey/${journey.id}`)
                 .then((response) => {
                     if (response.status === HTTPStatus.OK) {
                         setEditMode('');

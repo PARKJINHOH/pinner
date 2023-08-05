@@ -155,7 +155,7 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
             });
             formData.append('newJourney', new Blob([journeyData], { type: 'application/json' }));
 
-            await apiv1.put(`/travel/${travelId}/journey/${journey.id}`, formData)
+            await apiv1.put(`/journey/${journey.id}`, formData)
                 .then((response) => {
                     if (response.status === HTTPStatus.OK) {
                         setTravels(response.data);

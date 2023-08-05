@@ -16,6 +16,7 @@ public class JourneyDto {
     @Builder
     @AllArgsConstructor
     public static class Request {
+        private Long travelId;
         private LocalDate date;
         private GeoLocationDto.Request geoLocation;
         private Set<String> hashtags;

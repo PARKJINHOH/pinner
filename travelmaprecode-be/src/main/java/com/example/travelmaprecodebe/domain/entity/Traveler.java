@@ -46,11 +46,10 @@ public class Traveler extends AuditEntity implements UserDetails {
     @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL)
     private List<Travel> travels = new ArrayList<>();
 
-    public Travel addTravel(String title) {
+    public void addTravel(String title) {
         int newOrder = travels.size(); // 0부터 시작
         Travel travel = new Travel(this, title, newOrder);
         travels.add(travel);
-        return travel;
     }
 
 
