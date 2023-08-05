@@ -1,7 +1,6 @@
 package com.example.travelmaprecodebe.repository.impl;
 
 import com.example.travelmaprecodebe.domain.dto.TravelDto;
-import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Travel;
 import com.example.travelmaprecodebe.repository.TravelRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.example.travelmaprecodebe.domain.entity.QJourney.journey;
 import static com.example.travelmaprecodebe.domain.entity.QTravel.travel;
 import static com.example.travelmaprecodebe.domain.entity.QTraveler.traveler;
 
@@ -42,16 +40,6 @@ public class TravelRepositoryImpl implements TravelRepositoryCustom {
                         .and(travel.id.eq(travelId)))
                 .fetchOne();
 
-    }
-
-    @Override
-    public Journey findJourneyByTravelIdAndJourneyId(Long travelId, Long journeyId) {
-        log.info("findJourneyByTravelIdAndJourneyId");
-        return queryFactory
-                .selectFrom(journey)
-                .where(travel.id.eq(travelId)
-                        .and(journey.id.eq(journeyId)))
-                .fetchOne();
     }
 
     @Override
