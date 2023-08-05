@@ -46,10 +46,17 @@ export function is_journey_has_location(j) {
 /**
  * 여러 좌표들의 경계를 구한다.
  *
+ * 경계를 구할 수 없을 경우에는 null을 반환
+ *  - points의 길이가 1 이하인 경우
+ *
  * @param {Point[]} points
- * @returns {google.maps.LatLngBoundsLiteral}
+ * @returns {google.maps.LatLngBoundsLiteral?}
  */
 function bounds(points) {
+    if (!points || points.length <= 1) {
+        return null;
+    }
+
     const minLat = Math.min(...points.map(p => p.lat));
     const maxLat = Math.max(...points.map(p => p.lat));
     const minLng = Math.min(...points.map(p => p.lng));
@@ -66,13 +73,15 @@ function bounds(points) {
 /**
  * 여러 좌표들의 경계를 구한다.
  *
+ * Travel.journeys의 길이가 하나 이하이거나 Journey.geoLocationDto가 (0, 0)이면 nu
+ *
  * @param {Travel} travel
- * @returns {google.maps.LatLngBoundsLiteral}
+ * @returns {google.maps.LatLngBoundsLiteral?}
  */
 export function boundsOfTravel(travel) {
     const points = travel.journeys
-        .map(j => j.geoLocationDto)
-        .filter(is_journey_has_location);
+        .filter(is_journey_has_location)
+        .map(j => j.geoLocationDto);
 
     return bounds(points);
 }
@@ -84,6 +93,10 @@ export function boundsOfTravel(travel) {
  * @returns {boolean}
  */
 export function boundsHasInfo(bounds) {
+    if (!bounds) {
+        return false;
+    }
+
     return bounds.south !== 0 &&
         bounds.north !== 0 &&
         bounds.west !== 0 &&

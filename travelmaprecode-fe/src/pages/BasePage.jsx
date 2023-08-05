@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
@@ -11,7 +11,7 @@ import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelState } from '../states/travel';
+import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
 
 // etc
 import toast, { Toaster } from 'react-hot-toast';
@@ -19,8 +19,7 @@ import "@yaireo/tagify/dist/tagify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
-import { boundsHasInfo, boundsOfTravel, is_journey_has_location } from 'utils';
-import { padding } from '@mui/system';
+import { boundsHasInfo, is_journey_has_location } from 'utils';
 
 
 export default function BasePage() {
@@ -47,6 +46,17 @@ export default function BasePage() {
      * @type {import('../states/travel').Travel}
      */
     const selectedTravel = useRecoilValue(selectedTravelState);
+
+
+    const bounds = useRecoilValue(selectedTravelBoundsState);
+
+
+    useEffect(() => {
+        if (boundsHasInfo(bounds)) {
+            map.fitBounds(bounds, 300);
+        }
+    }, [bounds]);
+
 
 
     // 검색창
@@ -238,7 +248,7 @@ export default function BasePage() {
                         onPlacesChanged={onPlacesChanged}
                     ></SearchBar>
 
-                    {selectedTravel && <DrawSelectedTravel selectedTravel={selectedTravel} mapInstance={map} />}
+                    {selectedTravel && <DrawSelectedTravel selectedTravel={selectedTravel} />}
                 </GoogleMap>
 
             </LoadScript>
@@ -275,9 +285,9 @@ function SearchBar(params) {
 
 /**
  *
- * @param {{selectedTravel: Travel, mapInstance: google.maps.Map}} props
+ * @param {{selectedTravel: Travel}} props
  */
-function DrawSelectedTravel({ selectedTravel, mapInstance }) {
+function DrawSelectedTravel({ selectedTravel }) {
 
     /**
      * Draws markers on map
@@ -360,11 +370,6 @@ function DrawSelectedTravel({ selectedTravel, mapInstance }) {
         }
 
         return lines;
-    }
-
-    const bounds = boundsOfTravel(selectedTravel);
-    if (boundsHasInfo(bounds)) {
-        mapInstance.fitBounds(bounds, 300);
     }
 
     return <>
