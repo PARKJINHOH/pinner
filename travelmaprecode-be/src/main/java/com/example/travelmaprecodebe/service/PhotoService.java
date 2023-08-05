@@ -1,7 +1,6 @@
 package com.example.travelmaprecodebe.service;
 
 import com.example.travelmaprecodebe.domain.dto.PhotoDto;
-import com.example.travelmaprecodebe.domain.entity.Journey;
 import com.example.travelmaprecodebe.domain.entity.Photo;
 import com.example.travelmaprecodebe.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +96,7 @@ public class PhotoService {
 
     }
 
-    public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles, Journey saveJourney) throws IOException {
+    public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles) throws IOException {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
 
@@ -136,7 +135,7 @@ public class PhotoService {
                     .fileSize(multipartFile.getSize())
                     .build();
 
-            Photo photo = photoDto.toEntity(saveJourney);
+            Photo photo = photoDto.toEntity();
 
             // 생성 후 리스트에 추가
             fileList.add(photo);

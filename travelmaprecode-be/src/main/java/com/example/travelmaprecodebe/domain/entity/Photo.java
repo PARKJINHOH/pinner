@@ -50,11 +50,16 @@ public class Photo {
         this.width = width;
         this.height = height;
         if (journey != null) {
-            changeJourney(journey);
+            setJourney(journey);
         }
     }
 
-    public void changeJourney(Journey journey){
+    public void setJourney(Journey journey) {
+        // 연관 관계 편의 메소드
+        if (this.journey != null) {
+            this.journey.getPhotos().remove(this);
+        }
+
         this.journey = journey;
         journey.getPhotos().add(this);
     }

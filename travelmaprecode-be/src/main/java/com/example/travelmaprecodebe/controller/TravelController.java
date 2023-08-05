@@ -34,7 +34,7 @@ public class TravelController {
     @PostMapping()
     public ResponseEntity<?> postTravel(@AuthenticationPrincipal Traveler traveler,
                                         @RequestBody @Valid TravelDto.Request newTravel) {
-        return ResponseEntity.ok(travelService.postTravel(traveler, newTravel));
+        return ResponseEntity.ok(travelService.addTravel(traveler, newTravel));
     }
 
     @PostMapping("/{travelId}/journey")
@@ -42,7 +42,7 @@ public class TravelController {
                                          @PathVariable Long travelId,
                                          @RequestPart("newJourney") JourneyDto.Request newJourney,
                                          @RequestPart(value = "photo", required = false) List<MultipartFile> photos) throws IOException {
-        return ResponseEntity.ok(travelService.postJourney(traveler, travelId, newJourney, photos));
+        return ResponseEntity.ok(travelService.addJourney(traveler, travelId, newJourney, photos));
     }
 
     @PutMapping("/{travelId}/journey/{journeyId}")

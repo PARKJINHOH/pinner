@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TravelService {
 
     private final TravelRepository travelRepository;
@@ -33,55 +31,13 @@ public class TravelService {
     private final TravelerRepository travelerRepository;
     private final PhotoRepository photoRepository;
     private final PhotoService photoService;
-    private final EntityManager em;
 
     public List<TravelDto.Response> getTravel(Traveler traveler) {
-        return travelRepository.findAllTravel(traveler.getId())
+        travelRepository.flush();
+        return travelRepository.findByTravelerIdOrderByOrderKeyAsc(traveler.getId())
                 .stream()
                 .map(TravelDto.Response::new)
                 .collect(Collectors.toList());
-    }
-
-    public TravelDto.Response postTravel(Traveler traveler, TravelDto.Request newTravel) {
-        Traveler findTraveler = getTraveler(traveler.getId());
-        Travel travel = findTraveler.addTravel(newTravel.getTitle());
-        em.flush();
-        em.clear();
-        return new TravelDto.Response(travel);
-    }
-
-    public List<TravelDto.Response> postJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
-        Travel travel = travelRepository.findTravel(traveler.getId(), travelId);
-
-        Journey newJourneyEntity = newJourney.toEntity();
-        newJourneyEntity.addTravel(travel);
-
-        Journey saveJourney = journeyRepository.save(newJourneyEntity);
-
-        if (photos != null) {
-            List<Photo> photoList = photoService.processPhotosForJourney(photos, saveJourney);
-            photoRepository.saveAll(photoList);
-        }
-
-        return getTravel(traveler);
-    }
-
-    public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
-        travelRepository.deleteTravel(travelId);
-        return getTravel(traveler);
-    }
-
-    public List<TravelDto.Response> patchTravel(Traveler traveler, Long travelId, TravelDto.Request newTravel) {
-        travelRepository.patchTravel(traveler.getId(), travelId, newTravel.getTitle());
-        return getTravel(traveler);
-    }
-
-    public List<TravelDto.Response> putOrderKey(Traveler traveler, List<TravelDto.Request> travelList) {
-        for (TravelDto.Request newTravelRequestDto : travelList) {
-            travelRepository.putOrderKey(traveler.getId(), newTravelRequestDto);
-        }
-
-        return getTravel(traveler);
     }
 
     private Traveler getTraveler(Long travelerId) {
@@ -92,6 +48,52 @@ public class TravelService {
         return traveler.get();
     }
 
+    @Transactional
+    public List<TravelDto.Response> addTravel(Traveler traveler, TravelDto.Request newTravel) {
+        Traveler findTraveler = getTraveler(traveler.getId());
+        findTraveler.addTravel(newTravel.getTitle());
+        return getTravel(traveler);
+    }
+
+    @Transactional
+    public List<TravelDto.Response> addJourney(Traveler traveler, Long travelId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), travelId);
+
+        Journey newJourneyEntity = newJourney.toEntity();
+        newJourneyEntity.setTravel(travel);
+
+        if (photos != null) {
+            List<Photo> photoList = photoService.processPhotosForJourney(photos);
+            for (Photo photo : photoList) {
+                photo.setJourney(newJourneyEntity);
+            }
+        }
+
+        return getTravel(traveler);
+    }
+
+    @Transactional
+    public List<TravelDto.Response> deleteTravel(Traveler traveler, Long travelId) {
+        travelRepository.deleteById(travelId);
+        return getTravel(traveler);
+    }
+
+    @Transactional
+    public List<TravelDto.Response> patchTravel(Traveler traveler, Long travelId, TravelDto.Request newTravel) {
+        travelRepository.updateTravelTitleByTravelId(travelId, newTravel.getTitle());
+        return getTravel(traveler);
+    }
+
+    @Transactional
+    public List<TravelDto.Response> putOrderKey(Traveler traveler, List<TravelDto.Request> travelList) {
+        for (TravelDto.Request newTravelRequestDto : travelList) {
+            travelRepository.updateTravelOrderKeyByTravelerIdAndTravelId(traveler.getId(), newTravelRequestDto);
+        }
+
+        return getTravel(traveler);
+    }
+
+    @Transactional
     public List<TravelDto.Response> putJourney(Traveler traveler, Long travelId, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
@@ -102,15 +104,19 @@ public class TravelService {
                 findJourney.get().removePhoto(existingPhoto);
             }
 
-            List<Photo> photoList = photoService.processPhotosForJourney(photos, findJourney.get());
+            List<Photo> photoList = photoService.processPhotosForJourney(photos);
+            for (Photo photo : photoList) {
+                photo.setJourney(findJourney.get());
+            }
             findJourney.get().updateJourney(newJourney, photoList);
         }
 
         return getTravel(traveler);
     }
 
+    @Transactional
     public List<TravelDto.Response> deleteJourney(Traveler traveler, Long travelId, Long journeyId) {
-        Journey journey = travelRepository.findJourney(travelId, journeyId);
+        Journey journey = travelRepository.findJourneyByTravelIdAndJourneyId(travelId, journeyId);
         if (journey != null) {
             Travel travel = journey.getTravel();
             if (travel != null) {

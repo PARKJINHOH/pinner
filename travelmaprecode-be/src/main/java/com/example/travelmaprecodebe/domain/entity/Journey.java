@@ -50,7 +50,7 @@ public class Journey extends AuditEntity {
     @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
-    public void addTravel(Travel travel) {
+    public void setTravel(Travel travel) {
         // 연관 관계 편의 메소드
         if (this.travel != null) {
             this.travel.getJourneys().remove(this);
