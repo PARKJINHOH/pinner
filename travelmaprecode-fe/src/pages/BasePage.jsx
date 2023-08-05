@@ -47,10 +47,7 @@ export default function BasePage() {
         draggableCursor: newJourneyStep === NewJourneyStep.LOCATING ? 'crosshair' : 'default',
     };
 
-    // 선택된 Travel/Journey Id
-    /**
-     * @type {import('../states/travel').Travel}
-     */
+    /** @type {Travel} */
     const selectedTravel = useRecoilValue(selectedTravelState);
 
 

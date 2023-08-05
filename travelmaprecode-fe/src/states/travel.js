@@ -2,8 +2,7 @@ import { atom, selector } from "recoil";
 
 
 /**
- * @typedef {{id: number}} TravelState
- * @type {import("recoil").RecoilState<TravelState[]>}
+ * @type {import("recoil").RecoilState<Travel[]>}
  */
 export const travelState = atom({
     key: 'travelState',
@@ -11,9 +10,9 @@ export const travelState = atom({
 });
 
 /**
- * @typedef {{travelId:number, journeyId: number}} Selected
+ * 선택퇸 Travel의 ID 혹은 빈 문자열
  *
- * @type {import("recoil").RecoilState<Selected>}
+ * @type {string}
  */
 export const selectedTravelIdState = atom({
     key: 'selectedTravelIdState',
@@ -21,7 +20,7 @@ export const selectedTravelIdState = atom({
 });
 
 /**
- * @type {TravelState | undefined}
+ * @type {Travel | undefined}
  */
 export const selectedTravelState = selector({
     key: 'selectedTravelState',
@@ -31,7 +30,7 @@ export const selectedTravelState = selector({
          */
         const selectedId = get(selectedTravelIdState);
         /**
-         * @type {TravelState[]}
+         * @type {Travel[]}
          */
         const travels = get(travelState);
 
