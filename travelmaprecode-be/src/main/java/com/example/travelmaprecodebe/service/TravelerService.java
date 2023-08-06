@@ -64,6 +64,15 @@ public class TravelerService {
         }
     }
 
+    public boolean passwordCheck(TravelerDto.Request travelerDto) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
+            return authentication.isAuthenticated();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
         refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));

@@ -57,6 +57,7 @@ export default function Sidebar() {
     };
     const travelerClose = () => {
         setAnchorEl(null);
+        setModalVisibility(AuthModalVisibility.SHOW_PROFILE);
     };
 
     const handleItemClick = (pageNm) => {
@@ -179,7 +180,7 @@ export default function Sidebar() {
                     {
                         isLoggedIn ?
                             [
-                                // <MenuItem key="profile" onClick={travelerClose}>내 정보</MenuItem>,
+                                <MenuItem key="profile" onClick={travelerClose}>내 정보</MenuItem>,
                                 <MenuItem key="logout" onClick={logout}>로그아웃</MenuItem>
                             ]
                             :

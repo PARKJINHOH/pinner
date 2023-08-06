@@ -9,6 +9,8 @@ import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 // component
 import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
+import ProfileModal from "../components/modals/ProfileModal";
+import { boundsHasInfo, is_journey_has_location } from 'utils';
 import { googleMapState } from '../states/map';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
@@ -20,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
-import { boundsHasInfo, is_journey_has_location } from 'utils';
+
 
 
 export default function BasePage() {
@@ -199,6 +201,7 @@ export default function BasePage() {
             />
             <RegisterModal />
             <LoginModal />
+            <ProfileModal />
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
