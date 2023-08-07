@@ -36,7 +36,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import comp from 'common/image_compress';
+import compressImage from 'common/image_compress';
 
 
 /**
@@ -177,7 +177,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 let compressedPhotos = [];
 
                 for (let i = 0; i < newPhotos.length; i++) {
-                    compressedPhotos.push(await comp(newPhotos[i]));
+                    compressedPhotos.push(await compressImage(newPhotos[i]));
                 }
 
                 const combinedPhotos = [...photos, ...compressedPhotos];
