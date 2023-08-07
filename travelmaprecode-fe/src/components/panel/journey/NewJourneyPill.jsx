@@ -156,20 +156,18 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     const onClickAddPhotos = (event) => {
         // 개별사진 10MB, 총합 최대 100MB
-        let limitPhoto = 10; // 최대 사진 갯수
+        const limitPhoto = 10; // 최대 사진 갯수
 
         const files = event.target.files;
         if (files && files.length > 0) {
-            const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
+            const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열로 변환
 
-            if (newPhotos.length + photos.length > 10) {
+            if (newPhotos.length + photos.length > limitPhoto) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
-            const currentPhotoCount = photos.length;
-            const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
-            const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
-            const combinedPhotos = [...photos, ...additionalPhotos];
+
+            const combinedPhotos = [...photos, ...newPhotos];
             _setPhotos(combinedPhotos);
         }
     };
