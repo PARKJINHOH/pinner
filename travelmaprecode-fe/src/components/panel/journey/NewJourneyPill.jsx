@@ -36,6 +36,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import comp from 'common/image_compress';
 
 
 /**
@@ -59,6 +60,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const currentDate = dayjs().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
     const [hashtags, setHashtags] = useState([])
+    /** @type {[File[], React.Dispatch<React.SetStateAction<File[]>>]} */
     const [photos, _setPhotos] = useState([]);
     const [countryKrNm, setCountryKrNm] = useState(null);
 
@@ -154,12 +156,14 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setHashtags(validHashtags);
     }, []);
 
-    const onClickAddPhotos = (event) => {
+    /** @type {React.ChangeEventHandler<HTMLInputElement>} */
+    const onClickAddPhotos = async (event) => {
         // 개별사진 10MB, 총합 최대 100MB
         const limitPhoto = 10; // 최대 사진 갯수
 
         const files = event.target.files;
         if (files && files.length > 0) {
+            /** @type {File[]} */
             const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열로 변환
 
             if (newPhotos.length + photos.length > limitPhoto) {
@@ -167,8 +171,22 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 return;
             }
 
-            const combinedPhotos = [...photos, ...newPhotos];
-            _setPhotos(combinedPhotos);
+
+            try {
+                /** @type {File[]} */
+                let compressedPhotos = [];
+
+                for (let i = 0; i < newPhotos.length; i++) {
+                    compressedPhotos.push(await comp(newPhotos[i]));
+                }
+
+                const combinedPhotos = [...photos, ...compressedPhotos];
+                _setPhotos(combinedPhotos);
+            } catch (error) {
+                console.log(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
+                const combinedPhotos = [...photos, ...newPhotos];
+                _setPhotos(combinedPhotos);
+            }
         }
     };
 
@@ -365,6 +383,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         photos.length > 0 ?
                             <ImageList variant="masonry" cols={2} gap={8}>
                                 {photos.map((photo, index) => {
+                                    console.log(photo);
                                     const tmpPhotoUrl = URL.createObjectURL(photo);
                                     return (
                                         <ImageListItem key={index}>
