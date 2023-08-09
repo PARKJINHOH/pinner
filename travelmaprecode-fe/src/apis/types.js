@@ -12,8 +12,17 @@
 * @property {number} orderKey
 * @property {string} date
 * @property {string[]} hashtags
-* @property {string[]} photos
+* @property {Photo[]} photos
 * @property {geoLocationDto} geoLocationDto
+*/
+
+/**
+* @typedef {object} Photo
+ * @property {number} id
+ * @property {string} src
+ * @property {number} fileSize
+ * @property {number} width
+ * @property {number} height
 */
 
 /**
@@ -21,6 +30,7 @@
 * @property {number} lat
 * @property {number} lng
 * @property {string} name
+ * @property {string} countryCd
 */
 
 /**
