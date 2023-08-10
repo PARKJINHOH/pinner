@@ -47,34 +47,34 @@ export default function ProfileModal() {
     }, [traveler]);
 
     function validInputs() {
-        // if문 순서 중요
-
-        if (!name || name.length < 2 || name.length > 6) {
-            return '닉네임은 2~6자 이내로 적어주세요.';
-        } else if (!/^\S+$/.test(name)) {
-            return '닉네임은 공백을 사용할 수 없습니다.';
-        } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
-            return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
+        if (!oldPassword) {
+            return '현재 비밀번호를 적어주세요.';
         }
 
-        if (!email) {
-            return '이메일을 확인해주세요.';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
-            return '이메일 형식이 올바르지 않습니다.';
+        if (name) {
+            if (!name || name.length < 2 || name.length > 6) {
+                return '닉네임은 2~6자 이내로 적어주세요.';
+            } else if (!/^\S+$/.test(name)) {
+                return '닉네임은 공백을 사용할 수 없습니다.';
+            } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
+                return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
+            }
         }
 
-        if (!newPassword || !confirmPassword) {
-            return '비밀번호 확인해주세요.';
-        } else if (!/\d+/.test(newPassword)) {
-            return '비밀번호는 최소 하나 이상의 숫자를 포함해야 합니다.';
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(newPassword)) {
-            return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
-        } else if (!/[!@#$%^&*()_+~`\-={}[\]:";'<>,.?\\/]+/.test(newPassword)) {
-            return '비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다.';
-        } else if (!/.{8,}/.test(newPassword)) {
-            return '비밀번호는 최소 8자 이상이어야 합니다.';
-        } else if (newPassword !== confirmPassword) {
-            return '비밀번호와 비밀번호확인은 같아야 합니다.';
+        if(newPassword){
+            if (!newPassword || !confirmPassword) {
+                return '비밀번호 확인해주세요.';
+            } else if (!/\d+/.test(newPassword)) {
+                return '비밀번호는 최소 하나 이상의 숫자를 포함해야 합니다.';
+            } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(newPassword)) {
+                return '비밀번호는 최소 하나 이상의 소문자와 대문자를 포함해야 합니다.';
+            } else if (!/[!@#$%^&*()_+~`\-={}[\]:";'<>,.?\\/]+/.test(newPassword)) {
+                return '비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다.';
+            } else if (!/.{8,}/.test(newPassword)) {
+                return '비밀번호는 최소 8자 이상이어야 합니다.';
+            } else if (newPassword !== confirmPassword) {
+                return '비밀번호와 비밀번호확인은 같아야 합니다.';
+            }
         }
     }
 
@@ -82,11 +82,11 @@ export default function ProfileModal() {
         event.preventDefault();
 
         // validation
-        // const errorMessage = validInputs();
-        // if (errorMessage) {
-        //     setErrorMessage(errorMessage);
-        //     return;
-        // }
+        const errorMessage = validInputs();
+        if (errorMessage) {
+            setErrorMessage(errorMessage);
+            return;
+        }
 
         // 현재 비밀번호 확인
         const nowPasswordData = JSON.stringify({
@@ -129,13 +129,13 @@ export default function ProfileModal() {
                 toast.info('수정에 성공했습니다.');
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
                 setErrorMessage("");
-                //
-                // doLogin({
-                //     email: response.payload.email,
-                //     name: response.payload.name,
-                //     accessToken: payload.accessToken,
-                //     refreshToken: payload.refreshToken,
-                // });
+
+                doLogin({
+                    email: response.data.data.payload.email,
+                    name: response.data.data.payload.name,
+                    accessToken: response.data.data.payload.accessToken,
+                    refreshToken: response.data.data.payload.refreshToken,
+                });
             })
             .catch(error => {
                 toast.error('수정에 실패했습니다.');
@@ -171,7 +171,7 @@ export default function ProfileModal() {
                             <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
 
-                            <Typography sx={{fontSize: '15px'}}>현재 비밀번호</Typography>
+                            <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
                             <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
 

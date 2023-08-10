@@ -77,11 +77,12 @@ public class TravelerService {
     @Transactional
     public TravelerDto.Response updateTraveler(TravelerDto.Request travelerDto) {
         Optional<Traveler> findTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
+        String newPassword = travelerDto.getNewPassword();
 
         if (findTraveler.isPresent()) {
             if (travelerDto.getNewPassword() != null) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                travelerDto.setPassword(encoder.encode(travelerDto.getNewPassword()));
+                travelerDto.setNewPassword(encoder.encode(travelerDto.getNewPassword()));
             }
             if (travelerDto.getName() != null) {
                 travelerDto.setName(travelerDto.getName());
@@ -89,7 +90,7 @@ public class TravelerService {
             findTraveler.get().updateTraveler(travelerDto);
 
             // Token 재생성
-            // todo
+            travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
             return this.doLogin(travelerDto);
         } else {
             return null;
