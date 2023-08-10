@@ -40,6 +40,7 @@ public class TravelerService {
         }
     }
 
+    @Transactional
     public TravelerDto.Response doLogin(TravelerDto.Request travelerDto) {
 
         try {
@@ -73,11 +74,36 @@ public class TravelerService {
         }
     }
 
+    @Transactional
+    public TravelerDto.Response updateTraveler(TravelerDto.Request travelerDto) {
+        Optional<Traveler> findTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
+
+        if (findTraveler.isPresent()) {
+            if (travelerDto.getNewPassword() != null) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                travelerDto.setPassword(encoder.encode(travelerDto.getNewPassword()));
+            }
+            if (travelerDto.getName() != null) {
+                travelerDto.setName(travelerDto.getName());
+            }
+            findTraveler.get().updateTraveler(travelerDto);
+
+            // Token 재생성
+            // todo
+            return this.doLogin(travelerDto);
+        } else {
+            return null;
+        }
+
+    }
+
+    @Transactional
     public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
         refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
     }
 
+    @Transactional
     public TravelerDto.Response getRefreshToken(TravelerDto.Request travelerDto) {
         String requestRefreshToken = travelerDto.getRefreshToken();
 

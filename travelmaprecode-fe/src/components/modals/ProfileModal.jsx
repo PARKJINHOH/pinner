@@ -19,12 +19,13 @@ import GoogleIcon from '@mui/icons-material/Google';
 // mantine
 import {Divider} from "@mantine/core";
 import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {travelerState} from "../../states/traveler";
+import {travelerState, useDoLogin} from "../../states/traveler";
 import {toast} from "react-toastify";
 
 
 export default function ProfileModal() {
     const apiv1 = useAPIv1();
+    const doLogin = useDoLogin();
 
     const [traveler, setTraveler] = useRecoilState(travelerState);
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
@@ -81,7 +82,6 @@ export default function ProfileModal() {
         event.preventDefault();
 
         // validation
-        // todo
         // const errorMessage = validInputs();
         // if (errorMessage) {
         //     setErrorMessage(errorMessage);
@@ -94,10 +94,9 @@ export default function ProfileModal() {
             password: oldPassword,
         });
 
-
         const newVar = await apiv1.post("/traveler/password/check", nowPasswordData)
-            .then(response =>{
-                    return response.status;
+            .then(response => {
+                return response.status;
             })
             .catch(error => {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
@@ -105,29 +104,42 @@ export default function ProfileModal() {
                 }
             });
 
-        if(newVar !== HTTPStatus.OK){
+        if (newVar !== HTTPStatus.OK) {
             setErrorMessage('현재 비밀번호가 일치하지 않습니다.');
             return;
         } else {
             setErrorMessage('');
         }
-        // todo
 
-        // prepare data and send request
-        const data = JSON.stringify({
-            email, password: newPassword, name
-        });
+        const data = {
+            email: email,
+            password: oldPassword,
+        };
+        if (newPassword !== '') {
+            data.newPassword = newPassword;
+        }
+        if (name !== '') {
+            data.name = name;
+        }
+        const newData = JSON.stringify(data);
 
-        postRegister(data)
-            .then((response) => {
-                if (response.status === HTTPStatus.CREATED) {
-                    alert(response.data.message);
-
-                    setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
-                    setErrorMessage("");
-                }
+        await apiv1.put('/traveler', newData)
+            .then(response => {
+                console.log(response);
+                toast.info('수정에 성공했습니다.');
+                setModalVisibility(AuthModalVisibility.HIDE_ALL);
+                setErrorMessage("");
+                //
+                // doLogin({
+                //     email: response.payload.email,
+                //     name: response.payload.name,
+                //     accessToken: payload.accessToken,
+                //     refreshToken: payload.refreshToken,
+                // });
             })
-            .catch((error) => setErrorMessage(error.response.data ? error.response.data.message : error.message));
+            .catch(error => {
+                toast.error('수정에 실패했습니다.');
+            });
     };
 
 
@@ -151,23 +163,23 @@ export default function ProfileModal() {
 
                     <div className={style.content}>
                         <div className={style.myProfile}>
-                            <Typography sx={{ fontSize: '15px'}}>이메일</Typography>
+                            <Typography sx={{fontSize: '15px'}}>이메일</Typography>
                             <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email"/>
 
-                            <Typography sx={{ fontSize: '15px'}}>닉네임</Typography>
+                            <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
                             <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
 
-                            <Typography sx={{ fontSize: '15px'}}>현재 비밀번호</Typography>
+                            <Typography sx={{fontSize: '15px'}}>현재 비밀번호</Typography>
                             <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password" />
+                                       value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
 
-                            <Typography sx={{ fontSize: '15px'}}>신규 비밀번호</Typography>
+                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호</Typography>
                             <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
 
-                            <Typography sx={{ fontSize: '15px'}}>신규 비밀번호 확인</Typography>
+                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호 확인</Typography>
                             <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
                                        value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password"/>
                             {
@@ -175,16 +187,16 @@ export default function ProfileModal() {
                             }
                         </div>
                         <div className={style.social_group}>
-                            <Typography sx={{ fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>
+                            <Typography sx={{fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>
                                 소셜계정 연동
                             </Typography>
-                            <Typography sx={{ fontSize: '12px', marginBottom: 3 }}>
+                            <Typography sx={{fontSize: '12px', marginBottom: 3}}>
                                 사용하시는 소셜 및 인증 제공자들과 계정을 연동하고 손쉽게 로그인하세요.
                             </Typography>
 
                             <div className={style.social_btn_group}>
                                 {/*연결되어 있으면 연결하기 -> 해제하기*/}
-                                <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px',marginLeft: 'auto', textTransform: 'none'}}>
+                                <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>
                                     Github 연결하기
                                 </Button>
 
