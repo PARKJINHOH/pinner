@@ -40,6 +40,7 @@ public class TravelerService {
         }
     }
 
+    @Transactional
     public TravelerDto.Response doLogin(TravelerDto.Request travelerDto) {
 
         try {
@@ -64,11 +65,46 @@ public class TravelerService {
         }
     }
 
+    public boolean passwordCheck(TravelerDto.Request travelerDto) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
+            return authentication.isAuthenticated();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public TravelerDto.Response updateTraveler(TravelerDto.Request travelerDto) {
+        Optional<Traveler> findTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
+        String newPassword = travelerDto.getNewPassword();
+
+        if (findTraveler.isPresent()) {
+            if (travelerDto.getNewPassword() != null) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                travelerDto.setNewPassword(encoder.encode(travelerDto.getNewPassword()));
+            }
+            if (travelerDto.getName() != null) {
+                travelerDto.setName(travelerDto.getName());
+            }
+            findTraveler.get().updateTraveler(travelerDto);
+
+            // Token 재생성
+            travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
+            return this.doLogin(travelerDto);
+        } else {
+            return null;
+        }
+
+    }
+
+    @Transactional
     public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
         refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
     }
 
+    @Transactional
     public TravelerDto.Response getRefreshToken(TravelerDto.Request travelerDto) {
         String requestRefreshToken = travelerDto.getRefreshToken();
 

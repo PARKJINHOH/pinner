@@ -39,23 +39,27 @@ export default function Sidebar() {
 
 
     function showRegisterModal() {
-        travelerClose();
+        menuClose();
         setModalVisibility(AuthModalVisibility.SHOW_REGISTER);
     }
     function showLoginModal() {
-        travelerClose();
+        menuClose();
         setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
+    }
+    function showProfile() {
+        menuClose();
+        setModalVisibility(AuthModalVisibility.SHOW_PROFILE);
     }
 
     function logout() {
-        travelerClose();
+        menuClose();
         doLogout();
     }
 
     const travelerClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const travelerClose = () => {
+    const menuClose = () => {
         setAnchorEl(null);
     };
 
@@ -174,12 +178,12 @@ export default function Sidebar() {
                 <Menu
                     anchorEl={anchorEl}
                     open={open}
-                    onClose={travelerClose}
+                    onClose={menuClose}
                 >
                     {
                         isLoggedIn ?
                             [
-                                // <MenuItem key="profile" onClick={travelerClose}>내 정보</MenuItem>,
+                                <MenuItem key="profile" onClick={showProfile}>내 정보</MenuItem>,
                                 <MenuItem key="logout" onClick={logout}>로그아웃</MenuItem>
                             ]
                             :

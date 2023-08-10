@@ -72,8 +72,8 @@ export default function RegisterModal() {
 
         // validation
         const errorMessage = validInputs();
-        setErrorMessage(errorMessage);
         if (errorMessage) {
+            setErrorMessage(errorMessage);
             return;
         }
 
