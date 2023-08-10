@@ -12,7 +12,7 @@ import RegisterModal from '../components/modals/RegisterModal';
 import ProfileModal from "../components/modals/ProfileModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
 import { googleMapState } from '../states/map';
-import { NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
+import {AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState} from '../states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
 
 // etc
@@ -37,6 +37,7 @@ export default function BasePage() {
     const [libraries] = useState(['places']);
 
     const apiv1 = useAPIv1();
+    const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
 
@@ -199,9 +200,9 @@ export default function BasePage() {
                 autoClose={3000}
                 pauseOnFocusLoss={false}
             />
-            <RegisterModal />
-            <LoginModal />
-            <ProfileModal />
+            {modalVisibility === AuthModalVisibility.SHOW_REGISTER && <RegisterModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_LOGIN && <LoginModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_PROFILE && <ProfileModal />}
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
