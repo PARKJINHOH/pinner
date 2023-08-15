@@ -3,8 +3,8 @@ name: deploy
 on:
   push:
     paths:
-     - 'tree/develop/travelmaprecode-fe/**'
-     - 'tree/develop/travelmaprecode-be/**'
+     - 'travelmaprecode-fe/**'
+     - 'travelmaprecode-be/**'
     branches: [ "develop" ]
   pull_request:
     paths:
@@ -30,9 +30,9 @@ jobs:
       with:
         filters: |
           backend:
-            - 'tree/develop/travelmaprecode-be/**'
+            - 'travelmaprecode-be/**'
           frontend:
-            - 'tree/develop/travelmaprecode-fe/**'
+            - 'travelmaprecode-fe/**'
 
   backend:
     needs: changes
