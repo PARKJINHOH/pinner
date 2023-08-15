@@ -20,10 +20,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-    - name : Checkout Repository
-      uses: actions/checkout@v2
-    
+    steps:    
     - name : Run Paths Filter
       uses: dorny/paths-filter@v2
       id: filter
