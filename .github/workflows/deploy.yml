@@ -26,7 +26,7 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
       with:
-        ref: deploy
+        ref: develop
         repository: PARKJINHOH/TravelMapRecord
         token: ${{ secrets.TOKEN_GITHUB }}
     - name : Run Paths Filter
