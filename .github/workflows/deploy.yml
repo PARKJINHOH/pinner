@@ -23,6 +23,10 @@ jobs:
     steps:
     - name: Checkout the code
       uses: actions/checkout@v3
+      with:
+        ref: main
+        repository: PARKJINHOH/TravelMapRecord
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name : Run Paths Filter
       uses: dorny/paths-filter@v2
       id: filter
