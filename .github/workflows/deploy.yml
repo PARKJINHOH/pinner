@@ -52,33 +52,3 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
-      
-      - name: Build with Gradle
-        run: ./gradlew bootJar
-
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_DEV_HOST }}
-          port: 22
-          username: ${{ secrets.SSH_DEV_USERNAME }}
-          key: ${{ secrets.SSH_DEV_RSA_KEY }}
-          script: |
-            echo "Backend 테스트 출력"
-  
-  frontend:
-    needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
-    runs-on: ubuntu-latest
-    env:
-      working-directory: /home/ubuntu/app/pinner_dev/pinner_fe
-    steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_DEV_HOST }}
-          port: 22
-          username: ${{ secrets.SSH_DEV_USERNAME }}
-          key: ${{ secrets.SSH_DEV_RSA_KEY }}
-          script: |
-            echo "Frontend 테스트 출력"
