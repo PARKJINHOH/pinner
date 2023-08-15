@@ -28,7 +28,6 @@ jobs:
       with:
         ref: deploy
         repository: PARKJINHOH/TravelMapRecord
-        token: ${{ secrets.TOKEN_GITHUB }}
     - name : Run Paths Filter
       uses: dorny/paths-filter@v2
       id: filter
