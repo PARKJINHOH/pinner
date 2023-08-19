@@ -1,7 +1,1 @@
 .dockerignore
-Dockerfile
-.docker/
-.git/
-.gitignore
-.gradle/
-build/
