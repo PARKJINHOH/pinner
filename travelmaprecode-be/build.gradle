@@ -56,6 +56,12 @@ apply plugin: "com.ewerk.gradle.plugins.querydsl"
 
 def querydslDir = "$buildDir/generated/querydsl"
 
+bootJar {
+    archiveBaseName = 'pinner-be'
+    archiveFileName = 'pinner-be.jar'
+    archiveVersion = "0.0.1"
+}
+
 querydsl {
     library = "com.querydsl:querydsl-apt"
     jpa = true
