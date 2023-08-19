@@ -139,10 +139,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - name: Working Directory Change
-      run:
-        cd ${{ env.working-directory-be }}
-        
     - name: pwd
       run: |
         pwd
@@ -153,7 +149,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./Dockerfile
+        file: ${{ env.working-directory-fe }}/Dockerfile
         platforms: linux/amd64
         push: true
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
