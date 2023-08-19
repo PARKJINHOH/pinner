@@ -13,7 +13,8 @@ env:
   repo: TravelMapRecord
   working-directory-be: ./travelmaprecode-be
   working-directory-fe: ./travelmaprecode-fe
-  docker-image: pinner-be
+  docker-image-be: pinner-be
+  docker-image-fe: pinner-fe
 
 jobs:
   changes:
@@ -79,15 +80,15 @@ jobs:
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }} # https://docs.docker.com/docker-hub/access-tokens
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     
     - name: web docker build and push
       working-directory: ${{ env.working-directory-be }}
       run: |
         pwd
         ls -al .
-        docker build --platform linux/arm64 -t ${{ secrets.DOCKER_REPO }}/${{ env.docker-image }} .
-        docker push ${{ secrets.DOCKER_REPO }}/${{ env.docker-image }}
+        docker build --platform linux/arm64 -t ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }} .
+        docker push ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}
         
   backend-docker:
     needs: backend
@@ -103,7 +104,7 @@ jobs:
         port: 22
         key: ${{ secrets.SSH_RSA }}
         script: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image }}
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}
 
   frontend:
     needs: changes
@@ -143,3 +144,18 @@ jobs:
       run: |
         cd ${{ env.working-directory-fe }}
         CI=false npm run build
+
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }
+    
+    - name: web docker build and push
+      working-directory: ${{ env.working-directory-fe }}
+      run: |
+        pwd
+        ls -al .
+        docker build --platform linux/arm64 -t ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} .
+        docker push ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
