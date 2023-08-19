@@ -9,7 +9,8 @@ on:
 permissions:
   contents: read
 
-env:  
+env:
+  repo: TravelMapRecord
   working-directory-be: ./travelmaprecode-be
   working-directory-fe: ./travelmaprecode-fe
   docker-image: pinner-be
@@ -26,7 +27,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: develop
-        repository: PARKJINHOH/TravelMapRecord
+        repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
         
     - name : Run Paths Filter
@@ -41,7 +42,7 @@ jobs:
   
   backend:
     needs: changes
-    #if: ${{ needs.changes.outputs.backend == 'true' }}
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-22.04
 
     steps:
@@ -55,7 +56,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: develop
-        repository: PARKJINHOH/TravelMapRecord
+        repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
 
     - name: Cache Gradle
@@ -103,3 +104,42 @@ jobs:
         key: ${{ secrets.SSH_RSA }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image }}
+
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        ref: develop
+        repository: PARKJINHOH/${{ env.repo }}
+        token: ${{ secrets.TOKEN_GITHUB }}
+
+    - uses: actions/cache@v3
+      id: npm-cache
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+    - if: steps.npm-cache.outputs.cache-hit == 'true'
+      run: echo 'npm cache hit!'
+    - if: steps.npm-cache.outputs.cache-hit != 'true'
+      run: echo 'npm cache missed!'
+
+    - name: Set up Node Version
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Dependencies
+      run: |
+        cd ${{ env.working-directory-fe }}
+        npm ci
+        
+    - name: Build
+      run: |
+        cd ${{ env.working-directory-fe }}
+        npm run build
