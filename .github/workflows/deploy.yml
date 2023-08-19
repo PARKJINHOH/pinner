@@ -129,12 +129,20 @@ jobs:
       run: echo 'npm cache hit!'
     - if: steps.npm-cache.outputs.cache-hit != 'true'
       run: echo 'npm cache missed!'
-
+        
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2        
+        
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: pwd
+      run: |
+        pwd
+        ls -al .
         
     - name: Build and Push Docker image
       id: docker_build
