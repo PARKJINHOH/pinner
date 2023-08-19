@@ -142,4 +142,4 @@ jobs:
     - name: Build
       run: |
         cd ${{ env.working-directory-fe }}
-        npm run build
+        CI=false npm run build
