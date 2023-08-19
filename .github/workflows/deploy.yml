@@ -107,7 +107,7 @@ jobs:
 
   frontend:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    #if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-22.04
 
     steps:
