@@ -139,6 +139,10 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
+    - name: Working Directory Change
+      run:
+        cd ${{ env.working-directory-be }}
+        
     - name: pwd
       run: |
         pwd
