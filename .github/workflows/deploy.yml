@@ -142,17 +142,9 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - name: pwd
+    - name: web docker build and push
       run: |
         pwd
         ls -al .
-        
-    - name: Build and Push Docker image
-      id: docker_build
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        file: ${{ env.working-directory-fe }}/Dockerfile
-        platforms: linux/amd64
-        push: true
-        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+        docker build --platform linux/arm64 -t ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} .
+        docker push ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
