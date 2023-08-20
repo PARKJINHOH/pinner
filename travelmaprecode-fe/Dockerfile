@@ -1,22 +1,40 @@
-FROM node:18-alpine AS build
+# https://github.com/docker/awesome-compose/blob/master/react-nginx/Dockerfile
+FROM node:18-alpine AS development
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
-RUN npm install
-COPY . .
+RUN npm ci
+
+COPY . /app
+
+ENV CI=true
+ENV PORT=3000
+
+CMD [ "npm", "start" ]
+
+###
+
+FROM development AS build
 RUN npm run build
 
-################################################
+###
+
 FROM nginx:1.25-alpine
 
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# 위 스테이지에서 생성한 빌드 결과를 nginx의 샘플 앱이 사용하던 폴더로 이동
-COPY --from=build /app /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+# Copy static assets from builder stage
+COPY --from=build /app/build .
 
 EXPOSE 80
 
-# nginx 실행
+# Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
