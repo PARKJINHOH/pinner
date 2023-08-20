@@ -110,6 +110,9 @@ jobs:
     needs: changes
     #if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory-fe }}
 
     steps:
     - name: checkout
@@ -146,10 +149,12 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./${{ env.working-directory-fe }}/Dockerfile
+        file: ./Dockerfile
         platforms: linux/arm64
         push: true
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+        cache-from: type=gha # gha 는 Guthub Actions 용 캐시를 의미합니다.
+        cache-to: type=gha,mode=max
         
     # - name: web docker build and push
     #   working-directory: ${{ env.working-directory-fe }}
