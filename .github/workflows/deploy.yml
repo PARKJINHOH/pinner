@@ -141,10 +141,19 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
+
     - name: web docker build and push
-      working-directory: ${{ env.working-directory-fe }}
-      run: |
-        pwd
-        ls -al .
-        docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./${{ env.working-directory-fe }}/Dockerfile
+        platforms: linux/arm64
+        push: true
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+        
+    # - name: web docker build and push
+    #   working-directory: ${{ env.working-directory-fe }}
+    #   run: |
+    #     pwd
+    #     ls -al .
+    #     docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
