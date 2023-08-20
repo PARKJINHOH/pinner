@@ -110,9 +110,6 @@ jobs:
     needs: changes
     #if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-22.04
-    defaults:
-        run:
-            working-directory: ${{ env.working-directory-fe }}
 
     steps:
     - name: checkout
@@ -132,7 +129,10 @@ jobs:
       run: echo 'npm cache hit!'
     - if: steps.npm-cache.outputs.cache-hit != 'true'
       run: echo 'npm cache missed!'
-        
+    
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2   
+      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2        
         
@@ -143,8 +143,8 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
     - name: web docker build and push
+      working-directory: ${{ env.working-directory-fe }}
       run: |
         pwd
         ls -al .
-        docker build --platform linux/arm64 -t ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} .
-        docker push ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+        docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
