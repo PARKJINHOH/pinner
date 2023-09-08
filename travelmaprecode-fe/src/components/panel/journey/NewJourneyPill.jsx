@@ -36,6 +36,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { extractExifDataFromFile } from 'utils';
 
 
 /**
@@ -154,7 +155,11 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setHashtags(validHashtags);
     }, []);
 
-    const onClickAddPhotos = (event) => {
+    /**
+     * @param {React.ChangeEvent<HTMLInputElement>} event
+     * @returns {void}
+     */
+    async function onClickAddPhotos(event) {
         // 개별사진 10MB, 총합 최대 100MB
         let limitPhoto = 10; // 최대 사진 갯수
 
@@ -166,6 +171,23 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
+
+
+            // pickerDate와 newLocation이 초기값일 때만 사진에서 EXIF를 추출하는 로직이 필요함.
+            for (const newPhoto of newPhotos) {
+                const data = await extractExifDataFromFile(newPhoto);
+                if (data) {
+                    // 날짜 설정
+                    const dayjsDate = dayjs(data.date, 'YYYY:MM:DD HH:mm:SS')
+                    setPickerDate(dayjsDate);
+
+                    // 위치 설정
+                    let loc = { ...newLocation, ...data };
+                    setNewLocation(loc);
+                    break;
+                }
+            }
+
             const currentPhotoCount = photos.length;
             const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
             const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);

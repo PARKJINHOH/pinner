@@ -23,6 +23,7 @@
     "@yaireo/tagify": "^4.17.8",
     "axios": "^0.27.2",
     "dayjs": "^1.11.9",
+    "exif-js": "^2.3.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",

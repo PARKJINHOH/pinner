@@ -1,6 +1,7 @@
 //
 // Internal utils
 //
+import EXIF from 'exif-js';
 
 /**
  * Convert degrees to radians
@@ -166,3 +167,58 @@ export function zoomLevelOfTravel(travel) {
 }
 
 export const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
+/**
+ * 도분초 좌표를 도로 변환
+ * @param {number[]} 좌표(도분초)
+ * @returns {number} 좌표(도)
+ */
+function convertDegree([d, m, s]) {
+    return d + (m / 60) + (s / 3600);
+}
+
+/**
+ * EXIF 데이터가 필요한 항목을 가지고 있는지 확인
+ * @param {any} exifData
+ * @returns {boolean}
+ */
+function checkExifInfo(exifData) {
+    return exifData && exifData["GPSLongitude"] && exifData["GPSLatitude"] && exifData["DateTimeOriginal"];
+}
+
+/**
+ * @typedef {Point & {
+ *     date: string, // asdf
+ * }} ExifData
+ */
+
+/**
+ * EXIF 데이터가 필요한 항목을 가지고 있는지 확인
+ * @param {any} exifData
+ * @returns {ExifData}
+ */
+function extractExifInfo(exifData) {
+    return {
+        lng: convertDegree(exifData["GPSLongitude"]),
+        lat: convertDegree(exifData["GPSLatitude"]),
+        date: exifData["DateTimeOriginal"],
+    };
+}
+
+/**
+ * File에서 필요한 EXIF 정보 추출
+ * @param {File} file
+ * @returns {Promise<ExifData>}
+ */
+export function extractExifDataFromFile(file) {
+    return new Promise((resolve, reject) => {
+        EXIF.getData(file, function () {
+            const exifData = EXIF.getAllTags(this);
+            if (checkExifInfo(exifData)) {
+                resolve(extractExifInfo(exifData));
+            } else {
+                resolve({});
+            }
+        });
+    });
+}
