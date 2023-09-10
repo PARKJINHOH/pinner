@@ -118,10 +118,6 @@ jobs:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
-        
-    - name: setting env
-      run: |
-        echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
 
     - uses: actions/cache@v3
       id: npm-cache
@@ -150,5 +146,6 @@ jobs:
       working-directory: ${{ env.working-directory-fe }}
       run: |
         pwd
+        echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
         ls -al .
         docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
