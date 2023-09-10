@@ -118,6 +118,10 @@ jobs:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
+        
+    - name: setting env
+      run: |
+        echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
 
     - uses: actions/cache@v3
       id: npm-cache
