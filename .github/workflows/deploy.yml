@@ -108,7 +108,7 @@ jobs:
 
   frontend:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    # if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-22.04
 
     steps:
@@ -153,9 +153,10 @@ jobs:
     - name: web docker build and push
       uses: docker/build-push-action@v5
       with:
+        file: ${{ env.working-directory-fe }}/Dockerfile
+        context: ${{ env.working-directory-fe }}
         push: true
         platforms: linux/arm64
-        file: ${{ env.working-directory-fe }}/Dockerfile
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
