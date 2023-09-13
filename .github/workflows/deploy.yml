@@ -43,7 +43,7 @@ jobs:
   
   backend:
     needs: changes
-    # if: ${{ needs.changes.outputs.backend == 'true' }}
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-22.04
 
     steps:
@@ -109,7 +109,7 @@ jobs:
 
   frontend:
     needs: changes
-    # if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-22.04
 
     steps:
@@ -150,7 +150,6 @@ jobs:
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
-
 
   frontend-docker:
     needs: frontend
