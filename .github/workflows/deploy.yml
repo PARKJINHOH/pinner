@@ -119,16 +119,16 @@ jobs:
         repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
 
-    - uses: actions/cache@v3
-      id: npm-cache
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    # - uses: actions/cache@v3
+    #   id: npm-cache
+    #   with:
+    #     path: ~/.npm
+    #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-    - if: steps.npm-cache.outputs.cache-hit == 'true'
-      run: echo 'npm cache hit!'
-    - if: steps.npm-cache.outputs.cache-hit != 'true'
-      run: echo 'npm cache missed!'
+    # - if: steps.npm-cache.outputs.cache-hit == 'true'
+    #   run: echo 'npm cache hit!'
+    # - if: steps.npm-cache.outputs.cache-hit != 'true'
+    #   run: echo 'npm cache missed!'
     
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2   
@@ -142,10 +142,20 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - name: web docker build and push
+    - name: input env
       working-directory: ${{ env.working-directory-fe }}
       run: |
         pwd
         echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
         ls -al .
-        docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
+        # docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
+
+    - name: web docker build and push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        platforms: linux/arm64
+        file: ${{ env.working-directory-fe }}/Dockerfile
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
