@@ -90,8 +90,6 @@ jobs:
         push: true
         platforms: linux/arm64
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
         
   backend-docker:
     needs: backend
@@ -152,3 +150,20 @@ jobs:
         tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+
+  frontend-docker:
+    needs: frontend
+    runs-on: ubuntu-22.04
+      
+    steps:
+    - name: docker pull
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ubuntu
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        key: ${{ secrets.SSH_RSA }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
