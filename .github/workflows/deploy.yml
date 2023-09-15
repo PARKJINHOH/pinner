@@ -85,11 +85,11 @@ jobs:
     - name: web docker build and push
       uses: docker/build-push-action@v5
       with:
-        file: ${{ env.working-directory-be }}/Dockerfile
+        file: ${{ env.working-directory-be }}/Dockerfile.dev
         context: ${{ env.working-directory-be }}
         push: true
         platforms: linux/arm64
-        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}:latest
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}-dev:latest
         
   backend-docker:
     needs: backend
@@ -105,7 +105,7 @@ jobs:
         port: 22
         key: ${{ secrets.SSH_RSA }}
         script: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}-dev
 
   frontend:
     needs: changes
@@ -135,19 +135,18 @@ jobs:
     - name: setting .env
       working-directory: ${{ env.working-directory-fe }}
       run: |
-        pwd
         echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+        pwd
         ls -al .
-        # docker buildx build --platform linux/arm64 --tag ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }} . --push
 
     - name: web docker build and push
       uses: docker/build-push-action@v5
       with:
-        file: ${{ env.working-directory-fe }}/Dockerfile
+        file: ${{ env.working-directory-fe }}/Dockerfile.dev
         context: ${{ env.working-directory-fe }}
         push: true
         platforms: linux/arm64
-        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}-dev:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -165,4 +164,4 @@ jobs:
         port: 22
         key: ${{ secrets.SSH_RSA }}
         script: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}-dev
