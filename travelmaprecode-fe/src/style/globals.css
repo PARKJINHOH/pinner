@@ -1,0 +1,14 @@
+/* Google Map Api st */
+html, body {
+    padding: 0;
+    margin: 0;
+}
+
+/* Google Map Api end */
+.hide-after::after {
+    display: none !important;
+}
+
+.hide-after > button::after {
+    display: none !important;
+}
