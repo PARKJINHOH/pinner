@@ -1,0 +1,167 @@
+name: Spring & React - docker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+env:
+  repo: TravelMapRecord
+  working-directory-be: ./travelmaprecode-be
+  working-directory-fe: ./travelmaprecode-fe
+  docker-image-be: pinner-be
+  docker-image-fe: pinner-fe
+
+jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        repository: PARKJINHOH/${{ env.repo }}
+        token: ${{ secrets.TOKEN_GITHUB }}
+        
+    - name : Run Paths Filter
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          backend:
+            - 'travelmaprecode-be/**'
+          frontend:
+            - 'travelmaprecode-fe/**'
+  
+  backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        repository: PARKJINHOH/${{ env.repo }}
+        token: ${{ secrets.TOKEN_GITHUB }}
+
+    - name: Cache Gradle
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Gradle wrapper & build
+      working-directory: ${{ env.working-directory-be }}
+      run: |
+        chmod +x ./gradlew
+        ./gradlew clean bootJar
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: web docker build and push
+      uses: docker/build-push-action@v5
+      with:
+        file: ${{ env.working-directory-be }}/Dockerfile
+        context: ${{ env.working-directory-be }}
+        push: true
+        platforms: linux/arm64
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}:latest
+        
+  backend-docker:
+    needs: backend
+    runs-on: ubuntu-22.04
+      
+    steps:
+    - name: docker pull
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ubuntu
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        key: ${{ secrets.SSH_RSA }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}
+
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        repository: PARKJINHOH/${{ env.repo }}
+        token: ${{ secrets.TOKEN_GITHUB }}
+    
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2   
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2        
+        
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: setting .env
+      working-directory: ${{ env.working-directory-fe }}
+      run: |
+        echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+        pwd
+        ls -al .
+
+    - name: web docker build and push
+      uses: docker/build-push-action@v5
+      with:
+        file: ${{ env.working-directory-fe }}/Dockerfile.prod
+        context: ${{ env.working-directory-fe }}
+        push: true
+        platforms: linux/arm64
+        tags: ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  frontend-docker:
+    needs: frontend
+    runs-on: ubuntu-22.04
+      
+    steps:
+    - name: docker pull
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_IP }}
+        username: ubuntu
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        key: ${{ secrets.SSH_RSA }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
