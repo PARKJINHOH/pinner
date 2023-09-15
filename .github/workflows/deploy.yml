@@ -85,7 +85,7 @@ jobs:
     - name: web docker build and push
       uses: docker/build-push-action@v5
       with:
-        file: ${{ env.working-directory-be }}/Dockerfile.dev
+        file: ${{ env.working-directory-be }}/Dockerfile
         context: ${{ env.working-directory-be }}
         push: true
         platforms: linux/arm64
