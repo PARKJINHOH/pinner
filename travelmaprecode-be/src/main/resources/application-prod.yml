@@ -1,14 +1,14 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   datasource:
-    url: jdbc:mariadb://144.24.67.233:3306/pinner_dev
+    url: jdbc:mariadb://144.24.67.233:3306/pinner_prod
     username: ${DB_ID}
     password: ${DB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop # TODO update 변경
+      ddl-auto: none
 
   security:
     oauth2:
@@ -22,5 +22,4 @@ spring:
 
 path:
   image: images
-  url: https://dev.pinner.dev
-  
+  url: https://pinner.dev
