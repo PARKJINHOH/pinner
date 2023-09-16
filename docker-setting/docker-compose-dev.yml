@@ -9,9 +9,9 @@ services:
     volumes:
       - /home/ubuntu/app/pinner_dev/images:/images
     environment:
-      - DB_ID=pinner
-      - DB_PW=1q2w3e4r!!
-      - GOOGLE_API_KEY=AIzaSyD7mbHdMWmIa5egGZ5bf1HGrsjQ5pyhIGQ
+      - DB_ID=
+      - DB_PW=
+      - GOOGLE_API_KEY=
       - SPRING_PROFILES_ACTIVE=dev
       - TZ=Asia/Seoul
 

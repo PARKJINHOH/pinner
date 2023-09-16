@@ -171,8 +171,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
-
-
+            
             for (const newPhoto of newPhotos) {
                 const data = await extractExifDataFromFile(newPhoto);
                 if (data) {
