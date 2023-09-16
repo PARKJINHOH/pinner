@@ -173,7 +173,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             }
 
 
-            // pickerDate와 newLocation이 초기값일 때만 사진에서 EXIF를 추출하는 로직이 필요함.
             for (const newPhoto of newPhotos) {
                 const data = await extractExifDataFromFile(newPhoto);
                 if (data) {
