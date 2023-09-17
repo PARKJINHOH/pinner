@@ -217,7 +217,7 @@ export function extractExifDataFromFile(file) {
             if (checkExifInfo(exifData)) {
                 resolve(extractExifInfo(exifData));
             } else {
-                resolve({});
+                resolve(null);
             }
         });
     });

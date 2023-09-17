@@ -12,6 +12,7 @@ import style from './NewJourneyPill.module.css';
 import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
 import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
 import { travelState } from "../../../states/travel";
+import { extractExifDataFromFile } from 'utils';
 
 // mui
 import { Input, Tooltip } from "@mui/joy";
@@ -169,6 +170,31 @@ export default function NewJourneyPill({ travel, editingCancel }) {
             if (newPhotos.length + photos.length > limitPhoto) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
+            }
+
+            for (const newPhoto of newPhotos) {
+                const data = await extractExifDataFromFile(newPhoto);
+                if (data) {
+                    // 날짜 설정
+                    const dayjsDate = dayjs(data.date, 'YYYY:MM:DD HH:mm:SS');
+                    setPickerDate(dayjsDate);
+
+                    // 위치 설정
+                    let loc = { ...newLocation, ...data };
+
+                    const resp = await apiv1.get(
+                        '/geocoding',
+                        { params: { lat: data.lat, lng: data.lng, reverse: true } }
+                    )
+
+                    if (resp.status === 200) {
+                        loc.name = resp.data.name;
+                        loc.countryCd = resp.data.countryCd;
+                    }
+
+                    setNewLocation(loc);
+                    break;
+                }
             }
 
 
