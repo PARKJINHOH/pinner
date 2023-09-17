@@ -36,7 +36,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { extractExifDataFromFile } from 'utils';
+import compressImage from 'common/image_compress';
 
 
 /**
@@ -60,6 +60,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
     const currentDate = dayjs().format('YYYY-MM-DD');
     const [pickerDate, setPickerDate] = useState(dayjs(currentDate));
     const [hashtags, setHashtags] = useState([])
+    /** @type {[File[], React.Dispatch<React.SetStateAction<File[]>>]} */
     const [photos, _setPhotos] = useState([]);
     const [countryKrNm, setCountryKrNm] = useState(null);
 
@@ -155,53 +156,37 @@ export default function NewJourneyPill({ travel, editingCancel }) {
         setHashtags(validHashtags);
     }, []);
 
-    /**
-     * @param {React.ChangeEvent<HTMLInputElement>} event
-     * @returns {void}
-     */
-    async function onClickAddPhotos(event) {
+    /** @type {React.ChangeEventHandler<HTMLInputElement>} */
+    const onClickAddPhotos = async (event) => {
         // 개별사진 10MB, 총합 최대 100MB
-        let limitPhoto = 10; // 최대 사진 갯수
+        const limitPhoto = 10; // 최대 사진 갯수
 
         const files = event.target.files;
         if (files && files.length > 0) {
-            const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열에 추가
+            /** @type {File[]} */
+            const newPhotos = Array.from(files); // FileList를 배열로 변환하여 newPhotos 배열로 변환
 
-            if (newPhotos.length + photos.length > 10) {
+            if (newPhotos.length + photos.length > limitPhoto) {
                 toast.error('사진 갯수는 최대 10장입니다.');
                 return;
             }
-            
-            for (const newPhoto of newPhotos) {
-                const data = await extractExifDataFromFile(newPhoto);
-                if (data) {
-                    // 날짜 설정
-                    const dayjsDate = dayjs(data.date, 'YYYY:MM:DD HH:mm:SS')
-                    setPickerDate(dayjsDate);
 
-                    // 위치 설정
-                    let loc = { ...newLocation, ...data };
 
-                    const resp = await apiv1.get(
-                        '/geocoding',
-                        { params: { lat: data.lat, lng: data.lng, reverse: true } }
-                    )
+            try {
+                /** @type {File[]} */
+                let compressedPhotos = [];
 
-                    if (resp.status === 200) {
-                        loc.name = resp.data.name;
-                        loc.countryCd = resp.data.countryCd;
-                    }
-
-                    setNewLocation(loc);
-                    break;
+                for (let i = 0; i < newPhotos.length; i++) {
+                    compressedPhotos.push(await compressImage(newPhotos[i]));
                 }
-            }
 
-            const currentPhotoCount = photos.length;
-            const additionalPhotoCount = Math.min(newPhotos.length, limitPhoto - currentPhotoCount);
-            const additionalPhotos = newPhotos.slice(0, additionalPhotoCount);
-            const combinedPhotos = [...photos, ...additionalPhotos];
-            _setPhotos(combinedPhotos);
+                const combinedPhotos = [...photos, ...compressedPhotos];
+                _setPhotos(combinedPhotos);
+            } catch (error) {
+                console.log(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
+                const combinedPhotos = [...photos, ...newPhotos];
+                _setPhotos(combinedPhotos);
+            }
         }
     };
 
@@ -398,6 +383,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         photos.length > 0 ?
                             <ImageList variant="masonry" cols={2} gap={8}>
                                 {photos.map((photo, index) => {
+                                    console.log(photo);
                                     const tmpPhotoUrl = URL.createObjectURL(photo);
                                     return (
                                         <ImageListItem key={index}>
