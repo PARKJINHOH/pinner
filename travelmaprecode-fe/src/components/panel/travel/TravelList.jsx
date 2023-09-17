@@ -112,7 +112,7 @@ export default function TravelList() {
                         <>
                             <Box className={style.title_box}>
                                 <Typography sx={{ fontSize: '20px', fontWeight: 'bold', color: 'Black' }}>
-                                    나의 여행 둘러보기
+                                    당신의 여행을 pin 하다.
                                 </Typography>
                             </Box>
 

@@ -64,6 +64,37 @@ public class TravelerController {
         }
     }
 
+    @PostMapping("/password/check")
+    public ResponseEntity<ResponseDto> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
+        boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
+
+        if (isPasswordValid) {
+            responseDto.setMessage("비밀번호가 일치합니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("비밀번호가 일치하지 않습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity<ResponseDto> putTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        TravelerDto.Response response = travelerService.updateTraveler(travelerDto);
+        ResponseDto responseDto = new ResponseDto();
+
+        if (response != null) {
+            responseDto.setMessage("수정되었습니다.");
+            responseDto.setData(new HashMap<>() {{
+                put("payload", response);
+            }});
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("수정되지 않았습니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     // github Login
     @PostMapping("/github")
     public ResponseEntity<ResponseDto> githubLogin(@RequestBody TravelerDto.Request travelerDto) {

@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/ubuntu/app/nginx-proxy:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+networks:
+  default:
+    external:
+      name: webproxy

@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  backend-dev:
+    image: adg0609/pinner-be-dev:latest
+    container_name: backend-dev
+    expose:
+      - 8081
+    volumes:
+      - /home/ubuntu/app/pinner_dev/images:/images
+    environment:
+      - DB_ID=
+      - DB_PW=
+      - GOOGLE_API_KEY=
+      - SPRING_PROFILES_ACTIVE=dev
+      - TZ=Asia/Seoul
+
+  frontend-dev:
+    image: adg0609/pinner-fe-dev:latest
+    container_name: frontend-dev
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=dev.pinner.dev
+      - TZ=Asia/Seoul
+    depends_on:
+      - backend-dev
+
+networks:
+  default:
+    external:
+      name: webproxy

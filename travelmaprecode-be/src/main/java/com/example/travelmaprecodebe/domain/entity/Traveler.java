@@ -1,6 +1,7 @@
 package com.example.travelmaprecodebe.domain.entity;
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
+import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.global.Role;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -60,6 +62,11 @@ public class Traveler extends AuditEntity implements UserDetails {
         this.password = password;
         this.role = role;
         this.state = true;
+    }
+
+    public void updateTraveler(TravelerDto.Request travelerDto) {
+        this.name = Optional.ofNullable(travelerDto.getName()).orElse(this.name);
+        this.password = Optional.ofNullable(travelerDto.getNewPassword()).orElse(this.password);
     }
 
     // 사용자 권한을 반환,

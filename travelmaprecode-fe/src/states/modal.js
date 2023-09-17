@@ -1,13 +1,14 @@
 import { atom } from "recoil";
 
 ///
-/// 로그인/회원가입 상태
+/// 프로필, 로그인, 회원가입상태
 ///
 
 export const AuthModalVisibility = {
     HIDE_ALL: 'hide',
     SHOW_LOGIN: 'login',
     SHOW_REGISTER: 'register',
+    SHOW_PROFILE: 'profile'
 };
 
 // ModalVisibility 수정 못하게 봉인

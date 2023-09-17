@@ -35,10 +35,10 @@ public class TestIdDataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws IOException {
-        if(profiles.equals("local")){
+        if(profiles.equals("local") || profiles.equals("dev")){
             // Test 계정 생성
             Traveler testId = Traveler.builder()
-                    .email("test")
+                    .email("test@naver.com")
                     .name("test")
                     .password(passwordEncoder.encode("test"))
                     .role(Role.USER)
