@@ -94,6 +94,9 @@ export default function LoginModal() {
                         <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
                             로그인
                         </Button>
+                        <Button onClick={() => window.location = "/oauth2/authorization/naver"} variant="contained" type="button" sx={{ my: 1 }}>
+                            네이버 로그인
+                        </Button>
                     </Stack>
                 </Box>
             </Modal>
