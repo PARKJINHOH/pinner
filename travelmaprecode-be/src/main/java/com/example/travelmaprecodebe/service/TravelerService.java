@@ -1,11 +1,11 @@
 package com.example.travelmaprecodebe.service;
 
-import com.example.travelmaprecodebe.security.jwt.RefreshToken;
-import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.domain.dto.TravelerDto;
+import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.exceprion.TokenRefreshException;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
+import com.example.travelmaprecodebe.security.jwt.RefreshToken;
 import com.example.travelmaprecodebe.security.jwt.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,11 +53,37 @@ public class TravelerService {
             String accessToken = jwtUtils.generateJwtToken(traveler);
 
             return TravelerDto.Response.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken.getToken())
-                    .name(traveler.getName())
-                    .email(traveler.getEmail())
-                    .build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .name(traveler.getName())
+                .email(traveler.getEmail())
+                .build();
+
+        } catch (Exception e) {
+            log.error("로그인 실패 : {}", e.getMessage());
+            return null;
+        }
+    }
+
+    @Transactional
+    public TravelerDto.Response doLogin(Long travlerId) {
+        try {
+            Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
+            if (maybeTraveler.isEmpty()) {
+                return null;
+            }
+
+            Traveler traveler = maybeTraveler.get();
+
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
+            String accessToken = jwtUtils.generateJwtToken(traveler);
+
+            return TravelerDto.Response.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .name(traveler.getName())
+                .email(traveler.getEmail())
+                .build();
 
         } catch (Exception e) {
             log.error("로그인 실패 : {}", e.getMessage());
@@ -116,9 +142,9 @@ public class TravelerService {
         String validAccessToken = jwtUtils.generateTokenFromUsername(validRefreshToken.getTraveler().getEmail());
 
         return TravelerDto.Response.builder()
-                .refreshToken(validRefreshToken.getToken())
-                .accessToken(validAccessToken)
-                .build();
+            .refreshToken(validRefreshToken.getToken())
+            .accessToken(validAccessToken)
+            .build();
 
     }
 }

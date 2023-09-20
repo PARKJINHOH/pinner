@@ -4,6 +4,7 @@ package com.example.travelmaprecodebe.security.oauth;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.security.jwt.RefreshTokenService;
+import com.example.travelmaprecodebe.service.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -17,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
@@ -27,22 +26,19 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
+    private final OAuthAfterLoginService afterLoginService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2 Login 성공!");
         try {
             Traveler traveler = ((OAuthTravelerServiceImpl.CustomOAuthUser) authentication.getPrincipal()).traveler();
-
-            String refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail()).getToken();
-            String accessToken = jwtUtils.generateJwtToken(traveler);
+            String ticket = afterLoginService.put(traveler.getId());
 
             UriComponents build = UriComponentsBuilder
-                    .fromUri(URI.create("/afteroauth"))
-                    .queryParam("accessToken", accessToken)
-                    .queryParam("refreshToken", refreshToken)
-                    .queryParam("nickname", URLEncoder.encode(traveler.getName(), StandardCharsets.UTF_8))
-                    .build(true);
+                .fromUri(URI.create("/afteroauth"))
+                .queryParam("ticket", ticket)
+                .build(true);
 
             response.sendRedirect(build.toUriString());
         } catch (Exception e) {

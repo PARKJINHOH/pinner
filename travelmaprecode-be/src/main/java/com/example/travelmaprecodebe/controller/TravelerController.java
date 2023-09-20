@@ -1,8 +1,9 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.dto.TravelerDto;
-import com.example.travelmaprecodebe.service.TravelerService;
 import com.example.travelmaprecodebe.domain.dto.ResponseDto;
+import com.example.travelmaprecodebe.domain.dto.TravelerDto;
+import com.example.travelmaprecodebe.service.OAuthAfterLoginService;
+import com.example.travelmaprecodebe.service.TravelerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 public class TravelerController {
 
     private final TravelerService travelerService;
+    private final OAuthAfterLoginService afterLoginService;
 
     @GetMapping("/echo")
     public String echo(@AuthenticationPrincipal OAuth2User principal) {
@@ -49,8 +51,8 @@ public class TravelerController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto.Request travelerDto) {
-        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
         ResponseDto responseDto = new ResponseDto();
+        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
 
         if (getResult == null) {
             responseDto.setMessage("로그인에 실패했습니다.");
@@ -62,6 +64,32 @@ public class TravelerController {
             }});
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
+    }
+
+
+    // 로그인
+    @PostMapping("/afteroauth/{jwtTicket}")
+    public ResponseEntity<ResponseDto> afteroauth(@PathVariable String jwtTicket) {
+        ResponseDto responseDto = new ResponseDto();
+
+        Long travelerId = afterLoginService.get(jwtTicket);
+        if (travelerId == null) {
+            responseDto.setMessage("Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        TravelerDto.Response getResult = travelerService.doLogin(travelerId);
+        if (getResult == null) {
+            responseDto.setMessage("Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
+        responseDto.setData(new HashMap<>() {{
+            put("payload", getResult);
+        }});
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping("/password/check")
