@@ -22,5 +22,5 @@ spring:
 
 path:
   image: images
-  url: https://dev.pinner.dev
+  url: https://pinner.dev
   
