@@ -5,6 +5,7 @@ import com.example.travelmaprecodebe.security.jwt.AuthenticationEntryPointImpl;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.security.oauth.OAuth2LoginSuccessHandler;
 import com.example.travelmaprecodebe.security.oauth.OAuthTravelerServiceImpl;
+import com.example.travelmaprecodebe.security.oauth.OcidTravelerServiceImpl;
 import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
+    private final OcidTravelerServiceImpl ocidTravelerServiceImpl;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationEntryPointImpl unauthorizedHandler;
@@ -62,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .oauth2Login()
                         .userInfoEndpoint()
                             .userService(oAuthTravelerServiceImpl)
+                            .oidcUserService(ocidTravelerServiceImpl)
                         .and()
                             .successHandler(oAuth2LoginSuccessHandler)
 
