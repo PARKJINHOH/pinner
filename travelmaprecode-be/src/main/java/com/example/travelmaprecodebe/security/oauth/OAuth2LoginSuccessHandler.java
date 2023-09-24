@@ -32,13 +32,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2 Login 성공!");
         try {
-            Traveler traveler = ((OAuthTravelerServiceImpl.CustomOAuthUser) authentication.getPrincipal()).traveler();
+            Traveler traveler = ((ICustomUser) authentication.getPrincipal()).getTraveler();
             String ticket = afterLoginService.put(traveler.getId());
 
             UriComponents build = UriComponentsBuilder
-                .fromUri(URI.create("/afteroauth"))
-                .queryParam("ticket", ticket)
-                .build(true);
+                    .fromUri(URI.create("/afteroauth"))
+                    .queryParam("ticket", ticket)
+                    .build(true);
 
             response.sendRedirect(build.toUriString());
         } catch (Exception e) {

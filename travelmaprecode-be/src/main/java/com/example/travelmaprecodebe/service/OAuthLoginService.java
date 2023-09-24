@@ -3,6 +3,7 @@ package com.example.travelmaprecodebe.service;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.global.Role;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
+import com.example.travelmaprecodebe.security.oauth.OAuthLoginAttributes;
 import com.example.travelmaprecodebe.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +18,13 @@ import static com.example.travelmaprecodebe.utils.CommonUtil.getIpAddress;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OAuth2TravelerService {
+public class OAuthLoginService {
 
     private final TravelerRepository travelerRepository;
 
     @Transactional
-    public Traveler oAuthDoLogin(String naverId, String nickname, String email) {
-        Optional<Traveler> traveler = travelerRepository.findByEmail(email);
+    public Traveler registerOrLogin(OAuthLoginAttributes attr) {
+        Optional<Traveler> traveler = travelerRepository.findByEmail(attr.email());
         if (traveler.isPresent()) {
             Traveler getTraveler = traveler.get();
             getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
@@ -32,12 +33,16 @@ public class OAuth2TravelerService {
             return traveler.get();
         }
 
+        return register(attr);
+    }
+
+    private Traveler register(OAuthLoginAttributes attr) {
         Traveler newTraveler = Traveler.builder()
-                .email(email)
-                .name(nickname)
-                .password(naverId) // TODO: random password, because this won't use evermore
+                .signupServices(attr.serviceName())
+                .email(attr.email())
+                .name(attr.nickname())
+                .password("NEED_TO_BE_RANDOM") // TODO: random password, because this won't use evermore
                 .role(Role.USER)
-                .signupServices("naver")
                 .lastLoginIpAddress(getIpAddress())
                 .build();
 
