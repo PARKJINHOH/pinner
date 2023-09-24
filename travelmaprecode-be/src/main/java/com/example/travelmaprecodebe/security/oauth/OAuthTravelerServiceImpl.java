@@ -65,12 +65,13 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
 
             String id = wrapper.response.id;
             String nickname = wrapper.response.nickname;
+            String email = wrapper.response.email;
 
             if (nickname == null) {
                 throw new OAuthUserInfoException("response에 nickname이 없습니다. 네이버 로그인 API에서 해당 항목을 필수로 변경해주세요.");
             }
 
-            Traveler traveler = travelerService.oAuthDoLogin(id, nickname);
+            Traveler traveler = travelerService.oAuthDoLogin(id, nickname, email);
             return new CustomOAuthUser(traveler, oAuth2User.getAttributes());
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -31,7 +31,7 @@ public class TravelerController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto.Request travelerDto) {
+    public ResponseEntity<ResponseDto> createAccount(@RequestBody TravelerDto.Request travelerDto) {
         String getResult = travelerService.register(travelerDto);
         ResponseDto responseDto = new ResponseDto();
 
@@ -151,7 +151,6 @@ public class TravelerController {
             responseDto.setMessage("관리자에게 문의주세요.");
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
-
     }
 
 }

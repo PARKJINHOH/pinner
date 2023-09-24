@@ -7,6 +7,7 @@ import com.example.travelmaprecodebe.repository.TravelerRepository;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.security.jwt.RefreshToken;
 import com.example.travelmaprecodebe.security.jwt.RefreshTokenService;
+import com.example.travelmaprecodebe.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -52,6 +53,13 @@ public class TravelerService {
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
             String accessToken = jwtUtils.generateJwtToken(traveler);
 
+            Optional<Traveler> optionalTraveler = travelerRepository.findById(traveler.getId());
+            optionalTraveler.ifPresent(getTraveler -> {
+                getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
+                getTraveler.updateLastLoginDate();
+                getTraveler.initLoginFailureCount();
+            });
+
             return TravelerDto.Response.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken())
@@ -60,7 +68,10 @@ public class TravelerService {
                 .build();
 
         } catch (Exception e) {
-            log.error("로그인 실패 : {}", e.getMessage());
+            Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
+            optionalTraveler.ifPresent(Traveler::addLoginFailureCount);
+
+            log.error(travelerDto.getEmail(), " 로그인 실패 : {}", e.getMessage());
             return null;
         }
     }
@@ -74,6 +85,11 @@ public class TravelerService {
             }
 
             Traveler traveler = maybeTraveler.get();
+
+            maybeTraveler.ifPresent(getTraveler -> {
+                getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
+                getTraveler.updateLastLoginDate();
+            });
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
             String accessToken = jwtUtils.generateJwtToken(traveler);
@@ -106,14 +122,15 @@ public class TravelerService {
         String newPassword = travelerDto.getNewPassword();
 
         if (findTraveler.isPresent()) {
+            Traveler traveler = findTraveler.get();
             if (travelerDto.getNewPassword() != null) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                travelerDto.setNewPassword(encoder.encode(travelerDto.getNewPassword()));
+                traveler.updatePassword(encoder.encode(travelerDto.getNewPassword()));
+                traveler.updateLastChangePasswordDate();
             }
             if (travelerDto.getName() != null) {
-                travelerDto.setName(travelerDto.getName());
+                traveler.updateNickname(travelerDto.getName());
             }
-            findTraveler.get().updateTraveler(travelerDto);
 
             // Token 재생성
             travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
