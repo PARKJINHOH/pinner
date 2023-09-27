@@ -12,9 +12,11 @@ import { AuthModalVisibility, authModalVisibilityState } from '../../states/moda
 
 // mui
 import {Box, Modal, Stack, TextField, Typography, Button} from "@mui/material";
+import Divider from '@mui/material/Divider';
 
-// mantine
-import {Divider} from "@mantine/core";
+// image
+import { ReactComponent as NaverLoginBtn } from 'assets/images/btn_naver.svg';
+import { ReactComponent as GoogleLoginBtn } from 'assets/images/btn_google.svg';
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');
@@ -74,11 +76,11 @@ export default function LoginModal() {
                 onClose={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             >
                 <Box className={style.login_box}>
-                    <Typography id="modal-modal-title" variant="h5" gutterBottom>
-                        로그인
+                    <Typography variant="h5" sx={{marginBottom: 3}}>
+                        Pinner에 오신것을 환영합니다.
                     </Typography>
-                    <Divider sx={{marginBottom: 20}}/>
-                    <Stack spacing={3}>
+                    <Divider sx={{marginBottom: 2}}>아이디 로그인</Divider>
+                    <Stack spacing={2} sx={{marginBottom: 7}}>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         <TextField label="비밀번호" variant="outlined"
@@ -94,11 +96,22 @@ export default function LoginModal() {
                         <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
                             로그인
                         </Button>
-                        <Button onClick={() => window.location = "/oauth2/authorization/naver"} variant="contained" type="button" sx={{ my: 1 }}>
-                            네이버 로그인
+                    </Stack>
+                    <Divider sx={{marginBottom: 2}}>SNS 로그인</Divider>
+                    <Stack spacing={2} direction="row" justifyContent="center">
+                        <Button onClick={() => window.location = "/oauth2/authorization/naver"}
+                                type="button"
+                                variant="outlined"
+                                sx={{borderColor: 'grey.500', width: '120px', padding: '10px'}}
+                        >
+                            <NaverLoginBtn />
                         </Button>
-                        <Button onClick={() => window.location = "/oauth2/authorization/google"} variant="contained" type="button" sx={{ my: 1 }}>
-                            구글 로그인
+                        <Button onClick={() => window.location = "/oauth2/authorization/google"}
+                                type="button"
+                                variant="outlined"
+                                sx={{borderColor: 'grey.500', width: '120px', padding: '10px'}}
+                        >
+                            <GoogleLoginBtn />
                         </Button>
                     </Stack>
                 </Box>
