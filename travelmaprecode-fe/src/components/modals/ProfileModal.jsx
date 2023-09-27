@@ -186,25 +186,25 @@ export default function ProfileModal() {
                                 errorMessage && errorAlert(errorMessage)
                             }
                         </div>
-                        <div className={style.social_group}>
-                            <Typography sx={{fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>
-                                소셜계정 연동
-                            </Typography>
-                            <Typography sx={{fontSize: '12px', marginBottom: 3}}>
-                                사용하시는 소셜 및 인증 제공자들과 계정을 연동하고 손쉽게 로그인하세요.
-                            </Typography>
+                        {/*<div className={style.social_group}>*/}
+                        {/*    <Typography sx={{fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>*/}
+                        {/*        소셜계정 연동*/}
+                        {/*    </Typography>*/}
+                        {/*    <Typography sx={{fontSize: '12px', marginBottom: 3}}>*/}
+                        {/*        사용하시는 소셜 및 인증 제공자들과 계정을 연동하고 손쉽게 로그인하세요.*/}
+                        {/*    </Typography>*/}
 
-                            <div className={style.social_btn_group}>
-                                {/*연결되어 있으면 연결하기 -> 해제하기*/}
-                                <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>
-                                    Github 연결하기
-                                </Button>
+                        {/*    <div className={style.social_btn_group}>*/}
+                        {/*        /!*연결되어 있으면 연결하기 -> 해제하기*!/*/}
+                        {/*        <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>*/}
+                        {/*            Github 연결하기*/}
+                        {/*        </Button>*/}
 
-                                <Button variant="outlined" startIcon={<GoogleIcon sx={{marginRight: '2px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>
-                                    Google 연결하기
-                                </Button>
-                            </div>
-                        </div>
+                        {/*        <Button variant="outlined" startIcon={<GoogleIcon sx={{marginRight: '2px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>*/}
+                        {/*            Google 연결하기*/}
+                        {/*        </Button>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
 
                     <div className={style.save_btn}>
