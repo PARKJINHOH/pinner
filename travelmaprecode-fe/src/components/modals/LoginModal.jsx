@@ -11,12 +11,12 @@ import { postLogin } from '../../apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 // mui
-import {Box, Modal, Stack, TextField, Typography, Button} from "@mui/material";
+import {Box, Modal, Stack, TextField, Typography, Button, IconButton} from "@mui/material";
 import Divider from '@mui/material/Divider';
 
 // image
-import { ReactComponent as NaverLoginBtn } from 'assets/images/btn_naver.svg';
-import { ReactComponent as GoogleLoginBtn } from 'assets/images/btn_google.svg';
+import NaverLoginBtn from 'assets/images/login_icon_naver.png';
+import GoogleLoginBtn from 'assets/images/login_icon_google.png';
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');
@@ -93,26 +93,24 @@ export default function LoginModal() {
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
-                        <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
+                        <Button onClick={onSubmit} variant="contained" type="button" sx={{ backgroundColor: '#33a4ff'}}>
                             로그인
                         </Button>
                     </Stack>
-                    <Divider sx={{marginBottom: 2}}>SNS 로그인</Divider>
+                    <Divider sx={{marginBottom: 2}}>소셜 계정으로 간편 로그인</Divider>
                     <Stack spacing={2} direction="row" justifyContent="center">
-                        <Button onClick={() => window.location = "/oauth2/authorization/naver"}
-                                type="button"
-                                variant="outlined"
-                                sx={{borderColor: 'grey.500', width: '120px', padding: '10px'}}
+                        <IconButton
+                            className={style.login_icon_naver}
+                            onClick={() => window.location = "/oauth2/authorization/naver"}
                         >
-                            <NaverLoginBtn />
-                        </Button>
-                        <Button onClick={() => window.location = "/oauth2/authorization/google"}
-                                type="button"
-                                variant="outlined"
-                                sx={{borderColor: 'grey.500', width: '120px', padding: '10px'}}
+                            <img src={NaverLoginBtn} alt="NaverLoginBtn" />
+                        </IconButton>
+                        <IconButton
+                            className={style.login_icon_google}
+                            onClick={() => window.location = "/oauth2/authorization/google"}
                         >
-                            <GoogleLoginBtn />
-                        </Button>
+                            <img src={GoogleLoginBtn} alt="GoogleLoginBtn" />
+                        </IconButton>
                     </Stack>
                 </Box>
             </Modal>

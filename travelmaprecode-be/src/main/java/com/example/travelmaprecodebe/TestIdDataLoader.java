@@ -42,7 +42,7 @@ public class TestIdDataLoader implements ApplicationRunner {
                     .name("test")
                     .password(passwordEncoder.encode("test"))
                     .role(Role.USER)
-                    .signupServices("test계정")
+                    .signupServices("web")
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
             travelerRepository.save(testId);

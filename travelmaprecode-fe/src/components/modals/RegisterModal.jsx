@@ -5,16 +5,18 @@ import {useRecoilState} from 'recoil';
 import style from './RegisterModal.module.css';
 
 // component
+import {HTTPStatus} from "../../apis/apiv1";
 import {postRegister} from '../../apis/auth';
 import {errorAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
 // mui
-import {Modal, Button, Stack, Box, Typography, TextField} from "@mui/material";
+import {Modal, Button, Stack, Box, Typography, TextField, IconButton, Divider} from "@mui/material";
 
-// mantine
-import {Divider} from "@mantine/core";
-import {HTTPStatus} from "../../apis/apiv1";
+
+// image
+import NaverLoginBtn from "../../assets/images/login_icon_naver.png";
+import GoogleLoginBtn from "../../assets/images/login_icon_google.png";
 
 
 export default function RegisterModal() {
@@ -105,11 +107,11 @@ export default function RegisterModal() {
                 }}
             >
                 <Box className={style.register_box}>
-                    <Typography id="modal-modal-title" variant="h5" gutterBottom>
-                        회원가입
+                    <Typography variant="h5" sx={{marginBottom: 3}}>
+                        Pinner에 오신것을 환영합니다.
                     </Typography>
-                    <Divider sx={{marginBottom: 20}}/>
-                    <Stack spacing={3}>
+                    <Divider sx={{marginBottom: 2}}>회원가입에 필요한 정보를 입력해주세요</Divider>
+                    <Stack spacing={3} sx={{marginBottom: 7}}>
                         <TextField label="닉네임" variant="outlined" inputProps={{maxLength: 6}}
                                    value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
                         <TextField label="이메일" variant="outlined"
@@ -121,9 +123,24 @@ export default function RegisterModal() {
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
-                        <Button onClick={onSubmit} variant="contained">
+                        <Button onClick={onSubmit} variant="contained" sx={{ backgroundColor: '#33a4ff'}}>
                             회원가입
                         </Button>
+                    </Stack>
+                    <Divider sx={{marginBottom: 2}}>소셜 계정으로 간편 회원가입</Divider>
+                    <Stack spacing={2} direction="row" justifyContent="center">
+                        <IconButton
+                            className={style.login_icon_naver}
+                            onClick={() => window.location = "/oauth2/authorization/naver"}
+                        >
+                            <img src={NaverLoginBtn} alt="NaverLoginBtn" />
+                        </IconButton>
+                        <IconButton
+                            className={style.login_icon_google}
+                            onClick={() => window.location = "/oauth2/authorization/google"}
+                        >
+                            <img src={GoogleLoginBtn} alt="GoogleLoginBtn" />
+                        </IconButton>
                     </Stack>
                 </Box>
             </Modal>

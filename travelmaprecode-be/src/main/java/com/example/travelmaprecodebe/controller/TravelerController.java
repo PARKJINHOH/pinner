@@ -78,7 +78,7 @@ public class TravelerController {
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
 
-        TravelerDto.Response getResult = travelerService.doLogin(travelerId);
+        TravelerDto.Response getResult = travelerService.doLoginBySocial(travelerId);
         if (getResult == null) {
             responseDto.setMessage("Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);

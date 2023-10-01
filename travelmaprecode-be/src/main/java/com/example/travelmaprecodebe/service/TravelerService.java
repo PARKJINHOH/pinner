@@ -77,7 +77,7 @@ public class TravelerService {
     }
 
     @Transactional
-    public TravelerDto.Response doLogin(Long travlerId) {
+    public TravelerDto.Response doLoginBySocial(Long travlerId) {
         try {
             Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
             if (maybeTraveler.isEmpty()) {

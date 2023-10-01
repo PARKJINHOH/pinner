@@ -5,21 +5,16 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {postLogin, postRegister} from '../../apis/auth';
+import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
+import {travelerState, useDoLogin} from "../../states/traveler";
 import {errorAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
 // mui
-import {Modal, Button, Stack, Box, Typography, TextField} from "@mui/material";
-
-// icon
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
-
-// mantine
+import {Modal, Button, Box, Typography, TextField} from "@mui/material";
 import {Divider} from "@mantine/core";
-import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {travelerState, useDoLogin} from "../../states/traveler";
+
+// etc
 import {toast} from "react-toastify";
 
 
@@ -30,6 +25,7 @@ export default function ProfileModal() {
     const [traveler, setTraveler] = useRecoilState(travelerState);
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
+    const [signupServices, setSignupServices] = useState(null);
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -186,25 +182,6 @@ export default function ProfileModal() {
                                 errorMessage && errorAlert(errorMessage)
                             }
                         </div>
-                        {/*<div className={style.social_group}>*/}
-                        {/*    <Typography sx={{fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>*/}
-                        {/*        소셜계정 연동*/}
-                        {/*    </Typography>*/}
-                        {/*    <Typography sx={{fontSize: '12px', marginBottom: 3}}>*/}
-                        {/*        사용하시는 소셜 및 인증 제공자들과 계정을 연동하고 손쉽게 로그인하세요.*/}
-                        {/*    </Typography>*/}
-
-                        {/*    <div className={style.social_btn_group}>*/}
-                        {/*        /!*연결되어 있으면 연결하기 -> 해제하기*!/*/}
-                        {/*        <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>*/}
-                        {/*            Github 연결하기*/}
-                        {/*        </Button>*/}
-
-                        {/*        <Button variant="outlined" startIcon={<GoogleIcon sx={{marginRight: '2px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>*/}
-                        {/*            Google 연결하기*/}
-                        {/*        </Button>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                     </div>
 
                     <div className={style.save_btn}>
