@@ -67,7 +67,7 @@ public class TravelerController {
     }
 
 
-    // 로그인
+    // Oauth 로그인
     @PostMapping("/afteroauth/{jwtTicket}")
     public ResponseEntity<ResponseDto> afteroauth(@PathVariable String jwtTicket) {
         ResponseDto responseDto = new ResponseDto();
@@ -92,6 +92,7 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    // 비밀번호 체크
     @PostMapping("/password/check")
     public ResponseEntity<ResponseDto> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
         boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
@@ -106,6 +107,7 @@ public class TravelerController {
         }
     }
 
+    // 내정보 수정
     @PutMapping()
     public ResponseEntity<ResponseDto> putTraveler(@RequestBody TravelerDto.Request travelerDto) {
         TravelerDto.Response response = travelerService.updateTraveler(travelerDto);
@@ -140,6 +142,7 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();

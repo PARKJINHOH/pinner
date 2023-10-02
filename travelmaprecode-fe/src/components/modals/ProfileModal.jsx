@@ -7,11 +7,12 @@ import style from './ProfileModal.module.css';
 // component
 import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
 import {travelerState, useDoLogin} from "../../states/traveler";
-import {errorAlert} from "../alert/AlertComponent";
+import {errorAlert, infoAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
 // mui
-import {Modal, Button, Box, Typography, TextField} from "@mui/material";
+import {Modal, Box, Typography, TextField} from "@mui/material";
+import Button from '@mui/joy/Button';
 import {Divider} from "@mantine/core";
 
 // etc
@@ -147,49 +148,96 @@ export default function ProfileModal() {
                     setModalVisibility(AuthModalVisibility.HIDE_ALL);
                 }}
             >
-                <Box className={style.profile_box}>
+                {
+                    traveler.signupServices === 'web' ?
+                        <Box className={style.profile_box}>
 
-                    <div className={style.title}>
-                        <Typography id="modal-modal-title" variant="h5" gutterBottom>
-                            내정보
-                        </Typography>
+                            <div className={style.title}>
+                                <Typography id="modal-modal-title" variant="h5" gutterBottom>
+                                    내정보
+                                </Typography>
 
-                        <Divider sx={{marginBottom: 20}}/>
-                    </div>
+                                <Divider sx={{marginBottom: 20}}/>
+                            </div>
 
-                    <div className={style.content}>
-                        <div className={style.myProfile}>
-                            <Typography sx={{fontSize: '15px'}}>이메일</Typography>
-                            <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email"/>
+                            <div className={style.content}>
+                                <div className={style.myProfile}>
+                                    <Typography sx={{fontSize: '15px'}}>이메일</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={email} type="email"/>
 
-                            <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
-                            <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
+                                    <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
+                                    <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내" type="text"/>
 
-                            <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
+                                    <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
 
-                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
+                                    <Typography sx={{fontSize: '15px'}}>신규 비밀번호</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
 
-                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호 확인</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password"/>
+                                    <Typography sx={{fontSize: '15px'}}>신규 비밀번호 확인</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password"/>
+                                    {
+                                        errorMessage && errorAlert(errorMessage)
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={style.save_btn}>
+                                <Button color="primary" variant="solid"
+                                        onClick={onSubmit}
+                                        sx={{width: '100px', marginLeft: 'auto'}}
+                                >저장</Button>
+                                <Button color="danger" variant="outlined"
+                                        onClick={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
+                                        sx={{width: '100px', marginLeft: '10px'}}
+                                >취소</Button>
+                            </div>
+                        </Box>
+                        :
+                        <Box className={style.profile_box}>
+
+                            <div className={style.title}>
+                                <Typography id="modal-modal-title" variant="h5" gutterBottom>
+                                    내정보
+                                </Typography>
+
+                                <Divider sx={{marginBottom: 10}}/>
+                            </div>
+
                             {
-                                errorMessage && errorAlert(errorMessage)
+                                infoAlert("SNS가입자는 수정할 수 없습니다.")
                             }
-                        </div>
-                    </div>
 
-                    <div className={style.save_btn}>
-                        <Button variant="contained" sx={{width: '100px', marginLeft: 'auto'}} onClick={onSubmit}>
-                            저장
-                        </Button>
-                    </div>
-                </Box>
+                            <div className={style.content}>
+                                <div className={style.myProfile}>
+                                    <Typography sx={{fontSize: '15px'}}>이메일</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={email} type="email"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={name} type="text"/>
+
+                                    {
+                                        errorMessage && errorAlert(errorMessage)
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={style.save_btn}>
+                                <Button color="danger" variant="outlined"
+                                        onClick={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
+                                        sx={{width: '100px', marginLeft: 'auto'}}
+                                >취소</Button>
+                            </div>
+                        </Box>
+                }
+
             </Modal>
         </div>
     );

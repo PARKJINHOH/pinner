@@ -41,6 +41,7 @@ public class TravelerDto {
         private String password;
         private String accessToken;
         private String refreshToken;
+        private String signupServices;
     }
 
 }

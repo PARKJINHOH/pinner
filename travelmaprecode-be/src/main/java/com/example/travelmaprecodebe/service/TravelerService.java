@@ -61,11 +61,12 @@ public class TravelerService {
             });
 
             return TravelerDto.Response.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .name(traveler.getName())
-                .email(traveler.getEmail())
-                .build();
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken.getToken())
+                    .name(traveler.getName())
+                    .email(traveler.getEmail())
+                    .signupServices(traveler.getSignupServices())
+                    .build();
 
         } catch (Exception e) {
             Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
@@ -95,11 +96,12 @@ public class TravelerService {
             String accessToken = jwtUtils.generateJwtToken(traveler);
 
             return TravelerDto.Response.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .name(traveler.getName())
-                .email(traveler.getEmail())
-                .build();
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken.getToken())
+                    .name(traveler.getName())
+                    .email(traveler.getEmail())
+                    .signupServices(traveler.getSignupServices())
+                    .build();
 
         } catch (Exception e) {
             log.error("로그인 실패 : {}", e.getMessage());

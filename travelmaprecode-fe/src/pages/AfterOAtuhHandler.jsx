@@ -23,6 +23,7 @@ export default function AfterOAtuhHandler() {
                     name: response.data.data.payload.name,
                     accessToken: response.data.data.payload.accessToken,
                     refreshToken: response.data.data.payload.refreshToken,
+                    signupServices: response.data.data.payload.signupServices,
                 });
 
                 window.location = "/";

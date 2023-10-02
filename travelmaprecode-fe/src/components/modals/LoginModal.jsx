@@ -59,6 +59,7 @@ export default function LoginModal() {
                     name: payload.name,
                     accessToken: payload.accessToken,
                     refreshToken: payload.refreshToken,
+                    signupServices: payload.signupServices,
                 });
 
                 // 로그인 모달 감춤
