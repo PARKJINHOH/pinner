@@ -6,7 +6,8 @@ import style from './ProfileModal.module.css';
 
 // component
 import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {travelerState, useDoLogin} from "../../states/traveler";
+import {clearTraveler} from "../../states/webstore";
+import {travelerState, useDoLogin, useDoLogout} from "../../states/traveler";
 import {errorAlert, infoAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
@@ -26,10 +27,9 @@ export default function ProfileModal() {
     const [traveler, setTraveler] = useRecoilState(travelerState);
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
-    const [signupServices, setSignupServices] = useState(null);
-
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [signupServices, setSignupServices] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,6 +40,7 @@ export default function ProfileModal() {
         if (traveler) {
             setEmail(traveler.email);
             setName(traveler.name);
+            setSignupServices(traveler.signupServices);
         }
     }, [traveler]);
 
@@ -71,6 +72,26 @@ export default function ProfileModal() {
                 return '비밀번호는 최소 8자 이상이어야 합니다.';
             } else if (newPassword !== confirmPassword) {
                 return '비밀번호와 비밀번호확인은 같아야 합니다.';
+            }
+        }
+    }
+
+    async function deleteTraveler() {
+        if (window.confirm('정말 탈퇴하실건가요?')) {
+            let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
+                .then(response => {
+                    alert(response.data.message);
+                    return response.status;
+                })
+                .catch(error => {
+                    alert(error.data.message);
+                    return error.status;
+                });
+
+            if (resultStatus === HTTPStatus.OK) {
+                window.location.reload();
+                setTraveler(null);
+                clearTraveler();
             }
         }
     }
@@ -149,7 +170,8 @@ export default function ProfileModal() {
                 }}
             >
                 {
-                    traveler.signupServices === 'web' ?
+                    signupServices === 'web' ?
+                        /* 홈페이지 가입자 */
                         <Box className={style.profile_box}>
 
                             <div className={style.title}>
@@ -188,6 +210,10 @@ export default function ProfileModal() {
                             </div>
 
                             <div className={style.save_btn}>
+                                <Button color="danger" variant="solid"
+                                        onClick={deleteTraveler}
+                                        sx={{width: '60px', marginRight: 'auto'}}
+                                >탈퇴</Button>
                                 <Button color="primary" variant="solid"
                                         onClick={onSubmit}
                                         sx={{width: '100px', marginLeft: 'auto'}}
@@ -199,6 +225,7 @@ export default function ProfileModal() {
                             </div>
                         </Box>
                         :
+                        /* 소셜로그인 가입자 */
                         <Box className={style.profile_box}>
 
                             <div className={style.title}>

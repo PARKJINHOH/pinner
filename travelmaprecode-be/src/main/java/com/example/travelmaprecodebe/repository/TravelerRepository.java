@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface TravelerRepository extends JpaRepository<Traveler, Long> {
+public interface TravelerRepository extends JpaRepository<Traveler, Long>, TravelerRepositoryCustom {
     Optional<Traveler> findByEmail(String email);
-
-    Traveler findMemberByEmail(String email);
 }

@@ -136,9 +136,9 @@ export const useAPIv1 = function () {
                 return error.response;
             }
         },
-        delete: async (url) => {
+        delete: async (url, data) => {
             try {
-                return (await rawAxiosInstance.delete(url));
+                return (await rawAxiosInstance.delete(url, data));
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
                     return await handleTokenExpired(error.config);

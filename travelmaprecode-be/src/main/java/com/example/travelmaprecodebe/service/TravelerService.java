@@ -72,7 +72,7 @@ public class TravelerService {
             Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
             optionalTraveler.ifPresent(Traveler::addLoginFailureCount);
 
-            log.error(travelerDto.getEmail(), " 로그인 실패 : {}", e.getMessage());
+            log.error("[{}] 로그인 실패 : {}", travelerDto.getEmail(), e.getMessage());
             return null;
         }
     }
@@ -165,5 +165,20 @@ public class TravelerService {
             .accessToken(validAccessToken)
             .build();
 
+    }
+
+    @Transactional
+    public boolean deleteTraveler(TravelerDto.Request travelerDto) {
+        Optional<Traveler> findTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
+
+        if (findTraveler.isPresent()) {
+            boolean updatedResult = travelerRepository.updateTravelerStateByTravelerEmail(findTraveler.get().getId());
+
+            if (!updatedResult) {
+                throw new RuntimeException("[deleteTraveler] Failed to update traveler state. RollBack transaction.");
+            }
+        }
+
+        return true;
     }
 }

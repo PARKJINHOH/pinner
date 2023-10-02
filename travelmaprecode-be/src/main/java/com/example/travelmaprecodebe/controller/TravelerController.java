@@ -144,7 +144,7 @@ public class TravelerController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto.Request travelerDto) {
+    public ResponseEntity<ResponseDto> logoutTraveler(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();
         try {
             travelerService.doLogout(travelerDto);
@@ -152,6 +152,20 @@ public class TravelerController {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (Exception e) {
             responseDto.setMessage("관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 일반회원 탈퇴
+    @PostMapping("/delete")
+    public ResponseEntity<ResponseDto> deleteTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+        if (isSuccess) {
+            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
     }
