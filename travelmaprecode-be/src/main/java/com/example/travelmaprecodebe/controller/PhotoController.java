@@ -3,7 +3,7 @@ package com.example.travelmaprecodebe.controller;
 import com.example.travelmaprecodebe.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -31,6 +32,8 @@ public class PhotoController {
         Path imagePath = Paths.get(absolutePath + pullPath);
         byte[] imageByteArray = Files.readAllBytes(imagePath);
 
-        return new ResponseEntity<>(imageByteArray, HttpStatus.OK);
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
+            .body(imageByteArray);
     }
 }
