@@ -43,7 +43,7 @@ public class OAuthLoginService {
                 .signupServices(attr.serviceName())
                 .email(attr.email())
                 .name(attr.nickname())
-                .password(attr.accessToken()) // todo : web,oauth entity 분리 고민 하기, Oauth token password에 저장.
+                .oauthAccessToken(attr.accessToken())
                 .role(Role.USER)
                 .lastLoginIpAddress(getIpAddress())
                 .build();

@@ -2,11 +2,7 @@ package com.example.travelmaprecodebe.domain.entity;
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
 import com.example.travelmaprecodebe.global.Role;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +17,10 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "TRAVELER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Traveler extends AuditEntity implements UserDetails {
 
     @Id
@@ -34,9 +32,11 @@ public class Traveler extends AuditEntity implements UserDetails {
     @Comment("이메일")
     private String email;
 
-    @NotNull
-    @Comment("비밀번호 OR OauthAccessToken")
+    @Comment("비밀번호")
     private String password;
+
+    @Comment("oauthAccessToken")
+    private String oauthAccessToken;
 
     @NotNull
     @Comment("닉네임")
@@ -48,15 +48,15 @@ public class Traveler extends AuditEntity implements UserDetails {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("true")
     @Comment("권한")
     private Role role;
 
     @Comment("계정 상태")
-    private boolean state;
+    @NotNull
+    @Builder.Default
+    private Boolean state = true;
 
     @Comment("로그인 실패 횟수")
-    @ColumnDefault("0")
     private int loginFailureCount;
 
     @Comment("마지막 로그인 날짜")
@@ -68,20 +68,8 @@ public class Traveler extends AuditEntity implements UserDetails {
     @Comment("마지막 로그인 IP 주소")
     private String lastLoginIpAddress;
 
-
     @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL)
     private List<Travel> travels = new ArrayList<>();
-
-    @Builder
-    public Traveler(String email, String password, String name, String signupServices, String lastLoginIpAddress, Role role) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.signupServices = signupServices;
-        this.role = role;
-        this.lastLoginIpAddress = lastLoginIpAddress;
-        this.state = true;
-    }
 
     @PrePersist
     public void onCreate() {
@@ -100,8 +88,8 @@ public class Traveler extends AuditEntity implements UserDetails {
         this.lastLoginDate = LocalDateTime.now();
     }
 
-    public void updateOauthAccessToken(String accesstoken) {
-        this.password = accesstoken;
+    public void updateOauthAccessToken(String accessToken) {
+        this.oauthAccessToken = accessToken;
     }
 
     public void updateLastLoginIpAddress(String ipAddress) {
