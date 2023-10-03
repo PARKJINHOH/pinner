@@ -5,21 +5,18 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {postLogin, postRegister} from '../../apis/auth';
-import {errorAlert} from "../alert/AlertComponent";
+import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
+import {clearTraveler} from "../../states/webstore";
+import {travelerState, useDoLogin} from "../../states/traveler";
+import {errorAlert, infoAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
 // mui
-import {Modal, Button, Stack, Box, Typography, TextField} from "@mui/material";
-
-// icon
-import GitHubIcon from '@mui/icons-material/GitHub';
-import GoogleIcon from '@mui/icons-material/Google';
-
-// mantine
+import {Modal, Box, Typography, TextField} from "@mui/material";
+import Button from '@mui/joy/Button';
 import {Divider} from "@mantine/core";
-import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {travelerState, useDoLogin} from "../../states/traveler";
+
+// etc
 import {toast} from "react-toastify";
 
 
@@ -30,9 +27,9 @@ export default function ProfileModal() {
     const [traveler, setTraveler] = useRecoilState(travelerState);
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
-
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [signupServices, setSignupServices] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -43,6 +40,7 @@ export default function ProfileModal() {
         if (traveler) {
             setEmail(traveler.email);
             setName(traveler.name);
+            setSignupServices(traveler.signupServices);
         }
     }, [traveler]);
 
@@ -74,6 +72,46 @@ export default function ProfileModal() {
                 return '비밀번호는 최소 8자 이상이어야 합니다.';
             } else if (newPassword !== confirmPassword) {
                 return '비밀번호와 비밀번호확인은 같아야 합니다.';
+            }
+        }
+    }
+
+    async function deleteTraveler() {
+        if (window.confirm('정말 탈퇴하실건가요?')) {
+            let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
+                .then(response => {
+                    alert(response.data.message);
+                    return response.status;
+                })
+                .catch(error => {
+                    alert(error.data.message);
+                    return error.status;
+                });
+
+            if (resultStatus === HTTPStatus.OK) {
+                window.location.reload();
+                setTraveler(null);
+                clearTraveler();
+            }
+        }
+    }
+
+    async function deleteOauthTraveler() {
+        if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
+            let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
+                .then(response => {
+                    alert(response.data.message);
+                    return response.status;
+                })
+                .catch(error => {
+                    alert(error.data.message);
+                    return error.status;
+                });
+
+            if (resultStatus === HTTPStatus.OK) {
+                window.location.reload();
+                setTraveler(null);
+                clearTraveler();
             }
         }
     }
@@ -151,68 +189,106 @@ export default function ProfileModal() {
                     setModalVisibility(AuthModalVisibility.HIDE_ALL);
                 }}
             >
-                <Box className={style.profile_box}>
+                {
+                    signupServices === 'Web' ?
+                        /* 홈페이지 가입자 */
+                        <Box className={style.profile_box}>
 
-                    <div className={style.title}>
-                        <Typography id="modal-modal-title" variant="h5" gutterBottom>
-                            내정보
-                        </Typography>
+                            <div className={style.title}>
+                                <Typography id="modal-modal-title" variant="h5" gutterBottom>
+                                    내정보
+                                </Typography>
 
-                        <Divider sx={{marginBottom: 20}}/>
-                    </div>
-
-                    <div className={style.content}>
-                        <div className={style.myProfile}>
-                            <Typography sx={{fontSize: '15px'}}>이메일</Typography>
-                            <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email"/>
-
-                            <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
-                            <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
-
-                            <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
-
-                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
-
-                            <Typography sx={{fontSize: '15px'}}>신규 비밀번호 확인</Typography>
-                            <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                       value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password"/>
-                            {
-                                errorMessage && errorAlert(errorMessage)
-                            }
-                        </div>
-                        <div className={style.social_group}>
-                            <Typography sx={{fontSize: '25px', fontWeight: 'bold', color: 'Black'}}>
-                                소셜계정 연동
-                            </Typography>
-                            <Typography sx={{fontSize: '12px', marginBottom: 3}}>
-                                사용하시는 소셜 및 인증 제공자들과 계정을 연동하고 손쉽게 로그인하세요.
-                            </Typography>
-
-                            <div className={style.social_btn_group}>
-                                {/*연결되어 있으면 연결하기 -> 해제하기*/}
-                                <Button variant="outlined" startIcon={<GitHubIcon sx={{marginRight: '5px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>
-                                    Github 연결하기
-                                </Button>
-
-                                <Button variant="outlined" startIcon={<GoogleIcon sx={{marginRight: '2px'}}/>} sx={{width: '200px', marginLeft: 'auto', textTransform: 'none'}}>
-                                    Google 연결하기
-                                </Button>
+                                <Divider sx={{marginBottom: 20}}/>
                             </div>
-                        </div>
-                    </div>
 
-                    <div className={style.save_btn}>
-                        <Button variant="contained" sx={{width: '100px', marginLeft: 'auto'}} onClick={onSubmit}>
-                            저장
-                        </Button>
-                    </div>
-                </Box>
+                            <div className={style.content}>
+                                <div className={style.myProfile}>
+                                    <Typography sx={{fontSize: '15px'}}>이메일</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={email} type="email"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
+                                    <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내" type="text"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={oldPassword} onChange={(e) => setOldPassword(e.currentTarget.value)} type="password"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>신규 비밀번호</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>신규 비밀번호 확인</Typography>
+                                    <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={confirmPassword} onChange={(e) => setConfirmPassword(e.currentTarget.value)} type="password"/>
+                                    {
+                                        errorMessage && errorAlert(errorMessage)
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={style.save_btn}>
+                                <Button color="danger" variant="solid"
+                                        onClick={deleteTraveler}
+                                        sx={{width: '60px', marginRight: 'auto'}}
+                                >탈퇴</Button>
+                                <Button color="primary" variant="solid"
+                                        onClick={onSubmit}
+                                        sx={{width: '100px', marginLeft: 'auto'}}
+                                >저장</Button>
+                                <Button color="danger" variant="outlined"
+                                        onClick={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
+                                        sx={{width: '100px', marginLeft: '10px'}}
+                                >취소</Button>
+                            </div>
+                        </Box>
+                        :
+                        /* 소셜로그인 가입자 */
+                        <Box className={style.profile_box}>
+
+                            <div className={style.title}>
+                                <Typography id="modal-modal-title" variant="h5" gutterBottom>
+                                    내정보
+                                </Typography>
+
+                                <Divider sx={{marginBottom: 10}}/>
+                            </div>
+
+                            {
+                                infoAlert("SNS가입자는 수정할 수 없습니다.")
+                            }
+
+                            <div className={style.content}>
+                                <div className={style.myProfile}>
+                                    <Typography sx={{fontSize: '15px'}}>이메일</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={email} type="email"/>
+
+                                    <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
+                                    <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
+                                               value={name} type="text"/>
+
+                                    {
+                                        errorMessage && errorAlert(errorMessage)
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={style.save_btn}>
+                                <Button color="danger" variant="solid"
+                                        onClick={deleteOauthTraveler}
+                                        sx={{width: '90px', marginRight: 'auto'}}
+                                >연동해제(탈퇴)</Button>
+                                <Button color="danger" variant="outlined"
+                                        onClick={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
+                                        sx={{width: '100px', marginLeft: 'auto'}}
+                                >취소</Button>
+                            </div>
+                        </Box>
+                }
+
             </Modal>
         </div>
     );

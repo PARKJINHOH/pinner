@@ -4,7 +4,7 @@ const isLocal = window.location.hostname === 'localhost';
 
 export const nowEnv = {
     LOCAL: 'http://localhost:8080/',
-    DEV: 'https://test.com/',
+    DEV: 'https://pinner.dev/',
 };
 
 

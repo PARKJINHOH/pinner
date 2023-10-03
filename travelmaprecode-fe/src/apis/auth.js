@@ -68,6 +68,12 @@ export async function postLogin(data) {
     return res;
 }
 
+// OAuth 로그인
+export async function postLoginAfterOAuth(ticket) {
+    let res = await instance.post(`/api/v1/traveler/afteroauth/${ticket}`);
+    return res;
+}
+
 // 회원가입
 export async function postRegister(data) {
     return instance.post("/api/v1/traveler/register", data);

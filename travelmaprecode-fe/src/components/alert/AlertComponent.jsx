@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack';
  */
 function AlertComponent(props) {
     return (
-        <Stack sx={{width: '100%'}} spacing={2}>
+        <Stack sx={{width: '100%', padding:'10px'}} spacing={2}>
             <Alert severity={props.type}>{props.message}</Alert>
         </Stack>
     );

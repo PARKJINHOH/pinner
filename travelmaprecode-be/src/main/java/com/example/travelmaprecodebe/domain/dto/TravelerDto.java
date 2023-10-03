@@ -8,7 +8,6 @@ import lombok.Data;
 
 
 public class TravelerDto {
-    // Todo : token용 dto
 
     @Data
     @Builder
@@ -20,6 +19,7 @@ public class TravelerDto {
         private String newPassword;
         private String accessToken;
         private String refreshToken;
+        private String signupServices;
 
         public Traveler toEntity() {
             return Traveler.builder()
@@ -27,6 +27,7 @@ public class TravelerDto {
                     .name(name)
                     .password(password)
                     .role(Role.USER) // Default User
+                    .signupServices(signupServices)
                     .build();
         }
     }
@@ -40,6 +41,7 @@ public class TravelerDto {
         private String password;
         private String accessToken;
         private String refreshToken;
+        private String signupServices;
     }
 
 }

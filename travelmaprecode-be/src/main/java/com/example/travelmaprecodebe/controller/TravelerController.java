@@ -1,8 +1,9 @@
 package com.example.travelmaprecodebe.controller;
 
-import com.example.travelmaprecodebe.domain.dto.TravelerDto;
-import com.example.travelmaprecodebe.service.TravelerService;
 import com.example.travelmaprecodebe.domain.dto.ResponseDto;
+import com.example.travelmaprecodebe.domain.dto.TravelerDto;
+import com.example.travelmaprecodebe.service.OAuthAfterLoginService;
+import com.example.travelmaprecodebe.service.TravelerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 public class TravelerController {
 
     private final TravelerService travelerService;
+    private final OAuthAfterLoginService afterLoginService;
 
     @GetMapping("/echo")
     public String echo(@AuthenticationPrincipal OAuth2User principal) {
@@ -29,7 +31,7 @@ public class TravelerController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> postEmail(@RequestBody TravelerDto.Request travelerDto) {
+    public ResponseEntity<ResponseDto> createAccount(@RequestBody TravelerDto.Request travelerDto) {
         String getResult = travelerService.register(travelerDto);
         ResponseDto responseDto = new ResponseDto();
 
@@ -49,8 +51,8 @@ public class TravelerController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto.Request travelerDto) {
-        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
         ResponseDto responseDto = new ResponseDto();
+        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
 
         if (getResult == null) {
             responseDto.setMessage("로그인에 실패했습니다.");
@@ -64,6 +66,33 @@ public class TravelerController {
         }
     }
 
+
+    // Oauth 로그인
+    @PostMapping("/afteroauth/{jwtTicket}")
+    public ResponseEntity<ResponseDto> afteroauth(@PathVariable String jwtTicket) {
+        ResponseDto responseDto = new ResponseDto();
+
+        Long travelerId = afterLoginService.get(jwtTicket);
+        if (travelerId == null) {
+            responseDto.setMessage("Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        TravelerDto.Response getResult = travelerService.doLoginBySocial(travelerId);
+        if (getResult == null) {
+            responseDto.setMessage("Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+
+        responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
+        responseDto.setData(new HashMap<>() {{
+            put("payload", getResult);
+        }});
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 비밀번호 체크
     @PostMapping("/password/check")
     public ResponseEntity<ResponseDto> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
         boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
@@ -78,6 +107,7 @@ public class TravelerController {
         }
     }
 
+    // 내정보 수정
     @PutMapping()
     public ResponseEntity<ResponseDto> putTraveler(@RequestBody TravelerDto.Request travelerDto) {
         TravelerDto.Response response = travelerService.updateTraveler(travelerDto);
@@ -102,6 +132,7 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    // token 갱신
     @PostMapping("/renewal/token")
     public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
         TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
@@ -112,8 +143,9 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logoutUser(@RequestBody TravelerDto.Request travelerDto) {
+    public ResponseEntity<ResponseDto> logoutTraveler(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();
         try {
             travelerService.doLogout(travelerDto);
@@ -123,7 +155,34 @@ public class TravelerController {
             responseDto.setMessage("관리자에게 문의주세요.");
             return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
         }
+    }
 
+    // 일반회원 탈퇴
+    @PostMapping("/delete")
+    public ResponseEntity<ResponseDto> deleteTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+        if (isSuccess) {
+            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 소셜로그인 탈퇴
+    @PostMapping("/delete/afteroauth")
+    public ResponseEntity<ResponseDto> deleteOauthTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+        if (isSuccess) {
+            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
     }
 
 }

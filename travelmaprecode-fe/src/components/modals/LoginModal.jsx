@@ -11,10 +11,12 @@ import { postLogin } from '../../apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
 
 // mui
-import {Box, Modal, Stack, TextField, Typography, Button} from "@mui/material";
+import {Box, Modal, Stack, TextField, Typography, Button, IconButton} from "@mui/material";
+import Divider from '@mui/material/Divider';
 
-// mantine
-import {Divider} from "@mantine/core";
+// image
+import NaverLoginBtn from 'assets/images/login_icon_naver.png';
+import GoogleLoginBtn from 'assets/images/login_icon_google.png';
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');
@@ -57,6 +59,7 @@ export default function LoginModal() {
                     name: payload.name,
                     accessToken: payload.accessToken,
                     refreshToken: payload.refreshToken,
+                    signupServices: payload.signupServices,
                 });
 
                 // 로그인 모달 감춤
@@ -74,11 +77,11 @@ export default function LoginModal() {
                 onClose={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             >
                 <Box className={style.login_box}>
-                    <Typography id="modal-modal-title" variant="h5" gutterBottom>
-                        로그인
+                    <Typography variant="h5" sx={{marginBottom: 3}}>
+                        Pinner에 오신것을 환영합니다.
                     </Typography>
-                    <Divider sx={{marginBottom: 20}}/>
-                    <Stack spacing={3}>
+                    <Divider sx={{marginBottom: 2}}>아이디 로그인</Divider>
+                    <Stack spacing={2} sx={{marginBottom: 7}}>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         <TextField label="비밀번호" variant="outlined"
@@ -91,9 +94,24 @@ export default function LoginModal() {
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
-                        <Button onClick={onSubmit} variant="contained" type="button" sx={{ my: 1 }}>
+                        <Button onClick={onSubmit} variant="contained" type="button" sx={{ backgroundColor: '#33a4ff'}}>
                             로그인
                         </Button>
+                    </Stack>
+                    <Divider sx={{marginBottom: 2}}>소셜 계정으로 간편 로그인</Divider>
+                    <Stack spacing={2} direction="row" justifyContent="center">
+                        <IconButton
+                            className={style.login_icon_naver}
+                            onClick={() => window.location = "/oauth2/authorization/naver"}
+                        >
+                            <img src={NaverLoginBtn} alt="NaverLoginBtn" />
+                        </IconButton>
+                        <IconButton
+                            className={style.login_icon_google}
+                            onClick={() => window.location = "/oauth2/authorization/google"}
+                        >
+                            <img src={GoogleLoginBtn} alt="GoogleLoginBtn" />
+                        </IconButton>
                     </Stack>
                 </Box>
             </Modal>

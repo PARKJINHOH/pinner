@@ -1,27 +1,26 @@
 package com.example.travelmaprecodebe.domain.entity;
 
 import com.example.travelmaprecodebe.domain.AuditEntity;
-import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.global.Role;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Comment;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "TRAVELER")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Traveler extends AuditEntity implements UserDetails {
 
     @Id
@@ -30,23 +29,54 @@ public class Traveler extends AuditEntity implements UserDetails {
     private Long id;
 
     @NotNull
+    @Comment("이메일")
     private String email;
 
-    @NotNull
+    @Comment("비밀번호")
     private String password;
 
+    @Comment("oauthAccessToken")
+    private String oauthAccessToken;
+
     @NotNull
+    @Comment("닉네임")
     private String name;
 
     @NotNull
+    @Comment("가입경로")
+    private String signupServices;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
+    @Comment("권한")
     private Role role;
 
-    private boolean state;
+    @Comment("계정 상태")
+    @NotNull
+    @Builder.Default
+    private Boolean state = true;
 
+    @Comment("로그인 실패 횟수")
+    private int loginFailureCount;
+
+    @Comment("마지막 로그인 날짜")
+    private LocalDateTime lastLoginDate;
+
+    @Comment("마지막 비밀번호 변경 날짜")
+    private LocalDateTime lastChangePasswordDate;
+
+    @Comment("마지막 로그인 IP 주소")
+    private String lastLoginIpAddress;
 
     @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL)
     private List<Travel> travels = new ArrayList<>();
+
+    @PrePersist
+    public void onCreate() {
+        // 엔티티가 생성될 때 초기화
+        this.lastLoginDate = LocalDateTime.now();
+        this.lastChangePasswordDate = LocalDateTime.now();
+    }
 
     public void addTravel(String title) {
         int newOrder = travels.size(); // 0부터 시작
@@ -54,19 +84,35 @@ public class Traveler extends AuditEntity implements UserDetails {
         travels.add(travel);
     }
 
-
-    @Builder
-    public Traveler(String email, String password, String name, Role role) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-        this.state = true;
+    public void updateLastLoginDate() {
+        this.lastLoginDate = LocalDateTime.now();
     }
 
-    public void updateTraveler(TravelerDto.Request travelerDto) {
-        this.name = Optional.ofNullable(travelerDto.getName()).orElse(this.name);
-        this.password = Optional.ofNullable(travelerDto.getNewPassword()).orElse(this.password);
+    public void updateOauthAccessToken(String accessToken) {
+        this.oauthAccessToken = accessToken;
+    }
+
+    public void updateLastLoginIpAddress(String ipAddress) {
+        this.lastLoginIpAddress = ipAddress;
+    }
+
+    public void updateLastChangePasswordDate() {
+        lastChangePasswordDate = LocalDateTime.now();
+    }
+
+    public void addLoginFailureCount() {
+        this.loginFailureCount++;
+    }
+
+    public void initLoginFailureCount() {
+        this.loginFailureCount = 0;
+    }
+
+    public void updateNickname(String nickname) {
+        this.name = nickname;
+    }
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     // 사용자 권한을 반환,
