@@ -17,7 +17,7 @@ spring:
           naver:
             client-name: Naver
             authorization-grant-type: authorization_code
-            redirect-uri: "https://dev.pinner.dev"
+            redirect-uri: "https://pinner.dev"
             clientId: ${NAVER_CLIENT_ID}
             clientSecret: ${NAVER_CLIENT_SECRET}
           google:
