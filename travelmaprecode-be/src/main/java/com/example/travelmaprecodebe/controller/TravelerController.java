@@ -132,6 +132,7 @@ public class TravelerController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    // token 갱신
     @PostMapping("/renewal/token")
     public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
         TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
@@ -159,6 +160,20 @@ public class TravelerController {
     // 일반회원 탈퇴
     @PostMapping("/delete")
     public ResponseEntity<ResponseDto> deleteTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        ResponseDto responseDto = new ResponseDto();
+        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+        if (isSuccess) {
+            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } else {
+            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
+            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 소셜로그인 탈퇴
+    @PostMapping("/delete/afteroauth")
+    public ResponseEntity<ResponseDto> deleteOauthTraveler(@RequestBody TravelerDto.Request travelerDto) {
         ResponseDto responseDto = new ResponseDto();
         boolean isSuccess = travelerService.deleteTraveler(travelerDto);
         if (isSuccess) {

@@ -1,6 +1,4 @@
 import React from 'react'
-import {useRecoilState} from "recoil";
-import {environmentStatus} from "../../states/environment";
 
 /**
  *
@@ -8,8 +6,6 @@ import {environmentStatus} from "../../states/environment";
  * @returns
  */
 export default function RepresentImage({photo}) {
-    const [nowEnv, setNowEnv] = useRecoilState(environmentStatus);
-
     return (
         <img
             style={{
@@ -20,6 +16,6 @@ export default function RepresentImage({photo}) {
             loading="lazy"
             width="100%"
             height="100%"
-        />
+            alt="RepresentImage"/>
     )
 }

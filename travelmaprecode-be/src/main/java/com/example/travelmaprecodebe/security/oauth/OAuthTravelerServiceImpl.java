@@ -71,7 +71,8 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
             OAuthLoginAttributes attr = new OAuthLoginAttributes(
                     userRequest.getClientRegistration().getClientName(),
                     email,
-                    nickname
+                    nickname,
+                    userRequest.getAccessToken().getTokenValue()
             );
 
             log.info("OAuth 로그인 시도: {}", attr);

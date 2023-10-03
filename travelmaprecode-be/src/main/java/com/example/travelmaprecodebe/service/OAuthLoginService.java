@@ -27,8 +27,10 @@ public class OAuthLoginService {
         Optional<Traveler> traveler = travelerRepository.findByEmail(attr.email());
         if (traveler.isPresent()) {
             Traveler getTraveler = traveler.get();
+
             getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
             getTraveler.updateLastLoginDate();
+            getTraveler.updateOauthAccessToken(attr.token());
 
             return traveler.get();
         }
@@ -41,7 +43,7 @@ public class OAuthLoginService {
                 .signupServices(attr.serviceName())
                 .email(attr.email())
                 .name(attr.nickname())
-                .password("NEED_TO_BE_RANDOM") // TODO: random password, because this won't use evermore
+                .password(attr.token()) // todo : web,oauth entity 분리 고민 하기, Oauth token password에 저장.
                 .role(Role.USER)
                 .lastLoginIpAddress(getIpAddress())
                 .build();

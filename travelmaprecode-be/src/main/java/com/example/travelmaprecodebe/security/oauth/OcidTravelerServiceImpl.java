@@ -32,7 +32,8 @@ public class OcidTravelerServiceImpl implements OAuth2UserService<OidcUserReques
         OAuthLoginAttributes attr = new OAuthLoginAttributes(
                 userRequest.getClientRegistration().getClientName(),
                 idToken.getEmail(),
-                idToken.getFullName()
+                idToken.getFullName(),
+                userRequest.getAccessToken().getTokenValue() // todo : Check
         );
 
         log.info("OIDC 로그인 시도: {}", attr);

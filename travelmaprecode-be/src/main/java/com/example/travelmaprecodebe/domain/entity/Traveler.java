@@ -35,7 +35,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     private String email;
 
     @NotNull
-    @Comment("비밀번호")
+    @Comment("비밀번호 OR OauthAccessToken")
     private String password;
 
     @NotNull
@@ -98,6 +98,10 @@ public class Traveler extends AuditEntity implements UserDetails {
 
     public void updateLastLoginDate() {
         this.lastLoginDate = LocalDateTime.now();
+    }
+
+    public void updateOauthAccessToken(String accesstoken) {
+        this.password = accesstoken;
     }
 
     public void updateLastLoginIpAddress(String ipAddress) {

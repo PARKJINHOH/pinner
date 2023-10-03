@@ -7,7 +7,7 @@ import style from './ProfileModal.module.css';
 // component
 import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
 import {clearTraveler} from "../../states/webstore";
-import {travelerState, useDoLogin, useDoLogout} from "../../states/traveler";
+import {travelerState, useDoLogin} from "../../states/traveler";
 import {errorAlert, infoAlert} from "../alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
 
@@ -79,6 +79,26 @@ export default function ProfileModal() {
     async function deleteTraveler() {
         if (window.confirm('정말 탈퇴하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
+                .then(response => {
+                    alert(response.data.message);
+                    return response.status;
+                })
+                .catch(error => {
+                    alert(error.data.message);
+                    return error.status;
+                });
+
+            if (resultStatus === HTTPStatus.OK) {
+                window.location.reload();
+                setTraveler(null);
+                clearTraveler();
+            }
+        }
+    }
+
+    async function deleteOauthTraveler() {
+        if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
+            let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
                 .then(response => {
                     alert(response.data.message);
                     return response.status;
@@ -170,7 +190,7 @@ export default function ProfileModal() {
                 }}
             >
                 {
-                    signupServices === 'web' ?
+                    signupServices === 'Web' ?
                         /* 홈페이지 가입자 */
                         <Box className={style.profile_box}>
 
@@ -257,6 +277,10 @@ export default function ProfileModal() {
                             </div>
 
                             <div className={style.save_btn}>
+                                <Button color="danger" variant="solid"
+                                        onClick={deleteOauthTraveler}
+                                        sx={{width: '90px', marginRight: 'auto'}}
+                                >연동해제(탈퇴)</Button>
                                 <Button color="danger" variant="outlined"
                                         onClick={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
                                         sx={{width: '100px', marginLeft: 'auto'}}
