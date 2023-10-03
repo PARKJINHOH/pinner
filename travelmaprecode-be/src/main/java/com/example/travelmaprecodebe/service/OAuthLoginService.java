@@ -30,7 +30,7 @@ public class OAuthLoginService {
 
             getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
             getTraveler.updateLastLoginDate();
-            getTraveler.updateOauthAccessToken(attr.token());
+            getTraveler.updateOauthAccessToken(attr.accessToken());
 
             return traveler.get();
         }
@@ -43,7 +43,7 @@ public class OAuthLoginService {
                 .signupServices(attr.serviceName())
                 .email(attr.email())
                 .name(attr.nickname())
-                .password(attr.token()) // todo : web,oauth entity 분리 고민 하기, Oauth token password에 저장.
+                .password(attr.accessToken()) // todo : web,oauth entity 분리 고민 하기, Oauth token password에 저장.
                 .role(Role.USER)
                 .lastLoginIpAddress(getIpAddress())
                 .build();

@@ -1,19 +1,19 @@
 package com.example.travelmaprecodebe.service;
 
+import com.example.travelmaprecodebe.domain.dto.OauthResponseDto;
 import com.example.travelmaprecodebe.domain.dto.TravelerDto;
 import com.example.travelmaprecodebe.domain.entity.Traveler;
 import com.example.travelmaprecodebe.exceprion.TokenRefreshException;
+import com.example.travelmaprecodebe.global.OauthServiceCode;
 import com.example.travelmaprecodebe.repository.TravelerRepository;
 import com.example.travelmaprecodebe.security.jwt.JwtUtils;
 import com.example.travelmaprecodebe.security.jwt.RefreshToken;
 import com.example.travelmaprecodebe.security.jwt.RefreshTokenService;
 import com.example.travelmaprecodebe.utils.CommonUtil;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,11 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -193,29 +191,18 @@ public class TravelerService {
                 throw new RuntimeException("[deleteTraveler] Failed to update traveler state. RollBack transaction.");
             }
 
-            if (traveler.getSignupServices().equals("Naver")) {
-                // Token 갱신
-                // Access Token은 유효기간이 1시간임.
-//                String apiTokenUrl = ("https://nid.naver.com/oauth2.0/token?grant_type=refresh_token" +
-//                        "&client_id=%s" +
-//                        "&client_secret=%s" +
-//                        "&refresh_token=%s").formatted(clientId_naver, clientSecret_naver, traveler.getPassword());
-//                JsonObject resultToken = requestToServer(apiTokenUrl);
-
+            if (traveler.getSignupServices().equals(OauthServiceCode.NAVER.getSignupServices())) {
                 String apiUrl =("https://nid.naver.com/oauth2.0/token?grant_type=delete" +
                         "&client_id=%s" +
                         "&client_secret=%s" +
                         "&access_token=%s" +
                         "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getPassword());
+                return requestToServer(apiUrl, OauthServiceCode.NAVER.getSignupServices());
+            }
 
-                // 탈퇴 호출
-                JsonObject resultDelete = requestToServer(apiUrl);
-                // 기존 계정이 있다면 status true 변경 후 기존계정과 연동된다는 alert 뜨기,
-                if (resultDelete == null) {
-                    return false;
-                } else {
-                    return resultDelete.get("result").getAsString().equals("success");
-                }
+            if (traveler.getSignupServices().equals(OauthServiceCode.GOOGLE.getSignupServices())) {
+                String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getPassword());
+                return requestToServer(apiUrl, OauthServiceCode.GOOGLE.getSignupServices());
             }
         }
 
@@ -223,38 +210,35 @@ public class TravelerService {
     }
 
 
-    private JsonObject requestToServer(String apiURL) {
+    private Boolean requestToServer(String apiURL, String signupServices) {
         try {
-            URL url = new URL(apiURL);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            RestTemplate restTemplate = new RestTemplate();
 
-            // 통신
-            int responseCode = con.getResponseCode();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            BufferedReader br;
-            if (responseCode == HttpStatus.OK.value()) {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+            if (signupServices.equals(OauthServiceCode.NAVER.getSignupServices())) {
+                ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
+                log.info("{} : ApiResponse : ({}){}", signupServices, resultNaver.getStatusCode(), resultNaver.getBody());
+                if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
+                    return true;
+                }
             }
 
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-            while ((inputLine = br.readLine()) != null) {
-                response.append(inputLine);
+            if (signupServices.equals(OauthServiceCode.GOOGLE.getSignupServices())) {
+                ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
+                log.info("{} : ApiResponse : ({}){}", signupServices, resultGoogle.getStatusCode(), resultGoogle.getBody());
+                if (resultGoogle.getStatusCode() == HttpStatus.OK) {
+                    return true;
+                }
             }
-            br.close();
 
-            if (responseCode == HttpStatus.OK.value()) {
-                Gson gson = new Gson();
-                return gson.fromJson(response.toString(), JsonObject.class);
-            } else {
-                return null;
-            }
+            return false;
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return null;
+            log.error("{} ApiError : {}", signupServices, e.getMessage());
+            return false;
         }
     }
 }
