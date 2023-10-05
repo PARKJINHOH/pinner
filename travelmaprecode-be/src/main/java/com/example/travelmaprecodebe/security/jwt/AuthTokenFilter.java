@@ -4,6 +4,7 @@ import com.example.travelmaprecodebe.global.JwtCode;
 import com.example.travelmaprecodebe.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
+    static final String _MDC_KEY = "user";
 
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
@@ -27,12 +29,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("요청을 인증 중");
         try {
             String jwt = parseJwt(request);
             String key = jwtUtils.validateJwtToken(jwt).getKey();
 
             if (jwt != null && key.equals(JwtCode.ACCESS.getKey())) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
+                MDC.put(_MDC_KEY, username);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -44,7 +48,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             log.error("Cannot set user authentication: {}", e.getMessage());
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.remove(_MDC_KEY);
+        }
     }
 
     private String parseJwt(HttpServletRequest request) {
