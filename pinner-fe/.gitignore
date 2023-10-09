@@ -32,3 +32,19 @@ yarn-error.log*
 out/
 *.iml
 *.idea
+.idea_modules/
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
