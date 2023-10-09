@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:~/TravelMapRecode
+    url: jdbc:h2:~/pinner_local
     username: sa
     password:
     driver-class-name: org.h2.Driver
