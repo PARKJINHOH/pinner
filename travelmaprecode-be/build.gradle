@@ -5,8 +5,8 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.6.9'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.16'
+    id 'io.spring.dependency-management' version '1.1.3' // 종속성관리를 위한 Gradle 플러그인
     id 'java'
 }
 
@@ -15,7 +15,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-group = 'com.example'
+group = 'dev.pinner'
 version = '0.0.1-SNAPSHOT'
 
 configurations {
