@@ -27,7 +27,7 @@ public class JourneyController {
                                          @RequestPart("newJourney") JourneyDto.Request newJourney,
                                          @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
         try {
-            log.info("traveler : {}, postJourney", traveler.getName());
+            log.info("traveler : {}, postJourney", traveler.getNickname());
             List<TravelDto.Response> travels = journeyService.addJourney(traveler, newJourney, photos);
             return ResponseEntity.ok(travels);
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class JourneyController {
     public ResponseEntity<?> deleteJourney(@AuthenticationPrincipal Traveler traveler,
                                            @PathVariable Long journeyId) {
         try {
-            log.info("traveler : {}, deleteJourney : {}", traveler.getName(), journeyId);
+            log.info("traveler : {}, deleteJourney : {}", traveler.getNickname(), journeyId);
             List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
             return ResponseEntity.ok(travels);
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class JourneyController {
                                          @RequestPart("newJourney") JourneyDto.Request newJourney,
                                          @RequestPart(value = "photo", required = false) List<MultipartFile> photos) throws IOException {
         try {
-            log.info("traveler : {}, pathJourney : {}", traveler.getName(), journeyId);
+            log.info("traveler : {}, pathJourney : {}", traveler.getNickname(), journeyId);
             List<TravelDto.Response> travels = journeyService.putJourney(traveler, journeyId, newJourney, photos);
             return ResponseEntity.ok(travels);
         } catch (Exception e) {

@@ -14,7 +14,7 @@ public class TravelerDto {
     @AllArgsConstructor
     public static class Request {
         private String email;
-        private String name;
+        private String nickname;
         private String password;
         private String newPassword;
         private String accessToken;
@@ -24,7 +24,7 @@ public class TravelerDto {
         public Traveler toEntity() {
             return Traveler.builder()
                     .email(email)
-                    .name(name)
+                    .nickname(nickname)
                     .password(password)
                     .roleEnum(RoleEnum.USER) // Default User
                     .signupServices(signupServices)
@@ -37,7 +37,7 @@ public class TravelerDto {
     @AllArgsConstructor
     public static class Response {
         private String email;
-        private String name;
+        private String nickname;
         private String password;
         private String accessToken;
         private String refreshToken;

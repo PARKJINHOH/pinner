@@ -162,7 +162,7 @@ export default function Sidebar() {
                 <Divider sx={{marginTop: 'auto'}}/>
 
                 <Button onClick={travelerClick}>
-                    <Avatar {...stringAvatar(traveler ? traveler.name : '')} />
+                    <Avatar {...stringAvatar(traveler ? traveler.nickname : '')} />
                 </Button>
             </Drawer>
 

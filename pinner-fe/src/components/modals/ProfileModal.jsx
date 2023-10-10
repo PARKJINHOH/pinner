@@ -28,7 +28,7 @@ export default function ProfileModal() {
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
     const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
+    const [nickname, setNickname] = useState('');
     const [signupServices, setSignupServices] = useState('');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -39,7 +39,7 @@ export default function ProfileModal() {
     useEffect(() => {
         if (traveler) {
             setEmail(traveler.email);
-            setName(traveler.name);
+            setNickname(traveler.nickname);
             setSignupServices(traveler.signupServices);
         }
     }, [traveler]);
@@ -49,12 +49,12 @@ export default function ProfileModal() {
             return '현재 비밀번호를 적어주세요.';
         }
 
-        if (name) {
-            if (!name || name.length < 2 || name.length > 6) {
+        if (nickname) {
+            if (!nickname || nickname.length < 2 || nickname.length > 6) {
                 return '닉네임은 2~6자 이내로 적어주세요.';
-            } else if (!/^\S+$/.test(name)) {
+            } else if (!/^\S+$/.test(nickname)) {
                 return '닉네임은 공백을 사용할 수 없습니다.';
-            } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
+            } else if (!/^[a-zA-Z가-힣0-9]+$/.test(nickname)) {
                 return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
             }
         }
@@ -156,8 +156,8 @@ export default function ProfileModal() {
         if (newPassword !== '') {
             data.newPassword = newPassword;
         }
-        if (name !== '') {
-            data.name = name;
+        if (nickname !== '') {
+            data.nickname = nickname;
         }
         const newData = JSON.stringify(data);
 
@@ -170,7 +170,7 @@ export default function ProfileModal() {
 
                 doLogin({
                     email: response.data.data.payload.email,
-                    name: response.data.data.payload.name,
+                    nickname: response.data.data.payload.nickname,
                     accessToken: response.data.data.payload.accessToken,
                     refreshToken: response.data.data.payload.refreshToken,
                 });
@@ -210,7 +210,7 @@ export default function ProfileModal() {
 
                                     <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
                                     <TextField id="outlined" inputProps={{maxLength: 6}} sx={{marginBottom: 3, width: '100%'}} size="small"
-                                               value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내" type="text"/>
+                                               value={nickname} onChange={(e) => setNickname(e.currentTarget.value)} placeholder="2~6자 이내" type="text"/>
 
                                     <Typography sx={{fontSize: '15px'}}>현재 비밀번호 *</Typography>
                                     <TextField variant="outlined" sx={{marginBottom: 3, width: '100%'}} size="small"
@@ -268,7 +268,7 @@ export default function ProfileModal() {
 
                                     <Typography sx={{fontSize: '15px'}}>닉네임</Typography>
                                     <TextField disabled id="outlined-disabled" sx={{marginBottom: 3, width: '100%'}} size="small"
-                                               value={name} type="text"/>
+                                               value={nickname} type="text"/>
 
                                     {
                                         errorMessage && errorAlert(errorMessage)

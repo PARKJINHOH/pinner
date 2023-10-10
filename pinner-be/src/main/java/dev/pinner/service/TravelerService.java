@@ -75,7 +75,7 @@ public class TravelerService {
             return TravelerDto.Response.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken.getToken())
-                    .name(traveler.getName())
+                    .nickname(traveler.getNickname())
                     .email(traveler.getEmail())
                     .signupServices(traveler.getSignupServices())
                     .build();
@@ -110,7 +110,7 @@ public class TravelerService {
             return TravelerDto.Response.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken.getToken())
-                    .name(traveler.getName())
+                    .nickname(traveler.getNickname())
                     .email(traveler.getEmail())
                     .signupServices(traveler.getSignupServices())
                     .build();
@@ -142,8 +142,8 @@ public class TravelerService {
                 traveler.updatePassword(encoder.encode(travelerDto.getNewPassword()));
                 traveler.updateLastChangePasswordDate();
             }
-            if (travelerDto.getName() != null) {
-                traveler.updateNickname(travelerDto.getName());
+            if (travelerDto.getNickname() != null) {
+                traveler.updateNickname(travelerDto.getNickname());
             }
 
             // Token 재생성

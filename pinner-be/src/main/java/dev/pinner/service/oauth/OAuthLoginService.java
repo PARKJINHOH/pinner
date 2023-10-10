@@ -42,7 +42,7 @@ public class OAuthLoginService {
         Traveler newTraveler = Traveler.builder()
                 .signupServices(attr.serviceName())
                 .email(attr.email())
-                .name(attr.nickname())
+                .nickname(attr.nickname())
                 .oauthAccessToken(attr.accessToken())
                 .roleEnum(RoleEnum.USER)
                 .lastLoginIpAddress(getIpAddress())

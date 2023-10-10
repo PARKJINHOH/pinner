@@ -80,7 +80,7 @@ public class OcidTravelerServiceImpl implements OAuth2UserService<OidcUserReques
 
         @Override
         public String getName() {
-            return traveler.getName();
+            return traveler.getNickname();
         }
     }
 

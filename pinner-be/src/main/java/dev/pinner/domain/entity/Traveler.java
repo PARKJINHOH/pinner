@@ -39,7 +39,7 @@ public class Traveler extends AuditEntity implements UserDetails {
 
     @NotNull
     @Comment("닉네임")
-    private String name;
+    private String nickname;
 
     @NotNull
     @Comment("가입경로")
@@ -109,7 +109,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     }
 
     public void updateNickname(String nickname) {
-        this.name = nickname;
+        this.nickname = nickname;
     }
     public void updatePassword(String password) {
         this.password = password;

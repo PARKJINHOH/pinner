@@ -56,7 +56,7 @@ export default function LoginModal() {
 
                 doLogin({
                     email: payload.email,
-                    name: payload.name,
+                    nickname: payload.nickname,
                     accessToken: payload.accessToken,
                     refreshToken: payload.refreshToken,
                     signupServices: payload.signupServices,

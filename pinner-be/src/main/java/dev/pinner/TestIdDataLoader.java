@@ -39,7 +39,7 @@ public class TestIdDataLoader implements ApplicationRunner {
             // Test 계정 생성
             Traveler testId = Traveler.builder()
                     .email("test@naver.com")
-                    .name("test")
+                    .nickname("test")
                     .password(passwordEncoder.encode("test"))
                     .roleEnum(RoleEnum.USER)
                     .signupServices("Web")

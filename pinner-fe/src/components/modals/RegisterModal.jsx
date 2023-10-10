@@ -22,7 +22,7 @@ import GoogleLoginBtn from "../../assets/images/login_icon_google.png";
 export default function RegisterModal() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
+    const [nickname, setNickname] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
@@ -33,11 +33,11 @@ export default function RegisterModal() {
     function validInputs() {
         // if문 순서 중요
 
-        if (!name || name.length < 2 || name.length > 6) {
+        if (!nickname || nickname.length < 2 || nickname.length > 6) {
             return '닉네임은 2~6자 이내로 적어주세요.';
-        } else if (!/^\S+$/.test(name)) {
+        } else if (!/^\S+$/.test(nickname)) {
             return '닉네임은 공백을 사용할 수 없습니다.';
-        } else if (!/^[a-zA-Z가-힣0-9]+$/.test(name)) {
+        } else if (!/^[a-zA-Z가-힣0-9]+$/.test(nickname)) {
             return '닉네임은 한글, 영어, 숫자만 사용할 수 있습니다.';
         }
 
@@ -65,7 +65,7 @@ export default function RegisterModal() {
     function clearInputs() {
         setEmail('');
         setPassword('');
-        setName('');
+        setNickname('');
         setConfirmPassword('');
     }
 
@@ -81,7 +81,7 @@ export default function RegisterModal() {
 
         // prepare data and send request
         const data = JSON.stringify({
-            email, password, name, signupServices: "Web"
+            email, password, nickname, signupServices: "Web"
         });
 
         postRegister(data)
@@ -113,7 +113,7 @@ export default function RegisterModal() {
                     <Divider sx={{marginBottom: 2}}>회원가입에 필요한 정보를 입력해주세요</Divider>
                     <Stack spacing={3} sx={{marginBottom: 7}}>
                         <TextField label="닉네임" variant="outlined" inputProps={{maxLength: 6}}
-                                   value={name} onChange={(e) => setName(e.currentTarget.value)} placeholder="2~6자 이내"/>
+                                   value={nickname} onChange={(e) => setNickname(e.currentTarget.value)} placeholder="2~6자 이내"/>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
                         <TextField label="비밀번호" variant="outlined"

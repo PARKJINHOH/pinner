@@ -20,7 +20,7 @@ export default function AfterOAtuhHandler() {
             .then((response) => {
                 doLogin({
                     email: response.data.data.payload.email,
-                    name: response.data.data.payload.name,
+                    nickname: response.data.data.payload.nickname,
                     accessToken: response.data.data.payload.accessToken,
                     refreshToken: response.data.data.payload.refreshToken,
                     signupServices: response.data.data.payload.signupServices,
