@@ -1,7 +1,6 @@
 package dev.pinner.domain.entity;
 
-import dev.pinner.domain.AuditEntity;
-import dev.pinner.global.Role;
+import dev.pinner.global.enums.RoleEnum;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,7 +48,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Comment("권한")
-    private Role role;
+    private RoleEnum roleEnum;
 
     @Comment("계정 상태")
     @NotNull
@@ -120,7 +119,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<GrantedAuthority> auth = new ArrayList<>();
-        auth.add(new SimpleGrantedAuthority(role.getKey()));
+        auth.add(new SimpleGrantedAuthority(roleEnum.getKey()));
         return auth;
     }
 

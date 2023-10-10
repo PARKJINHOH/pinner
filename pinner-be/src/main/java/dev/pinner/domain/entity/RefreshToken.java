@@ -1,6 +1,5 @@
-package dev.pinner.security.jwt;
+package dev.pinner.domain.entity;
 
-import dev.pinner.domain.entity.Traveler;
 import lombok.Data;
 
 import javax.persistence.*;

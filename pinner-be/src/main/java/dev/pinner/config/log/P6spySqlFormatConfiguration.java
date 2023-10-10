@@ -1,4 +1,4 @@
-package dev.pinner.config;
+package dev.pinner.config.log;
 
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
@@ -40,8 +40,8 @@ public class P6spySqlFormatConfiguration implements MessageFormattingStrategy {
     // 표기에 허용되지 않는 filter
     private List<String> DENIED_FILTER = Arrays.asList("Test1", this.getClass().getSimpleName());
 
-    // 표기에 허용되는 filter
-    private String ALLOW_FILTER = "com.example";
+    // 표기에 허용되는 filter (package 명)
+    private final String ALLOW_FILTER = "dev.pinner";
 
 
     // stack 콘솔 표기

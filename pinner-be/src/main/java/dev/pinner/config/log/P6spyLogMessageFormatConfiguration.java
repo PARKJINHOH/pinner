@@ -1,4 +1,4 @@
-package dev.pinner.config;
+package dev.pinner.config.log;
 
 import com.p6spy.engine.spy.P6SpyOptions;
 import org.springframework.context.annotation.Configuration;

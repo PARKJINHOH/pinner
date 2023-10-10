@@ -25,7 +25,6 @@ public class TravelerRepositoryImpl implements TravelerRepositoryCustom {
                 .set(traveler.state, false)
                 .where(traveler.id.eq(travelerId))
                 .execute();
-        System.out.println("updatedRows = " + updatedRows);
         return updatedRows == 1;
     }
 }

@@ -1,4 +1,4 @@
-package dev.pinner.exceprion;
+package dev.pinner.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

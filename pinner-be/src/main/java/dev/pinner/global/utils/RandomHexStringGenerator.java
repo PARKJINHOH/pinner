@@ -1,4 +1,4 @@
-package dev.pinner.utils;
+package dev.pinner.global.utils;
 
 import java.security.SecureRandom;
 

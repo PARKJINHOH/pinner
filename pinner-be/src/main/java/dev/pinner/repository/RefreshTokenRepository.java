@@ -1,6 +1,6 @@
 package dev.pinner.repository;
 
-import dev.pinner.security.jwt.RefreshToken;
+import dev.pinner.domain.entity.RefreshToken;
 import dev.pinner.domain.entity.Traveler;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

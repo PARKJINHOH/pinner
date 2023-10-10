@@ -1,7 +1,7 @@
 package dev.pinner.domain.dto;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.global.Role;
+import dev.pinner.global.enums.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class TravelerDto {
                     .email(email)
                     .name(name)
                     .password(password)
-                    .role(Role.USER) // Default User
+                    .roleEnum(RoleEnum.USER) // Default User
                     .signupServices(signupServices)
                     .build();
         }

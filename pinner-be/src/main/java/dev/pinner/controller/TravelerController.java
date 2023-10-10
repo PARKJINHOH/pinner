@@ -2,7 +2,7 @@ package dev.pinner.controller;
 
 import dev.pinner.domain.dto.ResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
-import dev.pinner.service.OAuthAfterLoginService;
+import dev.pinner.service.oauth.OAuthAfterLoginService;
 import dev.pinner.service.TravelerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

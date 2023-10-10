@@ -1,6 +1,7 @@
-package dev.pinner.security.jwt;
+package dev.pinner.service.jwt;
 
-import dev.pinner.exceprion.TokenRefreshException;
+import dev.pinner.domain.entity.RefreshToken;
+import dev.pinner.exception.TokenRefreshException;
 import dev.pinner.repository.RefreshTokenRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;

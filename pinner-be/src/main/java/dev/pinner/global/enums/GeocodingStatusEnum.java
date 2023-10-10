@@ -1,4 +1,4 @@
-package dev.pinner.global;
+package dev.pinner.global.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GeocodingStatus {
+public enum GeocodingStatusEnum {
     OK("OK"),
     ZERO_RESULTS("ZERO_RESULTS"),
     OVER_QUERY_LIMIT("OVER_QUERY_LIMIT"),

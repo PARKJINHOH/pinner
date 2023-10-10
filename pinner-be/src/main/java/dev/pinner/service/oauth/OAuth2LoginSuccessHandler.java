@@ -1,10 +1,7 @@
-package dev.pinner.security.oauth;
+package dev.pinner.service.oauth;
 
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.security.jwt.JwtUtils;
-import dev.pinner.security.jwt.RefreshTokenService;
-import dev.pinner.service.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,9 +20,6 @@ import java.net.URI;
 @Component
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
-
-    private final JwtUtils jwtUtils;
-    private final RefreshTokenService refreshTokenService;
     private final OAuthAfterLoginService afterLoginService;
 
     @Override

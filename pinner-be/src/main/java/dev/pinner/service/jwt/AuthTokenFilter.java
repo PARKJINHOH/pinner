@@ -1,6 +1,6 @@
-package dev.pinner.security.jwt;
+package dev.pinner.service.jwt;
 
-import dev.pinner.global.JwtCode;
+import dev.pinner.global.enums.JwtCodeEnum;
 import dev.pinner.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             String key = jwtUtils.validateJwtToken(jwt).getKey();
 
-            if (jwt != null && key.equals(JwtCode.ACCESS.getKey())) {
+            if (jwt != null && key.equals(JwtCodeEnum.ACCESS.getKey())) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 MDC.put(_MDC_KEY, username);
 

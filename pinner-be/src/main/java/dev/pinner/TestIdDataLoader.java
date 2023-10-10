@@ -1,7 +1,7 @@
 package dev.pinner;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.global.Role;
+import dev.pinner.global.enums.RoleEnum;
 import dev.pinner.repository.TravelerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ public class TestIdDataLoader implements ApplicationRunner {
                     .email("test@naver.com")
                     .name("test")
                     .password(passwordEncoder.encode("test"))
-                    .role(Role.USER)
+                    .roleEnum(RoleEnum.USER)
                     .signupServices("Web")
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
@@ -52,6 +52,7 @@ public class TestIdDataLoader implements ApplicationRunner {
                 String path = imagePath + File.separator;
                 Path directory = Path.of(path);
                 try {
+                    // 디텍토리 내부의 모든 파일과 하위 디렉토리를 역순으로 정렬하고 삭제
                     Files.walk(directory)
                             .sorted(Comparator.reverseOrder())
                             .map(Path::toFile)

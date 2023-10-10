@@ -1,4 +1,4 @@
-package dev.pinner.utils;
+package dev.pinner.global.utils;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

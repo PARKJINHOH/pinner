@@ -1,7 +1,6 @@
 package dev.pinner.domain.entity;
 
 
-import dev.pinner.domain.AuditEntity;
 import dev.pinner.domain.dto.JourneyDto;
 import lombok.AccessLevel;
 import lombok.Builder;

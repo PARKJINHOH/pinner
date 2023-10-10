@@ -1,7 +1,7 @@
-package dev.pinner.security.oauth;
+package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.service.OAuthLoginService;
+import dev.pinner.domain.record.OAuthLoginUserRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -68,7 +68,7 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
             }
 
 
-            OAuthLoginAttributes attr = new OAuthLoginAttributes(
+            OAuthLoginUserRecord attr = new OAuthLoginUserRecord(
                     userRequest.getClientRegistration().getClientName(),
                     email,
                     nickname,

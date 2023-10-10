@@ -1,7 +1,7 @@
-package dev.pinner.security.jwt;
+package dev.pinner.service.jwt;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.global.JwtCode;
+import dev.pinner.global.enums.JwtCodeEnum;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,25 +40,25 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public JwtCode validateJwtToken(String authToken) {
+    public JwtCodeEnum validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
-            return JwtCode.ACCESS;
+            return JwtCodeEnum.ACCESS;
         } catch (SignatureException e) {
             log.error("Invalid JWT signature: {}", e.getMessage());
-            return JwtCode.INVALID;
+            return JwtCodeEnum.INVALID;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
-            return JwtCode.INVALID;
+            return JwtCodeEnum.INVALID;
         } catch (ExpiredJwtException e) {
             log.error("JWT token is expired: {}", e.getMessage());
-            return JwtCode.EXPIRED;
+            return JwtCodeEnum.EXPIRED;
         } catch (UnsupportedJwtException e) {
             log.error("JWT token is unsupported: {}", e.getMessage());
-            return JwtCode.DENIED;
+            return JwtCodeEnum.DENIED;
         } catch (IllegalArgumentException e) {
             log.error("JWT claims string is empty: {}", e.getMessage());
-            return JwtCode.DENIED;
+            return JwtCodeEnum.DENIED;
         }
     }
 

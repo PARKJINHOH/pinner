@@ -1,11 +1,11 @@
-package dev.pinner.global;
+package dev.pinner.global.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum OauthServiceCode {
+public enum OauthServiceCodeEnum {
     GOOGLE("Google"),
     NAVER("Naver");
 

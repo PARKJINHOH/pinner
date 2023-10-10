@@ -1,6 +1,6 @@
-package dev.pinner.config;
+package dev.pinner.config.log;
 
-import dev.pinner.utils.RandomHexStringGenerator;
+import dev.pinner.global.utils.RandomHexStringGenerator;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
-public class MDCRequestIDFilter implements Filter {
+public class MDCRequestIDFilterImpl implements Filter {
     static final String _MDC_KEY = "reqId";
     final RandomHexStringGenerator requestIDGenerator = new RandomHexStringGenerator();
 

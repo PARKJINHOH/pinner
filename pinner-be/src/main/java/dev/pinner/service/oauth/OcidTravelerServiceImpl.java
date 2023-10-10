@@ -1,7 +1,7 @@
-package dev.pinner.security.oauth;
+package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.service.OAuthLoginService;
+import dev.pinner.domain.record.OAuthLoginUserRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +29,7 @@ public class OcidTravelerServiceImpl implements OAuth2UserService<OidcUserReques
         final OidcUser oidcUser = delegate.loadUser(userRequest);
         final OidcIdToken idToken = oidcUser.getIdToken();
 
-        OAuthLoginAttributes attr = new OAuthLoginAttributes(
+        OAuthLoginUserRecord attr = new OAuthLoginUserRecord(
                 userRequest.getClientRegistration().getClientName(),
                 idToken.getEmail(),
                 idToken.getFullName(),

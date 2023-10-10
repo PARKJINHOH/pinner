@@ -1,6 +1,6 @@
-package dev.pinner.service;
+package dev.pinner.service.oauth;
 
-import dev.pinner.utils.OnceReadTtlMap;
+import dev.pinner.global.utils.OnceReadTtlMap;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

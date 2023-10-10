@@ -2,7 +2,7 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.GeoLocationDto;
 import dev.pinner.domain.dto.GeocodingApiDto;
-import dev.pinner.global.GeocodingStatus;
+import dev.pinner.global.enums.GeocodingStatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -175,7 +175,7 @@ public class GeocodingService {
         HttpResponse<InputStream> responseStream = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         GeocodingApiDto response = objectMapper.readValue(responseStream.body(), GeocodingApiDto.class);
 
-        switch (GeocodingStatus.valueOf(response.getStatus())) {
+        switch (GeocodingStatusEnum.valueOf(response.getStatus())) {
             case OK:
                 Optional<String> countryCode = getCountryCode(response);
                 String readbleAddress = getReadbleAddress(response);

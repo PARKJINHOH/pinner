@@ -3,13 +3,13 @@ package dev.pinner.service;
 import dev.pinner.domain.dto.OauthResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exceprion.TokenRefreshException;
-import dev.pinner.global.OauthServiceCode;
+import dev.pinner.exception.TokenRefreshException;
+import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.repository.TravelerRepository;
-import dev.pinner.security.jwt.JwtUtils;
-import dev.pinner.security.jwt.RefreshToken;
-import dev.pinner.security.jwt.RefreshTokenService;
-import dev.pinner.utils.CommonUtil;
+import dev.pinner.service.jwt.JwtUtils;
+import dev.pinner.domain.entity.RefreshToken;
+import dev.pinner.service.jwt.RefreshTokenService;
+import dev.pinner.global.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -191,18 +191,18 @@ public class TravelerService {
                 throw new RuntimeException("[deleteTraveler] Failed to update traveler state. RollBack transaction.");
             }
 
-            if (traveler.getSignupServices().equals(OauthServiceCode.NAVER.getSignupServices())) {
+            if (traveler.getSignupServices().equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
                 String apiUrl =("https://nid.naver.com/oauth2.0/token?grant_type=delete" +
                         "&client_id=%s" +
                         "&client_secret=%s" +
                         "&access_token=%s" +
                         "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getPassword());
-                return requestToServer(apiUrl, OauthServiceCode.NAVER.getSignupServices());
+                return requestToServer(apiUrl, OauthServiceCodeEnum.NAVER.getSignupServices());
             }
 
-            if (traveler.getSignupServices().equals(OauthServiceCode.GOOGLE.getSignupServices())) {
+            if (traveler.getSignupServices().equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
                 String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getPassword());
-                return requestToServer(apiUrl, OauthServiceCode.GOOGLE.getSignupServices());
+                return requestToServer(apiUrl, OauthServiceCodeEnum.GOOGLE.getSignupServices());
             }
         }
 
@@ -219,7 +219,7 @@ public class TravelerService {
 
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-            if (signupServices.equals(OauthServiceCode.NAVER.getSignupServices())) {
+            if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
                 ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
                 log.info("{} : ApiResponse : ({}){}", signupServices, resultNaver.getStatusCode(), resultNaver.getBody());
                 if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
@@ -227,7 +227,7 @@ public class TravelerService {
                 }
             }
 
-            if (signupServices.equals(OauthServiceCode.GOOGLE.getSignupServices())) {
+            if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
                 ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
                 log.info("{} : ApiResponse : ({}){}", signupServices, resultGoogle.getStatusCode(), resultGoogle.getBody());
                 if (resultGoogle.getStatusCode() == HttpStatus.OK) {
