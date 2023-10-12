@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
-                .antMatchers("/h2-console/**");
+            .antMatchers("/h2-console/**");
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/", "/error", "/api/v1/traveler/**",  "/photo/**").permitAll()
+                        .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**",  "/photo/**").permitAll()
                         .anyRequest().authenticated()
 
                 .and()
