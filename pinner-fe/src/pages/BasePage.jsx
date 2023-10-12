@@ -125,8 +125,8 @@ export default function BasePage() {
      */
     function middleOfViewport(viewport) {
         return {
-            "ua": (viewport.Ua.lo + viewport.Ua.hi) / 2,
-            "ga": (viewport.Ga.lo + viewport.Ga.hi) / 2,
+            "ua": (viewport.mb.lo + viewport.mb.hi) / 2,
+            "ga": (viewport.Oa.lo + viewport.Oa.hi) / 2,
         };
     }
 
