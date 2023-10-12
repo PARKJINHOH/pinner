@@ -12,7 +12,7 @@ import RegisterModal from '../components/modals/RegisterModal';
 import ProfileModal from "../components/modals/ProfileModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
 import { googleMapState } from '../states/map';
-import {AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState} from '../states/modal';
+import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
 
 // etc
@@ -51,6 +51,7 @@ export default function BasePage() {
     const mapOptions = {
         fullscreenControl: false,
         draggableCursor: newJourneyStep === NewJourneyStep.LOCATING ? 'crosshair' : 'default',
+        styles: mapTypeStyleFactory(),
     };
 
     /** @type {Travel} */
@@ -220,6 +221,7 @@ export default function BasePage() {
                     options={mapOptions}
                     zoom={gMap.zoom}
                     center={gMap.center}
+                    clickableIcons={false}
 
                     onLoad={setMap}
 
@@ -294,6 +296,30 @@ function SearchBar(params) {
             }}
         />
     </StandaloneSearchBox>
+}
+
+function mapTypeStyleFactory() {
+    const offTypes = [
+        "poi.government",
+        "poi.medical",
+        "poi.school",
+        "poi.sports_complex",
+    ];
+
+    const onTypes = [
+        "administrative",
+        "landscape",
+        "poi.attraction",
+        "poi.business",
+        "poi.park",
+        "poi.place_of_worship",
+        "transit",
+    ];
+
+    return [
+        ...offTypes.map(t => { return { featureType: t, stylers: [{ visibility: "off" }] } }),
+        ...onTypes.map(t => { return { featureType: t, stylers: [{ visibility: "on" }] } }),
+    ];
 }
 
 /**
