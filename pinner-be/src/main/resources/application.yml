@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      max-file-size: 10MB # 개별 이미지에 최대 용량 제한
+      max-request-size: 110MB # 요청에 대한 최대 용량 제한
+token:
+  app:
+    jwtSecret: travelSecretKey
+    jwtExpirationMs: 3600000  # Access Token (3600000 = 1시간)
+    jwtRefreshExpirationMs: 604800000 # Refresh Token (604800000 = 7일)
+google-api-key: ${GOOGLE_API_KEY}
