@@ -1,4 +1,4 @@
-# TravelMapRecord
+# Pinner
 > 여행을 기록하는 사이트
 [![JAVA](https://img.shields.io/badge/JAVA-v11-green)](https://openjdk.java.net/)
 [![SINCE](https://img.shields.io/badge/SINCE-2022--02--27-brightgreen)]()
@@ -18,4 +18,4 @@
 ## 실행방법
 [Local]
 1. h2 DataBases 실행
-2. TravelMapRecordApplication.class 내장톰캣 실행
+2. PinnerBeApplication.class 내장톰캣 실행

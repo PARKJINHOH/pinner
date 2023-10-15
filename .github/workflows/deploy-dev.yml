@@ -11,8 +11,8 @@ permissions:
 
 env:
   repo: TravelMapRecord
-  working-directory-be: ./travelmaprecode-be
-  working-directory-fe: ./travelmaprecode-fe
+  working-directory-be: ./pinner-be
+  working-directory-fe: ./pinner-fe
   docker-image-be: pinner-be
   docker-image-fe: pinner-fe
 
@@ -37,9 +37,9 @@ jobs:
       with:
         filters: |
           backend:
-            - 'travelmaprecode-be/**'
+            - 'pinner-be/**'
           frontend:
-            - 'travelmaprecode-fe/**'
+            - 'pinner-fe/**'
   
   backend:
     needs: changes
