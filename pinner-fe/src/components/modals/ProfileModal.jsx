@@ -163,7 +163,6 @@ export default function ProfileModal() {
 
         await apiv1.put('/traveler', newData)
             .then(response => {
-                console.log(response);
                 toast.info('수정에 성공했습니다.');
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
                 setErrorMessage("");

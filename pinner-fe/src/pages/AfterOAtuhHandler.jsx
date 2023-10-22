@@ -1,4 +1,3 @@
-import { useAPIv1 } from 'apis/apiv1';
 import { postLoginAfterOAuth } from 'apis/auth';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -7,10 +6,7 @@ import { useDoLogin } from 'states/traveler';
 export default function AfterOAtuhHandler() {
     const doLogin = useDoLogin();
 
-    const apiv1 = useAPIv1();
-
     const [searchParams] = useSearchParams();
-    console.log(searchParams);
 
     useEffect(() => {
         const ticket = searchParams.get('ticket');

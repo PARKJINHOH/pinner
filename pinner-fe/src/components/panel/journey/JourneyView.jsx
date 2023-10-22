@@ -69,7 +69,9 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
 
     const [saving, setSaving] = useState(false);
 
-    const [countries, setCountries] = useState(iso3166_1);
+    // const [countries, setCountries] = useState(iso3166_1);
+    const countries = iso3166_1;
+
 
     const [lightBoxOpen, setLightBoxOpen] = useState(false);
     const [lightBoxPhotos, setLightBoxPhotos] = useState([]);

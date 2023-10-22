@@ -87,7 +87,7 @@ rawAxiosInstance.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.log({ "request-interceptors-error": error.response.data.message });
+        console.error({ "request-interceptors-error": error.response.data.message });
         return Promise.reject(error);
     }
 );
@@ -99,18 +99,16 @@ export const useAPIv1 = function () {
     // 토큰 갱신 후 재시도 하는 함수
     async function handleTokenExpired(config) {
         try {
-            console.log("API 오류, 토큰 갱신 시도");
             const res = await renewalToken();
             const { accessToken, refreshToken } = res.data.data.payload;
             window.sessionStorage.setItem("accessToken", accessToken);
             window.sessionStorage.setItem("refreshToken", refreshToken);
-            console.log("토큰 갱신 성공");
 
             // TODO: 재요청시 interceptor에 의해 새로운 access-token 적용되는지 확인 필요
             return rawAxiosInstance.request(config);
 
         } catch (error) {
-            console.log({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
+            console.error({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
             doLogOut();
         }
     }

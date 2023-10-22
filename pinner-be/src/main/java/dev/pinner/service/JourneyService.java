@@ -29,7 +29,7 @@ public class JourneyService {
     private final TravelService travelService;
 
     @Transactional
-    public List<TravelDto.Response> addJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+    public List<TravelDto.Response> createJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), newJourney.getTravelId());
 
         Journey newJourneyEntity = newJourney.toEntity();
@@ -60,7 +60,7 @@ public class JourneyService {
     }
 
     @Transactional
-    public List<TravelDto.Response> putJourney(Traveler traveler, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+    public List<TravelDto.Response> updateJourney(Traveler traveler, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
         if (findJourney.isPresent()) {

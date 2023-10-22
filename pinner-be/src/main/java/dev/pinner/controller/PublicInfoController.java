@@ -20,6 +20,10 @@ public class PublicInfoController {
     private final CustomGitProperties customGitProperties;
     private final BuildProperties buildProperties;
 
+    /**
+     * Build 정보 제공
+     * @return
+     */
     @GetMapping("/info")
     ResponseEntity<?> buildInfo() {
         return ResponseEntity.ok(Map.of(

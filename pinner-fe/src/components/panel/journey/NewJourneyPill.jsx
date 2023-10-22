@@ -67,7 +67,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     const [saving, setSaving] = useState(false);
 
-    const [countries, setCountries] = useState(iso3166_1);
+    const countries = iso3166_1;
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
@@ -209,7 +209,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 const combinedPhotos = [...photos, ...compressedPhotos];
                 _setPhotos(combinedPhotos);
             } catch (error) {
-                console.log(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
+                console.warn(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
                 const combinedPhotos = [...photos, ...newPhotos];
                 _setPhotos(combinedPhotos);
             }
@@ -409,7 +409,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         photos.length > 0 ?
                             <ImageList variant="masonry" cols={2} gap={8}>
                                 {photos.map((photo, index) => {
-                                    console.log(photo);
                                     const tmpPhotoUrl = URL.createObjectURL(photo);
                                     return (
                                         <ImageListItem key={index}>

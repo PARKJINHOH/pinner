@@ -62,9 +62,8 @@ export default function TravelList() {
         }
 
         apiv1.get("/travel")
-            .then(resp => {
-                console.log(resp.data);
-                setTravelData(resp.data);
+            .then(response => {
+                setTravelData(response.data.body);
             })
             .catch(error => {
                 console.error(`can not load data: ${error}`);
@@ -86,10 +85,9 @@ export default function TravelList() {
         const newTravelData = workValue.map((t, i) => ({ ...t, "orderKey": i }));
         setTravelData(newTravelData);
 
-        // PUT /api/v1/travel/orderKey
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
-                if (!response.status === HTTPStatus.OK) {
+                if (response.status === HTTPStatus.OK) {
                     setTravelData(response.data);
                 }
             });

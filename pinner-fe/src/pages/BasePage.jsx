@@ -4,8 +4,6 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 // api
 import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
 
-// css
-
 // component
 import LoginModal from '../components/modals/LoginModal';
 import RegisterModal from '../components/modals/RegisterModal';
@@ -234,15 +232,12 @@ export default function BasePage() {
                             name: "",
                         };
 
-                        console.log(e.latLng.toString());
-
                         // Locating 모드일 때만 역 지오코딩 API 요청
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
                             const resp = await apiv1.get(
                                 '/geocoding',
                                 { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
                             );
-                            console.log(resp);
 
 
                             if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
