@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // css
 import style from './TravelList.module.css';
 
 // component
-import { sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { selectedTravelIdState, travelState } from '../../../states/travel';
-import { isLoggedInState, travelerState } from '../../../states/traveler';
-import NewTravelPill from './NewTravelPill';
-import TravelPill from './TravelPill';
+import { sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { selectedTravelIdState, travelState } from 'states/travel';
+import { isLoggedInState, travelerState } from 'states/traveler';
+import NewTravelPill from 'components/panel/travel/NewTravelPill';
+import TravelPill from 'components/panel/travel/TravelPill';
 
 // mui
 import { Divider } from "@mantine/core";

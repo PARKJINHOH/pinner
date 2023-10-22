@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // css
 import style from './TravelPill.module.css';
 
 // component
-import { representPhotoIdOfTravel } from '../../../common/travelutils';
-import { googleMapState } from '../../../states/map';
-import { newJourneyStepState } from '../../../states/modal';
-import { selectedTravelIdState, travelState } from '../../../states/travel';
-import { centerOfPoints } from '../../../utils';
-import JourneyList from "../journey/JourneyList";
-import RepresentImage from '../RepresentImage';
+import { representPhotoIdOfTravel } from 'common/travelutils';
+import { googleMapState } from 'states/map';
+import { newJourneyStepState } from 'states/modal';
+import { selectedTravelIdState, travelState } from 'states/travel';
+import { centerOfPoints } from 'utils';
+import JourneyList from "components/panel/journey/JourneyList";
+import RepresentImage from 'components/panel/RepresentImage';
 
 // mui
 import { Box, Chip, IconButton, Typography } from '@mui/material';

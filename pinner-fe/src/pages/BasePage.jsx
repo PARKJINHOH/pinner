@@ -2,16 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // component
-import LoginModal from '../components/modals/LoginModal';
-import RegisterModal from '../components/modals/RegisterModal';
-import ProfileModal from "../components/modals/ProfileModal";
+import LoginModal from 'components/modals/LoginModal.jsx';
+import RegisterModal from 'components/modals/RegisterModal';
+import ProfileModal from "components/modals/ProfileModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
-import { googleMapState } from '../states/map';
-import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
+import { googleMapState } from 'states/map';
+import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
+import { selectedTravelBoundsState, selectedTravelState } from 'states/travel';
 
 // etc
 import "@yaireo/tagify/dist/tagify.css";

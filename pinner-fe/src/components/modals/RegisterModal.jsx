@@ -5,18 +5,18 @@ import {useRecoilState} from 'recoil';
 import style from './RegisterModal.module.css';
 
 // component
-import {HTTPStatus} from "../../apis/apiv1";
-import {postRegister} from '../../apis/auth';
-import {errorAlert} from "../alert/AlertComponent";
-import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
+import {HTTPStatus} from "apis/apiv1";
+import {postRegister} from 'apis/auth';
+import {errorAlert} from "components/alert/AlertComponent";
+import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
 // mui
 import {Modal, Button, Stack, Box, Typography, TextField, IconButton, Divider} from "@mui/material";
 
 
 // image
-import NaverLoginBtn from "../../assets/images/login_icon_naver.png";
-import GoogleLoginBtn from "../../assets/images/login_icon_google.png";
+import NaverLoginBtn from "assets/images/login_icon_naver.png";
+import GoogleLoginBtn from "assets/images/login_icon_google.png";
 
 
 export default function RegisterModal() {

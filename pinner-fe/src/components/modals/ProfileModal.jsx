@@ -5,11 +5,11 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {clearTraveler} from "../../states/webstore";
-import {travelerState, useDoLogin} from "../../states/traveler";
-import {errorAlert, infoAlert} from "../alert/AlertComponent";
-import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
+import {HTTPStatus, useAPIv1} from "apis/apiv1";
+import {clearTraveler} from "states/webstore";
+import {travelerState, useDoLogin} from "states/traveler";
+import {errorAlert, infoAlert} from "components/alert/AlertComponent";
+import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
 // mui
 import {Modal, Box, Typography, TextField} from "@mui/material";

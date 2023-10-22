@@ -1,11 +1,9 @@
 import React from 'react';
 
-// css
-import './style/globals.css';
-
 // component
-import BasePage from './pages/BasePage';
-import Sidebar from "./components/panel/sidebar/Sidebar";
+import 'pages/BasePage';
+import BasePage from 'pages/BasePage';
+import Sidebar from "components/panel/sidebar/Sidebar";
 
 // mui
 import { Box, CssBaseline } from "@mui/material";

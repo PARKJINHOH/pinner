@@ -5,10 +5,10 @@ import { useRecoilState } from 'recoil';
 import style from './LoginModal.module.css';
 
 // component
-import { useDoLogin } from '../../states/traveler';
-import {errorAlert} from "../alert/AlertComponent";
-import { postLogin } from '../../apis/auth';
-import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
+import { useDoLogin } from 'states/traveler';
+import {errorAlert} from "components/alert/AlertComponent";
+import { postLogin } from 'apis/auth';
+import { AuthModalVisibility, authModalVisibilityState } from 'states/modal';
 
 // mui
 import {Box, Modal, Stack, TextField, Typography, Button, IconButton} from "@mui/material";

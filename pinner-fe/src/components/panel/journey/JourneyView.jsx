@@ -2,16 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // css
 import style from './JourneyView.module.css';
 
 // component
-import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { travelState } from "../../../states/travel";
-import LightBoxPill from "./LightBoxPill";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { travelState } from "states/travel";
+import LightBoxPill from "components/panel/journey/LightBoxPill.jsx";
 
 // mui
 import { Input, Tooltip } from "@mui/joy";
@@ -36,7 +36,7 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import iso3166_1 from "../../../apis/iso3166_1.json";
+import iso3166_1 from "apis/iso3166_1.json";
 
 /**
  * Journey 보기 및 수정

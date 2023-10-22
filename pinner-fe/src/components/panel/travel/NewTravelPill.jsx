@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
+import {HTTPStatus, useAPIv1} from 'apis/apiv1';
 
 // css
 import style from './NewTravelPill.module.css';
 
 // component
-import { travelState } from '../../../states/travel';
+import { travelState } from 'states/travel';
 
 // mui
 import { AspectRatio } from "@mui/joy";

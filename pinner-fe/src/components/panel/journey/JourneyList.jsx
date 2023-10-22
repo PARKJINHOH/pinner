@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // css
 import style from './JourneyList.module.css';
 
 // component
-import { representPhotoIdOfTravel } from '../../../common/travelutils';
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { selectedTravelIdState, travelState } from "../../../states/travel";
-import RepresentImage from '../RepresentImage';
-import JourneyPill from "./JourneyPill";
-import NewJourneyPill from "./NewJourneyPill";
+import { representPhotoIdOfTravel } from 'common/travelutils';
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { selectedTravelIdState, travelState } from "states/travel";
+import RepresentImage from 'components/panel/RepresentImage.jsx';
+import JourneyPill from "components/panel/journey/JourneyPill";
+import NewJourneyPill from "components/panel/journey/NewJourneyPill";
 
 // mui
 import { Divider } from "@mantine/core";

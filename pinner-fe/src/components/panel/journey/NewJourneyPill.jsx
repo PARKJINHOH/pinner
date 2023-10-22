@@ -3,15 +3,15 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
 import iso3166_1 from 'apis/iso3166_1.json';
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 
 // css
 import style from './NewJourneyPill.module.css';
 
 // component
-import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { travelState } from "../../../states/travel";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { travelState } from "states/travel";
 import { extractExifDataFromFile } from 'utils';
 
 // mui
