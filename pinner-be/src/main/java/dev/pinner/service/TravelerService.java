@@ -184,6 +184,10 @@ public class TravelerService {
         Optional<Traveler> findTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
 
         if (findTraveler.isPresent()) {
+            if (!findTraveler.get().getEmail().equals(travelerDto.getEmail())) {
+                return false;
+            }
+
             Traveler traveler = findTraveler.get();
             boolean updatedResult = travelerRepository.updateTravelerStateByTravelerEmail(traveler.getId());
 

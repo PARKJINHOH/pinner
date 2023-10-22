@@ -135,12 +135,17 @@ public class TravelerController {
     // token 갱신
     @PostMapping("/renewal/token")
     public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
-        TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setData(new HashMap<>() {{
-            put("payload", getResult);
-        }});
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        try {
+            TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
+            responseDto.setData(new HashMap<>() {{
+                put("payload", getResult);
+            }});
+        } catch (Exception e) {
+            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
     // 로그아웃
