@@ -172,6 +172,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 return;
             }
 
+            // 사진의 경도,위도를 저장한다.
             for (const newPhoto of newPhotos) {
                 const data = await extractExifDataFromFile(newPhoto);
                 if (data) {
@@ -197,7 +198,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 }
             }
 
-
+            // 사진 파일 압축
             try {
                 /** @type {File[]} */
                 let compressedPhotos = [];
