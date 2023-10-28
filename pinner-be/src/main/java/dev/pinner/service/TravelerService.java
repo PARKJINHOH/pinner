@@ -47,7 +47,7 @@ public class TravelerService {
         if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
-            return travelerRepository.save(travelerDto.toEntity()).getEmail();
+            return travelerRepository.save(travelerDto.toEntity()).getNickname();
         } else {
             return null;
         }
@@ -122,12 +122,8 @@ public class TravelerService {
     }
 
     public boolean passwordCheck(TravelerDto.Request travelerDto) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
-            return authentication.isAuthenticated();
-        } catch (Exception e) {
-            return false;
-        }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
+        return authentication.isAuthenticated();
     }
 
     @Transactional
@@ -225,7 +221,7 @@ public class TravelerService {
 
             if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
                 ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
-                log.info("{} : ApiResponse : ({}){}", signupServices, resultNaver.getStatusCode(), resultNaver.getBody());
+                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
                 if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
                     return true;
                 }
@@ -233,7 +229,7 @@ public class TravelerService {
 
             if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
                 ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
-                log.info("{} : ApiResponse : ({}){}", signupServices, resultGoogle.getStatusCode(), resultGoogle.getBody());
+                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
                 if (resultGoogle.getStatusCode() == HttpStatus.OK) {
                     return true;
                 }

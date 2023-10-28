@@ -15,11 +15,11 @@ export default function AfterOAtuhHandler() {
         postLoginAfterOAuth(ticket)
             .then((response) => {
                 doLogin({
-                    email: response.data.data.payload.email,
-                    nickname: response.data.data.payload.nickname,
-                    accessToken: response.data.data.payload.accessToken,
-                    refreshToken: response.data.data.payload.refreshToken,
-                    signupServices: response.data.data.payload.signupServices,
+                    email: response.data.email,
+                    nickname: response.data.nickname,
+                    accessToken: response.data.accessToken,
+                    refreshToken: response.data.refreshToken,
+                    signupServices: response.data.signupServices,
                 });
 
                 window.location = "/";

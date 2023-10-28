@@ -86,14 +86,17 @@ export default function RegisterModal() {
 
         postRegister(data)
             .then((response) => {
-                if (response.status === HTTPStatus.CREATED) {
-                    alert(response.data.message);
+                if (response.status === HTTPStatus.OK) {
+                    alert(response.data);
 
                     setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
                     setErrorMessage("");
                 }
             })
-            .catch((error) => setErrorMessage(error.response.data ? error.response.data.message : error.message));
+            .catch((error) => {
+                console.log(error);
+                setErrorMessage(error.response.data ? error.response.data : "장애가 발생했습니다. 다시 시도해 주세요.")
+            });
     };
 
     return (

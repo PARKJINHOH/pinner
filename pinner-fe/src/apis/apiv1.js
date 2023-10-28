@@ -100,7 +100,7 @@ export const useAPIv1 = function () {
     async function handleTokenExpired(config) {
         try {
             const res = await renewalToken();
-            const { accessToken, refreshToken } = res.data.data.payload;
+            const { accessToken, refreshToken } = res.data;
             window.sessionStorage.setItem("accessToken", accessToken);
             window.sessionStorage.setItem("refreshToken", refreshToken);
 

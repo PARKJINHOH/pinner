@@ -1,18 +1,14 @@
 package dev.pinner.controller;
 
-import dev.pinner.domain.dto.ResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.service.TravelerService;
 import dev.pinner.service.oauth.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 
 @Slf4j
 @RestController
@@ -31,162 +27,147 @@ public class TravelerController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> createAccount(@RequestBody TravelerDto.Request travelerDto) {
-        String getResult = travelerService.register(travelerDto);
-        ResponseDto responseDto = new ResponseDto();
-
-        if (getResult == null) {
-            responseDto.setMessage("회원가입에 실패했습니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
-        } else {
-            responseDto.setMessage(getResult + "님 회원가입에 성공했습니다.");
-            responseDto.setData(new HashMap<>() {{
-                put("email", getResult);
-            }});
-
-            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    public ResponseEntity<?> createAccount(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            String nickname = travelerService.register(travelerDto);
+            if (nickname == null) {
+                return ResponseEntity.internalServerError().body("이미 가입된 회원입니다.");
+            }
+            return ResponseEntity.ok().body(nickname + "님 회원가입에 성공했습니다.");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body("회원 가입을 실패했습니다.");
         }
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
-        TravelerDto.Response getResult = travelerService.doLogin(travelerDto);
+    public ResponseEntity<?> login(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            TravelerDto.Response response = travelerService.doLogin(travelerDto);
 
-        if (getResult == null) {
-            responseDto.setMessage("로그인에 실패했습니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
-        } else {
-            responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
-            responseDto.setData(new HashMap<>() {{
-                put("payload", getResult);
-            }});
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            if (response == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            if (response.getEmail().equals(travelerDto.getEmail())) {
+                return ResponseEntity.ok().body(response);
+            }
+
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body("로그인에 실패했습니다.");
         }
     }
 
 
     // Oauth 로그인
     @PostMapping("/afteroauth/{jwtTicket}")
-    public ResponseEntity<ResponseDto> afteroauth(@PathVariable String jwtTicket) {
-        ResponseDto responseDto = new ResponseDto();
+    public ResponseEntity<?> afterOauth(@PathVariable String jwtTicket) {
+        try {
+            Long travelerId = afterLoginService.get(jwtTicket);
+            if (travelerId == null) {
+                return ResponseEntity.internalServerError().body("Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
+            }
 
-        Long travelerId = afterLoginService.get(jwtTicket);
-        if (travelerId == null) {
-            responseDto.setMessage("Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
-            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+            TravelerDto.Response getResult = travelerService.doLoginBySocial(travelerId);
+            if (getResult == null) {
+                return ResponseEntity.internalServerError().body("Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
+            }
+
+            return ResponseEntity.ok().body(getResult);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body("Oauth 로그인에 실패했습니다.");
         }
-
-        TravelerDto.Response getResult = travelerService.doLoginBySocial(travelerId);
-        if (getResult == null) {
-            responseDto.setMessage("Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
-            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
-        }
-
-        responseDto.setMessage(getResult + "님 로그인에 성공했습니다.");
-        responseDto.setData(new HashMap<>() {{
-            put("payload", getResult);
-        }});
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 비밀번호 체크
+    // 내정보 수정) 비밀번호 체크
     @PostMapping("/password/check")
-    public ResponseEntity<ResponseDto> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
-        boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
-        ResponseDto responseDto = new ResponseDto();
+    public ResponseEntity<?> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
 
-        if (isPasswordValid) {
-            responseDto.setMessage("비밀번호가 일치합니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } else {
-            responseDto.setMessage("비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+            if (isPasswordValid) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.internalServerError().body("비밀번호가 일치하지 않습니다.");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body("비밀번호가 일치하지 않습니다.");
         }
+
     }
 
     // 내정보 수정
     @PutMapping()
-    public ResponseEntity<ResponseDto> putTraveler(@RequestBody TravelerDto.Request travelerDto) {
-        TravelerDto.Response response = travelerService.updateTraveler(travelerDto);
-        ResponseDto responseDto = new ResponseDto();
+    public ResponseEntity<?> putTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            TravelerDto.Response response = travelerService.updateTraveler(travelerDto);
 
-        if (response != null) {
-            responseDto.setMessage("수정되었습니다.");
-            responseDto.setData(new HashMap<>() {{
-                put("payload", response);
-            }});
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } else {
-            responseDto.setMessage("수정되지 않았습니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
+            if (response != null) {
+                return ResponseEntity.ok().body(response);
+            } else {
+                return ResponseEntity.internalServerError().body("수정에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body("수정에 실패했습니다.");
         }
-    }
 
-    // github Login
-    @PostMapping("/github")
-    public ResponseEntity<ResponseDto> githubLogin(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     // token 갱신
     @PostMapping("/renewal/token")
-    public ResponseEntity<ResponseDto> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
+    public ResponseEntity<?> refreshToken(@RequestBody TravelerDto.Request travelerDto) {
         try {
-            TravelerDto.Response getResult = travelerService.getRefreshToken(travelerDto);
-            responseDto.setData(new HashMap<>() {{
-                put("payload", getResult);
-            }});
+            TravelerDto.Response response = travelerService.getRefreshToken(travelerDto);
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+            return ResponseEntity.internalServerError().body("Token 갱신에 실패했습니다.");
         }
-
-        return new ResponseEntity<>(responseDto, HttpStatus.UNAUTHORIZED);
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDto> logoutTraveler(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
+    public ResponseEntity<?> logoutTraveler(@RequestBody TravelerDto.Request travelerDto) {
         try {
             travelerService.doLogout(travelerDto);
-            responseDto.setMessage("로그아웃 되었습니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            responseDto.setMessage("관리자에게 문의주세요.");
-            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     // 일반회원 탈퇴
     @PostMapping("/delete")
-    public ResponseEntity<ResponseDto> deleteTraveler(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
-        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
-        if (isSuccess) {
-            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } else {
-            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
-            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+            if(isSuccess){
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.internalServerError().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     // 소셜로그인 탈퇴
     @PostMapping("/delete/afteroauth")
-    public ResponseEntity<ResponseDto> deleteOauthTraveler(@RequestBody TravelerDto.Request travelerDto) {
-        ResponseDto responseDto = new ResponseDto();
-        boolean isSuccess = travelerService.deleteTraveler(travelerDto);
-        if (isSuccess) {
-            responseDto.setMessage("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
-            return new ResponseEntity<>(responseDto, HttpStatus.OK);
-        } else {
-            responseDto.setMessage("탈퇴 진행이 실패했습니다. \n관리자에게 문의주세요.");
-            return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteOauthTraveler(@RequestBody TravelerDto.Request travelerDto) {
+        try {
+            boolean isSuccess = travelerService.deleteTraveler(travelerDto);
+            if(isSuccess){
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.internalServerError().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 

@@ -17,6 +17,7 @@ import Divider from '@mui/material/Divider';
 // image
 import NaverLoginBtn from 'assets/images/login_icon_naver.png';
 import GoogleLoginBtn from 'assets/images/login_icon_google.png';
+import {HTTPStatus} from "../../apis/apiv1";
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');
@@ -52,7 +53,7 @@ export default function LoginModal() {
 
         postLogin(data)
             .then((response) => {
-                const payload = response.data.data.payload;
+                const payload = response.data;
 
                 doLogin({
                     email: payload.email,
@@ -66,7 +67,11 @@ export default function LoginModal() {
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
-                setErrorMessage(error.response.data.message);
+                if(error.response.status === HTTPStatus.NOT_FOUND){
+                    setErrorMessage("이메일 및 비밀번호를 다시 확인해주세요.");
+                } else {
+                    setErrorMessage("다시 로그인을 시도해 주세요.");
+                }
             });
     };
 

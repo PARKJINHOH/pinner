@@ -34,10 +34,10 @@ export function useDoLogout() {
 
         postLogout(token)
             .then(response => {
-                alert(response.data.message);
+                alert("정상적으로 로그아웃 되었습니다.");
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                alert("에러가 발생했습니다. 관리자에게 문의주세요.");
             });
 
         setTraveler(null);

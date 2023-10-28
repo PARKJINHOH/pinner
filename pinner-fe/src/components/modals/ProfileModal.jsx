@@ -80,11 +80,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 탈퇴하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
                 .then(response => {
-                    alert(response.data.message);
+                    alert("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
                     return response.status;
                 })
                 .catch(error => {
-                    alert(error.data.message);
+                    alert("탈퇴가 실패했습니다. \n관리자에게 문의주세요.");
                     return error.status;
                 });
 
@@ -100,11 +100,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
                 .then(response => {
-                    alert(response.data.message);
+                    alert("소셜로그인 탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
                     return response.status;
                 })
                 .catch(error => {
-                    alert(error.data.message);
+                    alert("소셜로그인 탈퇴가 실패했습니다. \n관리자에게 문의주세요.");
                     return error.status;
                 });
 
@@ -143,7 +143,7 @@ export default function ProfileModal() {
             });
 
         if (newVar !== HTTPStatus.OK) {
-            setErrorMessage('현재 비밀번호가 일치하지 않습니다.');
+            setErrorMessage("비밀번호가 일치하지 않습니다.");
             return;
         } else {
             setErrorMessage('');
@@ -168,10 +168,10 @@ export default function ProfileModal() {
                 setErrorMessage("");
 
                 doLogin({
-                    email: response.data.data.payload.email,
-                    nickname: response.data.data.payload.nickname,
-                    accessToken: response.data.data.payload.accessToken,
-                    refreshToken: response.data.data.payload.refreshToken,
+                    email: response.data.email,
+                    nickname: response.data.nickname,
+                    accessToken: response.data.accessToken,
+                    refreshToken: response.data.refreshToken,
                 });
             })
             .catch(error => {

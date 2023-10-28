@@ -62,7 +62,7 @@ instance.interceptors.request.use(
 // 로그인
 export async function postLogin(data) {
     let res = await instance.post("/api/v1/traveler/login", data);
-    const { accessToken, refreshToken } = res.data.data.payload;
+    const { accessToken, refreshToken } = res.data;
     window.sessionStorage.setItem("accessToken", accessToken);
     window.sessionStorage.setItem("refreshToken", refreshToken);
     return res;
