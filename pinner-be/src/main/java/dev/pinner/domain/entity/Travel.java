@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,14 +23,18 @@ public class Travel extends AuditEntity {
     private Long id;
 
     @NotNull
+    @Comment("여행 순서")
     private int orderKey;
 
     @NotNull
+    @Comment("여행 제목")
     private String title;
 
+    @Comment("여정 목록")
     @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
     private List<Journey> journeys = new ArrayList<>();
 
+    @Comment("여행자")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVELER_ID")
     private Traveler traveler;

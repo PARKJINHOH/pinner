@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -27,25 +28,31 @@ public class Journey extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Comment("여정 순서")
     @NotNull
     private int orderKey;
 
+    @Comment("여정 날짜")
     @NotNull
     private LocalDate date;
 
+    @Comment("여행")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVEL_ID")
     private Travel travel;
 
+    @Comment("여정 위치")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "GEOLOCATION_ID")
     private GeoLocation geoLocation;
 
+    @Comment("여정 해시태그")
     @ElementCollection
     @JoinColumn(name = "HASHTAG")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<String> hashtags;
 
+    @Comment("여정 사진")
     @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
 
