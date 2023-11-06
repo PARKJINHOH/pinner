@@ -63,7 +63,7 @@ public class SecurityConfig {
         // 권한 부여 규칙 Settings
         http
                 .authorizeRequests()
-                .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**",  "/photo/**").permitAll()
+                .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email", "/photo/**").permitAll()
                 .anyRequest().authenticated();
 
         // oAuth Settings
