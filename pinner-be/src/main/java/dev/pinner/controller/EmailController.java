@@ -18,10 +18,9 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/email")
-    public ResponseEntity<?> sendJoinMail() {
+    public ResponseEntity<?> sendJoinMail(EmailSMTPDto.Request request) {
         try {
-            EmailSMTPDto.Request emailSmtpDto = new EmailSMTPDto.Request("adg0609@naver.com");
-            String randomCode = emailService.sendMail(emailSmtpDto);
+            String randomCode = emailService.sendMail(request);
 
             if (randomCode == null) {
                 return ResponseEntity.internalServerError().body("이메일 발송에 실패했습니다.");
