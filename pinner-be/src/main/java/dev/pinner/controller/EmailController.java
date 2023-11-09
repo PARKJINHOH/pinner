@@ -39,6 +39,10 @@ public class EmailController {
         try {
             boolean isAuthentication = emailService.emailCheck(request);
 
+            if (!isAuthentication) {
+                return ResponseEntity.internalServerError().body("이메일 확인에 실패했습니다.");
+            }
+
             return ResponseEntity.ok().body(isAuthentication);
         } catch (Exception e) {
             log.error(e.getMessage());

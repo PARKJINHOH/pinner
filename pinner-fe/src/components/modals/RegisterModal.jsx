@@ -114,6 +114,7 @@ export default function RegisterModal() {
 
         const isEmailAuthCheck = await apiv1.post("email/check", JSON.stringify({email: email.trim(), emailCode : emailAuthenticationCode.trim()}))
             .then((response) => {
+                console.log(response);
                 if (response.status === HTTPStatus.OK) {
                     setErrorMessage('');
                     return true;
