@@ -15,11 +15,12 @@ import javax.persistence.*;
 public class EmailSMTP extends AuditEntity {
 
     @Id
+    @Column(name = "EMAIL_SMTP_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Comment("수신자")
-    private String to;
+    private String recipient;
 
     @Comment("메일 제목")
     private String subject;
@@ -31,14 +32,14 @@ public class EmailSMTP extends AuditEntity {
     private String code;
 
     @Comment("타입")
-    private String type;
+    private String emailType;
 
     @Builder
-    public EmailSMTP(String to, String subject, String message, String code, String type) {
-        this.to = to;
+    public EmailSMTP(String recipient, String subject, String message, String code, String emailType) {
+        this.recipient = recipient;
         this.subject = subject;
         this.message = message;
         this.code = code;
-        this.type = type;
+        this.emailType = emailType;
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
@@ -39,18 +38,18 @@ public class EmailService {
         try {
 
             EmailSMTP emailMessage = EmailSMTP.builder()
-                    .to(emailSmtpDto.getEmail())
+                    .recipient(emailSmtpDto.getEmail())
                     .subject("[Pinner] 이메일 인증을 위한 인증 코드 발송")
                     .message("이메일 인증 코드 입니다 : " + randomCode)
                     .code(randomCode)
-                    .type(EmailSmtpEnum.EMAIL_CERTIFIED.getType())
+                    .emailType(EmailSmtpEnum.EMAIL_CERTIFIED.getType())
                     .build();
 
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setFrom(sendEmail); // 발신자
-            mimeMessageHelper.setTo(emailMessage.getTo()); // 수신자
+            mimeMessageHelper.setTo(emailMessage.getRecipient()); // 수신자
             mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
             mimeMessageHelper.setText(emailMessage.getMessage(), true); // 메일 본문 내용, HTML 여부
 
@@ -90,7 +89,7 @@ public class EmailService {
         }
 
         return getFindCode.map(emailSMTP ->
-                emailSMTP.getTo().equals(emailSmtpDto.getEmail())).orElse(false);
+                emailSMTP.getRecipient().equals(emailSmtpDto.getEmail())).orElse(false);
     }
 
 

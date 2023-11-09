@@ -85,18 +85,27 @@ export default function RegisterModal() {
      * 이메일 인증 발송 여부
      * @returns {Promise<void>}
      */
-    async function sendEmail() {
-        setEmailSendLoading(true);
-        await apiv1.post("/email", JSON.stringify({email: email.trim()}))
+     function sendEmail() {
+        apiv1.post("/email", JSON.stringify({email: email.trim()}))
             .then((response) => {
-                setIsEmailAuthentication(true);
+                if (response.status === HTTPStatus.OK) {
+                    setIsEmailAuthentication(true);
+                    setErrorMessage('');
+                } else {
+                    setIsEmailAuthentication(false);
+                    setErrorMessage("이메일을 다시 확인해주세요.");
+                }
             })
             .catch((error) => {
                 console.log(error);
+                setEmailSendLoading(false);
             });
-        setEmailSendLoading(false);
     }
 
+    /**
+     * 이메일 인증
+     * @returns {Promise<void>}
+     */
     async function getEmailAuthentication() {
         if (emailAuthenticationCode.trim().length === 0) {
             setErrorMessage("이메일 인증 코드를 입력해주세요.");
@@ -105,12 +114,13 @@ export default function RegisterModal() {
 
         const isEmailAuthCheck = await apiv1.post("email/check", JSON.stringify({email: email.trim(), emailCode : emailAuthenticationCode.trim()}))
             .then((response) => {
-                if (response.data === false) {
-                    setErrorMessage("이메일 인증 코드를 다시 확인해주세요.");
-                } else {
+                if (response.status === HTTPStatus.OK) {
                     setErrorMessage('');
+                    return true;
+                } else {
+                    setErrorMessage("이메일 인증 코드를 다시 확인해주세요.");
+                    return false;
                 }
-                return response.data; // true, false
             })
             .catch((error) => {
                 console.log(error);
@@ -119,6 +129,11 @@ export default function RegisterModal() {
         setFinalIsEmailAuthentication(isEmailAuthCheck);
     }
 
+    /**
+     * 회원가입
+     * @param event
+     * @returns {Promise<void>}
+     */
     const onSubmit = async (event) => {
         if (!isEmailAuthentication) {
             setErrorMessage("이메일 인증을 받아주세요.");
