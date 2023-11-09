@@ -45,7 +45,10 @@ public class TestIdDataLoader implements ApplicationRunner {
                     .signupServices("Web")
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
-            travelerRepository.save(testId);
+
+            if (travelerRepository.findByEmail(testId.getEmail()).isEmpty()) {
+                travelerRepository.save(testId);
+            }
 
             // 기존 이미지 폴더 삭제
             if(profiles.equals("local")){

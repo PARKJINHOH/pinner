@@ -1,12 +1,15 @@
 import React, {useState} from 'react';
 import {useRecoilState} from 'recoil';
 
+// api
+import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
+
 // css
 import style from './RegisterModal.module.css';
 
 // component
-import {HTTPStatus} from "apis/apiv1";
 import {postRegister} from 'apis/auth';
+import {Timer} from "components/modals/Timer";
 import {errorAlert} from "components/alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
@@ -17,9 +20,13 @@ import {Modal, Button, Stack, Box, Typography, TextField, IconButton, Divider} f
 // image
 import NaverLoginBtn from "assets/images/login_icon_naver.png";
 import GoogleLoginBtn from "assets/images/login_icon_google.png";
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import {LoadingButton} from "@mui/lab";
 
 
 export default function RegisterModal() {
+    const apiv1 = useAPIv1();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nickname, setNickname] = useState('');
@@ -28,6 +35,11 @@ export default function RegisterModal() {
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [emailSendLoading, setEmailSendLoading] = useState(false);
+    const [emailAuthenticationCode, setEmailAuthenticationCode] = useState('');
+    const [isEmailAuthentication, setIsEmailAuthentication] = useState(false);
+    const [isFinalEmailAuthentication, setFinalIsEmailAuthentication] = useState(false);
 
 
     function validInputs() {
@@ -69,7 +81,49 @@ export default function RegisterModal() {
         setConfirmPassword('');
     }
 
+    /**
+     * 이메일 인증 발송 여부
+     * @returns {Promise<void>}
+     */
+    async function sendEmail() {
+        setEmailSendLoading(true);
+        await apiv1.post("/email", JSON.stringify({email: email.trim()}))
+            .then((response) => {
+                setIsEmailAuthentication(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        setEmailSendLoading(false);
+    }
+
+    async function getEmailAuthentication() {
+        if (emailAuthenticationCode.trim().length === 0) {
+            setErrorMessage("이메일 인증 코드를 입력해주세요.");
+            return;
+        }
+
+        const isEmailAuthCheck = await apiv1.post("email/check", JSON.stringify({email: email.trim(), emailCode : emailAuthenticationCode.trim()}))
+            .then((response) => {
+                if (response.data === false) {
+                    setErrorMessage("이메일 인증 코드를 다시 확인해주세요.");
+                } else {
+                    setErrorMessage('');
+                }
+                return response.data; // true, false
+            })
+            .catch((error) => {
+                console.log(error);
+                return false;
+            });
+        setFinalIsEmailAuthentication(isEmailAuthCheck);
+    }
+
     const onSubmit = async (event) => {
+        if (!isEmailAuthentication) {
+            setErrorMessage("이메일 인증을 받아주세요.");
+            return;
+        }
         event.preventDefault();
 
         // validation
@@ -98,7 +152,7 @@ export default function RegisterModal() {
                 setErrorMessage(error.response.data ? error.response.data : "장애가 발생했습니다. 다시 시도해 주세요.")
             });
     };
-
+    
     return (
         <div>
             <Modal
@@ -117,8 +171,32 @@ export default function RegisterModal() {
                     <Stack spacing={3} sx={{marginBottom: 7}}>
                         <TextField label="닉네임" variant="outlined" inputProps={{maxLength: 6}}
                                    value={nickname} onChange={(e) => setNickname(e.currentTarget.value)} placeholder="2~6자 이내"/>
-                        <TextField label="이메일" variant="outlined"
-                                   value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"/>
+                        <TextField label="이메일" variant="outlined" disabled={isEmailAuthentication}
+                                   value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"
+                                   InputProps={{
+                                       endAdornment:
+                                           <LoadingButton variant="contained" onClick={sendEmail} loading={emailSendLoading} disabled={isEmailAuthentication}>
+                                               발송
+                                           </LoadingButton>
+                                   }}
+                        />
+                        {
+                            isEmailAuthentication &&
+                                <>
+                                    <TextField label="이메일인증" variant="outlined" disabled={isFinalEmailAuthentication}
+                                               value={emailAuthenticationCode} onChange={(e) => setEmailAuthenticationCode(e.currentTarget.value)} type="email"
+                                               InputProps={{
+                                                   endAdornment:
+                                                   <div style={{display: 'flex'}}>
+                                                       {!isFinalEmailAuthentication && <Timer style={{textAlign: 'center'}}/>}
+                                                       <Button variant="contained" onClick={getEmailAuthentication} disabled={isFinalEmailAuthentication} sx={{"&.Mui-disabled": {background: "#eaeaea",color: "#26a400"}}}>
+                                                           {isFinalEmailAuthentication ? <CheckCircleOutlineOutlinedIcon /> : '인증'}
+                                                       </Button>
+                                                   </div>
+                                               }}
+                                    />
+                                </>
+                        }
                         <TextField label="비밀번호" variant="outlined"
                                    value={password} onChange={(e) => setPassword(e.currentTarget.value)} type="password" placeholder="최소 8자 이상(대소문자, 숫자, 특수문자 필수)"/>
                         <TextField label="비밀번호 확인" variant="outlined"
@@ -126,7 +204,7 @@ export default function RegisterModal() {
                         {
                             errorMessage && errorAlert(errorMessage)
                         }
-                        <Button onClick={onSubmit} variant="contained" sx={{ backgroundColor: '#33a4ff'}}>
+                        <Button onClick={onSubmit} variant="contained" sx={{ backgroundColor: '#33a4ff'}} disabled={!isFinalEmailAuthentication}>
                             회원가입
                         </Button>
                     </Stack>
