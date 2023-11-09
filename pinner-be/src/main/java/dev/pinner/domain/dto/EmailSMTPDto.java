@@ -12,6 +12,7 @@ public class EmailSMTPDto {
     @AllArgsConstructor
     public static class Request {
         private String email;
+        private String emailCode;
     }
 
     @Data

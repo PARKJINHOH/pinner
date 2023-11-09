@@ -27,14 +27,18 @@ public class EmailSMTP extends AuditEntity {
     @Comment("메일 내용")
     private String message;
 
+    @Comment("코드")
+    private String code;
+
     @Comment("타입")
     private String type;
 
     @Builder
-    public EmailSMTP(String to, String subject, String message, String type) {
+    public EmailSMTP(String to, String subject, String message, String code, String type) {
         this.to = to;
         this.subject = subject;
         this.message = message;
+        this.code = code;
         this.type = type;
     }
 }

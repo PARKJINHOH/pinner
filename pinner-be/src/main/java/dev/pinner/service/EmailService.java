@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
@@ -27,10 +28,10 @@ public class EmailService {
     public String sendEmail;
 
     /**
-     * 회원가입 - 이메일 인증 코드 template
+     * 회원가입 - 이메일 인증 코드 발송
      * @param emailSmtpDto
      */
-    public String sendMail(EmailSMTPDto.Request emailSmtpDto) {
+    public boolean sendMail(EmailSMTPDto.Request emailSmtpDto) {
         String randomCode = generateRandomCode(emailSmtpDto.getEmail());
 
         try {
@@ -39,6 +40,7 @@ public class EmailService {
                     .to(emailSmtpDto.getEmail())
                     .subject("[Pinner] 이메일 인증을 위한 인증 코드 발송")
                     .message("이메일 인증 코드 입니다 : " + randomCode)
+                    .code(randomCode)
                     .type(EmailSmtpEnum.EMAIL_CERTIFIED.getType())
                     .build();
 
@@ -57,21 +59,35 @@ public class EmailService {
 
             log.info("{} : Email Send Success", emailSmtpDto.getEmail());
 
-            return randomCode;
+            return true;
 
         } catch (Exception e) {
             log.error("{} : Email Send Fail : {}", emailSmtpDto.getEmail(), e.getMessage());
-            return null;
+            return false;
         }
 
     }
+
+    /**
+     * 회원가입 - 이메일 인증 확인
+     * @param emailSmtpDto
+     * @return
+     */
+    public boolean emailCheck(EmailSMTPDto.Request emailSmtpDto) {
+        Optional<EmailSMTP> getFindCode = emailSmtpRepository.findByCode(emailSmtpDto.getEmailCode());
+
+        return getFindCode.map(emailSMTP ->
+                emailSMTP.getTo().equals(emailSmtpDto.getEmail())).orElse(false);
+    }
+
+
 
     /**
      * 회원가입 - 이메일 인증 코드 생성
      * @param email
      * @return
      */
-    public String generateRandomCode(String email) {
+    private String generateRandomCode(String email) {
         final int CODE_LENGTH = 12;
 
         StringBuilder code = new StringBuilder();
