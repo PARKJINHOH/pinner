@@ -12,6 +12,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Random;
 
@@ -75,6 +77,17 @@ public class EmailService {
      */
     public boolean emailCheck(EmailSMTPDto.Request emailSmtpDto) {
         Optional<EmailSMTP> getFindCode = emailSmtpRepository.findByCode(emailSmtpDto.getEmailCode());
+
+        if (getFindCode.isPresent()) {
+            EmailSMTP emailSMTP = getFindCode.get();
+            LocalDateTime createdDate = emailSMTP.getCreatedDate();
+
+            // 현재 시간과 비교하여 3분이 지났는지 체크
+            LocalDateTime currentTime = LocalDateTime.now();
+            if (createdDate.isBefore(currentTime.minusMinutes(3))) {
+                return false;
+            }
+        }
 
         return getFindCode.map(emailSMTP ->
                 emailSMTP.getTo().equals(emailSmtpDto.getEmail())).orElse(false);

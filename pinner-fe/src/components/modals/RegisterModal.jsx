@@ -9,6 +9,7 @@ import style from './RegisterModal.module.css';
 
 // component
 import {postRegister} from 'apis/auth';
+import {Timer} from "components/modals/Timer";
 import {errorAlert} from "components/alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
@@ -186,9 +187,12 @@ export default function RegisterModal() {
                                                value={emailAuthenticationCode} onChange={(e) => setEmailAuthenticationCode(e.currentTarget.value)} type="email"
                                                InputProps={{
                                                    endAdornment:
+                                                   <div style={{display: 'flex'}}>
+                                                       {!isFinalEmailAuthentication && <Timer style={{textAlign: 'center'}}/>}
                                                        <Button variant="contained" onClick={getEmailAuthentication} disabled={isFinalEmailAuthentication} sx={{"&.Mui-disabled": {background: "#eaeaea",color: "#26a400"}}}>
                                                            {isFinalEmailAuthentication ? <CheckCircleOutlineOutlinedIcon /> : '인증'}
                                                        </Button>
+                                                   </div>
                                                }}
                                     />
                                 </>
