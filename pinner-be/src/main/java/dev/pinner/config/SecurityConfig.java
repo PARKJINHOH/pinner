@@ -64,6 +64,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email/**", "/photo/**").permitAll()
+                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
                 .anyRequest().authenticated();
 
         // oAuth Settings
