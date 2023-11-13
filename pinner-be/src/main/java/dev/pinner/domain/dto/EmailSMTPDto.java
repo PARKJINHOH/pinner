@@ -13,6 +13,9 @@ public class EmailSMTPDto {
     public static class Request {
         private String email;
         private String emailCode;
+        private String emailType;
+        private String subject;
+        private String message;
     }
 
     @Data

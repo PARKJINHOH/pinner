@@ -4,12 +4,15 @@ import dev.pinner.domain.dto.EmailSMTPDto;
 import dev.pinner.domain.entity.EmailSMTP;
 import dev.pinner.global.enums.EmailSmtpEnum;
 import dev.pinner.repository.EmailSmtpRepository;
+import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
@@ -24,56 +27,55 @@ public class EmailService {
     // EmailConfig Bean 설정
     private final JavaMailSender javaMailSender;
     private final EmailSmtpRepository emailSmtpRepository;
+    private final TravelerRepository travelerRepository;
 
     @Value("${spring.mail.username}")
     public String sendEmail;
 
     /**
-     * 회원가입 - 이메일 인증 코드 발송
-     * @param emailSmtpDto
+     * 이메일 발송
      */
-    public boolean sendMail(EmailSMTPDto.Request emailSmtpDto) {
+    @Transactional
+    public boolean sendMail(EmailSMTPDto.Request emailSmtpDto) throws Exception {
+
         String randomCode = generateRandomCode(emailSmtpDto.getEmail());
 
-        try {
+        // 이메일 발송 세팅
+        EmailSMTP emailMessage = EmailSMTP.builder()
+                .recipient(emailSmtpDto.getEmail())
+                .subject(emailSmtpDto.getSubject())
+                .message(emailSmtpDto.getMessage() + randomCode)
+                .code(randomCode)
+                .emailType(emailSmtpDto.getEmailType())
+                .build();
 
-            EmailSMTP emailMessage = EmailSMTP.builder()
-                    .recipient(emailSmtpDto.getEmail())
-                    .subject("[Pinner] 이메일 인증을 위한 인증 코드 발송")
-                    .message("이메일 인증 코드 입니다 : " + randomCode)
-                    .code(randomCode)
-                    .emailType(EmailSmtpEnum.EMAIL_CERTIFIED.getType())
-                    .build();
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+        mimeMessageHelper.setFrom(sendEmail); // 발신자
+        mimeMessageHelper.setTo(emailMessage.getRecipient()); // 수신자
+        mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
+        mimeMessageHelper.setText(emailMessage.getMessage(), true); // 메일 본문 내용, HTML 여부
 
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setFrom(sendEmail); // 발신자
-            mimeMessageHelper.setTo(emailMessage.getRecipient()); // 수신자
-            mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
-            mimeMessageHelper.setText(emailMessage.getMessage(), true); // 메일 본문 내용, HTML 여부
+        // 이메일 전송
+        javaMailSender.send(mimeMessage);
 
-            // 이메일 전송
-            javaMailSender.send(mimeMessage);
-
-            emailSmtpRepository.save(emailMessage);
-
-            log.info("{} : Email Send Success", emailSmtpDto.getEmail());
-
-            return true;
-
-        } catch (Exception e) {
-            log.error("{} : Email Send Fail : {}", emailSmtpDto.getEmail(), e.getMessage());
-            return false;
+        if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.TEMPORARY_PASSWORD.getType())){
+            // 임시 비밀번호 저장
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
+            if (!isChangePassword) {
+                return false;
+            }
         }
+
+        emailSmtpRepository.save(emailMessage);
+        log.info("{} : Email Send Success", emailSmtpDto.getEmail());
+
+        return true;
 
     }
 
-    /**
-     * 회원가입 - 이메일 인증 확인
-     * @param emailSmtpDto
-     * @return
-     */
     public boolean emailCheck(EmailSMTPDto.Request emailSmtpDto) {
         Optional<EmailSMTP> getFindCode = emailSmtpRepository.findByCode(emailSmtpDto.getEmailCode());
 
@@ -96,8 +98,6 @@ public class EmailService {
 
     /**
      * 회원가입 - 이메일 인증 코드 생성
-     * @param email
-     * @return
      */
     private String generateRandomCode(String email) {
         final int CODE_LENGTH = 12;
