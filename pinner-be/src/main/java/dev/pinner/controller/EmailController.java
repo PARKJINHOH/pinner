@@ -22,7 +22,7 @@ public class EmailController {
     /**
      * 이메일 인증
      */
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<?> sendJoinMail(@RequestBody EmailSMTPDto.Request request) {
         try {
             request.setSubject("[Pinner] 이메일 인증을 위한 인증 코드");
