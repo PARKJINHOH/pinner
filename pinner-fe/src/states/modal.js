@@ -8,7 +8,8 @@ export const AuthModalVisibility = {
     HIDE_ALL: 'hide',
     SHOW_LOGIN: 'login',
     SHOW_REGISTER: 'register',
-    SHOW_PROFILE: 'profile'
+    SHOW_PROFILE: 'profile',
+    SHOW_FINDPW: 'findpwd'
 };
 
 // ModalVisibility 수정 못하게 봉인

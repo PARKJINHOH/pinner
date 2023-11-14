@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import FindPasswordModal from "../components/modals/FindPasswordModal";
 
 
 
@@ -202,6 +203,7 @@ export default function BasePage() {
             {modalVisibility === AuthModalVisibility.SHOW_REGISTER && <RegisterModal />}
             {modalVisibility === AuthModalVisibility.SHOW_LOGIN && <LoginModal />}
             {modalVisibility === AuthModalVisibility.SHOW_PROFILE && <ProfileModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_FINDPW && <FindPasswordModal />}
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
