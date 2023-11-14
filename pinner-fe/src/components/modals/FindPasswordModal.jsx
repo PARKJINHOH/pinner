@@ -3,17 +3,14 @@ import { useRecoilState } from 'recoil';
 import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
 
 // css
-import style from './LoginModal.module.css';
+import style from './FindPasswordModal.module.css';
 
 // component
-import { useDoLogin } from 'states/traveler';
 import {errorAlert} from "components/alert/AlertComponent";
-import { postLogin } from 'apis/auth';
 import { AuthModalVisibility, authModalVisibilityState } from 'states/modal';
 
 // mui
-import {Box, Modal, Stack, TextField, Typography, Button} from "@mui/material";
-import Divider from '@mui/material/Divider';
+import {Box, Modal, Stack, TextField, Typography, Button, CircularProgress} from "@mui/material";
 
 export default function FindPasswordModal() {
     const apiv1 = useAPIv1();
@@ -22,9 +19,12 @@ export default function FindPasswordModal() {
     const [nickname, setNickname] = useState('');
     const [errorMessage, setErrorMessage] = useState("");
 
+    const [loading, setLoading] = useState(false);
     const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
 
     function sendTempPassword(){
+
+        setLoading(true);
         apiv1.post("/email/reset/password", JSON.stringify({nickname: nickname.trim(), email: email.trim()}))
             .then((response) => {
                 if (response.status === HTTPStatus.OK) {
@@ -36,6 +36,9 @@ export default function FindPasswordModal() {
             })
             .catch((error) => {
                 setErrorMessage('닉네임과 이메일을 확인해주세요.');
+            })
+            .finally(() =>{
+                setLoading(false);
             });
     }
 
@@ -45,7 +48,7 @@ export default function FindPasswordModal() {
                 open={modalVisibility === AuthModalVisibility.SHOW_FINDPW}
                 onClose={() => setModalVisibility(AuthModalVisibility.HIDE_ALL)}
             >
-                <Box className={style.login_box}>
+                <Box className={style.find_pw_box}>
                     <Typography variant="h5" sx={{marginBottom: 3}}>
                         비밀번호 재설정
                     </Typography>
@@ -56,8 +59,13 @@ export default function FindPasswordModal() {
                     <Stack spacing={2} sx={{marginBottom: 1}}>
                         <TextField label="닉네임" variant="outlined" onChange={(e) => setNickname(e.currentTarget.value)} value={nickname} placeholder="Nickname" />
                         <TextField label="이메일" variant="outlined" onChange={(e) => setEmail(e.currentTarget.value)} value={email} type="email" placeholder="Email" />
-                        <Button onClick={sendTempPassword} variant="contained" type="button" sx={{ backgroundColor: '#33a4ff'}}>
+                        <Button onClick={sendTempPassword} variant="contained" type="button" sx={{backgroundColor: '#33a4ff'}} disabled={loading}>
                             임시 비밀번호 발송
+                            {loading && (
+                                <Box sx={{display: 'flex', justifyContent: 'center', marginLeft: 2}}>
+                                    <CircularProgress size="20px" color="secondary"/>
+                                </Box>
+                            )}
                         </Button>
                         {
                             errorMessage && errorAlert(errorMessage)
