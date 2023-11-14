@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
+import {HTTPStatus} from "../../apis/apiv1";
 
 // css
 import style from './LoginModal.module.css';
@@ -17,7 +18,7 @@ import Divider from '@mui/material/Divider';
 // image
 import NaverLoginBtn from 'assets/images/login_icon_naver.png';
 import GoogleLoginBtn from 'assets/images/login_icon_google.png';
-import {HTTPStatus} from "../../apis/apiv1";
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');
@@ -75,6 +76,14 @@ export default function LoginModal() {
             });
     };
 
+    function findPw(){
+        setModalVisibility(AuthModalVisibility.SHOW_FINDPW);
+    }
+
+    function findNickname(){
+        setModalVisibility(AuthModalVisibility.SHOW_FINDNICKNAME);
+    }
+
     return (
         <div>
             <Modal
@@ -86,7 +95,7 @@ export default function LoginModal() {
                         Pinner에 오신것을 환영합니다.
                     </Typography>
                     <Divider sx={{marginBottom: 2}}>아이디 로그인</Divider>
-                    <Stack spacing={2} sx={{marginBottom: 7}}>
+                    <Stack spacing={2} sx={{marginBottom: 5}}>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         <TextField label="비밀번호" variant="outlined"
@@ -96,12 +105,16 @@ export default function LoginModal() {
                                            onSubmit();
                                        }
                                    }}/>
-                        {
-                            errorMessage && errorAlert(errorMessage)
-                        }
                         <Button onClick={onSubmit} variant="contained" type="button" sx={{ backgroundColor: '#33a4ff'}}>
                             로그인
                         </Button>
+                        <div style={{display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}>
+                            <Button onClick={findNickname}>닉네임 찾기</Button>
+                            <Button onClick={findPw}>비밀번호 찾기</Button>
+                        </div>
+                        {
+                            errorMessage && errorAlert(errorMessage)
+                        }
                     </Stack>
                     <Divider sx={{marginBottom: 2}}>소셜 계정으로 간편 로그인</Divider>
                     <Stack spacing={2} direction="row" justifyContent="center">

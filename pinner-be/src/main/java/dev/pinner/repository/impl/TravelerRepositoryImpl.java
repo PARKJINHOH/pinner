@@ -27,4 +27,16 @@ public class TravelerRepositoryImpl implements TravelerRepositoryCustom {
                 .execute();
         return updatedRows == 1;
     }
+
+    @Override
+    public boolean updateTravelerPasswordByTravelerEmail(String email, String password) {
+        log.info("updateTravelerPasswordByTravelerEmail");
+
+        long updatedRows = queryFactory
+                .update(traveler)
+                .set(traveler.password, password)
+                .where(traveler.email.eq(email))
+                .execute();
+        return updatedRows == 1;
+    }
 }
