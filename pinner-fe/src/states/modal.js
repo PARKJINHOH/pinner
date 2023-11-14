@@ -1,15 +1,17 @@
 import { atom } from "recoil";
 
-///
-/// 프로필, 로그인, 회원가입상태
-///
 
+/**
+ * Modal 관리
+ * 새로운 Modal 추가시 BasePage.jsx에 추가해야함.
+ */
 export const AuthModalVisibility = {
     HIDE_ALL: 'hide',
     SHOW_LOGIN: 'login',
     SHOW_REGISTER: 'register',
     SHOW_PROFILE: 'profile',
-    SHOW_FINDPW: 'findpwd'
+    SHOW_FINDPW: 'findpwd',
+    SHOW_FINDNICKNAME: 'findnickname'
 };
 
 // ModalVisibility 수정 못하게 봉인

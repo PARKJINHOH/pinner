@@ -8,6 +8,8 @@ import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
 import LoginModal from 'components/modals/LoginModal.jsx';
 import RegisterModal from 'components/modals/RegisterModal';
 import ProfileModal from "components/modals/ProfileModal";
+import FindPasswordModal from "components/modals/FindPasswordModal";
+import FindNicknameModal from "components/modals/FindNicknameModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
 import { googleMapState } from 'states/map';
 import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
@@ -20,7 +22,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
-import FindPasswordModal from "../components/modals/FindPasswordModal";
 
 
 
@@ -204,6 +205,7 @@ export default function BasePage() {
             {modalVisibility === AuthModalVisibility.SHOW_LOGIN && <LoginModal />}
             {modalVisibility === AuthModalVisibility.SHOW_PROFILE && <ProfileModal />}
             {modalVisibility === AuthModalVisibility.SHOW_FINDPW && <FindPasswordModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_FINDNICKNAME && <FindNicknameModal />}
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}

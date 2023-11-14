@@ -41,11 +41,37 @@ public class EmailService {
 
         String randomCode = generateRandomCode(emailSmtpDto.getEmail());
 
+        if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.EMAIL_CERTIFIED.getType())){
+            // 회원가입 - 이메일 인증
+            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + randomCode);
+        } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.TEMPORARY_PASSWORD.getType())){
+            // 비밀번호 찾기 - 임시 비밀번호
+            Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
+            if (getTraveler.isEmpty() || !getTraveler.get().getNickname().equals(emailSmtpDto.getNickname())) {
+                return false;
+            }
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
+            if (!isChangePassword) {
+                return false;
+            }
+
+            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + randomCode);
+        } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.FIND_NICKNAME.getType())){
+            // 닉네임 찾기 - 닉네임
+            Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
+            if (getTraveler.isEmpty()) {
+                return false;
+            }
+            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + getTraveler.get().getNickname());
+        }
+
         // 이메일 발송 세팅
         EmailSMTP emailMessage = EmailSMTP.builder()
                 .recipient(emailSmtpDto.getEmail())
                 .subject(emailSmtpDto.getSubject())
-                .message(emailSmtpDto.getMessage() + randomCode)
+                .message(emailSmtpDto.getMessage())
                 .code(randomCode)
                 .emailType(emailSmtpDto.getEmailType())
                 .build();
@@ -58,26 +84,12 @@ public class EmailService {
         mimeMessageHelper.setSubject(emailMessage.getSubject()); // 메일 제목
         mimeMessageHelper.setText(emailMessage.getMessage(), true); // 메일 본문 내용, HTML 여부
 
-        if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.TEMPORARY_PASSWORD.getType())){
-            // 임시 비밀번호 저장
-            Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
-            if (getTraveler.isPresent()) {
-                if (!getTraveler.get().getNickname().equals(emailSmtpDto.getNickname())) {
-                    return false;
-                }
-            }
-
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
-            if (!isChangePassword) {
-                return false;
-            }
-        }
-
         // 이메일 전송
         javaMailSender.send(mimeMessage);
 
+        // 전송 이력 DB저장
         emailSmtpRepository.save(emailMessage);
+
         log.info("{} : Email Send Success", emailSmtpDto.getEmail());
 
         return true;

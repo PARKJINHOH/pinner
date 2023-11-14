@@ -76,8 +76,12 @@ export default function LoginModal() {
             });
     };
 
-    function openModal(event){
+    function findPw(){
         setModalVisibility(AuthModalVisibility.SHOW_FINDPW);
+    }
+
+    function findNickname(){
+        setModalVisibility(AuthModalVisibility.SHOW_FINDNICKNAME);
     }
 
     return (
@@ -105,7 +109,8 @@ export default function LoginModal() {
                             로그인
                         </Button>
                         <div style={{display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}>
-                            <Button onClick={openModal}>비밀번호 찾기</Button>
+                            <Button onClick={findNickname}>닉네임 찾기</Button>
+                            <Button onClick={findPw}>비밀번호 찾기</Button>
                         </div>
                         {
                             errorMessage && errorAlert(errorMessage)
