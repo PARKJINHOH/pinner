@@ -14,7 +14,7 @@ import {errorAlert} from "components/alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
 // mui
-import {Modal, Button, Stack, Box, Typography, TextField, IconButton, Divider} from "@mui/material";
+import {Modal, Button, Stack, Box, Typography, TextField, IconButton, Divider, CircularProgress} from "@mui/material";
 
 
 // image
@@ -26,7 +26,7 @@ import {LoadingButton} from "@mui/lab";
 
 export default function RegisterModal() {
     const apiv1 = useAPIv1();
-
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nickname, setNickname] = useState('');
@@ -86,6 +86,7 @@ export default function RegisterModal() {
      * @returns {Promise<void>}
      */
      function sendEmail() {
+        setLoading(true);
         apiv1.post("/email", JSON.stringify({email: email.trim()}))
             .then((response) => {
                 if (response.status === HTTPStatus.OK) {
@@ -99,6 +100,9 @@ export default function RegisterModal() {
             .catch((error) => {
                 console.log(error);
                 setEmailSendLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -191,9 +195,16 @@ export default function RegisterModal() {
                                    value={email} onChange={(e) => setEmail(e.currentTarget.value)} type="email" placeholder="example@test.com"
                                    InputProps={{
                                        endAdornment:
-                                           <LoadingButton variant="contained" onClick={sendEmail} loading={emailSendLoading} disabled={isEmailAuthentication}>
+                                       <>
+                                           {loading && (
+                                               <Box sx={{display: 'flex', justifyContent: 'center', marginRight: 2}}>
+                                                   <CircularProgress size="20px" color="secondary"/>
+                                               </Box>
+                                           )}
+                                           <LoadingButton variant="contained" onClick={sendEmail} loading={emailSendLoading} disabled={isEmailAuthentication || loading}>
                                                발송
                                            </LoadingButton>
+                                       </>
                                    }}
                         />
                         {
