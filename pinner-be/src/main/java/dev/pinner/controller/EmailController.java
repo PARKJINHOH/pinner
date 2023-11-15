@@ -26,7 +26,6 @@ public class EmailController {
     public ResponseEntity<?> sendJoinMail(@RequestBody EmailSMTPDto.Request request) {
         try {
             request.setSubject("[Pinner] 이메일 인증을 위한 인증 코드");
-            request.setMessage("이메일 인증 코드 입니다 : ");
             request.setEmailType(EmailSmtpEnum.EMAIL_CERTIFIED.getType());
 
             boolean isEmailSend = emailService.sendMail(request);
@@ -71,7 +70,6 @@ public class EmailController {
     public ResponseEntity<?> resetPassword(@RequestBody EmailSMTPDto.Request request) {
         try {
             request.setSubject("[Pinner] 임시 비밀번호");
-            request.setMessage("임시 비밀번호 입니다 : ");
             request.setEmailType(EmailSmtpEnum.TEMPORARY_PASSWORD.getType());
 
             boolean isEmailSend = emailService.sendMail(request);
@@ -95,7 +93,6 @@ public class EmailController {
     public ResponseEntity<?> findNickname(@RequestBody EmailSMTPDto.Request request) {
         try {
             request.setSubject("[Pinner] 찾으시는 닉네임");
-            request.setMessage("닉네임 입니다 : ");
             request.setEmailType(EmailSmtpEnum.FIND_NICKNAME.getType());
 
             boolean isEmailSend = emailService.sendMail(request);

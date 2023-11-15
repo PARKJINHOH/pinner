@@ -25,6 +25,7 @@ public class EmailSMTP extends AuditEntity {
     @Comment("메일 제목")
     private String subject;
 
+    @Lob
     @Comment("메일 내용")
     private String message;
 

@@ -14,6 +14,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final EmailSmtpRepository emailSmtpRepository;
     private final TravelerRepository travelerRepository;
+    private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     public String sendEmail;
@@ -41,9 +44,15 @@ public class EmailService {
 
         String randomCode = generateRandomCode(emailSmtpDto.getEmail());
 
+        Context context = new Context();
+
         if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.EMAIL_CERTIFIED.getType())){
             // 회원가입 - 이메일 인증
-            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + randomCode);
+            context.setVariable("emailTitle", "이메일 인증 코드");
+            context.setVariable("emailCode", randomCode);
+            String htmlContent = templateEngine.process("email-auth", context);
+
+            emailSmtpDto.setMessage(htmlContent);
         } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.TEMPORARY_PASSWORD.getType())){
             // 비밀번호 찾기 - 임시 비밀번호
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
@@ -57,14 +66,23 @@ public class EmailService {
                 return false;
             }
 
-            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + randomCode);
+            context.setVariable("emailTitle", "임시 비밀번호");
+            context.setVariable("emailCode", randomCode);
+            String htmlContent = templateEngine.process("email-auth", context);
+
+            emailSmtpDto.setMessage(htmlContent);
         } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.FIND_NICKNAME.getType())){
             // 닉네임 찾기 - 닉네임
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
             if (getTraveler.isEmpty()) {
                 return false;
             }
-            emailSmtpDto.setMessage(emailSmtpDto.getMessage() + getTraveler.get().getNickname());
+
+            context.setVariable("emailTitle", emailSmtpDto.getEmail() + "님의 닉네임입니다.");
+            context.setVariable("emailCode", getTraveler.get().getNickname());
+            String htmlContent = templateEngine.process("email-auth", context);
+
+            emailSmtpDto.setMessage(htmlContent);
         }
 
         // 이메일 발송 세팅
