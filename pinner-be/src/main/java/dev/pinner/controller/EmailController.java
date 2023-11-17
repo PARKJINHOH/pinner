@@ -1,7 +1,9 @@
 package dev.pinner.controller;
 
 import dev.pinner.domain.dto.EmailSMTPDto;
+import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.EmailSmtpEnum;
+import dev.pinner.global.enums.ErrorCode;
 import dev.pinner.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -23,22 +27,17 @@ public class EmailController {
      * 이메일 인증
      */
     @PostMapping()
-    public ResponseEntity<?> sendJoinMail(@RequestBody EmailSMTPDto.Request request) {
-        try {
-            request.setSubject("[Pinner] 이메일 인증을 위한 인증 코드");
-            request.setEmailType(EmailSmtpEnum.EMAIL_CERTIFIED.getType());
+    public ResponseEntity<?> sendJoinMail(@RequestBody @Valid EmailSMTPDto.Request request) throws Exception {
+        request.setSubject("[Pinner] 이메일 인증을 위한 인증 코드");
+        request.setEmailType(EmailSmtpEnum.EMAIL_CERTIFIED.getType());
 
-            boolean isEmailSend = emailService.sendMail(request);
+        boolean isEmailSend = emailService.sendMail(request);
 
-            if (!isEmailSend) {
-                return ResponseEntity.internalServerError().body("이메일 발송에 실패했습니다.");
-            }
-
-            return ResponseEntity.ok().body(isEmailSend);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("이메일 발송에 실패했습니다.");
+        if (!isEmailSend) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR, "이메일이 발송되지 않았습니다.");
         }
+
+        return ResponseEntity.ok().body("이메일을 확인해주세요.");
     }
 
     /**

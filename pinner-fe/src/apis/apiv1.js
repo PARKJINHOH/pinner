@@ -161,7 +161,7 @@ export const useAPIv1 = function () {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED) {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
     };

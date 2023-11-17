@@ -28,16 +28,8 @@ public class TravelerController {
     // 회원가입
     @PostMapping("/register")
     public ResponseEntity<?> createAccount(@RequestBody TravelerDto.Request travelerDto) {
-        try {
-            String nickname = travelerService.register(travelerDto);
-            if (nickname == null) {
-                return ResponseEntity.internalServerError().body("이미 가입된 회원입니다.");
-            }
-            return ResponseEntity.ok().body(nickname + "님 회원가입에 성공했습니다.");
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("회원 가입을 실패했습니다.");
-        }
+        String nickname = travelerService.register(travelerDto);
+        return ResponseEntity.ok().body(nickname + "님 회원가입에 성공했습니다.");
     }
 
     // 로그인

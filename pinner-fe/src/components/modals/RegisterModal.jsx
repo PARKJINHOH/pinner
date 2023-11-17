@@ -94,11 +94,11 @@ export default function RegisterModal() {
                     setErrorMessage('');
                 } else {
                     setIsEmailAuthentication(false);
-                    setErrorMessage("이메일을 다시 확인해주세요.");
+                    setErrorMessage(response.data);
                 }
             })
             .catch((error) => {
-                console.log(error);
+                setErrorMessage(error.message);
                 setEmailSendLoading(false);
             })
             .finally(() => {
