@@ -187,13 +187,9 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         '/geocoding',
                         {params: {lat: data.lat, lng: data.lng, reverse: true}}
                     ).then(response => {
-                        debugger
                         loc.name = response.data.name;
                         loc.countryCd = response.data.countryCd;
                         setNewLocation(loc);
-                    }).catch(error => {
-                        debugger
-                        console.log(error);
                     });
                 }
             }

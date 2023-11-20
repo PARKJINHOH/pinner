@@ -29,7 +29,7 @@ public class JourneyService {
     private final TravelService travelService;
 
     @Transactional
-    public List<TravelDto.Response> createJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+    public List<TravelDto.Response> createJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) {
         Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), newJourney.getTravelId());
 
         Journey newJourneyEntity = newJourney.toEntity();

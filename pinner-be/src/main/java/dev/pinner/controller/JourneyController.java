@@ -26,13 +26,8 @@ public class JourneyController {
     public ResponseEntity<?> createJourney(@AuthenticationPrincipal Traveler traveler,
                                            @RequestPart("newJourney") JourneyDto.Request newJourney,
                                            @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        try {
-            List<TravelDto.Response> travels = journeyService.createJourney(traveler, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("생성에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.createJourney(traveler, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 
     @DeleteMapping("/{journeyId}")
