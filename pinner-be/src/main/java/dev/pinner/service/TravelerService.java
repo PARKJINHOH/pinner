@@ -4,8 +4,6 @@ import dev.pinner.domain.dto.OauthResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
-import dev.pinner.exception.TokenRefreshException;
-import dev.pinner.global.enums.ErrorCode;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.service.jwt.JwtUtils;
@@ -47,7 +45,7 @@ public class TravelerService {
     @Transactional
     public String register(TravelerDto.Request travelerDto) {
         if (travelerRepository.findByEmail(travelerDto.getEmail()).isPresent()) {
-            throw new CustomException(ErrorCode.EMAIL_DUPLICATION, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
+            throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
@@ -164,7 +162,7 @@ public class TravelerService {
         String requestRefreshToken = travelerDto.getRefreshToken();
 
         // Refresh Token
-        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, requestRefreshToken + "Refresh token is not in database!"));
         RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
 
         // Access Token

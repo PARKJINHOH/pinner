@@ -5,12 +5,12 @@ import dev.pinner.domain.entity.EmailSMTP;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.EmailSmtpEnum;
-import dev.pinner.global.enums.ErrorCode;
 import dev.pinner.repository.EmailSmtpRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,9 +20,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 
 @Slf4j
 @Component
@@ -44,14 +44,14 @@ public class EmailService {
     @Transactional
     public boolean sendMail(EmailSMTPDto.Request emailSmtpDto) throws Exception {
 
-        String randomCode = generateRandomCode(emailSmtpDto.getEmail());
+        String randomCode = generateRandomCode();
 
         Context context = new Context();
 
         if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.EMAIL_CERTIFIED.getType())){
             // 회원가입 - 이메일 인증
             if (travelerRepository.findByEmail(emailSmtpDto.getEmail()).isPresent()) {
-                throw new CustomException(ErrorCode.EMAIL_DUPLICATION, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
+                throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
             }
 
             context.setVariable("emailTitle", "이메일 인증 코드");
@@ -64,16 +64,16 @@ public class EmailService {
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
 
             if (getTraveler.isEmpty()) {
-                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND, "등록되지 않은 이메일 입니다.");
+                throw new CustomException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
             if (!getTraveler.get().getNickname().equals(emailSmtpDto.getNickname())) {
-                throw new CustomException(ErrorCode.NOT_USER, "유효하지 않은 사용자입니다.");
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
             }
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
             if (!isChangePassword) {
-                throw new CustomException(ErrorCode.NOT_USER, "유효하지 않은 사용자입니다.");
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
             }
 
             context.setVariable("emailTitle", "임시 비밀번호");
@@ -85,7 +85,7 @@ public class EmailService {
             // 닉네임 찾기 - 닉네임
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
             if (getTraveler.isEmpty()) {
-                throw new CustomException(ErrorCode.EMAIL_NOT_FOUND, "등록되지 않은 이메일 입니다.");
+                throw new CustomException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
 
             context.setVariable("emailTitle", emailSmtpDto.getEmail() + "님의 닉네임입니다.");
@@ -118,10 +118,7 @@ public class EmailService {
         // 전송 이력 DB저장
         emailSmtpRepository.save(emailMessage);
 
-        log.info("{} : Email Send Success", emailSmtpDto.getEmail());
-
         return true;
-
     }
 
     public boolean emailCheck(EmailSMTPDto.Request emailSmtpDto) {
@@ -134,7 +131,7 @@ public class EmailService {
             // 현재 시간과 비교하여 3분이 지났는지 체크
             LocalDateTime currentTime = LocalDateTime.now();
             if (createdDate.isBefore(currentTime.minusMinutes(3))) {
-                return false;
+                throw new CustomException(HttpStatus.GONE, "이메일 인증시간이 만료되었습니다.");
             }
         }
 
@@ -147,15 +144,16 @@ public class EmailService {
     /**
      * 회원가입 - 이메일 인증 코드 생성
      */
-    private String generateRandomCode(String email) {
-        final int CODE_LENGTH = 12;
+    private String generateRandomCode() {
+        final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        final int CODE_LENGTH = 6;
 
         StringBuilder code = new StringBuilder();
+        SecureRandom random = new SecureRandom();
 
-        Random random = new Random();
         for (int i = 0; i < CODE_LENGTH; i++) {
-            char randomChar = email.charAt(random.nextInt(email.length()));
-            code.append(randomChar);
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            code.append(CHARACTERS.charAt(randomIndex));
         }
 
         return code.toString();

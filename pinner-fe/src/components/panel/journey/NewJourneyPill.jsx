@@ -183,18 +183,18 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     // 위치 설정
                     let loc = { ...newLocation, ...data };
 
-                    const resp = await apiv1.get(
+                    await apiv1.get(
                         '/geocoding',
-                        { params: { lat: data.lat, lng: data.lng, reverse: true } }
-                    )
-
-                    if (resp.status === 200) {
-                        loc.name = resp.data.name;
-                        loc.countryCd = resp.data.countryCd;
-                    }
-
-                    setNewLocation(loc);
-                    break;
+                        {params: {lat: data.lat, lng: data.lng, reverse: true}}
+                    ).then(response => {
+                        debugger
+                        loc.name = response.data.name;
+                        loc.countryCd = response.data.countryCd;
+                        setNewLocation(loc);
+                    }).catch(error => {
+                        debugger
+                        console.log(error);
+                    });
                 }
             }
 

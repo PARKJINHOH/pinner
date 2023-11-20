@@ -4,15 +4,9 @@ import dev.pinner.domain.dto.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static dev.pinner.global.enums.ErrorCode.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @RestControllerAdvice
@@ -27,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({CustomException.class})
     protected ResponseEntity<Object> handleCustomException(CustomException ex) {
         log.error("CustomException ===> ", ex);
-        return new ResponseEntity<>(new ErrorDto(ex.getErrorCode().getStatus(), ex.getMessage()), HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+        return new ResponseEntity<>(new ErrorDto(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
     }
 
 
@@ -46,6 +40,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<Object> handleServerException(Exception ex) {
         log.error("Exception ===> ", ex);
-        return new ResponseEntity<>(new ErrorDto(INTERNAL_SERVER_ERROR.getStatus(), "서버에 문제가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에 문제가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

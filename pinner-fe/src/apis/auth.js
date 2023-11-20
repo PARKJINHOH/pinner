@@ -27,38 +27,6 @@ instance.interceptors.request.use(
     }
 );
 
-// instance.interceptors.response.use(
-//     (res) => {
-//         return res;
-//     },
-//     async (err) => {
-//         const originalConfig = err.config;
-//         if (err.response) {
-//             // Access Token was expired
-//             if (err.response.status === 401 && !originalConfig._retry) {
-//                 originalConfig._retry = true;
-//                 try {
-//                     const rs = await refreshToken();
-//                     const {accessToken} = rs.data;
-//                     window.sessionStorage.setItem("accessToken", accessToken);
-//                     instance.defaults.headers.common["x-access-token"] = accessToken;
-//                     return instance(originalConfig);
-//                 } catch (_error) {
-//                     if (_error.response && _error.response.data) {
-//                         return Promise.reject(_error.response.data);
-//                     }
-//                     return Promise.reject(_error);
-//                 }
-//             }
-//             if (err.response.status === 403 && err.response.data) {
-//                 console.log(err.response.data.message);
-//                 return Promise.reject(err.response.data);
-//             }
-//         }
-//         return Promise.reject(err);
-//     }
-// );
-
 // 로그인
 export async function postLogin(data) {
     let res = await instance.post("/api/v1/traveler/login", data);

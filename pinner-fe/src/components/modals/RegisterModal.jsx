@@ -123,12 +123,13 @@ export default function RegisterModal() {
                     setErrorMessage('');
                     return true;
                 } else {
-                    setErrorMessage("이메일 인증 코드를 다시 확인해주세요.");
+                    setErrorMessage(response.data);
                     return false;
                 }
             })
             .catch((error) => {
                 console.log(error);
+                setErrorMessage(error.message);
                 return false;
             });
         setFinalIsEmailAuthentication(isEmailAuthCheck);

@@ -240,20 +240,18 @@ export default function BasePage() {
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
                             const resp = await apiv1.get(
                                 '/geocoding',
-                                { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
-                            );
-
-
-                            if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
+                                {params: {lat: loc.lat, lng: loc.lng, reverse: true}}
+                            ).then(response => {
+                                console.log(response);
+                                loc.name = response.data.name;
+                                loc.countryCd = response.data.countryCd;
+                                setNewLocationState(loc);
+                                setNewJourneyStep(NewJourneyStep.EDITTING);
+                            }).catch(error => {
+                                console.log(error);
                                 toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
-                            } else {
-                                loc.name = resp.data.name;
-                                loc.countryCd = resp.data.countryCd;
-                            }
-
-                            setNewLocationState(loc);
-                            setNewJourneyStep(NewJourneyStep.EDITTING);
+                            });
                         }
                     }}
                 >
