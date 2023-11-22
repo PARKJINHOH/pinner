@@ -48,8 +48,11 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public int deleteByEmail(String email) {
-        return refreshTokenRepository.deleteByTraveler(travelerRepository.findByEmail(email).get());
+    public void deleteByEmail(String email) {
+        travelerRepository.findByEmail(email).ifPresentOrElse(refreshTokenRepository::deleteByTraveler,
+                () -> {
+                    throw new CustomException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
+                });
     }
 }
 

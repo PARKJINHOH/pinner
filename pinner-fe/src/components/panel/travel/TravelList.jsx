@@ -63,7 +63,7 @@ export default function TravelList() {
 
         apiv1.get("/travel")
             .then(response => {
-                setTravelData(response.data.body);
+                setTravelData(response.data);
             })
             .catch(error => {
                 console.error(`can not load data: ${error}`);

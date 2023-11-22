@@ -12,6 +12,7 @@ import dev.pinner.service.jwt.RefreshTokenService;
 import dev.pinner.global.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -146,7 +147,7 @@ public class TravelerService {
             travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
             return this.doLogin(travelerDto);
         } else {
-            return null;
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "수정에 실패했습니다.");
         }
 
     }
@@ -162,7 +163,10 @@ public class TravelerService {
         String requestRefreshToken = travelerDto.getRefreshToken();
 
         // Refresh Token
-        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, requestRefreshToken + "Refresh token is not in database!"));
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> {
+            log.error("[{}] Token이 DB에 없습니다.", requestRefreshToken);
+            return new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
+        });
         RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
 
         // Access Token
@@ -188,7 +192,7 @@ public class TravelerService {
             boolean updatedResult = travelerRepository.updateTravelerStateByTravelerEmail(traveler.getId());
 
             if (!updatedResult) {
-                throw new RuntimeException("[deleteTraveler] Failed to update traveler state. RollBack transaction.");
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "가입된 이력이 없습니다.");
             }
 
             if (traveler.getSignupServices().equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
@@ -196,12 +200,12 @@ public class TravelerService {
                         "&client_id=%s" +
                         "&client_secret=%s" +
                         "&access_token=%s" +
-                        "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getPassword());
+                        "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getOauthAccessToken());
                 return requestToServer(apiUrl, OauthServiceCodeEnum.NAVER.getSignupServices());
             }
 
             if (traveler.getSignupServices().equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
-                String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getPassword());
+                String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getOauthAccessToken());
                 return requestToServer(apiUrl, OauthServiceCodeEnum.GOOGLE.getSignupServices());
             }
         }
@@ -211,34 +215,29 @@ public class TravelerService {
 
 
     private Boolean requestToServer(String apiURL, String signupServices) {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-            if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
-                ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
-                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
-                if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
-                    return true;
-                }
+        if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
+            ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
+            log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
+            if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
+                return true;
             }
-
-            if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
-                ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
-                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
-                if (resultGoogle.getStatusCode() == HttpStatus.OK) {
-                    return true;
-                }
-            }
-
-            return false;
-        } catch (Exception e) {
-            log.error("{} ApiError : {}", signupServices, e.getMessage());
-            return false;
         }
+
+        if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
+            ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
+            log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
+            if (resultGoogle.getStatusCode() == HttpStatus.OK) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

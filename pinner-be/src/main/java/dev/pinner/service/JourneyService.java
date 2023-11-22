@@ -60,7 +60,7 @@ public class JourneyService {
     }
 
     @Transactional
-    public List<TravelDto.Response> updateJourney(Traveler traveler, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) throws IOException {
+    public List<TravelDto.Response> updateJourney(Traveler traveler, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) {
         Optional<Journey> findJourney = journeyRepository.findById(journeyId);
 
         if (findJourney.isPresent()) {

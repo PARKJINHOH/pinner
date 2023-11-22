@@ -8,37 +8,42 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    // ExceptionHandler가 붙은 함수는 꼭 protected / private 사용하기
-    // 외부에서 함수를 부르게 되면 그대로 에러 객체를 리턴한다.
 
     /**
      * CustomException
      */
     @ExceptionHandler({CustomException.class})
-    protected ResponseEntity<Object> handleCustomException(CustomException ex) {
+    public ResponseEntity<Object> handleException(CustomException ex) {
         log.error("CustomException ===> ", ex);
         return new ResponseEntity<>(new ErrorDto(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
     }
 
-
     /**
      * @Valid 관련 Exception
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
         log.error("MethodArgumentNotValidException ===> ", ex);
         return new ResponseEntity<>(new ErrorDto(HttpStatus.BAD_REQUEST.value(), ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<Object> handleException(IOException ex) {
+        log.error("IOException ===> ", ex);
+        return new ResponseEntity<>(new ErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
      * 전역 Exception
      */
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<Object> handleServerException(Exception ex) {
+    public ResponseEntity<Object> handleException(Exception ex) {
         log.error("Exception ===> ", ex);
         return new ResponseEntity<>(new ErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에 문제가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }

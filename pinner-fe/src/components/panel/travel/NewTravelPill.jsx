@@ -70,7 +70,7 @@ export default function NewTravelPill({ onCancel }) {
                 await apiv1.post("/travel", JSON.stringify({ title: title.trim() }))
                     .then((response) => {
                         if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data.body);
+                            setTravels(response.data);
                         }
                     });
             }

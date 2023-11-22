@@ -33,13 +33,8 @@ public class JourneyController {
     @DeleteMapping("/{journeyId}")
     public ResponseEntity<?> deleteJourney(@AuthenticationPrincipal Traveler traveler,
                                            @PathVariable Long journeyId) {
-        try {
-            List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("삭제에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
+        return ResponseEntity.ok(travels);
     }
 
     @PutMapping("/{journeyId}")
@@ -47,12 +42,7 @@ public class JourneyController {
                                          @PathVariable Long journeyId,
                                          @RequestPart("newJourney") JourneyDto.Request newJourney,
                                          @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        try {
-            List<TravelDto.Response> travels = journeyService.updateJourney(traveler, journeyId, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("수정에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.updateJourney(traveler, journeyId, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,20 +25,15 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping(value = "/photo/{fileName}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getPhoto(@PathVariable String fileName) {
-        try {
-            String pullPath = photoService.findPhotoByFileName(fileName);
-            String absolutePath = new File("").getAbsolutePath() + File.separator;
+    public ResponseEntity<?> getPhoto(@PathVariable String fileName) throws IOException {
+        String pullPath = photoService.findPhotoByFileName(fileName);
+        String absolutePath = new File("").getAbsolutePath() + File.separator;
 
-            Path imagePath = Paths.get(absolutePath + pullPath);
-            byte[] imageByteArray = Files.readAllBytes(imagePath);
+        Path imagePath = Paths.get(absolutePath + pullPath);
+        byte[] imageByteArray = Files.readAllBytes(imagePath);
 
-            return ResponseEntity.ok()
-                    .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
-                    .body(imageByteArray);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("사진 가지고 오기에 실패했습니다.");
-        }
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
+                .body(imageByteArray);
     }
 }

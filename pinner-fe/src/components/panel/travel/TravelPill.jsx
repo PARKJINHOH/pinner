@@ -102,7 +102,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
                         if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data.body);
+                            setTravels(response.data);
                         }
                     });
             }

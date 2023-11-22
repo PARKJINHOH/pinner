@@ -92,10 +92,14 @@ public class PhotoService {
     }
 
     public String findPhotoByFileName(String fileName) {
-        Photo entity = photoRepository.findByFileName(fileName).orElseThrow(() -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
-        // Todo : 존재하지 않는 이미지 일 경우 대체 이미지
-        return entity.getFullPath();
+        if(fileName.isBlank()){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 경로입니다.");
+        }
 
+        Photo entity = photoRepository.findByFileName(fileName)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 파일이 존재하지 않습니다."));
+
+        return entity.getFullPath();
     }
 
     public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles)  {
