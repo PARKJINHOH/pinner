@@ -172,6 +172,7 @@ export default function ProfileModal() {
                     nickname: response.data.nickname,
                     accessToken: response.data.accessToken,
                     refreshToken: response.data.refreshToken,
+                    signupServices: response.data.signupServices,
                 });
             })
             .catch(error => {
