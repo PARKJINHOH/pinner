@@ -87,9 +87,7 @@ export default function JourneyList({ travel }) {
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
-                        if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data);
-                        }
+                        setTravels(response.data);
                     });
 
             }

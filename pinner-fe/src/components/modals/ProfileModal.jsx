@@ -80,11 +80,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 탈퇴하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
                 .then(response => {
-                    alert("탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+                    alert(response.data);
                     return response.status;
                 })
                 .catch(error => {
-                    alert("탈퇴가 실패했습니다. \n관리자에게 문의주세요.");
+                    alert(error.message);
                     return error.status;
                 });
 
@@ -100,11 +100,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
                 .then(response => {
-                    alert("소셜로그인 탈퇴가 완료되었습니다. \n이용해주셔서 감사합니다.");
+                    alert(response.data);
                     return response.status;
                 })
                 .catch(error => {
-                    alert("소셜로그인 탈퇴가 실패했습니다. \n관리자에게 문의주세요.");
+                    alert(error.message);
                     return error.status;
                 });
 
@@ -132,22 +132,13 @@ export default function ProfileModal() {
             password: oldPassword,
         });
 
-        const newVar = await apiv1.post("/traveler/password/check", nowPasswordData)
+        await apiv1.post("/traveler/password/check", nowPasswordData)
             .then(response => {
-                return response.status;
+                setErrorMessage('');
             })
             .catch(error => {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
-                    return error.response.status;
-                }
+                setErrorMessage(error.message);
             });
-
-        if (newVar !== HTTPStatus.OK) {
-            setErrorMessage("비밀번호가 일치하지 않습니다.");
-            return;
-        } else {
-            setErrorMessage('');
-        }
 
         const data = {
             email: email,

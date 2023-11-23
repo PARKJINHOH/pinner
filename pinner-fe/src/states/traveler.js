@@ -37,7 +37,7 @@ export function useDoLogout() {
                 alert(response.data);
             })
             .catch((error) => {
-                alert("에러가 발생했습니다. 관리자에게 문의주세요.");
+                alert(error.message);
             });
 
         setTraveler(null);

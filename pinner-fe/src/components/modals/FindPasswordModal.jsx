@@ -32,12 +32,10 @@ export default function FindPasswordModal() {
                 if (response.status === HTTPStatus.OK) {
                     setErrorMessage('');
                     setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
-                } else {
-                    setErrorMessage('닉네임과 이메일을 확인해주세요.');
                 }
             })
             .catch((error) => {
-                setErrorMessage('닉네임과 이메일을 확인해주세요.');
+                setErrorMessage(error.message);
             })
             .finally(() =>{
                 setLoading(false);

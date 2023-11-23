@@ -68,11 +68,7 @@ export default function LoginModal() {
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
-                if(error.response.status === HTTPStatus.NOT_FOUND){
-                    setErrorMessage("이메일 및 비밀번호를 다시 확인해주세요.");
-                } else {
-                    setErrorMessage("다시 로그인을 시도해 주세요.");
-                }
+                setErrorMessage(error.message);
             });
     };
 

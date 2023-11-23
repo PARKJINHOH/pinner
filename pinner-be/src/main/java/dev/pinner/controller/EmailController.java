@@ -42,8 +42,6 @@ public class EmailController {
 
     /**
      * 이메일 인증 확인
-     * @param request
-     * @return
      */
     @PostMapping("/check")
     public ResponseEntity<?> emailCheck(@RequestBody EmailSMTPDto.Request request) {

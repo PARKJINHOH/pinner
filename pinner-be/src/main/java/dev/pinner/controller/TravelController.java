@@ -23,12 +23,18 @@ public class TravelController {
 
     private final TravelService travelService;
 
+    /**
+     * 여행 불러오기
+     */
     @GetMapping()
     public ResponseEntity<?> getTravel(@AuthenticationPrincipal Traveler traveler) {
         List<TravelDto.Response> getTravels = travelService.getTravel(traveler);
         return ResponseEntity.ok(getTravels);
     }
 
+    /**
+     * 여행 추가
+     */
     @PostMapping()
     public ResponseEntity<?> postTravel(@AuthenticationPrincipal Traveler traveler,
                                         @RequestBody @Valid TravelDto.Request newTravel) {
@@ -36,6 +42,9 @@ public class TravelController {
         return ResponseEntity.ok(getTravels);
     }
 
+    /**
+     * 여행 삭제
+     */
     @DeleteMapping("/{travelId}")
     public ResponseEntity<?> deleteTravel(@AuthenticationPrincipal Traveler traveler,
                                           @PathVariable Long travelId) {
@@ -43,6 +52,9 @@ public class TravelController {
         return ResponseEntity.ok(getTravels);
     }
 
+    /**
+     * 여행 순번 수정
+     */
     @PutMapping("/orderKey")
     public ResponseEntity<?> putTravelOrderKey(@AuthenticationPrincipal Traveler traveler,
                                                @RequestBody @Valid List<TravelDto.Request> travelList) {
@@ -50,6 +62,9 @@ public class TravelController {
         return ResponseEntity.ok(getTravels);
     }
 
+    /**
+     * 여행 타이틀 수정
+     */
     @PatchMapping("/{travelId}")
     public ResponseEntity<?> putTravelTitle(@AuthenticationPrincipal Traveler traveler,
                                             @PathVariable Long travelId,

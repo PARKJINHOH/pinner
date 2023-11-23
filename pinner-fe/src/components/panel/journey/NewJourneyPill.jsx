@@ -127,10 +127,8 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
             await apiv1.post(`/journey`, formData)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setTravels(response.data);
-                        editingCancel();
-                    }
+                    setTravels(response.data);
+                    editingCancel();
                 });
         } catch (error) {
             console.error('error : ', error);

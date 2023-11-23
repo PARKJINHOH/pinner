@@ -66,7 +66,7 @@ export default function TravelList() {
                 setTravelData(response.data);
             })
             .catch(error => {
-                console.error(`can not load data: ${error}`);
+                console.error(error.message);
                 setTravelData([]);
             });
     }, [traveler]);
@@ -87,9 +87,7 @@ export default function TravelList() {
 
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
-                if (response.status === HTTPStatus.OK) {
-                    setTravelData(response.data);
-                }
+                setTravelData(response.data);
             });
 
     }
