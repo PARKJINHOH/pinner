@@ -4,10 +4,12 @@ import dev.pinner.domain.entity.Traveler;
 import dev.pinner.domain.record.OAuthLoginUserRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.pinner.exception.CustomException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -50,63 +52,36 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
     }
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        try {
-            NaverResponseWrapper wrapper = NaverResponseWrapper.from(oAuth2User.getAttributes());
-            if (!wrapper.isSuccess()) {
-                throw new OAuthUserInfoException("네이버 로그인 실패: " + wrapper.message);
-            }
+        NaverResponseWrapper wrapper = NaverResponseWrapper.from(oAuth2User.getAttributes());
 
-            String nickname = wrapper.response.nickname;
-            String email = wrapper.response.email;
-
-            if (nickname == null) {
-                throw new OAuthUserInfoException("response에 nickname이 없습니다. 네이버 로그인 API에서 해당 항목을 필수로 변경해주세요.");
-            }
-
-
-            OAuthLoginUserRecord attr = new OAuthLoginUserRecord(
-                    userRequest.getClientRegistration().getClientName(),
-                    email,
-                    nickname,
-                    userRequest.getAccessToken().getTokenValue()
-            );
-
-            log.info("OAuth 로그인 시도: {}", attr);
-
-            Traveler traveler = travelerService.registerOrLogin(attr);
-
-            return new CustomOAuthUser(traveler, oAuth2User.getAttributes());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    static class OAuthUserInfoException extends Exception {
-
-        public OAuthUserInfoException() {
-            super();
+        if (!wrapper.isSuccess()) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "네이버 로그인 실패: " + wrapper.message);
         }
 
-        public OAuthUserInfoException(String message) {
-            super(message);
+        String nickname = wrapper.response.nickname;
+        String email = wrapper.response.email;
+
+        if (nickname == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "네이버 로그인 API에서 닉네임 항목을 필수로 변경해주세요.");
         }
 
-        public OAuthUserInfoException(String message, Throwable cause) {
-            super(message, cause);
-        }
 
-        public OAuthUserInfoException(Throwable cause) {
-            super(cause);
-        }
+        OAuthLoginUserRecord attr = new OAuthLoginUserRecord(
+                userRequest.getClientRegistration().getClientName(),
+                email,
+                nickname,
+                userRequest.getAccessToken().getTokenValue()
+        );
 
-        protected OAuthUserInfoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-            super(message, cause, enableSuppression, writableStackTrace);
-        }
+        log.info("OAuth 로그인 시도: {}", attr);
+
+        Traveler traveler = travelerService.registerOrLogin(attr);
+
+        return new CustomOAuthUser(traveler, oAuth2User.getAttributes());
     }
 
     @Data
@@ -116,7 +91,7 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
         String message;
         NaverResponse response;
 
-        static NaverResponseWrapper from(Map<String, Object> jsonObject) throws JsonProcessingException {
+        static NaverResponseWrapper from(Map<String, Object> jsonObject) {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.convertValue(jsonObject, NaverResponseWrapper.class);
         }
