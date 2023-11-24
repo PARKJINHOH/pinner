@@ -21,11 +21,12 @@ export default function AfterOAtuhHandler() {
                     refreshToken: response.data.refreshToken,
                     signupServices: response.data.signupServices,
                 });
-
-                window.location = "/";
             })
             .catch((error) => {
-                console.error(error)
+                alert(error.response.data.message);
+            })
+            .finally(() => {
+                window.location = "/";
             });
     }, [])
 

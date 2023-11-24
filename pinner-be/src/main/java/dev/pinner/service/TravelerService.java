@@ -1,7 +1,7 @@
 package dev.pinner.service;
 
-import dev.pinner.domain.dto.OauthResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
+import dev.pinner.domain.dto.oauth.NaverDto;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
@@ -12,7 +12,6 @@ import dev.pinner.service.jwt.RefreshTokenService;
 import dev.pinner.global.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -92,34 +91,31 @@ public class TravelerService {
 
     @Transactional
     public TravelerDto.Response doLoginBySocial(Long travlerId) {
-        try {
-            Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
-            if (maybeTraveler.isEmpty()) {
-                return null;
-            }
-
-            Traveler traveler = maybeTraveler.get();
-
-            maybeTraveler.ifPresent(getTraveler -> {
-                getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
-                getTraveler.updateLastLoginDate();
-            });
-
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
-            String accessToken = jwtUtils.generateJwtToken(traveler);
-
-            return TravelerDto.Response.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken.getToken())
-                    .nickname(traveler.getNickname())
-                    .email(traveler.getEmail())
-                    .signupServices(traveler.getSignupServices())
-                    .build();
-
-        } catch (Exception e) {
-            log.error("로그인 실패 : {}", e.getMessage());
-            return null;
+        Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
+        if (maybeTraveler.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Oauth 사용자를 찾을 수 없습니다. 관리자에게 문의해주세요");
         }
+        if (!maybeTraveler.get().getState()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이미 탈퇴이력이 있는 회원입니다. 가입한 사이트의 연결된 서비스 관리에서 직접 권한을 삭제해주세요.");
+        }
+
+        Traveler traveler = maybeTraveler.get();
+
+        maybeTraveler.ifPresent(getTraveler -> {
+            getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
+            getTraveler.updateLastLoginDate();
+        });
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
+        String accessToken = jwtUtils.generateJwtToken(traveler);
+
+        return TravelerDto.Response.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .nickname(traveler.getNickname())
+                .email(traveler.getEmail())
+                .signupServices(traveler.getSignupServices())
+                .build();
     }
 
     public boolean passwordCheck(TravelerDto.Request travelerDto) {
@@ -223,7 +219,7 @@ public class TravelerService {
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
         if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
-            ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
+            ResponseEntity<NaverDto.NaverWithdrawalResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, NaverDto.NaverWithdrawalResponse.class);
             log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
             if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
                 return true;
