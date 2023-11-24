@@ -106,8 +106,6 @@ export const useAPIv1 = function () {
         } catch (error) {
             setTraveler(null);
             clearTraveler();
-
-            console.error(error.response.data.message);
             alert(error.response.data.message);
         }
     }

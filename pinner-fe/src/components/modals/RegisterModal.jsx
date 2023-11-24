@@ -155,7 +155,7 @@ export default function RegisterModal() {
                 setErrorMessage("");
             })
             .catch((error) => {
-                setErrorMessage(error.message)
+                setErrorMessage(error.response.data.message)
             });
     };
     

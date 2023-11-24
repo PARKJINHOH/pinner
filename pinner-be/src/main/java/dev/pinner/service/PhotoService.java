@@ -158,7 +158,7 @@ public class PhotoService {
             try {
                 multipartFile.transferTo(directoryPath);
             } catch (Exception e) {
-                throw new CustomException(HttpStatus.SERVICE_UNAVAILABLE, "서버에 문제가 발생했습니다.");
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.");
             }
 
         }

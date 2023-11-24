@@ -66,7 +66,6 @@ export default function TravelList() {
                 setTravelData(response.data);
             })
             .catch(error => {
-                console.error(error.message);
                 setTravelData([]);
             });
     }, [traveler]);

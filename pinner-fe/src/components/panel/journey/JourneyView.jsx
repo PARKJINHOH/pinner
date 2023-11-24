@@ -163,7 +163,6 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
                 });
 
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 수정하지 못했습니다.');
         } finally {
             setSaving(false);

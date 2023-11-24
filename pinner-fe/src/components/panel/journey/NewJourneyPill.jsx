@@ -131,7 +131,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     editingCancel();
                 });
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 저장하지 못했습니다.');
         } finally {
             setSaving(false);

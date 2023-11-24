@@ -29,7 +29,7 @@ public class TravelerController {
 
 
     /**
-     * 사용자 추가
+     * 사용자 회원가입
      */
     @PostMapping("/register")
     public ResponseEntity<?> createAccount(@RequestBody TravelerDto.Request travelerDto) {

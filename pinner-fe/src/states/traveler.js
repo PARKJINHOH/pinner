@@ -37,7 +37,7 @@ export function useDoLogout() {
                 alert(response.data);
             })
             .catch((error) => {
-                alert(error.message);
+                alert(error.response.data.message);
             });
 
         setTraveler(null);

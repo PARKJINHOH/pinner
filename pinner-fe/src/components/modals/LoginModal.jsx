@@ -68,7 +68,7 @@ export default function LoginModal() {
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
             })
             .catch((error) => {
-                setErrorMessage(error.message);
+                setErrorMessage(error.response.data.message);
             });
     };
 
