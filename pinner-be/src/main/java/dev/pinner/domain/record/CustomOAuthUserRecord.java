@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Map;
 
-public record CustomOAuthUser(Traveler traveler, Map<String, Object> attributes) implements OAuth2User, ICustomUser {
+public record CustomOAuthUserRecord(Traveler traveler, Map<String, Object> attributes) implements OAuth2User, ICustomUser {
     @Override
     public Traveler getTraveler() {
         return traveler;

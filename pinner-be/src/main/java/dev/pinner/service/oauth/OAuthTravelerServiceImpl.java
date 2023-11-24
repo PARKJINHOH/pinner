@@ -2,7 +2,7 @@ package dev.pinner.service.oauth;
 
 import dev.pinner.domain.dto.oauth.NaverDto;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.domain.record.CustomOAuthUser;
+import dev.pinner.domain.record.CustomOAuthUserRecord;
 import dev.pinner.domain.record.OAuthLoginUserRecord;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pinner.exception.CustomException;
@@ -52,7 +52,7 @@ public class OAuthTravelerServiceImpl implements OAuth2UserService<OAuth2UserReq
 
         Traveler traveler = travelerService.registerOrLogin(attr);
 
-        return new CustomOAuthUser(traveler, oAuth2User.getAttributes());
+        return new CustomOAuthUserRecord(traveler, oAuth2User.getAttributes());
     }
 
     private NaverDto.NaverResponseWrapper from(Map<String, Object> jsonObject) {
