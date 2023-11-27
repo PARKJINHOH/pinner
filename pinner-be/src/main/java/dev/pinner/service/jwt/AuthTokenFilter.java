@@ -1,10 +1,12 @@
 package dev.pinner.service.jwt;
 
+import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.JwtCodeEnum;
 import dev.pinner.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,13 +45,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                filterChain.doFilter(request, response);
             }
         } catch (Exception e) {
-            log.error("Cannot set user authentication: {}", e.getMessage());
-        }
-
-        try {
-            filterChain.doFilter(request, response);
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다.");
         } finally {
             MDC.remove(_MDC_KEY);
         }
