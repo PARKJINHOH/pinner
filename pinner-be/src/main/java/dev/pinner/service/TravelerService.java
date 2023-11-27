@@ -14,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -79,13 +78,16 @@ public class TravelerService {
                     .email(traveler.getEmail())
                     .signupServices(traveler.getSignupServices())
                     .build();
-
-        } catch (Exception e) {
+        } catch (LockedException ex) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.");
+        } catch (BadCredentialsException ex) {
             Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
             optionalTraveler.ifPresent(Traveler::addLoginFailureCount);
-
-            log.error("[{}] 로그인 실패 : {}", travelerDto.getEmail(), e.getMessage());
-            return null;
+            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+        } catch (InternalAuthenticationServiceException ex) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+        } catch (Exception ex) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.");
         }
     }
 
@@ -118,9 +120,11 @@ public class TravelerService {
                 .build();
     }
 
-    public boolean passwordCheck(TravelerDto.Request travelerDto) {
+    public void passwordCheck(TravelerDto.Request travelerDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
-        return authentication.isAuthenticated();
+        if(!authentication.isAuthenticated()){
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
+        }
     }
 
     @Transactional
@@ -181,7 +185,7 @@ public class TravelerService {
 
         if (findTraveler.isPresent()) {
             if (!findTraveler.get().getEmail().equals(travelerDto.getEmail())) {
-                return false;
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
             }
 
             Traveler traveler = findTraveler.get();

@@ -43,15 +43,6 @@ public class TravelerController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody TravelerDto.Request travelerDto) {
         TravelerDto.Response response = travelerService.doLogin(travelerDto);
-
-        if (response == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "로그인에 실패했습니다. 관리자에게 문의해주세요.");
-        }
-
-        if (!response.getEmail().equals(travelerDto.getEmail())) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
-        }
-
         return ResponseEntity.ok().body(response);
     }
 
@@ -79,14 +70,8 @@ public class TravelerController {
      */
     @PostMapping("/password/check")
     public ResponseEntity<?> passwordCheck(@RequestBody TravelerDto.Request travelerDto) {
-        boolean isPasswordValid = travelerService.passwordCheck(travelerDto);
-
-        if (isPasswordValid) {
-            return ResponseEntity.ok().build();
-        } else {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
-        }
-
+        travelerService.passwordCheck(travelerDto);
+        return ResponseEntity.ok().build();
     }
 
     /**
