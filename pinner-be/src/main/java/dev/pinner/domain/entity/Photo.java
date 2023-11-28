@@ -1,12 +1,10 @@
 package dev.pinner.domain.entity;
 
-import dev.pinner.exception.CustomException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.springframework.http.HttpStatus;
 
 import javax.persistence.*;
 import java.io.File;
@@ -77,10 +75,17 @@ public class Photo extends AuditEntity {
 
     public void deleteImageFile() {
         if (fullPath != null) {
-            String absolutePath = new File("").getAbsolutePath() + File.separator;
-            File fileToDelete = new File(absolutePath + fullPath);
-            if (!fileToDelete.delete()) {
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "사진 삭제 진행중 문제가 발생했습니다.");
+            try {
+                String absolutePath = new File("").getAbsolutePath() + File.separator;
+                File fileToDelete = new File(absolutePath + fullPath);
+                if (fileToDelete.delete()) {
+                    System.out.println("Image file deleted successfully: " + absolutePath + fullPath);
+                } else {
+                    System.out.println("Failed to delete image file: " + absolutePath + fullPath);
+                }
+            } catch (Exception e) {
+                System.out.println("Error deleting image file");
+                e.printStackTrace();
             }
         }
     }
