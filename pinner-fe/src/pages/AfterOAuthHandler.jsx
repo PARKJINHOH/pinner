@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDoLogin } from 'states/traveler';
 
-export default function AfterOAtuhHandler() {
+export default function AfterOAuthHandler() {
     const doLogin = useDoLogin();
 
     const [searchParams] = useSearchParams();
