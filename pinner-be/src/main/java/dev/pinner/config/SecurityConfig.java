@@ -8,6 +8,7 @@ import dev.pinner.service.oauth.OAuthTravelerServiceImpl;
 import dev.pinner.service.oauth.OcidTravelerServiceImpl;
 import dev.pinner.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +42,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web
-                .ignoring().antMatchers("/h2-console/**", "/actuator/**");
+                .ignoring().antMatchers("/actuator/**");
     }
 
     @Bean
@@ -65,6 +66,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email/**", "/photo/**").permitAll()
                 .antMatchers("/actuator/**").permitAll() // 모니터링 관련
+                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
                 .anyRequest().authenticated();
 
         // oAuth Settings
