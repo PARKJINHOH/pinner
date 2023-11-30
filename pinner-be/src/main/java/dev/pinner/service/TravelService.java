@@ -2,10 +2,12 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelDto;
 import dev.pinner.domain.entity.Traveler;
+import dev.pinner.exception.CustomException;
 import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ public class TravelService {
     private final TravelerRepository travelerRepository;
 
     public List<TravelDto.Response> getTravel(Traveler traveler) {
-        travelRepository.flush();
+        travelRepository.flush(); // 없을 경우 insert된 여정이 2번 들어감
         return travelRepository.findByTravelerIdOrderByOrderKeyAsc(traveler.getId())
                 .stream()
                 .map(TravelDto.Response::new)
@@ -32,7 +34,7 @@ public class TravelService {
     private Traveler getTraveler(Long travelerId) {
         Optional<Traveler> traveler = travelerRepository.findById(travelerId);
         if (traveler.isEmpty()) {
-            throw new RuntimeException("missing traveler");
+            throw new CustomException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
         }
         return traveler.get();
     }

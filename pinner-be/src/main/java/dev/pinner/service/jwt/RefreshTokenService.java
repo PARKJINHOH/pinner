@@ -1,17 +1,19 @@
 package dev.pinner.service.jwt;
 
 import dev.pinner.domain.entity.RefreshToken;
-import dev.pinner.exception.TokenRefreshException;
+import dev.pinner.exception.CustomException;
 import dev.pinner.repository.RefreshTokenRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
@@ -39,15 +41,18 @@ public class RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
-            throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new signin request");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, token.getToken() + "Refresh token was expired. Please make a new signin request");
         }
 
         return token;
     }
 
     @Transactional
-    public int deleteByEmail(String email) {
-        return refreshTokenRepository.deleteByTraveler(travelerRepository.findByEmail(email).get());
+    public void deleteByEmail(String email) {
+        travelerRepository.findByEmail(email).ifPresentOrElse(refreshTokenRepository::deleteByTraveler,
+                () -> {
+                    throw new CustomException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
+                });
     }
 }
 

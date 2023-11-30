@@ -89,16 +89,11 @@ export default function RegisterModal() {
         setLoading(true);
         apiv1.post("/email", JSON.stringify({email: email.trim()}))
             .then((response) => {
-                if (response.status === HTTPStatus.OK) {
-                    setIsEmailAuthentication(true);
-                    setErrorMessage('');
-                } else {
-                    setIsEmailAuthentication(false);
-                    setErrorMessage("이메일을 다시 확인해주세요.");
-                }
+                setIsEmailAuthentication(true);
+                setErrorMessage('');
             })
             .catch((error) => {
-                console.log(error);
+                setErrorMessage(error.message);
                 setEmailSendLoading(false);
             })
             .finally(() => {
@@ -118,17 +113,11 @@ export default function RegisterModal() {
 
         const isEmailAuthCheck = await apiv1.post("email/check", JSON.stringify({email: email.trim(), emailCode : emailAuthenticationCode.trim()}))
             .then((response) => {
-                console.log(response);
-                if (response.status === HTTPStatus.OK) {
-                    setErrorMessage('');
-                    return true;
-                } else {
-                    setErrorMessage("이메일 인증 코드를 다시 확인해주세요.");
-                    return false;
-                }
+                setErrorMessage('');
+                return true;
             })
             .catch((error) => {
-                console.log(error);
+                setErrorMessage(error.message);
                 return false;
             });
         setFinalIsEmailAuthentication(isEmailAuthCheck);
@@ -160,16 +149,13 @@ export default function RegisterModal() {
 
         postRegister(data)
             .then((response) => {
-                if (response.status === HTTPStatus.OK) {
-                    alert(response.data);
+                alert(response.data);
 
-                    setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
-                    setErrorMessage("");
-                }
+                setModalVisibility(AuthModalVisibility.SHOW_LOGIN);
+                setErrorMessage("");
             })
             .catch((error) => {
-                console.log(error);
-                setErrorMessage(error.response.data ? error.response.data : "장애가 발생했습니다. 다시 시도해 주세요.")
+                setErrorMessage(error.response.data.message)
             });
     };
     

@@ -88,11 +88,10 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
             setCountryKrNm(hasCountry.country_nm);
         }
 
-        journey.photos.map((photo) => {
+        journey.photos.map(async (photo) => {
             const imageUrl = photo.src;
-
             // 이미지 URL을 Blob 객체로 가져오기
-            fetch(imageUrl)
+            await fetch(imageUrl)
                 .then((response) => response.blob())
                 .then((blob) => {
                     // const objectUrl = URL.createObjectURL(blob);
@@ -159,14 +158,11 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
 
             await apiv1.put(`/journey/${journey.id}`, formData)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setTravels(response.data);
-                        viewCancel();
-                    }
+                    setTravels(response.data);
+                    viewCancel();
                 });
 
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 수정하지 못했습니다.');
         } finally {
             setSaving(false);

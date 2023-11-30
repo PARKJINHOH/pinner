@@ -1,9 +1,9 @@
 package dev.pinner.service;
 
-import dev.pinner.domain.dto.OauthResponseDto;
 import dev.pinner.domain.dto.TravelerDto;
+import dev.pinner.domain.dto.oauth.NaverDto;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.TokenRefreshException;
+import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.service.jwt.JwtUtils;
@@ -14,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,12 +43,12 @@ public class TravelerService {
 
     @Transactional
     public String register(TravelerDto.Request travelerDto) {
-        if (travelerRepository.findByEmail(travelerDto.getEmail()).orElse(null) == null) {
+        if (travelerRepository.findByEmail(travelerDto.getEmail()).isPresent()) {
+            throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
+        } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
             return travelerRepository.save(travelerDto.toEntity()).getNickname();
-        } else {
-            return null;
         }
     }
 
@@ -79,51 +78,53 @@ public class TravelerService {
                     .email(traveler.getEmail())
                     .signupServices(traveler.getSignupServices())
                     .build();
-
-        } catch (Exception e) {
+        } catch (LockedException ex) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.");
+        } catch (BadCredentialsException ex) {
             Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
             optionalTraveler.ifPresent(Traveler::addLoginFailureCount);
-
-            log.error("[{}] 로그인 실패 : {}", travelerDto.getEmail(), e.getMessage());
-            return null;
+            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+        } catch (InternalAuthenticationServiceException ex) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+        } catch (Exception ex) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.");
         }
     }
 
     @Transactional
     public TravelerDto.Response doLoginBySocial(Long travlerId) {
-        try {
-            Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
-            if (maybeTraveler.isEmpty()) {
-                return null;
-            }
-
-            Traveler traveler = maybeTraveler.get();
-
-            maybeTraveler.ifPresent(getTraveler -> {
-                getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
-                getTraveler.updateLastLoginDate();
-            });
-
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
-            String accessToken = jwtUtils.generateJwtToken(traveler);
-
-            return TravelerDto.Response.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken.getToken())
-                    .nickname(traveler.getNickname())
-                    .email(traveler.getEmail())
-                    .signupServices(traveler.getSignupServices())
-                    .build();
-
-        } catch (Exception e) {
-            log.error("로그인 실패 : {}", e.getMessage());
-            return null;
+        Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
+        if (maybeTraveler.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Oauth 사용자를 찾을 수 없습니다. 관리자에게 문의해주세요");
         }
+        if (!maybeTraveler.get().getState()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이미 탈퇴이력이 있는 회원입니다. 가입한 사이트의 연결된 서비스 관리에서 직접 권한을 삭제해주세요.");
+        }
+
+        Traveler traveler = maybeTraveler.get();
+
+        maybeTraveler.ifPresent(getTraveler -> {
+            getTraveler.updateLastLoginIpAddress(CommonUtil.getIpAddress());
+            getTraveler.updateLastLoginDate();
+        });
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
+        String accessToken = jwtUtils.generateJwtToken(traveler);
+
+        return TravelerDto.Response.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .nickname(traveler.getNickname())
+                .email(traveler.getEmail())
+                .signupServices(traveler.getSignupServices())
+                .build();
     }
 
-    public boolean passwordCheck(TravelerDto.Request travelerDto) {
+    public void passwordCheck(TravelerDto.Request travelerDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
-        return authentication.isAuthenticated();
+        if(!authentication.isAuthenticated()){
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
+        }
     }
 
     @Transactional
@@ -146,7 +147,7 @@ public class TravelerService {
             travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
             return this.doLogin(travelerDto);
         } else {
-            return null;
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "수정에 실패했습니다.");
         }
 
     }
@@ -162,7 +163,10 @@ public class TravelerService {
         String requestRefreshToken = travelerDto.getRefreshToken();
 
         // Refresh Token
-        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> {
+            log.error("[{}] Token이 DB에 없습니다.", requestRefreshToken);
+            return new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
+        });
         RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
 
         // Access Token
@@ -181,14 +185,14 @@ public class TravelerService {
 
         if (findTraveler.isPresent()) {
             if (!findTraveler.get().getEmail().equals(travelerDto.getEmail())) {
-                return false;
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
             }
 
             Traveler traveler = findTraveler.get();
             boolean updatedResult = travelerRepository.updateTravelerStateByTravelerEmail(traveler.getId());
 
             if (!updatedResult) {
-                throw new RuntimeException("[deleteTraveler] Failed to update traveler state. RollBack transaction.");
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "가입된 이력이 없습니다.");
             }
 
             if (traveler.getSignupServices().equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
@@ -196,12 +200,12 @@ public class TravelerService {
                         "&client_id=%s" +
                         "&client_secret=%s" +
                         "&access_token=%s" +
-                        "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getPassword());
+                        "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getOauthAccessToken());
                 return requestToServer(apiUrl, OauthServiceCodeEnum.NAVER.getSignupServices());
             }
 
             if (traveler.getSignupServices().equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
-                String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getPassword());
+                String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getOauthAccessToken());
                 return requestToServer(apiUrl, OauthServiceCodeEnum.GOOGLE.getSignupServices());
             }
         }
@@ -211,34 +215,29 @@ public class TravelerService {
 
 
     private Boolean requestToServer(String apiURL, String signupServices) {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-            if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
-                ResponseEntity<OauthResponseDto.NaverResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, OauthResponseDto.NaverResponse.class);
-                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
-                if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
-                    return true;
-                }
+        if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
+            ResponseEntity<NaverDto.NaverWithdrawalResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, NaverDto.NaverWithdrawalResponse.class);
+            log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
+            if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
+                return true;
             }
-
-            if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
-                ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
-                log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
-                if (resultGoogle.getStatusCode() == HttpStatus.OK) {
-                    return true;
-                }
-            }
-
-            return false;
-        } catch (Exception e) {
-            log.error("{} ApiError : {}", signupServices, e.getMessage());
-            return false;
         }
+
+        if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
+            ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
+            log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
+            if (resultGoogle.getStatusCode() == HttpStatus.OK) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

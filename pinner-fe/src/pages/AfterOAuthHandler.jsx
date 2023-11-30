@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDoLogin } from 'states/traveler';
 
-export default function AfterOAtuhHandler() {
+export default function AfterOAuthHandler() {
     const doLogin = useDoLogin();
 
     const [searchParams] = useSearchParams();
@@ -21,11 +21,12 @@ export default function AfterOAtuhHandler() {
                     refreshToken: response.data.refreshToken,
                     signupServices: response.data.signupServices,
                 });
-
-                window.location = "/";
             })
             .catch((error) => {
-                console.error(error)
+                alert(error.response.data.message);
+            })
+            .finally(() => {
+                window.location = "/";
             });
     }, [])
 

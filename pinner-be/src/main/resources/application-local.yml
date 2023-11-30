@@ -11,10 +11,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-      # 개발(validate , none) 운영 : none
-  #    properties:
-  #      hibernate.format_sql: true
-  #    show-sql: true
 
   security:
     oauth2:
@@ -38,10 +34,8 @@ spring:
 
 logging:
   level:
-    #    org.hibernate.SQL: debug
-    #    org.hibernate.type: trace
-    org.springframework.web: TRACE
-    org.springframework.security: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
 
 path:
   image: images

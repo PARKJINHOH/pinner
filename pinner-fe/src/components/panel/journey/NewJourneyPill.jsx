@@ -127,13 +127,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
             await apiv1.post(`/journey`, formData)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setTravels(response.data);
-                        editingCancel();
-                    }
+                    setTravels(response.data);
+                    editingCancel();
                 });
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 저장하지 못했습니다.');
         } finally {
             setSaving(false);
@@ -183,18 +180,14 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     // 위치 설정
                     let loc = { ...newLocation, ...data };
 
-                    const resp = await apiv1.get(
+                    await apiv1.get(
                         '/geocoding',
-                        { params: { lat: data.lat, lng: data.lng, reverse: true } }
-                    )
-
-                    if (resp.status === 200) {
-                        loc.name = resp.data.name;
-                        loc.countryCd = resp.data.countryCd;
-                    }
-
-                    setNewLocation(loc);
-                    break;
+                        {params: {lat: data.lat, lng: data.lng, reverse: true}}
+                    ).then(response => {
+                        loc.name = response.data.name;
+                        loc.countryCd = response.data.countryCd;
+                        setNewLocation(loc);
+                    });
                 }
             }
 

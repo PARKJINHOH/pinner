@@ -101,9 +101,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
-                        if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data.body);
-                        }
+                        setTravels(response.data);
                     });
             }
             setIsRenaming(false);
@@ -125,12 +123,10 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
         if (window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)) {
             await apiv1.delete(`/travel/${travel.id}`)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        if (response.data.length === 0) {
-                            setEditMode('');
-                        }
-                        setTravels(response.data);
+                    if (response.data.length === 0) {
+                        setEditMode('');
                     }
+                    setTravels(response.data);
                 });
         }
     }

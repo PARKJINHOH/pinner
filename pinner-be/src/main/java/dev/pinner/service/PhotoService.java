@@ -2,11 +2,13 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.PhotoDto;
 import dev.pinner.domain.entity.Photo;
+import dev.pinner.exception.CustomException;
 import dev.pinner.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -90,13 +92,17 @@ public class PhotoService {
     }
 
     public String findPhotoByFileName(String fileName) {
-        Photo entity = photoRepository.findByFileName(fileName).orElseThrow(() -> new IllegalArgumentException("해당 파일이 존재하지 않습니다."));
-        // Todo : 존재하지 않는 이미지 일 경우 대체 이미지
-        return entity.getFullPath();
+        if(fileName.isBlank()){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 경로입니다.");
+        }
 
+        Photo entity = photoRepository.findByFileName(fileName)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 파일이 존재하지 않습니다."));
+
+        return entity.getFullPath();
     }
 
-    public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles) throws IOException {
+    public List<Photo> processPhotosForJourney(List<MultipartFile> multipartFiles)  {
         // 반환할 파일 리스트
         List<Photo> fileList = new ArrayList<>();
 
@@ -111,9 +117,15 @@ public class PhotoService {
             String originalFileExtension = getFileExtension(multipartFile);
 
             // 이미지 가로,세로 추출
-            byte[] imageBytes = multipartFile.getBytes();
-            ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
-            BufferedImage image = ImageIO.read(bis);
+            byte[] imageBytes;
+            BufferedImage image;
+            try {
+                imageBytes = multipartFile.getBytes();
+                ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+                image = ImageIO.read(bis);
+            } catch (IOException io) {
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.");
+            }
             int actualWidth = image.getWidth();
             int actualHeight = image.getHeight();
 
@@ -146,7 +158,7 @@ public class PhotoService {
             try {
                 multipartFile.transferTo(directoryPath);
             } catch (Exception e) {
-                log.error(e.getMessage());
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.");
             }
 
         }

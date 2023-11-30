@@ -1,4 +1,4 @@
-import AfterOAtuhHandler from 'pages/AfterOAtuhHandler';
+import AfterOAuthHandler from 'pages/AfterOAuthHandler';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     },
     {
       path: "/afteroauth",
-      element: <AfterOAtuhHandler />,
+      element: <AfterOAuthHandler />,
     },
   ]);
 

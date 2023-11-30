@@ -21,43 +21,36 @@ public class JourneyController {
 
     private final JourneyService journeyService;
 
-    // Journey 생성
+    /**
+     * 여정 추가
+     */
     @PostMapping()
     public ResponseEntity<?> createJourney(@AuthenticationPrincipal Traveler traveler,
                                            @RequestPart("newJourney") JourneyDto.Request newJourney,
                                            @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        try {
-            List<TravelDto.Response> travels = journeyService.createJourney(traveler, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("생성에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.createJourney(traveler, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 
+    /**
+     * 여정 삭제
+     */
     @DeleteMapping("/{journeyId}")
     public ResponseEntity<?> deleteJourney(@AuthenticationPrincipal Traveler traveler,
                                            @PathVariable Long journeyId) {
-        try {
-            List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("삭제에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
+        return ResponseEntity.ok(travels);
     }
 
+    /**
+     * 여정 수정
+     */
     @PutMapping("/{journeyId}")
     public ResponseEntity<?> updateJourney(@AuthenticationPrincipal Traveler traveler,
-                                         @PathVariable Long journeyId,
-                                         @RequestPart("newJourney") JourneyDto.Request newJourney,
-                                         @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        try {
-            List<TravelDto.Response> travels = journeyService.updateJourney(traveler, journeyId, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body("수정에 실패했습니다.");
-        }
+                                           @PathVariable Long journeyId,
+                                           @RequestPart("newJourney") JourneyDto.Request newJourney,
+                                           @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
+        List<TravelDto.Response> travels = journeyService.updateJourney(traveler, journeyId, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 }

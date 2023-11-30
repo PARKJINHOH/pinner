@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useRecoilValue } from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import { travelerState, useDoLogout } from "states/traveler";
-import { loadTraveler } from "states/webstore";
+import {clearTraveler, loadTraveler} from "states/webstore";
 import { renewalToken } from "./auth";
 
 
@@ -73,8 +73,7 @@ export const rawAxiosInstance = axios.create({
     headers: {
         "Content-Type": "application/json",
     }
-}
-);
+});
 
 
 // 모든 요청에 액세스 토큰을 포함하도록 구성
@@ -93,8 +92,7 @@ rawAxiosInstance.interceptors.request.use(
 );
 
 export const useAPIv1 = function () {
-    const traveler = useRecoilValue(travelerState);
-    const doLogOut = useDoLogout();
+    const setTraveler = useSetRecoilState(travelerState);
 
     // 토큰 갱신 후 재시도 하는 함수
     async function handleTokenExpired(config) {
@@ -104,12 +102,11 @@ export const useAPIv1 = function () {
             window.sessionStorage.setItem("accessToken", accessToken);
             window.sessionStorage.setItem("refreshToken", refreshToken);
 
-            // TODO: 재요청시 interceptor에 의해 새로운 access-token 적용되는지 확인 필요
             return rawAxiosInstance.request(config);
-
         } catch (error) {
-            console.error({ "예기치 못한 오류: 토큰 갱신 실패": error.toJSON() });
-            doLogOut();
+            setTraveler(null);
+            clearTraveler();
+            alert(error.response.data.message);
         }
     }
 
@@ -118,50 +115,50 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.put(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
         patch: async (url, data) => {
             try {
                 return (await rawAxiosInstance.patch(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
         delete: async (url, data) => {
             try {
                 return (await rawAxiosInstance.delete(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
         get: async (url, config) => {
             try {
                 return (await rawAxiosInstance.get(url, config));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
         post: async (url, data, config) => {
             try {
                 return (await rawAxiosInstance.post(url, data, config));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
                     return await handleTokenExpired(error.config);
                 }
-                return error.response;
+                throw error.response.data;
             }
         },
     };
