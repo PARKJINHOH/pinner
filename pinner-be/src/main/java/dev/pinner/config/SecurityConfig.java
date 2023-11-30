@@ -52,6 +52,7 @@ public class SecurityConfig {
         http
                 .httpBasic().disable()
                 .csrf().disable()
+                .headers(headers -> headers.frameOptions().sameOrigin()) // h2-console 사용
                 .formLogin().disable()
                 .logout().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler); // 무단 요청에 대한 리다이렉션 설정
@@ -66,7 +67,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email/**", "/photo/**").permitAll()
                 .antMatchers("/actuator/**").permitAll() // 모니터링 관련
-                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
+                .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console, favicon.ico 요청 인증 무시
                 .anyRequest().authenticated();
 
         // oAuth Settings
