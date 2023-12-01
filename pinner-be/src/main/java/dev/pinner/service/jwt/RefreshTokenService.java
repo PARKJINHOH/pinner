@@ -1,6 +1,7 @@
 package dev.pinner.service.jwt;
 
 import dev.pinner.domain.entity.RefreshToken;
+import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
 import dev.pinner.repository.RefreshTokenRepository;
 import dev.pinner.repository.TravelerRepository;
@@ -30,7 +31,11 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(String email) {
         RefreshToken refreshToken = new RefreshToken();
 
-        refreshToken.setTraveler(travelerRepository.findByEmail(email).get());
+        Optional<Traveler> traveler = travelerRepository.findByEmail(email);
+        if (traveler.isEmpty()) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "사용자가 없습니다.");
+        }
+        refreshToken.setTraveler(traveler.get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 

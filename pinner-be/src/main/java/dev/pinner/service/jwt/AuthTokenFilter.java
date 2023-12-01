@@ -26,13 +26,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
+    // Spring Security 흐름
+    // https://www.bezkoder.com/spring-boot-login-example-mysql/
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("요청을 인증 중");
         try {
+            log.info("요청을 인증 중");
             String jwt = parseJwt(request);
             String key = jwtUtils.validateJwtToken(jwt).getKey();
+            String requestURI = request.getRequestURI();
 
             if (jwt != null && key.equals(JwtCodeEnum.ACCESS.getKey())) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
@@ -43,6 +47,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getMessage());
