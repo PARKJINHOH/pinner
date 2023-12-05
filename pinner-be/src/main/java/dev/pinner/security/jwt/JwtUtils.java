@@ -1,4 +1,4 @@
-package dev.pinner.service.jwt;
+package dev.pinner.security.jwt;
 
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.enums.JwtCodeEnum;

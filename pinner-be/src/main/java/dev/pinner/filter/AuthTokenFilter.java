@@ -1,7 +1,8 @@
-package dev.pinner.service.jwt;
+package dev.pinner.filter;
 
 import dev.pinner.global.enums.JwtCodeEnum;
 import dev.pinner.service.UserDetailsServiceImpl;
+import dev.pinner.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

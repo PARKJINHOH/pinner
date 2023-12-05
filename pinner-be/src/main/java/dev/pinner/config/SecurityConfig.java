@@ -1,9 +1,9 @@
 package dev.pinner.config;
 
-import dev.pinner.service.jwt.AuthTokenFilter;
-import dev.pinner.service.jwt.AuthenticationEntryPointImpl;
-import dev.pinner.service.jwt.JwtUtils;
-import dev.pinner.service.oauth.OAuth2LoginSuccessHandler;
+import dev.pinner.filter.AuthTokenFilter;
+import dev.pinner.security.AuthenticationEntryPointImpl;
+import dev.pinner.security.jwt.JwtUtils;
+import dev.pinner.security.oauth.OAuth2LoginSuccessHandler;
 import dev.pinner.service.oauth.OAuthTravelerServiceImpl;
 import dev.pinner.service.oauth.OcidTravelerServiceImpl;
 import dev.pinner.service.UserDetailsServiceImpl;

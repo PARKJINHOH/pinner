@@ -1,4 +1,4 @@
-package dev.pinner.service.oauth;
+package dev.pinner.security.oauth;
 
 import dev.pinner.domain.entity.Traveler;
 

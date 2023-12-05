@@ -1,8 +1,9 @@
-package dev.pinner.service.oauth;
+package dev.pinner.security.oauth;
 
 
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
+import dev.pinner.service.oauth.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,10 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URI;
 
 @Slf4j

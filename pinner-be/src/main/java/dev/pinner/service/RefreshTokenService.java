@@ -1,4 +1,4 @@
-package dev.pinner.service.jwt;
+package dev.pinner.service;
 
 import dev.pinner.domain.entity.RefreshToken;
 import dev.pinner.domain.entity.Traveler;

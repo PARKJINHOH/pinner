@@ -1,4 +1,4 @@
-package dev.pinner.global.utils;
+package dev.pinner.service.oauth;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

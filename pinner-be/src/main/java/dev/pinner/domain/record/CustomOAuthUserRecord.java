@@ -1,7 +1,7 @@
 package dev.pinner.domain.record;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.service.oauth.ICustomUser;
+import dev.pinner.security.oauth.ICustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
