@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  repo: TravelMapRecord
+  repo: pinner
   working-directory-be: ./pinner-be
   working-directory-fe: ./pinner-fe
   docker-image-be: pinner-be
