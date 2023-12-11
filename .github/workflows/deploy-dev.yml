@@ -106,6 +106,15 @@ jobs:
         key: ${{ secrets.SSH_RSA }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}-dev
+    - name: action-slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        author_name: pinner-be
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
 
   frontend:
     needs: changes
@@ -166,3 +175,12 @@ jobs:
         key: ${{ secrets.SSH_RSA }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}-dev
+    - name: action-slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        author_name: pinner-fe
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
