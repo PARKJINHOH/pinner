@@ -94,7 +94,9 @@ jobs:
   backend-docker:
     needs: backend
     runs-on: ubuntu-22.04
-      
+    permissions:
+      contents: read
+      actions: read
     steps:
     - name: docker pull
       uses: appleboy/ssh-action@master
@@ -163,7 +165,9 @@ jobs:
   frontend-docker:
     needs: frontend
     runs-on: ubuntu-22.04
-      
+    permissions:
+      contents: read
+      actions: read
     steps:
     - name: docker pull
       uses: appleboy/ssh-action@master
