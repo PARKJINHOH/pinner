@@ -1,9 +1,6 @@
-package dev.pinner.security.oauth;
+package dev.pinner.service.newOauth;
 
-
-import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
-import dev.pinner.service.oauth.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,8 +24,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
             log.info("OAuth2 Login 성공!");
-            Traveler traveler = ((ICustomUser) authentication.getPrincipal()).getTraveler();
-            String ticket = afterLoginService.put(traveler.getId());
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            String ticket = afterLoginService.put(oAuth2User.getId());
 
             UriComponents build = UriComponentsBuilder
                     .fromUri(URI.create("/afteroauth"))

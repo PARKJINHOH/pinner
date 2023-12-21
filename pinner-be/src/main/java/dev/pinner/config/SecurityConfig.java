@@ -3,9 +3,9 @@ package dev.pinner.config;
 import dev.pinner.filter.AuthTokenFilter;
 import dev.pinner.security.AuthenticationEntryPointImpl;
 import dev.pinner.security.jwt.JwtUtils;
-import dev.pinner.security.oauth.OAuth2LoginSuccessHandler;
-import dev.pinner.service.oauth.OAuthTravelerServiceImpl;
-import dev.pinner.service.oauth.OcidTravelerServiceImpl;
+import dev.pinner.service.newOauth.OAuth2LoginSuccessHandler;
+import dev.pinner.service.newOauth.CustomOAuth2UserService;
+import dev.pinner.service.newOauth.OAuth2LoginFailureHandler;
 import dev.pinner.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -26,12 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
-    private final OcidTravelerServiceImpl ocidTravelerServiceImpl;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationEntryPointImpl unauthorizedHandler;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
     /*
      * Note
@@ -74,10 +74,10 @@ public class SecurityConfig {
         http
                 .oauth2Login()
                     .userInfoEndpoint()
-                        .userService(oAuthTravelerServiceImpl)
-                        .oidcUserService(ocidTravelerServiceImpl)
+                        .userService(customOAuth2UserService)
                 .and()
-                    .successHandler(oAuth2LoginSuccessHandler);
+                    .successHandler(oAuth2LoginSuccessHandler)
+                    .failureHandler(oAuth2LoginFailureHandler);
 
         // JWT Filter Setting
         http

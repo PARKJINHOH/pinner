@@ -3,7 +3,7 @@ package dev.pinner.controller;
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.exception.CustomException;
 import dev.pinner.service.TravelerService;
-import dev.pinner.service.oauth.OAuthAfterLoginService;
+import dev.pinner.service.newOauth.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
