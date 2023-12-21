@@ -65,8 +65,8 @@ public class SecurityConfig {
         // 권한 부여 규칙 Settings
         http
                 .authorizeRequests()
-                .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email/**", "/photo/**").permitAll()
-                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
+                .antMatchers("/**").permitAll()
+//                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
                 .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console, favicon.ico 요청 인증 무시
                 .anyRequest().authenticated();
 
