@@ -67,6 +67,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     @Comment("마지막 로그인 IP 주소")
     private String lastLoginIpAddress;
 
+    @Builder.Default
     @OneToMany(mappedBy = "traveler", cascade = CascadeType.ALL)
     private List<Travel> travels = new ArrayList<>();
 

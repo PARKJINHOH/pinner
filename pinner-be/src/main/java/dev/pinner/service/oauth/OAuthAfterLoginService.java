@@ -1,4 +1,4 @@
-package dev.pinner.service.newOauth;
+package dev.pinner.service.oauth;
 
 import dev.pinner.service.oauth.OnceReadTtlMap;
 import org.springframework.stereotype.Service;
