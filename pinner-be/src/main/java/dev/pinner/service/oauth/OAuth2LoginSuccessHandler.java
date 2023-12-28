@@ -1,7 +1,5 @@
 package dev.pinner.service.oauth;
 
-
-import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URI;
 
 @Slf4j
@@ -28,8 +24,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
             log.info("OAuth2 Login 성공!");
-            Traveler traveler = ((ICustomUser) authentication.getPrincipal()).getTraveler();
-            String ticket = afterLoginService.put(traveler.getId());
+            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            String ticket = afterLoginService.put(oAuth2User.getId());
 
             UriComponents build = UriComponentsBuilder
                     .fromUri(URI.create("/afteroauth"))

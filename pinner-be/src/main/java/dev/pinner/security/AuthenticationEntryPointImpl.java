@@ -1,4 +1,4 @@
-package dev.pinner.service.jwt;
+package dev.pinner.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,15 +30,13 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final Map<String, Object> body = new HashMap<>();
-        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("errorMsg", "TOKEN");
+        body.put("status", 9999);
+        body.put("errorMsg", "Unauthorized");
         body.put("message", authException.getMessage());
         body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
-
-//    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
     }
 
 }

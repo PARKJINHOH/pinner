@@ -115,7 +115,7 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.put(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
                 }
                 throw error.response.data;
@@ -125,7 +125,7 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.patch(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
                 }
                 throw error.response.data;
@@ -135,7 +135,7 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.delete(url, data));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
                 }
                 throw error.response.data;
@@ -145,7 +145,7 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.get(url, config));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
                 }
                 throw error.response.data;
@@ -155,7 +155,7 @@ export const useAPIv1 = function () {
             try {
                 return (await rawAxiosInstance.post(url, data, config));
             } catch (error) {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.errorMsg === 'TOKEN') {
+                if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
                 }
                 throw error.response.data;

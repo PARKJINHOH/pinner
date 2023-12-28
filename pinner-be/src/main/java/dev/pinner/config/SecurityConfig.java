@@ -1,11 +1,11 @@
 package dev.pinner.config;
 
-import dev.pinner.service.jwt.AuthTokenFilter;
-import dev.pinner.service.jwt.AuthenticationEntryPointImpl;
-import dev.pinner.service.jwt.JwtUtils;
+import dev.pinner.filter.AuthTokenFilter;
+import dev.pinner.security.AuthenticationEntryPointImpl;
+import dev.pinner.security.jwt.JwtUtils;
 import dev.pinner.service.oauth.OAuth2LoginSuccessHandler;
-import dev.pinner.service.oauth.OAuthTravelerServiceImpl;
-import dev.pinner.service.oauth.OcidTravelerServiceImpl;
+import dev.pinner.service.oauth.CustomOAuth2UserService;
+import dev.pinner.service.oauth.OAuth2LoginFailureHandler;
 import dev.pinner.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -26,12 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final OAuthTravelerServiceImpl oAuthTravelerServiceImpl;
-    private final OcidTravelerServiceImpl ocidTravelerServiceImpl;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationEntryPointImpl unauthorizedHandler;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
     /*
      * Note
@@ -65,8 +65,8 @@ public class SecurityConfig {
         // 권한 부여 규칙 Settings
         http
                 .authorizeRequests()
-                .antMatchers("/", "/error", "/api/v1/public/**","/api/v1/traveler/**", "/api/v1/email/**", "/photo/**").permitAll()
-                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
+                .antMatchers("/**").permitAll()
+//                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
                 .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console, favicon.ico 요청 인증 무시
                 .anyRequest().authenticated();
 
@@ -74,10 +74,10 @@ public class SecurityConfig {
         http
                 .oauth2Login()
                     .userInfoEndpoint()
-                        .userService(oAuthTravelerServiceImpl)
-                        .oidcUserService(ocidTravelerServiceImpl)
+                        .userService(customOAuth2UserService)
                 .and()
-                    .successHandler(oAuth2LoginSuccessHandler);
+                    .successHandler(oAuth2LoginSuccessHandler)
+                    .failureHandler(oAuth2LoginFailureHandler);
 
         // JWT Filter Setting
         http
