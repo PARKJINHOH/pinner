@@ -1,10 +1,12 @@
 package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
+import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -25,7 +27,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final TravelerRepository travelerRepository;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
 
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
@@ -64,7 +66,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (OauthServiceCodeEnum.NAVER.getSignupServices().equals(registrationId)) {
             return OauthServiceCodeEnum.NAVER.getSignupServices();
         }
-        return OauthServiceCodeEnum.GOOGLE.getSignupServices();
+        if (OauthServiceCodeEnum.GOOGLE.getSignupServices().equals(registrationId)) {
+            return OauthServiceCodeEnum.GOOGLE.getSignupServices();
+        }
+        throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + registrationId + "] 허용되지 않은 OauthService입니다.");
     }
 
     private Traveler getUser(OAuthAttributes attributes, String socialType, OAuth2AccessToken oAuth2AccessToken) {

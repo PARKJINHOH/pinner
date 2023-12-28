@@ -1,10 +1,12 @@
 package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
+import dev.pinner.exception.CustomException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.global.enums.RoleEnum;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 import java.util.Map;
@@ -30,7 +32,12 @@ public class OAuthAttributes {
         if (socialType.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
             return ofNaver(userNameAttributeName, attributes);
         }
-        return ofGoogle(userNameAttributeName, attributes);
+
+        if (socialType.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
+            return ofGoogle(userNameAttributeName, attributes);
+        }
+
+        throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + socialType + "] 허용되지 않은 OauthService입니다.");
     }
 
     public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
