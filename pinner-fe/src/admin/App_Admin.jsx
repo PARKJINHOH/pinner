@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,9 +10,32 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {useState} from "react";
+import {errorAlert} from "../components/alert/AlertComponent";
+import {HTTPStatus, useAPIv1} from "../apis/apiv1";
+import {AuthModalVisibility} from "../states/modal";
 
 export default function App_Admin() {
+    const apiv1 = useAPIv1();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
     function handleSubmit() {
+        if (email.length === 0 || password.length === 0) {
+            setErrorMessage('이메일, 비밀번호를 확인해주세요.');
+        } else {
+            setErrorMessage('');
+        }
+
+        apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
+            .then((response) => {
+
+            })
+            .catch((error) => {
+                setErrorMessage(error.message);
+            });
 
     }
 
@@ -34,7 +56,7 @@ export default function App_Admin() {
                     <Typography component="h1" variant="h5">
                         Admin
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                    <Box noValidate sx={{mt: 1}}>
                         <TextField
                             margin="normal"
                             required
@@ -44,6 +66,7 @@ export default function App_Admin() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            value={email} onChange={(e) => setEmail(e.currentTarget.value)}
                         />
                         <TextField
                             margin="normal"
@@ -54,19 +77,24 @@ export default function App_Admin() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={password} onChange={(e) => setPassword(e.currentTarget.value)}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary"/>}
                             label="Remember me"
                         />
                         <Button
-                            type="submit"
+                            type="button"
                             fullWidth
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
+                            onClick={handleSubmit}
                         >
                             Sign In
                         </Button>
+                        {
+                            errorMessage && errorAlert(errorMessage)
+                        }
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
