@@ -2,7 +2,6 @@ package dev.pinner.config;
 
 import dev.pinner.domain.entity.ErrLog;
 import dev.pinner.domain.entity.SysLog;
-import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.utils.CommonUtil;
 import dev.pinner.repository.ErrLogRepository;
 import dev.pinner.repository.SysLogRepository;
@@ -14,12 +13,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 
 /**
@@ -92,11 +85,7 @@ public class AspectConfig {
     }
 
     private String getIp() {
-        String ipAddress = "127.0.0.1";
-        if (!profiles.equals("local")) {
-            ipAddress = CommonUtil.getIpAddress();
-        }
-        return ipAddress;
+        return profiles.equals("local") ? "127.0.0.1" : CommonUtil.getIpAddress();
     }
 
 }
