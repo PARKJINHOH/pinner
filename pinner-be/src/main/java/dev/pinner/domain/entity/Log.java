@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "LOGS")
+@Table(name = "SYS_LOGS")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Log extends AuditEntity {
 

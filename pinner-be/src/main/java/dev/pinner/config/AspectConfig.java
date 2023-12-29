@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * Todo : 통일 필요
- * select : select , find
  * insert : insert, add, save
+ * select : select , find
  * delete : delete, remove
  * update : update
  */
