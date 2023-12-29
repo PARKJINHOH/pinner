@@ -28,7 +28,7 @@ public class JourneyController {
     public ResponseEntity<?> createJourney(@AuthenticationPrincipal Traveler traveler,
                                            @RequestPart("newJourney") JourneyDto.Request newJourney,
                                            @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        List<TravelDto.Response> travels = journeyService.createJourney(traveler, newJourney, photos);
+        List<TravelDto.Response> travels = journeyService.addJourney(traveler, newJourney, photos);
         return ResponseEntity.ok(travels);
     }
 

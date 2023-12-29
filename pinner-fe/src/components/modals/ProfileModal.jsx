@@ -132,13 +132,19 @@ export default function ProfileModal() {
             password: oldPassword,
         });
 
-        await apiv1.post("/traveler/password/check", nowPasswordData)
+        let pwResult = await apiv1.post("/traveler/password/check", nowPasswordData)
             .then(response => {
                 setErrorMessage('');
+                return true;
             })
             .catch(error => {
                 setErrorMessage(error.message);
+                return false;
             });
+
+        if (!pwResult) {
+            return;
+        }
 
         const data = {
             email: email,
