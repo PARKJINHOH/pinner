@@ -1,15 +1,25 @@
 package dev.pinner.config;
 
-import dev.pinner.domain.entity.Log;
+import dev.pinner.domain.entity.ErrLog;
+import dev.pinner.domain.entity.SysLog;
+import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.utils.CommonUtil;
-import dev.pinner.repository.LogsRepository;
+import dev.pinner.repository.ErrLogRepository;
+import dev.pinner.repository.SysLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -26,7 +36,9 @@ public class AspectConfig {
 
     @Value("${spring.profiles.active}")
     private String profiles;
-    private final LogsRepository logsRepository;
+
+    private final SysLogRepository sysLogRepository;
+    private final ErrLogRepository errLogRepository;
 
     // AfterReturning advice: 서비스 메소드 실행 후에 로그 저장
     @AfterReturning(pointcut = "execution(public * dev.pinner.service..*save*(..)) || execution(public * dev.pinner.service..*add*(..)) || execution(public * dev.pinner.service..*insert*(..))", returning = "result")
@@ -49,17 +61,34 @@ public class AspectConfig {
         saveLog(joinPoint, "D");
     }
 
-    private void saveLog(JoinPoint joinPoint, String prcsCd) {
-        String ipAddress = getIp();
+    /**
+     * 서비스 에러 로그 수집
+     */
+    @AfterThrowing(value = "execution(public * dev.pinner.controller.*..*(..))", throwing = "ex")
+    public void aspectErrorSystemLog(JoinPoint joinPoint, Exception ex) {
+        logException(joinPoint, ex);
+    }
 
-        Log log = Log.builder()
+    private void saveLog(JoinPoint joinPoint, String prcsCd) {
+        SysLog sysLog = SysLog.builder()
                 .actionType(prcsCd)
                 .packagePath(joinPoint.getTarget().toString())
                 .method(joinPoint.getSignature().getName())
-                .ip(ipAddress)
+                .ip(getIp())
                 .build();
 
-        logsRepository.save(log);
+        sysLogRepository.save(sysLog);
+    }
+
+    private void logException(JoinPoint joinPoint, Exception exception){
+        ErrLog errLog = ErrLog.builder()
+                .packagePath(joinPoint.getTarget().toString())
+                .method(joinPoint.getSignature().getName())
+                .err_msg(exception.getMessage())
+                .ip(getIp())
+                .build();
+
+        errLogRepository.save(errLog);
     }
 
     private String getIp() {
