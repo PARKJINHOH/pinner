@@ -120,10 +120,22 @@ public class TravelerService {
     }
 
     public void passwordCheck(TravelerDto.Request travelerDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
-        if(!authentication.isAuthenticated()){
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
+
+            if(!authentication.isAuthenticated()){
+                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
+            }
+        } catch (LockedException ex) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.");
+        } catch (BadCredentialsException ex) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+        } catch (InternalAuthenticationServiceException ex) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+        } catch (Exception ex) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "회원정보 수정에 실패했습니다. 관리자에게 문의해주세요.");
         }
+
     }
 
     @Transactional
