@@ -1,8 +1,10 @@
 package dev.pinner.service;
 
+import dev.pinner.domain.entity.Admin;
 import dev.pinner.domain.entity.RefreshToken;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.CustomException;
+import dev.pinner.repository.AdminRepository;
 import dev.pinner.repository.RefreshTokenRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,23 +25,34 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final TravelerRepository travelerRepository;
+    private final AdminRepository adminRepository;
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
-    public RefreshToken createRefreshToken(String email) {
+    public RefreshToken createRefreshToken(String from, String email) {
         RefreshToken refreshToken = new RefreshToken();
 
-        Optional<Traveler> traveler = travelerRepository.findByEmail(email);
-        if (traveler.isEmpty()) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "사용자가 없습니다.");
+        if(from.equals("admin")){
+            Optional<Admin> admin = adminRepository.findByEmail(email);
+            if (admin.isEmpty()) {
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "사용자가 없습니다.");
+            }
+            refreshToken.setAdmin(admin.get());
+
+        } else {
+            Optional<Traveler> traveler = travelerRepository.findByEmail(email);
+            if (traveler.isEmpty()) {
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "사용자가 없습니다.");
+            }
+            refreshToken.setTraveler(traveler.get());
+
         }
-        refreshToken.setTraveler(traveler.get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
-
         refreshToken = refreshTokenRepository.save(refreshToken);
+
         return refreshToken;
     }
 

@@ -110,6 +110,14 @@ export const useAPIv1 = function () {
         }
     }
 
+    // 접근 권한이 없는 403 Error 사용.
+    function forbiddenError() {
+        setTraveler(null);
+        clearTraveler();
+        alert("접근 권한이 없습니다. 다시 로그인해주세요.");
+        window.location.reload();
+    }
+
     return {
         put: async (url, data) => {
             try {
@@ -147,6 +155,8 @@ export const useAPIv1 = function () {
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
+                } else if(error.response.data.status === 9998){
+                    forbiddenError();
                 }
                 throw error.response.data;
             }
@@ -157,6 +167,8 @@ export const useAPIv1 = function () {
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
+                } else if(error.response.data.status === 9998){
+                    forbiddenError();
                 }
                 throw error.response.data;
             }

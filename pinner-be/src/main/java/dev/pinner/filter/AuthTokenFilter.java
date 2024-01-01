@@ -1,8 +1,8 @@
 package dev.pinner.filter;
 
 import dev.pinner.global.enums.JwtCodeEnum;
-import dev.pinner.service.UserDetailsServiceImpl;
 import dev.pinner.security.jwt.JwtUtils;
+import dev.pinner.service.CustomDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -25,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     static final String _MDC_KEY = "user";
 
     private final JwtUtils jwtUtils;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomDetailsServiceImpl customDetailsService;
 
     // Spring Security 흐름
     // https://www.bezkoder.com/spring-boot-login-example-mysql/
@@ -43,7 +43,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 MDC.put(_MDC_KEY, username);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = customDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

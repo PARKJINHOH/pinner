@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
-@Table(name = "GEOLOCATION")
+@Table(name = "GEO_LOCATION")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GeoLocation extends AuditEntity {
 

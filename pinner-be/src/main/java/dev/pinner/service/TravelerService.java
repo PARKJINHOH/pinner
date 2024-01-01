@@ -60,8 +60,8 @@ public class TravelerService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Traveler traveler = (Traveler) authentication.getPrincipal();
 
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
-            String accessToken = jwtUtils.generateJwtToken(traveler);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken("traveler", traveler.getEmail());
+            String accessToken = jwtUtils.generateJwtTokenForUserDetails(traveler);
 
             Optional<Traveler> optionalTraveler = travelerRepository.findById(traveler.getId());
             optionalTraveler.ifPresent(getTraveler -> {
@@ -107,8 +107,8 @@ public class TravelerService {
             getTraveler.updateLastLoginDate();
         });
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(traveler.getEmail());
-        String accessToken = jwtUtils.generateJwtToken(traveler);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken("traveler", traveler.getEmail());
+        String accessToken = jwtUtils.generateJwtTokenForUserDetails(traveler);
 
         return TravelerDto.Response.builder()
                 .accessToken(accessToken)

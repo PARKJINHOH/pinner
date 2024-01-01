@@ -1,10 +1,10 @@
 package dev.pinner.security.jwt;
 
-import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.enums.JwtCodeEnum;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,8 +19,8 @@ public class JwtUtils {
     @Value("${token.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Traveler traveler) {
-        return generateTokenFromUsername(traveler.getUsername());
+    public String generateJwtTokenForUserDetails(UserDetails userDetails) {
+        return generateTokenFromUsername(userDetails.getUsername());
     }
 
     public String generateTokenFromUsername(String username) {

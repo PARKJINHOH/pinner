@@ -31,7 +31,7 @@ export default function App_Admin() {
 
         apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
             .then((response) => {
-
+                console.log(response);
             })
             .catch((error) => {
                 setErrorMessage(error.message);
