@@ -4,7 +4,7 @@ import {RouterProvider, createBrowserRouter} from 'react-router-dom';
 
 // component
 import App from 'App';
-import AppAdmin from 'admin/AppAdmin';
+import AdminLogin from 'admin/AdminLogin';
 import AfterOAuthHandler from 'pages/AfterOAuthHandler';
 import Dashboard from "admin/dashboard/Dashboard";
 
@@ -14,8 +14,8 @@ const router = createBrowserRouter([
       element: <App />,
     },
     {
-        path: "/admin",
-        element: <AppAdmin />,
+        path: "/admin/login",
+        element: <AdminLogin />,
     },
     {
         path: "/admin/dashboard",

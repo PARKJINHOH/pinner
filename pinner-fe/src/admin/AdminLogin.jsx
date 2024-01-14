@@ -4,6 +4,7 @@ import {useState} from "react";
 // component
 import {errorAlert} from "components/alert/AlertComponent";
 import {useAPIv1} from "apis/apiv1";
+import {useDoLogin} from "states/admin";
 
 // mui
 import Avatar from '@mui/material/Avatar';
@@ -18,8 +19,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-export default function AppAdmin() {
+export default function AdminLogin() {
     const apiv1 = useAPIv1();
+    const doLogin = useDoLogin();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -35,6 +37,14 @@ export default function AppAdmin() {
         apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
             .then((response) => {
                 console.log(response);
+
+                doLogin({
+                    email: response.data.email,
+                    adminName: response.data.adminName,
+                    accessToken: response.data.accessToken,
+                    refreshToken: response.data.refreshToken,
+                });
+
             })
             .catch((error) => {
                 setErrorMessage(error.message);

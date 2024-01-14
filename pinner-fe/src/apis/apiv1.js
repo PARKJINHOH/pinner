@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import { travelerState, useDoLogout } from "states/traveler";
-import {clearTraveler, loadTraveler} from "states/webstore";
+import {clearTraveler, loadTraveler} from "states/travelerWebstore";
 import { renewalToken } from "./auth";
 
 
