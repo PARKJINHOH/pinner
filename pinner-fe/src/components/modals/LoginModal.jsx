@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import {HTTPStatus} from "../../apis/apiv1";
 
 // css
 import style from './LoginModal.module.css';
@@ -18,7 +17,6 @@ import Divider from '@mui/material/Divider';
 // image
 import NaverLoginBtn from 'assets/images/login_icon_naver.png';
 import GoogleLoginBtn from 'assets/images/login_icon_google.png';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 
 export default function LoginModal() {
     const [email, setEmail] = useState('');

@@ -1,4 +1,11 @@
 import * as React from 'react';
+import {useState} from "react";
+
+// component
+import {errorAlert} from "components/alert/AlertComponent";
+import {useAPIv1} from "apis/apiv1";
+
+// mui
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,12 +17,8 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {useState} from "react";
-import {errorAlert} from "../components/alert/AlertComponent";
-import {HTTPStatus, useAPIv1} from "../apis/apiv1";
-import {AuthModalVisibility} from "../states/modal";
 
-export default function App_Admin() {
+export default function AppAdmin() {
     const apiv1 = useAPIv1();
 
     const [email, setEmail] = useState('');

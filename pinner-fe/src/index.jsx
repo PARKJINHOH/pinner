@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom/client';
-import { RecoilRoot } from 'recoil';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {RecoilRoot} from 'recoil';
+import {RouterProvider, createBrowserRouter} from 'react-router-dom';
 
 // component
 import App from 'App';
-import App_Admin from 'admin/App_Admin';
+import AppAdmin from 'admin/AppAdmin';
 import AfterOAuthHandler from 'pages/AfterOAuthHandler';
+import Dashboard from "admin/dashboard/Dashboard";
 
 const router = createBrowserRouter([
     {
@@ -14,7 +15,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: <App_Admin />,
+        element: <AppAdmin />,
+    },
+    {
+        path: "/admin/dashboard",
+        element: <Dashboard />,
     },
     {
       path: "/afteroauth",
@@ -24,7 +29,7 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <RecoilRoot>
-    <RouterProvider router={router} />
-  </RecoilRoot>
+    <RecoilRoot>
+        <RouterProvider router={router}/>
+    </RecoilRoot>
 );
