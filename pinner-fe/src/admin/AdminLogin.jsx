@@ -1,10 +1,13 @@
 import * as React from 'react';
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 // component
 import {errorAlert} from "components/alert/AlertComponent";
 import {useAPIv1} from "apis/apiv1";
 import {useDoLogin} from "states/admin";
+
+import {clearAdmin} from "states/adminWebstore";
 
 // mui
 import Avatar from '@mui/material/Avatar';
@@ -22,38 +25,47 @@ import Container from '@mui/material/Container';
 export default function AdminLogin() {
     const apiv1 = useAPIv1();
     const doLogin = useDoLogin();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    function handleSubmit() {
-        if (email.length === 0 || password.length === 0) {
-            setErrorMessage('이메일, 비밀번호를 확인해주세요.');
-        } else {
-            setErrorMessage('');
+    function handleSubmit(e) {
+        const isEnter = e.key === "Enter";
+        const isMouseClick = e.type === "click";
+
+        if (isEnter || isMouseClick) {
+            e.preventDefault();
+            clearAdmin();
+            if (email.length === 0 || password.length === 0) {
+                setErrorMessage('이메일, 비밀번호를 확인해주세요.');
+            } else {
+                setErrorMessage('');
+            }
+
+            apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
+                .then((response) => {
+                    console.log(response);
+                    doLogin({
+                        email: response.data.email,
+                        adminName: response.data.adminName,
+                        accessToken: response.data.accessToken,
+                        refreshToken: response.data.refreshToken,
+                    });
+                    // 페이지 이동
+                    navigate('/admin/dashboard');
+                })
+                .catch((error) => {
+                    setErrorMessage(error.message);
+                });
         }
 
-        apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
-            .then((response) => {
-                console.log(response);
-
-                doLogin({
-                    email: response.data.email,
-                    adminName: response.data.adminName,
-                    accessToken: response.data.accessToken,
-                    refreshToken: response.data.refreshToken,
-                });
-
-            })
-            .catch((error) => {
-                setErrorMessage(error.message);
-            });
 
     }
 
     return (
-        <Box justifyContent="center" alignItems="center" sx={{ display: 'flex', width: 'auto', height: '100vh', bgcolor: '#EEF2F6'}}>
+        <Box justifyContent="center" alignItems="center" sx={{display: 'flex', width: 'auto', height: '100vh', bgcolor: '#EEF2F6'}}>
             <Container component="main" maxWidth="xs" sx={{bgcolor: '#ffffff', borderRadius: '15px'}}>
                 <Box
                     sx={{
@@ -91,6 +103,7 @@ export default function AdminLogin() {
                             id="password"
                             autoComplete="current-password"
                             value={password} onChange={(e) => setPassword(e.currentTarget.value)}
+                            onKeyDown={handleSubmit}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary"/>}
