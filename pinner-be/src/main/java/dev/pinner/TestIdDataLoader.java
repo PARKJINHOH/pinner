@@ -46,7 +46,7 @@ public class TestIdDataLoader implements ApplicationRunner {
                     .nickname("테스트계정")
                     .password(passwordEncoder.encode("test"))
                     .roleEnum(RoleEnum.USER)
-                    .signupServices("Web")
+                    .signupServices("web")
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
 

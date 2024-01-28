@@ -187,7 +187,7 @@ export default function ProfileModal() {
                 }}
             >
                 {
-                    signupServices === 'Web' ?
+                    signupServices === 'web' ?
                         /* 홈페이지 가입자 */
                         <Box className={style.profile_box}>
 

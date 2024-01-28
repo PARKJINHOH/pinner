@@ -39,7 +39,7 @@ public class TravelerServiceTest {
                 .email("test@example.com")
                 .password("password")
                 .nickname("test계정")
-                .signupServices("Web")
+                .signupServices("web")
                 .build();
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -55,7 +55,7 @@ public class TravelerServiceTest {
                 .email("test@example.com")
                 .password("password")
                 .nickname("test계정")
-                .signupServices("Web")
+                .signupServices("web")
                 .build();
 
         // when
@@ -73,7 +73,7 @@ public class TravelerServiceTest {
                 .email("newTest@example.com")
                 .password("password")
                 .nickname("new계정")
-                .signupServices("Web")
+                .signupServices("web")
                 .build();
 
         // when

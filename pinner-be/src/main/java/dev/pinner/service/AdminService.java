@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
@@ -36,8 +37,9 @@ public class AdminService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Admin admin = (Admin) authentication.getPrincipal();
 
+
             RefreshToken refreshToken = refreshTokenService.createRefreshToken("admin", admin.getEmail());
-            String accessToken = jwtUtils.generateToken(admin.getUsername());
+            String accessToken = jwtUtils.generateToken(admin.getUsername(), Collections.singletonMap("admin", true));
 
             Optional<Admin> optionalTraveler = adminRepository.findById(admin.getId());
 //            optionalTraveler.ifPresent(getAdmin -> {

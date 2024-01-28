@@ -46,7 +46,6 @@ export default function AdminLogin() {
 
             apiv1.post("/admin/login", JSON.stringify({email: email.trim(), password: password.trim()}))
                 .then((response) => {
-                    console.log(response);
                     doLogin({
                         email: response.data.email,
                         adminName: response.data.adminName,

@@ -144,7 +144,7 @@ export default function RegisterModal() {
 
         // prepare data and send request
         const data = JSON.stringify({
-            email, password, nickname, signupServices: "Web"
+            email, password, nickname, signupServices: "web"
         });
 
         postRegister(data)
