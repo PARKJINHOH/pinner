@@ -40,10 +40,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             String requestURI = request.getRequestURI();
 
             if (jwt != null && key.equals(JwtCodeEnum.ACCESS.getKey())) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-                MDC.put(_MDC_KEY, username);
+                String email = jwtUtils.getEmailFromJwtToken(jwt);
+                MDC.put(_MDC_KEY, email);
 
-                UserDetails userDetails = customDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = customDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

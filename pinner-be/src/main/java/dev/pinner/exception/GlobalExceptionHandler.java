@@ -17,9 +17,18 @@ public class GlobalExceptionHandler {
     /**
      * CustomException
      */
-    @ExceptionHandler({CustomException.class})
-    public ResponseEntity<Object> handleException(CustomException ex) {
-        log.error("CustomException ===> ", ex);
+    @ExceptionHandler({BusinessException.class})
+    public ResponseEntity<Object> handleException(BusinessException ex) {
+        log.error("BusinessException ===> ", ex);
+        return new ResponseEntity<>(new ErrorRecord(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
+    }
+
+    /**
+     * CustomException
+     */
+    @ExceptionHandler({SystemException.class})
+    public ResponseEntity<Object> handleException(SystemException ex) {
+        log.error("SystemException ===> ", ex.getEx());
         return new ResponseEntity<>(new ErrorRecord(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
     }
 

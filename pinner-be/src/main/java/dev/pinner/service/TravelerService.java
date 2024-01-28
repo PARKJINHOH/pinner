@@ -2,13 +2,14 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.domain.dto.oauth.NaverDto;
+import dev.pinner.domain.entity.RefreshToken;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
+import dev.pinner.exception.SystemException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
+import dev.pinner.global.utils.CommonUtil;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.security.jwt.JwtUtils;
-import dev.pinner.domain.entity.RefreshToken;
-import dev.pinner.global.utils.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +44,7 @@ public class TravelerService {
     @Transactional
     public String register(TravelerDto.Request travelerDto) {
         if (travelerRepository.findByEmail(travelerDto.getEmail()).isPresent()) {
-            throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
+            throw new BusinessException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             travelerDto.setPassword(encoder.encode(travelerDto.getPassword()));
@@ -61,7 +62,7 @@ public class TravelerService {
             Traveler traveler = (Traveler) authentication.getPrincipal();
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken("traveler", traveler.getEmail());
-            String accessToken = jwtUtils.generateJwtTokenForUserDetails(traveler);
+            String accessToken = jwtUtils.generateToken(traveler.getEmail());
 
             Optional<Traveler> optionalTraveler = travelerRepository.findById(traveler.getId());
             optionalTraveler.ifPresent(getTraveler -> {
@@ -78,15 +79,15 @@ public class TravelerService {
                     .signupServices(traveler.getSignupServices())
                     .build();
         } catch (LockedException ex) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.", ex);
         } catch (BadCredentialsException ex) {
             Optional<Traveler> optionalTraveler = travelerRepository.findByEmail(travelerDto.getEmail());
             optionalTraveler.ifPresent(Traveler::addLoginFailureCount);
-            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.", ex);
         } catch (InternalAuthenticationServiceException ex) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+            throw new SystemException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.", ex);
         } catch (Exception ex) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.");
+            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.", ex);
         }
     }
 
@@ -94,10 +95,10 @@ public class TravelerService {
     public TravelerDto.Response doLoginBySocial(Long travlerId) {
         Optional<Traveler> maybeTraveler = travelerRepository.findById(travlerId);
         if (maybeTraveler.isEmpty()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Oauth 사용자를 찾을 수 없습니다. 관리자에게 문의해주세요");
+            throw new BusinessException(HttpStatus.NOT_FOUND, "Oauth 사용자를 찾을 수 없습니다. 관리자에게 문의해주세요");
         }
         if (!maybeTraveler.get().getState()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "이미 탈퇴이력이 있는 회원입니다. 가입한 사이트의 연결된 서비스 관리에서 직접 권한을 삭제해주세요.");
+            throw new BusinessException(HttpStatus.NOT_FOUND, "이미 탈퇴이력이 있는 회원입니다. 가입한 사이트의 연결된 서비스 관리에서 직접 권한을 삭제해주세요.");
         }
 
         Traveler traveler = maybeTraveler.get();
@@ -108,7 +109,7 @@ public class TravelerService {
         });
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken("traveler", traveler.getEmail());
-        String accessToken = jwtUtils.generateJwtTokenForUserDetails(traveler);
+        String accessToken = jwtUtils.generateToken(traveler.getEmail());
 
         return TravelerDto.Response.builder()
                 .accessToken(accessToken)
@@ -124,16 +125,16 @@ public class TravelerService {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(travelerDto.getEmail(), travelerDto.getPassword()));
 
             if(!authentication.isAuthenticated()){
-                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "비밀번호가 일치하지 않습니다.");
             }
         } catch (LockedException ex) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "사용자 계정이 잠겨있습니다.", ex);
         } catch (BadCredentialsException ex) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.", ex);
         } catch (InternalAuthenticationServiceException ex) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+            throw new SystemException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.", ex);
         } catch (Exception ex) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "회원정보 수정에 실패했습니다. 관리자에게 문의해주세요.");
+            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "회원정보 수정에 실패했습니다. 관리자에게 문의해주세요.", ex);
         }
 
     }
@@ -158,7 +159,7 @@ public class TravelerService {
             travelerDto.setPassword(Optional.ofNullable(newPassword).orElse(travelerDto.getPassword()));
             return this.doLogin(travelerDto);
         } else {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "수정에 실패했습니다.");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "수정에 실패했습니다.");
         }
 
     }
@@ -176,12 +177,12 @@ public class TravelerService {
         // Refresh Token
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> {
             log.error("[{}] Token이 DB에 없습니다.", requestRefreshToken);
-            return new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
+            return new BusinessException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
         });
         RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
 
         // Access Token
-        String validAccessToken = jwtUtils.generateTokenFromUsername(validRefreshToken.getTraveler().getEmail());
+        String validAccessToken = jwtUtils.generateToken(validRefreshToken.getTraveler().getEmail());
 
         return TravelerDto.Response.builder()
             .refreshToken(validRefreshToken.getToken())
@@ -196,14 +197,14 @@ public class TravelerService {
 
         if (findTraveler.isPresent()) {
             if (!findTraveler.get().getEmail().equals(travelerDto.getEmail())) {
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
             }
 
             Traveler traveler = findTraveler.get();
             boolean updatedResult = travelerRepository.updateTravelerStateByTravelerEmail(traveler.getId());
 
             if (!updatedResult) {
-                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "가입된 이력이 없습니다.");
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "가입된 이력이 없습니다.");
             }
 
             if (traveler.getSignupServices().equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {

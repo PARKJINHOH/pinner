@@ -2,7 +2,7 @@ package dev.pinner.service;
 
 import dev.pinner.domain.entity.Admin;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.AdminRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +44,6 @@ public class CustomDetailsServiceImpl implements UserDetailsService {
             }
         }
 
-        throw new CustomException(HttpStatus.NOT_FOUND, email + "를 찾을 수 없습니다.");
+        throw new BusinessException(HttpStatus.NOT_FOUND, email + "를 찾을 수 없습니다.");
     }
 }

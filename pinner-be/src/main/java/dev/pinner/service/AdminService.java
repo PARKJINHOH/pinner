@@ -3,7 +3,7 @@ package dev.pinner.service;
 import dev.pinner.domain.dto.AdminDto;
 import dev.pinner.domain.entity.Admin;
 import dev.pinner.domain.entity.RefreshToken;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.SystemException;
 import dev.pinner.repository.AdminRepository;
 import dev.pinner.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class AdminService {
             Admin admin = (Admin) authentication.getPrincipal();
 
             RefreshToken refreshToken = refreshTokenService.createRefreshToken("admin", admin.getEmail());
-            String accessToken = jwtUtils.generateJwtTokenForUserDetails(admin);
+            String accessToken = jwtUtils.generateToken(admin.getUsername());
 
             Optional<Admin> optionalTraveler = adminRepository.findById(admin.getId());
 //            optionalTraveler.ifPresent(getAdmin -> {
@@ -54,15 +54,15 @@ public class AdminService {
                     .build();
 
         } catch (LockedException ex) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "관리자 계정이 잠겨있습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "관리자 계정이 잠겨있습니다.", ex);
         } catch (BadCredentialsException ex) {
             Optional<Admin> optionalTraveler = adminRepository.findByEmail(adminDto.getEmail());
 //            optionalTraveler.ifPresent(Admin::addLoginFailureCount);
-            throw new CustomException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.");
+            throw new SystemException(HttpStatus.FORBIDDEN, "비밀번호가 잘못되었습니다.", ex);
         } catch (InternalAuthenticationServiceException ex) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.");
+            throw new SystemException(HttpStatus.NOT_FOUND, "이메일을 다시 한번 확인해주세요.", ex);
         } catch (Exception ex) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.");
+            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.", ex);
         }
 
     }

@@ -1,7 +1,7 @@
 package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelerDto;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.TravelerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class TravelerServiceTest {
                 .build();
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> travelerService.register(travelerDto));
+        BusinessException exception = assertThrows(BusinessException.class, () -> travelerService.register(travelerDto));
 
         // then
         assertEquals(exception.getHttpStatus(), HttpStatus.CONFLICT);
@@ -93,7 +93,7 @@ public class TravelerServiceTest {
         when(authenticationManager.authenticate(any())).thenThrow(LockedException.class);
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> travelerService.doLogin(travelerDto));
+        BusinessException exception = assertThrows(BusinessException.class, () -> travelerService.doLogin(travelerDto));
 
         // then
         assertEquals(exception.getHttpStatus(), HttpStatus.FORBIDDEN);
@@ -110,7 +110,7 @@ public class TravelerServiceTest {
         when(authenticationManager.authenticate(any())).thenThrow(BadCredentialsException.class);
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> travelerService.doLogin(travelerDto));
+        BusinessException exception = assertThrows(BusinessException.class, () -> travelerService.doLogin(travelerDto));
 
         // then
         assertEquals(exception.getHttpStatus(), HttpStatus.FORBIDDEN);
@@ -128,7 +128,7 @@ public class TravelerServiceTest {
         when(authenticationManager.authenticate(any())).thenThrow(InternalAuthenticationServiceException.class);
 
         // when
-        CustomException exception = assertThrows(CustomException.class, () -> travelerService.doLogin(travelerDto));
+        BusinessException exception = assertThrows(BusinessException.class, () -> travelerService.doLogin(travelerDto));
 
         // then
         assertEquals(exception.getHttpStatus(), HttpStatus.NOT_FOUND);

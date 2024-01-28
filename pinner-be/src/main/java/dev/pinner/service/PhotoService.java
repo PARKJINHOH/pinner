@@ -2,7 +2,8 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.PhotoDto;
 import dev.pinner.domain.entity.Photo;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
+import dev.pinner.exception.SystemException;
 import dev.pinner.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,11 +94,11 @@ public class PhotoService {
 
     public String findPhotoByFileName(String fileName) {
         if(fileName.isBlank()){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 경로입니다.");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 경로입니다.");
         }
 
         Photo entity = photoRepository.findByFileName(fileName)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 파일이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "해당 파일이 존재하지 않습니다."));
 
         return entity.getFullPath();
     }
@@ -124,7 +125,7 @@ public class PhotoService {
                 ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                 image = ImageIO.read(bis);
             } catch (IOException io) {
-                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.");
+                throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.", io);
             }
             int actualWidth = image.getWidth();
             int actualHeight = image.getHeight();
@@ -157,8 +158,8 @@ public class PhotoService {
             File directoryPath = new File(absolutePath + imagePath + File.separator + fileName + originalFileExtension);
             try {
                 multipartFile.transferTo(directoryPath);
-            } catch (Exception e) {
-                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.");
+            } catch (Exception ex) {
+                throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다.", ex);
             }
 
         }
