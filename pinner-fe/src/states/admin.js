@@ -50,7 +50,6 @@ export function useDoLogin() {
 
     return function doLogin(admin) {
         setAdmin(admin);
-
         saveAdmin(admin);
     }
 }

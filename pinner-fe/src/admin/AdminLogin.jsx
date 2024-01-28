@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 
 // component
 import {errorAlert} from "components/alert/AlertComponent";
@@ -21,8 +21,11 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {useAuth} from "./provider/AuthProvider";
 
 export default function AdminLogin() {
+
+    const {setToken} = useAuth();
     const apiv1 = useAPIv1();
     const doLogin = useDoLogin();
     const navigate = useNavigate();
@@ -52,8 +55,10 @@ export default function AdminLogin() {
                         accessToken: response.data.accessToken,
                         refreshToken: response.data.refreshToken,
                     });
+                    setToken(response.data.accessToken);
+
                     // 페이지 이동
-                    navigate('/admin/dashboard');
+                    navigate("/admin/dashboard", { replace: true });
                 })
                 .catch((error) => {
                     setErrorMessage(error.message);
