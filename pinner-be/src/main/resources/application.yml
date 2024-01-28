@@ -18,7 +18,7 @@ spring:
             enable: true #StartTLS 활성화 여부
 token:
   app:
-    jwtSecret: travelSecretKey
+    jwtSecret: ${JWT_SECRET_KEY}
     jwtExpirationMs: 3600000  # Access Token (3600000 = 1시간)
     jwtRefreshExpirationMs: 604800000 # Refresh Token (604800000 = 7일)
 google-api-key: ${GOOGLE_API_KEY}
