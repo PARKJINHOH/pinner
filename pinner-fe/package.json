@@ -1,6 +1,11 @@
 {
   "name": "pinner-fe",
   "version": "0.1.0",
+  "homepage": "https://pinner.dev",
+  "contributors ": [
+    "JINHOH PARK <adg0609@naver.com> (https://github.com/PARKJINHOH)",
+    "CHANMO SONG <frenzyangel@naver.com> (https://github.com/itsmekingtiger)"
+  ],
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
