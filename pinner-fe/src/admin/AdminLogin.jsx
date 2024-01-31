@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {useState} from "react";
 import {Navigate, useNavigate} from "react-router-dom";
 
@@ -58,7 +58,7 @@ export default function AdminLogin() {
                     setToken(response.data.accessToken);
 
                     // 페이지 이동
-                    navigate("/admin/dashboard", { replace: true });
+                    navigate("/admin", { replace: true });
                 })
                 .catch((error) => {
                     setErrorMessage(error.message);

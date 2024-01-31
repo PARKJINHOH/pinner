@@ -1,13 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
 // component
 import AdminLogin from "admin/AdminLogin";
 import {useAuth} from "admin/provider/AuthProvider";
 import {ProtectedRoute} from "admin/routes/ProtectedRoute";
-import Dashboard from "admin/dashboard/Dashboard";
+import Dashboard from "admin/components/dashboard/Dashboard";
 import MainApp from "components/panel/travel/MainApp";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
+import AdminApp from "../components/AdminApp";
 
 // https://dev.to/sanjayttg/jwt-authentication-in-react-with-react-router-1d03
 export default function AuthRoutes() {
@@ -42,7 +43,7 @@ export default function AuthRoutes() {
             children: [
                 {
                     path: "/admin",
-                    element: <AdminLogin/>,
+                    element: <AdminApp/>,
                 },
                 {
                     path: "/admin/dashboard",
