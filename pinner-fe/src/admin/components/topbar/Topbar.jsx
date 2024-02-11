@@ -1,5 +1,4 @@
 import React from 'react';
-import {useAPIv1} from "apis/apiv1";
 
 // component
 

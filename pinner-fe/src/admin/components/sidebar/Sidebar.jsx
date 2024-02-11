@@ -1,5 +1,4 @@
 import React from 'react';
-import {useAPIv1} from "apis/apiv1";
 
 // component
 import {Link} from 'react-router-dom';
@@ -22,10 +21,10 @@ export default function Sidebar() {
                 <div className={style.sidebarMenu}>
                     <h3 className={style.sidebarTitle}>Dashboard</h3>
                     <ul className={style.sidebarList}>
-                        <Link to="home">
+                        <Link to="dashboard">
                             <li className={style.sidebarListItem}>
                                 <HomeWorkIcon className={style.sidebarIcon}/>
-                                Home
+                                Dashboard
                             </li>
                         </Link>
                         <Link to="users">

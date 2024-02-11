@@ -6,11 +6,11 @@ import AdminLogin from "admin/AdminLogin";
 import {useAuth} from "admin/provider/AuthProvider";
 import {ProtectedRoute} from "admin/routes/ProtectedRoute";
 import Dashboard from "admin/components/dashboard/Dashboard";
+import Users from "admin/components/users/Users";
+
 import MainApp from "components/panel/travel/MainApp";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
-import AdminApp from "../components/AdminApp";
 
-// https://dev.to/sanjayttg/jwt-authentication-in-react-with-react-router-1d03
 export default function AuthRoutes() {
 
     const {token} = useAuth();
@@ -39,24 +39,16 @@ export default function AuthRoutes() {
     const routesForAuthenticatedOnly = [
         {
             path: "/admin",
-            element: <ProtectedRoute/>, // Wrap the component in ProtectedRoute
+            element: <ProtectedRoute/>,
             children: [
-                {
-                    path: "/admin",
-                    element: <AdminApp/>,
-                },
                 {
                     path: "/admin/dashboard",
                     element: <Dashboard/>,
                 },
                 {
-                    path: "/admin/profile",
-                    element: <div>User Profile</div>,
+                    path: "/admin/users",
+                    element: <Users/>,
                 },
-                // {
-                //     path: "/logout",
-                //     element: <Logout/>,
-                // },
             ],
         },
     ];

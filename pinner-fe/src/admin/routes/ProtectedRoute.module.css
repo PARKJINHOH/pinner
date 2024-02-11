@@ -1,0 +1,7 @@
+.sidebar{
+    display: flex;
+}
+
+.container{
+    flex: 4;
+}
