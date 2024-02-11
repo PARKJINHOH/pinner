@@ -1,6 +1,6 @@
 .sidebar {
     flex: 1;
-    height: calc(100vh - 116px);
+    height: calc(100vh - 82px);
     background-color: #e7e7e7;
 }
 
@@ -29,11 +29,12 @@
     display: flex;
     align-items: center;
     border-radius: 10px;
+
+
 }
 
-.sidebarListItem.active,
-.sidebarListItem.hover {
-    background-color: #6959ff;
+.sidebarListItem:hover {
+    background-color: #ede7f6;
 }
 
 .sidebarIcon{

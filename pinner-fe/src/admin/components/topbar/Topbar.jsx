@@ -11,7 +11,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 // css
 import style from './Topbar.module.css';
 import Link from "@mui/material/Link";
-import {Stack, IconButton, Typography, Button} from "@mui/material";
+import {Stack, IconButton, Typography, Button, Box} from "@mui/material";
 
 export default function Topbar() {
 
@@ -30,20 +30,20 @@ export default function Topbar() {
                     </Link>
                 </div>
                 <div className={style.topRight}>
-                    <IconButton type="button" className={style.topbarIconContainer}>
+                    <IconButton className={style.topbarIconContainer}>
                         <NotificationsNoneOutlinedIcon/>
                         <span className={style.topIconBadge}>2</span>
                     </IconButton>
-                    <Button className={style.topAvatarContainer}>
+                    <Box className={style.topAvatarContainer}>
                         <img
                             src={logo}
                             alt=""
                             className={style.topAvatar}
                         />
-                        <IconButton type="button">
+                        <IconButton>
                             <SettingsOutlinedIcon className={style.settingIcon}/>
                         </IconButton>
-                    </Button>
+                    </Box>
 
                 </div>
             </div>

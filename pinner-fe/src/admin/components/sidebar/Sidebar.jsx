@@ -1,7 +1,8 @@
 import React from 'react';
+import Link from '@mui/material/Link';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 // component
-import {Link} from 'react-router-dom';
 
 // mui
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
@@ -22,19 +23,19 @@ export default function Sidebar() {
                 <Box className={style.sidebarMenu}>
                     <h3 className={style.sidebarTitle}>Dashboard</h3>
                     <ul className={style.sidebarList}>
-                        <Link to="dashboard">
-                            <li className={style.sidebarListItem}>
+                        <Link component={ReactRouterLink} to="dashboard" className={style.sidebarListItem}>
+                            <li>
                                 <HomeWorkIcon className={style.sidebarIcon}/>
                                 Dashboard
                             </li>
                         </Link>
-                        <Link to="users">
+                        <Link component={ReactRouterLink} to="users">
                             <li className={style.sidebarListItem}>
                                 <PeopleAltIcon className={style.sidebarIcon}/>
                                 Users
                             </li>
                         </Link>
-                        <Link to="server_status">
+                        <Link component={ReactRouterLink} to="server_status">
                             <li className={style.sidebarListItem}>
                                 <StorageIcon className={style.sidebarIcon}/>
                                 Server Status
