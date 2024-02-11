@@ -1,60 +1,77 @@
 import React from 'react';
+import {Link as ReactRouterLink} from 'react-router-dom';
 import Link from '@mui/material/Link';
-import { Link as ReactRouterLink } from 'react-router-dom';
 
 // component
 
 // mui
-import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import StorageIcon from '@mui/icons-material/Storage';
-import MailIcon from '@mui/icons-material/Mail';
-import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import Typography from '@mui/joy/Typography';
+import {Box} from "@mui/material";
+import Divider from "@mui/material/Divider";
 
 // css
 import style from './Sidebar.module.css';
-import {Box} from "@mui/material";
+
 
 export default function Sidebar() {
+    const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+    const handleListItemClick = (event, index) => {
+        setSelectedIndex(index);
+    };
 
     return (
         <Box className={style.sidebar}>
             <Box className={style.sidebarWrapper}>
-                <Box className={style.sidebarMenu}>
-                    <h3 className={style.sidebarTitle}>Dashboard</h3>
-                    <ul className={style.sidebarList}>
-                        <Link component={ReactRouterLink} to="dashboard" className={style.sidebarListItem}>
-                            <li>
-                                <HomeWorkIcon className={style.sidebarIcon}/>
-                                Dashboard
-                            </li>
-                        </Link>
-                        <Link component={ReactRouterLink} to="users">
-                            <li className={style.sidebarListItem}>
-                                <PeopleAltIcon className={style.sidebarIcon}/>
-                                Users
-                            </li>
-                        </Link>
-                        <Link component={ReactRouterLink} to="server_status">
-                            <li className={style.sidebarListItem}>
-                                <StorageIcon className={style.sidebarIcon}/>
-                                Server Status
-                            </li>
-                        </Link>
-                    </ul>
+                <Typography
+                    level="title-sm"
+                    fontWeight="lg"
+                    mb={1}
+                >
+                    대시보드
+                </Typography>
+                <List component="nav">
+                    <Link component={ReactRouterLink} to="dashboard" onClick={(event) => handleListItemClick(event, 0)}
+                          className={style.sidebarListItem} sx={{backgroundColor: selectedIndex === 0 ? '#ede7f6' : 'none'}}>
+                        <ListItem>
+                            <ListItemDecorator><SpaceDashboardIcon sx={{height: '20px'}}/></ListItemDecorator>
+                            <Typography level="body-sm">Dashboard</Typography>
+                        </ListItem>
+                    </Link>
+                </List>
+                <Divider/>
+            </Box>
 
-                    <h3 className={style.sidebarTitle}>notifications</h3>
-                    <ul className={style.sidebarList}>
-                        <li className={style.sidebarListItem}>
-                            <MailIcon className={style.sidebarIcon}/>
-                            Mail
-                        </li>
-                        <li className={style.sidebarListItem}>
-                            <ReportGmailerrorredIcon className={style.sidebarIcon}/>
-                            Reports
-                        </li>
-                    </ul>
-                </Box>
+            <Box className={style.sidebarWrapper}>
+                <Typography
+                    level="title-sm"
+                    fontWeight="lg"
+                    mb={1}
+                >
+                    기타
+                </Typography>
+                <List component="nav">
+                    <Link component={ReactRouterLink} to="users" onClick={(event) => handleListItemClick(event, 1)}
+                          className={style.sidebarListItem} sx={{backgroundColor: selectedIndex === 1 ? '#ede7f6' : 'none'}}>
+                        <ListItem>
+                            <ListItemDecorator><PeopleAltIcon sx={{height: '20px'}}/></ListItemDecorator>
+                            <Typography level="body-sm">Users</Typography>
+                        </ListItem>
+                    </Link>
+                    <Link component={ReactRouterLink} to="server_status" onClick={(event) => handleListItemClick(event, 2)}
+                          className={style.sidebarListItem} sx={{backgroundColor: selectedIndex === 2 ? '#ede7f6' : 'none'}}>
+                        <ListItem>
+                            <ListItemDecorator><StorageIcon sx={{height: '20px'}}/></ListItemDecorator>
+                            <Typography level="body-sm">Server Status</Typography>
+                        </ListItem>
+                    </Link>
+                </List>
             </Box>
         </Box>
     );

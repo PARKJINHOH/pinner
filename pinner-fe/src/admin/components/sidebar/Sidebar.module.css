@@ -1,11 +1,10 @@
 .sidebar {
     flex: 1;
     height: calc(100vh - 82px);
-    background-color: #e7e7e7;
 }
 
 .sidebarWrapper {
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
     color: #555555;
 }
 
@@ -24,17 +23,15 @@
 }
 
 .sidebarListItem {
-    padding: 5px;
     cursor: pointer;
     display: flex;
     align-items: center;
     border-radius: 10px;
-
-
+    text-decoration: none !important;
 }
 
 .sidebarListItem:hover {
-    background-color: #ede7f6;
+    background-color: #ede7f6 !important;
 }
 
 .sidebarIcon{
