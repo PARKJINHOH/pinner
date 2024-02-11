@@ -20,7 +20,7 @@ import style from './Sidebar.module.css';
 
 
 export default function Sidebar() {
-    const [selectedIndex, setSelectedIndex] = React.useState(1);
+    const [selectedIndex, setSelectedIndex] = React.useState(null);
 
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);

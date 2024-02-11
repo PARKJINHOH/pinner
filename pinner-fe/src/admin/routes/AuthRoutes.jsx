@@ -42,6 +42,10 @@ export default function AuthRoutes() {
             element: <ProtectedRoute/>,
             children: [
                 {
+                    path: "/admin",
+                    element: <Dashboard/>,
+                },
+                {
                     path: "/admin/dashboard",
                     element: <Dashboard/>,
                 },

@@ -58,7 +58,7 @@ export default function AdminLogin() {
                     setToken(response.data.accessToken);
 
                     // 페이지 이동
-                    navigate("/admin", { replace: true });
+                    navigate("/admin/dashboard", { replace: true });
                 })
                 .catch((error) => {
                     setErrorMessage(error.message);
