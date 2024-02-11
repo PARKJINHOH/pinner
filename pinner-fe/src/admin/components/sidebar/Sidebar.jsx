@@ -12,13 +12,14 @@ import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 
 // css
 import style from './Sidebar.module.css';
+import {Box} from "@mui/material";
 
 export default function Sidebar() {
 
     return (
-        <div className={style.sidebar}>
-            <div className={style.sidebarWrapper}>
-                <div className={style.sidebarMenu}>
+        <Box className={style.sidebar}>
+            <Box className={style.sidebarWrapper}>
+                <Box className={style.sidebarMenu}>
                     <h3 className={style.sidebarTitle}>Dashboard</h3>
                     <ul className={style.sidebarList}>
                         <Link to="dashboard">
@@ -52,8 +53,8 @@ export default function Sidebar() {
                             Reports
                         </li>
                     </ul>
-                </div>
-            </div>
-        </div>
+                </Box>
+            </Box>
+        </Box>
     );
 }
