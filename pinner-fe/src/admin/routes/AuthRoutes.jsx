@@ -6,6 +6,7 @@ import AdminLogin from "admin/AdminLogin";
 import {useAuth} from "admin/provider/AuthProvider";
 import {ProtectedRoute} from "admin/routes/ProtectedRoute";
 import Dashboard from "admin/components/dashboard/Dashboard";
+import Notice from "admin/components/notice/Notice";
 import Users from "admin/components/users/Users";
 
 import MainApp from "components/panel/travel/MainApp";
@@ -44,6 +45,10 @@ export default function AuthRoutes() {
                 {
                     path: "/admin",
                     element: <Dashboard/>,
+                },
+                {
+                    path: "/admin/notice",
+                    element: <Notice/>,
                 },
                 {
                     path: "/admin/dashboard",

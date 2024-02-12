@@ -5,14 +5,21 @@
 
 .container_top {
     display: flex;
-    background-color: #efd5ff;
     height: 160px;
+    justify-content: space-between;
 }
 
+.container_top_left{
+    display: flex;
+    width: 65%;
+    flex-direction: row;
+    justify-content: space-between;
+}
 .container_top_right {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 35%;
 }
 
 .container_middle {
@@ -44,10 +51,9 @@
 }
 
 .summary_1 {
-    flex-grow: 1;
     height: var(--summary_1_height);
     margin-right: 20px;
-    width: 160px;
+    width: 100%;
     background-color: #49026c;
     border-radius: 15px;
     padding: 15px;
@@ -55,10 +61,15 @@
 
 .summary_2 {
     height: var(--summary_2_height);
-    width: 310px;
     background-color: #1e88e5;
     border-radius: 15px;
     padding: 15px;
+}
+
+.summary_3 {
+    max-width: 65%;
+    height: calc(100vh - 302px);
+    background-color: #c0ccd3;
 }
 
 .problem_cnt {
