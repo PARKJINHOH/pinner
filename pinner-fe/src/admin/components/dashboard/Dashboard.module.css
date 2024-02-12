@@ -9,12 +9,13 @@
     justify-content: space-between;
 }
 
-.container_top_left{
+.container_top_left {
     display: flex;
     width: 65%;
     flex-direction: row;
     justify-content: space-between;
 }
+
 .container_top_right {
     display: flex;
     flex-direction: column;
@@ -24,8 +25,9 @@
 
 .container_middle {
     margin-top: 20px;
-    background-color: #ccb3ff;
+    background-color: #ffffff;
     height: calc(100vh - 302px);
+    border-radius: 15px;
 }
 
 .summary_traveler {
@@ -54,7 +56,7 @@
     height: var(--summary_1_height);
     margin-right: 20px;
     width: 100%;
-    background-color: #49026c;
+    background-color: #5d2a77;
     border-radius: 15px;
     padding: 15px;
 }
@@ -66,10 +68,8 @@
     padding: 15px;
 }
 
-.summary_3 {
-    max-width: 65%;
-    height: calc(100vh - 302px);
-    background-color: #c0ccd3;
+.container_charts_container {
+    height: 90% !important;
 }
 
 .problem_cnt {
