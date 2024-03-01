@@ -5,7 +5,7 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {HTTPStatus, useAPIv1} from "apis/apiv1";
+import {HTTPStatus, useAPIv1} from "apis/traveler/apiv1";
 import {clearTraveler} from "states/travelerWebstore";
 import {travelerState, useDoLogin} from "states/traveler";
 import {errorAlert, infoAlert} from "components/alert/AlertComponent";

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {HTTPStatus, useAPIv1} from "apis/admin/apiv1";
 
 // component
 
@@ -15,11 +16,27 @@ import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContain
 // css
 import style from './Dashboard.module.css';
 
-import {SvgIcon} from "@mui/joy";
-import Button from "@mui/joy/Button";
-
-
 export default function Dashboard() {
+    const apiv1 = useAPIv1();
+
+    const [totalTravelerCount, setTotalTravelerCount] = useState(0);
+
+    useEffect(() => {
+        getTotalTraveler();
+    }, []);
+
+    function getTotalTraveler() {
+        apiv1.post("/admin/total/traveler", {})
+            .then((response) => {
+                if (response.status === HTTPStatus.OK) {
+                    setTotalTravelerCount(response.data);
+                }
+            })
+            .catch((error) => {
+                setTotalTravelerCount(-9999);
+            });
+    }
+
 
     const data = [
         {
@@ -75,7 +92,7 @@ export default function Dashboard() {
                     <Box className={style.summary_1}>
                         <Box className={style.summary_traveler}>
                             <Typography></Typography>
-                            <Typography level="h1" sx={{color: '#ffffff'}}>100명</Typography>
+                            <Typography level="h1" sx={{color: '#ffffff'}}>{totalTravelerCount}명</Typography>
                             <Typography level="title-md" sx={{color: '#b39ddb'}}>Total Traveler</Typography>
                         </Box>
                     </Box>
@@ -114,7 +131,7 @@ export default function Dashboard() {
             </Box>
 
             <Box className={style.container_middle}>
-                <Typography level="h3" sx={{color: '#000000', marginLeft:'20px', paddingTop: '10px'}}>Traveler 회원추이(1년)</Typography>
+                <Typography level="h3" sx={{color: '#000000', marginLeft: '20px', paddingTop: '10px'}}>Traveler 회원추이(1년)</Typography>
                 <ResponsiveContainer className={style.container_charts_container}>
                     <AreaChart
                         data={data}

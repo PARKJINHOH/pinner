@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import {useRecoilState} from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './RegisterModal.module.css';
 
 // component
-import {postRegister} from 'apis/auth';
+import {postRegister} from 'apis/traveler/auth';
 import {Timer} from "components/modals/Timer";
 import {errorAlert} from "components/alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';

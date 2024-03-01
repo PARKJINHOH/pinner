@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 // api
-import {HTTPStatus, useAPIv1} from 'apis/apiv1';
+import {HTTPStatus, useAPIv1} from 'apis/traveler/apiv1';
 
 // css
 import style from './NewTravelPill.module.css';

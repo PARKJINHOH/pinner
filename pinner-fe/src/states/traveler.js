@@ -1,6 +1,6 @@
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil';
 import { clearTraveler, loadTraveler, saveTraveler } from './travelerWebstore';
-import {postLogout} from "apis/auth";
+import {postLogout} from "apis/traveler/auth";
 
 
 // Load Traveler from Web storage.

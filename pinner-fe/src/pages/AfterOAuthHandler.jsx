@@ -1,4 +1,4 @@
-import { postLoginAfterOAuth } from 'apis/auth';
+import { postLoginAfterOAuth } from 'apis/traveler/auth';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDoLogin } from 'states/traveler';

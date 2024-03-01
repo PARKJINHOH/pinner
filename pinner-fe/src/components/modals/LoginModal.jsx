@@ -7,7 +7,7 @@ import style from './LoginModal.module.css';
 // component
 import { useDoLogin } from 'states/traveler';
 import {errorAlert} from "components/alert/AlertComponent";
-import { postLogin } from 'apis/auth';
+import { postLogin } from 'apis/traveler/auth';
 import { AuthModalVisibility, authModalVisibilityState } from 'states/modal';
 
 // mui

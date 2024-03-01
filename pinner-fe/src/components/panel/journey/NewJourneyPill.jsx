@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
 import iso3166_1 from 'apis/iso3166_1.json';
-import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './NewJourneyPill.module.css';

@@ -4,7 +4,7 @@ import {Navigate, useNavigate} from "react-router-dom";
 
 // component
 import {errorAlert} from "components/alert/AlertComponent";
-import {useAPIv1} from "apis/apiv1";
+import {useAPIv1} from "apis/admin/apiv1";
 import {useDoLogin} from "states/admin";
 
 import {clearAdmin} from "states/adminWebstore";

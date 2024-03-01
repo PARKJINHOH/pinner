@@ -1,6 +1,6 @@
-const kAccessToken = "accessToken";
-const kRefreshToken = "refreshToken";
-const kEmail = "email";
+const kAccessToken = "adminAccessToken";
+const kRefreshToken = "adminRefreshToken";
+const kEmail = "adminEmail";
 const kAdminName = "adminName";
 
 function isValidAdmin(admin) {

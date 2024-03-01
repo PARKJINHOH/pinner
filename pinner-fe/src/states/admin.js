@@ -1,6 +1,6 @@
 import { atom, selector, useRecoilState, useSetRecoilState } from 'recoil';
 import { clearAdmin, loadAdmin, saveAdmin } from './adminWebstore';
-import {postLogout} from "apis/auth";
+import {postLogout} from "apis/admin/auth";
 
 
 // Load Admin from Web storage.
