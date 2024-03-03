@@ -3,11 +3,13 @@ package dev.pinner.service;
 import dev.pinner.domain.dto.TravelerDto;
 import dev.pinner.domain.dto.oauth.NaverDto;
 import dev.pinner.domain.entity.RefreshToken;
+import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.BusinessException;
 import dev.pinner.exception.SystemException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.global.utils.CommonUtil;
+import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,6 +34,7 @@ import java.util.Optional;
 public class TravelerService {
 
     private final TravelerRepository travelerRepository;
+    private final TravelRepository travelRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
@@ -251,5 +255,17 @@ public class TravelerService {
         }
 
         return false;
+    }
+
+    public List<Traveler> getTotalTraveler() {
+        return travelerRepository.findAll();
+    }
+
+    public List<Travel> getTotalTravel(){
+        return travelRepository.findAll();
+    }
+
+    public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
+        return travelerRepository.getTravelerGroupByYearMonth();
     }
 }

@@ -31,6 +31,7 @@ public class RefreshTokenService {
         return refreshTokenRepository.findByToken(token);
     }
 
+    @Transactional
     public RefreshToken createRefreshToken(String from, String email) {
         RefreshToken refreshToken = new RefreshToken();
 
@@ -56,6 +57,7 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    @Transactional
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);

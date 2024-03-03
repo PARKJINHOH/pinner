@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 
 public class AdminDto {
 
@@ -39,6 +41,16 @@ public class AdminDto {
         private String password;
         private String accessToken;
         private String refreshToken;
+    }
+
+    @Data
+    @Builder
+    public static class SummaryResponse {
+        private int totalTraveler;
+        private int activeTraveler;
+        private int inactiveTraveler;
+        private int totalTravel;
+        private List<TravelerDto.SummaryResponse> travelerGroupByYearMonthList;
     }
 
 }

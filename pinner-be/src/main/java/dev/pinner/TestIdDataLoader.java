@@ -54,6 +54,20 @@ public class TestIdDataLoader implements ApplicationRunner {
                 travelerRepository.save(testId);
             }
 
+            Traveler testId2 = Traveler.builder()
+                    .email("test2@naver.com")
+                    .nickname("테스트계정2")
+                    .password(passwordEncoder.encode("test"))
+                    .roleEnum(RoleEnum.USER)
+                    .signupServices("web")
+                    .state(false)
+                    .lastLoginIpAddress("127.0.0.1")
+                    .build();
+
+            if (travelerRepository.findByEmail(testId2.getEmail()).isEmpty()) {
+                travelerRepository.save(testId2);
+            }
+
             // Test Admin 계정 생성
             Admin testAdminId = Admin.builder()
                     .email("admin@naver.com")

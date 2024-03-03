@@ -8,7 +8,7 @@ import {jwtDecode} from "jwt-decode";
 const AuthContext = createContext();
 
 export default function AuthProvider({children}) {
-    const [accessToken, setAccessToken] = useState(window.sessionStorage.getItem("accessToken"));
+    const [accessToken, setAccessToken] = useState(window.sessionStorage.getItem("adminAccessToken"));
     const setToken = (newToken) => {
         setAccessToken(newToken);
     };

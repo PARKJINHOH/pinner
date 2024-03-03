@@ -3,8 +3,10 @@ package dev.pinner.service;
 import dev.pinner.domain.dto.AdminDto;
 import dev.pinner.domain.entity.Admin;
 import dev.pinner.domain.entity.RefreshToken;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.exception.SystemException;
 import dev.pinner.repository.AdminRepository;
+import dev.pinner.repository.TravelerRepository;
 import dev.pinner.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final TravelerRepository travelerRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
@@ -66,6 +69,27 @@ public class AdminService {
         } catch (Exception ex) {
             throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "로그인에 실패했습니다. 관리자에게 문의해주세요.", ex);
         }
+
+    }
+
+    @Transactional
+    public AdminDto.Response getRefreshToken(AdminDto.Request adminDto) {
+        String requestRefreshToken = adminDto.getRefreshToken();
+
+        // Refresh Token
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).orElseThrow(() -> {
+            log.error("[{}] Token이 DB에 없습니다.", requestRefreshToken);
+            return new BusinessException(HttpStatus.UNAUTHORIZED, "비정상적인 접근입니다.");
+        });
+        RefreshToken validRefreshToken = refreshTokenService.verifyExpiration(refreshToken);
+
+        // Access Token
+        String validAccessToken = jwtUtils.generateToken(validRefreshToken.getTraveler().getEmail());
+
+        return AdminDto.Response.builder()
+                .refreshToken(validRefreshToken.getToken())
+                .accessToken(validAccessToken)
+                .build();
 
     }
 }

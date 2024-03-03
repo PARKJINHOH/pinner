@@ -1,8 +1,8 @@
 package dev.pinner.domain.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.enums.RoleEnum;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +11,6 @@ public class TravelerDto {
 
     @Data
     @Builder
-    @AllArgsConstructor
     public static class Request {
         private String email;
         private String nickname;
@@ -34,7 +33,6 @@ public class TravelerDto {
 
     @Data
     @Builder
-    @AllArgsConstructor
     public static class Response {
         private String email;
         private String nickname;
@@ -42,6 +40,20 @@ public class TravelerDto {
         private String accessToken;
         private String refreshToken;
         private String signupServices;
+    }
+
+    @Data
+    public static class SummaryResponse {
+
+        private Integer name;
+        private Long traveler;
+
+        @QueryProjection
+        public SummaryResponse(Integer name, Long traveler) {
+            this.name = name;
+            this.traveler = traveler;
+        }
+
     }
 
 }

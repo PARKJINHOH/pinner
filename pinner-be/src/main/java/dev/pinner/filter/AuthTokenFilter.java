@@ -34,7 +34,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.info("요청을 인증 중");
+            log.info("요청을 인증 중 : {}", request.getRequestURI());
             String jwt = parseJwt(request);
             String key = jwtUtils.validateJwtToken(jwt).getKey();
             String requestURI = request.getRequestURI();

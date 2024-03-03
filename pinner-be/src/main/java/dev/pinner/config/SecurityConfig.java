@@ -87,7 +87,10 @@ public class SecurityConfig {
 
         // JWT Filter Setting
         http
-                .addFilterBefore(new AuthTokenFilter(jwtUtils, customDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new AuthTokenFilter(jwtUtils, customDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers("/api/v1/admin/**").permitAll()
+        ;
 
         return http.build();
         // @formatter:on

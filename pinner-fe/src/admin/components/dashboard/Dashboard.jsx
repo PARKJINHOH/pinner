@@ -19,71 +19,43 @@ import style from './Dashboard.module.css';
 export default function Dashboard() {
     const apiv1 = useAPIv1();
 
-    const [totalTravelerCount, setTotalTravelerCount] = useState(0);
+    const [totalTraveler, setTotalTraveler] = useState(0);
+    const [activeTraveler, setActiveTraveler] = useState(0);
+    const [inactiveTraveler, setInactiveTraveler] = useState(0);
+    const [totalTravel, setTotalTravel] = useState(0);
+    const [travelerGroupByYearMonthList , setTravelerGroupByYearMonthList] = useState([]);
 
     useEffect(() => {
         getTotalTraveler();
     }, []);
 
     function getTotalTraveler() {
-        apiv1.post("/admin/total/traveler", {})
+        apiv1.post("/admin/dashboard/summary", {})
             .then((response) => {
+                console.log(response);
                 if (response.status === HTTPStatus.OK) {
-                    setTotalTravelerCount(response.data);
+                    setTotalTraveler(response.data.totalTraveler);
+                    setActiveTraveler(response.data.activeTraveler);
+                    setInactiveTraveler(response.data.inactiveTraveler);
+                    setTotalTravel(response.data.totalTravel);
+                    setTravelerGroupByYearMonthList(response.data.travelerGroupByYearMonthList);
                 }
             })
             .catch((error) => {
-                setTotalTravelerCount(-9999);
+                console.error({"getTotalTraveler-error": error.response.data.message});
             });
     }
 
 
     const data = [
         {
-            name: '23.04',
-            traveler: 5,
-        },
-        {
-            name: '23.05',
-            traveler: 7,
-        },
-        {
-            name: '23.06',
-            traveler: 5,
-        },
-        {
-            name: '23.07',
-            traveler: 15,
-        },
-        {
-            name: '23.08',
-            traveler: 12,
-        },
-        {
-            name: '23.09',
-            traveler: 15,
-        },
-        {
-            name: '23.10',
-            traveler: 26,
-        },
-        {
-            name: '23.11',
-            traveler: 57,
-        },
-        {
-            name: '23.12',
-            traveler: 86,
-        },
-        {
-            name: '24.01',
-            traveler: 58,
-        },
-        {
-            name: '24.02',
-            traveler: 80,
-        },
+            name: 23.04,
+            traveler: 2,
+        }
     ];
+
+    console.log(data);
+    console.log(travelerGroupByYearMonthList)
 
     return (
         <Box>
@@ -92,14 +64,14 @@ export default function Dashboard() {
                     <Box className={style.summary_1}>
                         <Box className={style.summary_traveler}>
                             <Typography></Typography>
-                            <Typography level="h1" sx={{color: '#ffffff'}}>{totalTravelerCount}명</Typography>
-                            <Typography level="title-md" sx={{color: '#b39ddb'}}>Total Traveler</Typography>
+                            <Typography level="h1" sx={{color: '#ffffff'}}>{totalTraveler}명({activeTraveler}/<Typography sx={{color: '#ff8080'}}>{inactiveTraveler}</Typography>)</Typography>
+                            <Typography level="title-md" sx={{color: '#b39ddb'}}>Traveler (active,inactive)</Typography>
                         </Box>
                     </Box>
                     <Box className={style.summary_1}>
                         <Box className={style.summary_traveler}>
                             <Typography></Typography>
-                            <Typography level="h1" sx={{color: '#ffffff'}}>21398개</Typography>
+                            <Typography level="h1" sx={{color: '#ffffff'}}>{totalTravel}여정</Typography>
                             <Typography level="title-md" sx={{color: '#b39ddb'}}>Total Travel</Typography>
                         </Box>
                     </Box>
