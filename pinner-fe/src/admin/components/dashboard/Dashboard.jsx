@@ -46,17 +46,6 @@ export default function Dashboard() {
             });
     }
 
-
-    const data = [
-        {
-            name: 23.04,
-            traveler: 2,
-        }
-    ];
-
-    console.log(data);
-    console.log(travelerGroupByYearMonthList)
-
     return (
         <Box>
             <Box className={style.container_top}>
@@ -83,7 +72,7 @@ export default function Dashboard() {
                                 <WarningAmberOutlinedIcon sx={{color: 'white'}}/>
                             </IconButton>
                             <Box sx={{marginLeft: '15px'}}>
-                                <Typography level="title-lg" sx={{color: '#ffffff'}}>12개</Typography>
+                                <Typography level="title-lg" sx={{color: '#ffffff'}}>9999개</Typography>
                                 <Typography level="body-xs" sx={{color: '#ffffff'}}>문의갯수</Typography>
                             </Box>
                         </Box>
@@ -94,7 +83,7 @@ export default function Dashboard() {
                                 <CampaignIcon sx={{color: 'white'}}/>
                             </IconButton>
                             <Box sx={{marginLeft: '15px'}}>
-                                <Typography level="title-lg" sx={{color: '#ffffff'}}>2개</Typography>
+                                <Typography level="title-lg" sx={{color: '#ffffff'}}>99개</Typography>
                                 <Typography level="body-xs" sx={{color: '#ffffff'}}>현재 공지사항</Typography>
                             </Box>
                         </Box>
@@ -106,7 +95,7 @@ export default function Dashboard() {
                 <Typography level="h3" sx={{color: '#000000', marginLeft: '20px', paddingTop: '10px'}}>Traveler 회원추이(1년)</Typography>
                 <ResponsiveContainer className={style.container_charts_container}>
                     <AreaChart
-                        data={data}
+                        data={travelerGroupByYearMonthList}
                         margin={{top: 50, right: 60, left: 0, bottom: 0,}}
                     >
                         <CartesianGrid strokeDasharray="3 3"/>

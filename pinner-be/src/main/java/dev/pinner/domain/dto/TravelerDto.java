@@ -45,11 +45,11 @@ public class TravelerDto {
     @Data
     public static class SummaryResponse {
 
-        private Integer name;
+        private String name;
         private Long traveler;
 
         @QueryProjection
-        public SummaryResponse(Integer name, Long traveler) {
+        public SummaryResponse(String name, Long traveler) {
             this.name = name;
             this.traveler = traveler;
         }
