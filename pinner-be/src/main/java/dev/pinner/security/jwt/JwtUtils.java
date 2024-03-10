@@ -6,9 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -24,20 +22,12 @@ public class JwtUtils {
      * JWT Token 생성
      */
     public String generateToken(String email) {
-        return generateToken(email, Collections.emptyMap());
-    }
-
-    public String generateToken(String email, Map<String, Object> claims) {
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header의 Type 지정
                 .setIssuer("pinner") // Token 발급자
                 .setIssuedAt(new Date()) // 발급 시간
                 .setExpiration(new Date(new Date().getTime() + jwtExpirationMs)) // 만료 시간
                 .setSubject(email); // Token 제목(대상)
-
-        if (!claims.isEmpty()) {
-            jwtBuilder.setClaims(claims); // Payload
-        }
 
         return jwtBuilder
                 .signWith(SignatureAlgorithm.HS256, jwtSecret) // 해싱 알고리즘 및 시크릿 키

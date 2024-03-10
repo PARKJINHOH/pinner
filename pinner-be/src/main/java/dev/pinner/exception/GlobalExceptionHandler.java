@@ -13,6 +13,7 @@ import java.io.IOException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // @RestControllerAdvice는 Spring Dispatcher 이후에 발생하는 예외만 처리.(Filter, Interceptor는 처리 안함)
 
     /**
      * CustomException

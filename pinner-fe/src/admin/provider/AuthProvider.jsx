@@ -15,8 +15,8 @@ export default function AuthProvider({children}) {
 
     useEffect(() => {
         if (accessToken) {
-            const verifiedToken = jwtDecode(accessToken);
-            if (!verifiedToken.admin) {
+            const {iss, sub} = jwtDecode(accessToken);
+            if (iss === "pinner" && sub === undefined) {
                 clearAdmin();
                 clearTraveler();
             }
