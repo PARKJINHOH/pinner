@@ -1,9 +1,17 @@
 package dev.pinner.service;
 
+import dev.pinner.domain.dto.NoticeDto;
 import dev.pinner.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,8 +23,10 @@ public class NoticeService {
     /**
      * 등록
      */
-    public boolean addNotice() {
-        return false;
+    @Transactional
+    public boolean addNotice(NoticeDto.Request noticeDto) {
+        Long id = noticeRepository.save(noticeDto.toEntity()).getId();
+        return id != null;
     }
 
     /**
@@ -36,8 +46,12 @@ public class NoticeService {
     /**
      * 목록 조회
      */
-    public boolean getNoticeList() {
-        return false;
+    public List<NoticeDto.Response> getNoticeList(int pageNo, int pageSize) {
+        noticeRepository.flush();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+        Page<NoticeDto.Response> map = noticeRepository.findAll(pageable).map(NoticeDto.Response::new);
+        return map.getContent();
     }
 
     /**
@@ -46,5 +60,4 @@ public class NoticeService {
     public boolean getNoticeDetail() {
         return false;
     }
-
 }

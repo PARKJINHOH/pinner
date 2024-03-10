@@ -32,7 +32,6 @@ export default function Dashboard() {
     function getTotalTraveler() {
         apiv1.post("/admin/dashboard/summary", {})
             .then((response) => {
-                console.log(response);
                 if (response.status === HTTPStatus.OK) {
                     setTotalTraveler(response.data.totalTraveler);
                     setActiveTraveler(response.data.activeTraveler);
@@ -42,7 +41,7 @@ export default function Dashboard() {
                 }
             })
             .catch((error) => {
-                console.error({"getTotalTraveler-error": error.response.data.message});
+                console.error({"getTotalTraveler-error": error});
             });
     }
 

@@ -20,6 +20,7 @@
     "@mui/joy": "^5.0.0-alpha.71",
     "@mui/lab": "^5.0.0-alpha.120",
     "@mui/material": "^5.14.3",
+    "@mui/x-data-grid": "^6.19.6",
     "@mui/x-date-pickers": "^6.11.0",
     "@react-google-maps/api": "^2.19.2",
     "@testing-library/jest-dom": "^5.17.0",

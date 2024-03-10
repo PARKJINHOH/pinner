@@ -1,6 +1,7 @@
 package dev.pinner.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
@@ -39,4 +40,10 @@ public class Notice extends AuditEntity {
     @Comment("공지사항 종료일")
     private String endDate;
 
+    @Builder
+    public Notice(String title, String content, String writer) {
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
 }
