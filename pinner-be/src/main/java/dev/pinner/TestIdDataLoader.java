@@ -50,6 +50,20 @@ public class TestIdDataLoader implements ApplicationRunner {
                 travelerRepository.save(testId);
             }
 
+            // Test2 계정 생성
+            Traveler testId2 = Traveler.builder()
+                .email("test@gmail.com")
+                .nickname("test")
+                .password(passwordEncoder.encode("test"))
+                .roleEnum(RoleEnum.USER)
+                .signupServices("Web")
+                .lastLoginIpAddress("127.0.0.1")
+                .build();
+
+            if (travelerRepository.findByEmail(testId2.getEmail()).isEmpty()) {
+                travelerRepository.save(testId2);
+            }
+
             // 기존 이미지 폴더 삭제
             if(profiles.equals("local")){
                 String path = imagePath + File.separator;
