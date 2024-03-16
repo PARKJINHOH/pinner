@@ -7,8 +7,9 @@ import {useAuth} from "admin/provider/AuthProvider";
 import {ProtectedRoute} from "admin/routes/ProtectedRoute";
 import Dashboard from "admin/components/dashboard/Dashboard";
 import Notice from "admin/components/notice/Notice";
-import Users from "admin/components/users/Users";
+import NoticeWrite from "admin/components/notice/NoticeWrite";
 
+import Users from "admin/components/users/Users";
 import MainApp from "components/panel/travel/MainApp";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
 
@@ -49,6 +50,10 @@ export default function AuthRoutes() {
                 {
                     path: "/admin/notice",
                     element: <Notice/>,
+                },
+                {
+                    path: "/admin/notice/write",
+                    element: <NoticeWrite/>,
                 },
                 {
                     path: "/admin/dashboard",

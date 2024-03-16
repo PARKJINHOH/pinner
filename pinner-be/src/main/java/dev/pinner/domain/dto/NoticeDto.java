@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 public class NoticeDto {
 
     @Data
@@ -36,8 +38,6 @@ public class NoticeDto {
         private int viewCount;
         private String status;
 
-        int pageNo; // 페이지번호
-
         public Response(Notice notice) {
             id = notice.getId();
             title = notice.getTitle();
@@ -46,5 +46,16 @@ public class NoticeDto {
             viewCount = notice.getViewCount();
             status = notice.getStatus();
         }
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class NoticeDataListResponse {
+        private List<Response> noticeList;
+
+        int pageNo; // 페이지번호
+        int pageSize; // 페이지 사이즈
+        int totalPageCnt; // 총 페이지 수
     }
 }

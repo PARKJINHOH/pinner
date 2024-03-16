@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/admin/notice")
@@ -20,7 +18,7 @@ public class NoticeController {
     @GetMapping()
     public ResponseEntity<?> getNoticeList(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
                                            @RequestParam(required = false, defaultValue = "10", value = "size") int size){
-        List<NoticeDto.Response> response = noticeService.getNoticeList(page, size);
+        NoticeDto.NoticeDataListResponse response = noticeService.getNoticeList(page, size);
         return ResponseEntity.ok().body(response);
     }
 

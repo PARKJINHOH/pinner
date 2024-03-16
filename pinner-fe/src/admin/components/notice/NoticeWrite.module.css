@@ -1,0 +1,21 @@
+.title {
+    width: 130px;
+    margin-right: 15px !important
+}
+
+.titlePaper {
+    display: flex;
+    align-items: center;
+}
+
+.textPaper {
+    display: flex;
+    align-items: center;
+}
+
+.controlArea {
+    display: flex;
+    width: 150px;
+    float: right;
+    justify-content: space-between;
+}

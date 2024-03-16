@@ -11,8 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -46,12 +44,19 @@ public class NoticeService {
     /**
      * 목록 조회
      */
-    public List<NoticeDto.Response> getNoticeList(int pageNo, int pageSize) {
+    public NoticeDto.NoticeDataListResponse getNoticeList(int pageNo, int pageSize) {
         noticeRepository.flush();
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<NoticeDto.Response> map = noticeRepository.findAll(pageable).map(NoticeDto.Response::new);
-        return map.getContent();
+        long totalPageCnt = noticeRepository.count();
+
+        return NoticeDto.NoticeDataListResponse.builder()
+                .noticeList(map.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPageCnt((int) totalPageCnt)
+                .build();
     }
 
     /**
