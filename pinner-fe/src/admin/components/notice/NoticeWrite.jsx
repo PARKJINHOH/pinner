@@ -18,38 +18,42 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 export default function NoticeWrite() {
     const apiv1 = useAPIv1();
     const navigate = useNavigate();
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
 
 
     function write() {
-        console.log("write");
+        console.log(title);
+        console.log(content);
     }
 
     return (
         <Box sx={{width: '100%'}}>
             <Paper className={style.titlePaper}>
                 <Typography level="h3" className={style.title} align="right">제목</Typography>
-                <TextField  sx={{width: '1320px'}}/>
+                <TextField sx={{width: '1320px'}}
+                           value={title} onChange={(e) => setTitle(e.currentTarget.value)}
+                />
             </Paper>
             <Paper className={style.textPaper}>
                 <Typography level="h3" className={style.content} align="right">내용</Typography>
                 <CKEditor
-                    className={style.ckEditor}
-                    editor={ ClassicEditor }
+                    editor={ClassicEditor}
                     config={{
                         placeholder: "내용을 입력하세요.",
                     }}
                     onReady={(editor) => {
-                        console.log( 'Editor is ready to use!', editor );
+                        // console.log( 'Editor is ready to use!', editor );
                     }}
-                    onChange={ ( event ) => {
-                        console.log( event );
-                    } }
-                    onBlur={ ( event, editor ) => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                        console.log( 'Focus.', editor );
-                    } }
+                    onChange={(event, editor) => {
+                        setContent(editor.getData());
+                    }}
+                    onBlur={(event, editor) => {
+                        // console.log( 'Blur.', editor );
+                    }}
+                    onFocus={(event, editor) => {
+                        // console.log( 'Focus.', editor );
+                    }}
                 />
             </Paper>
             <div className={style.controlArea}>
