@@ -11,8 +11,9 @@ import {Box, Paper} from "@mui/material";
 import Button from "@mui/joy/Button";
 import {useNavigate} from "react-router-dom";
 import Typography from "@mui/joy/Typography";
-import {Textarea} from "@mantine/core";
 import TextField from "@mui/material/TextField";
+import {CKEditor} from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function NoticeWrite() {
     const apiv1 = useAPIv1();
@@ -27,10 +28,29 @@ export default function NoticeWrite() {
         <Box sx={{width: '100%'}}>
             <Paper className={style.titlePaper}>
                 <Typography level="h3" className={style.title} align="right">제목</Typography>
-                <TextField label={'공지사항 제목'} />
+                <TextField  sx={{width: '1320px'}}/>
             </Paper>
             <Paper className={style.textPaper}>
-
+                <Typography level="h3" className={style.content} align="right">내용</Typography>
+                <CKEditor
+                    className={style.ckEditor}
+                    editor={ ClassicEditor }
+                    config={{
+                        placeholder: "내용을 입력하세요.",
+                    }}
+                    onReady={(editor) => {
+                        console.log( 'Editor is ready to use!', editor );
+                    }}
+                    onChange={ ( event ) => {
+                        console.log( event );
+                    } }
+                    onBlur={ ( event, editor ) => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( event, editor ) => {
+                        console.log( 'Focus.', editor );
+                    } }
+                />
             </Paper>
             <div className={style.controlArea}>
                 <Button className={style.cancelBtn} onClick={() => navigate('/admin/notice', {replace: true})}>취소</Button>

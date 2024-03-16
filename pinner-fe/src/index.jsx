@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import {RecoilRoot} from 'recoil';
+import "./index.css";
 
 // component
 import App from 'App';

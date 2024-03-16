@@ -2,15 +2,21 @@
     width: 130px;
     margin-right: 15px !important
 }
-
+.content {
+    width: 130px;
+    margin-right: 15px !important
+}
 .titlePaper {
     display: flex;
     align-items: center;
+    padding: 10px 0;
 }
 
 .textPaper {
     display: flex;
-    align-items: center;
+    height: 600px;
+    margin: 10px 0;
+    padding: 15px 0;
 }
 
 .controlArea {
