@@ -443,5 +443,5 @@ function PhotoMarker(props) {
 
 function InfoWindowImage(img) {
     // TODO: fix style
-    return <img src={`/photo/${img}`} alt={img} width={100} />;
+    return <img src={img.src} alt={img} width={100} />;
 }
