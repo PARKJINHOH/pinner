@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,11 +15,14 @@ import javax.persistence.Table;
 public class Notice extends AuditEntity {
 
     @Id
+    @JoinColumn(name = "NOTICE_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Comment("제목")
     private String title;
 
+    @Lob
     @Comment("내용")
     private String content;
 

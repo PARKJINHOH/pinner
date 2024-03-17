@@ -16,9 +16,9 @@ public class NoticeController {
     private final NoticeService noticeService;
 
     @GetMapping()
-    public ResponseEntity<?> getNoticeList(@RequestParam(required = false, defaultValue = "0", value = "page") int page,
+    public ResponseEntity<?> getNoticeList(@RequestParam(required = false, defaultValue = "0", value = "pageNo") int pageNo,
                                            @RequestParam(required = false, defaultValue = "10", value = "size") int size){
-        NoticeDto.NoticeDataListResponse response = noticeService.getNoticeList(page, size);
+        NoticeDto.NoticeDataListResponse response = noticeService.getNoticeList(pageNo, size);
         return ResponseEntity.ok().body(response);
     }
 

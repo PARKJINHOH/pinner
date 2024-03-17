@@ -5,24 +5,22 @@ import {Navigate, useNavigate} from "react-router-dom";
 // component
 
 // mui
-import {Box, Paper, TableContainer} from "@mui/material";
+import {Box, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import Button from "@mui/joy/Button";
 
 // css
 import style from './Notice.module.css';
+import {Table} from "@mantine/core";
 
 export default function Notice() {
     const apiv1 = useAPIv1();
     const navigate = useNavigate();
 
-    const [pageNo, setPageNo] = useState(1); // 현재 페이지
+    const [pageNo, setPageNo] = useState(0); // 현재 페이지
     const [pageSize, setPageSize] = useState(5); // 페이지 사이즈
     const [totalPageCnt, setTotalPageCnt] = useState(0); // 전체 페이지 수
 
     const [noticeList, setNoticeList] = useState([]);
-
-    const [boardList, setBoardList] = useState([]);
-    const [pageList, setPageList] = useState([]);
 
     useEffect(() => {
         getNoticeList();
@@ -34,7 +32,10 @@ export default function Notice() {
             .then((response) => {
                 console.log(response);
                 if (response.status === HTTPStatus.OK) {
-
+                    setNoticeList(response.data.noticeList);
+                    setPageNo(response.data.PageNo);
+                    setPageSize(response.data.pageSize);
+                    setTotalPageCnt(response.data.totalPages);
                 }
             })
             .catch((error) => {
@@ -52,7 +53,36 @@ export default function Notice() {
 
             </Paper>
             <Paper className={style.noticeList}>
-
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>No</TableCell>
+                                <TableCell align="right">제목</TableCell>
+                                <TableCell align="right">조회수</TableCell>
+                                <TableCell align="right">게시시작일</TableCell>
+                                <TableCell align="right">게시종료일</TableCell>
+                                <TableCell align="right">상태</TableCell>
+                                <TableCell align="right">등록자</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                noticeList.map((notice, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell component="th" scope="row">{notice.id}</TableCell>
+                                        <TableCell align="left">{notice.title}</TableCell>
+                                        <TableCell align="left">{notice.viewCount}</TableCell>
+                                        <TableCell align="left">{notice.startDate}</TableCell>
+                                        <TableCell align="left">{notice.endDate}</TableCell>
+                                        <TableCell align="left">{notice.status}</TableCell>
+                                        <TableCell align="left">{notice.writer}</TableCell>
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Paper>
             <Button className={style.writeMoveBtn} onClick={writeNotice}>글쓰기</Button>
         </Box>

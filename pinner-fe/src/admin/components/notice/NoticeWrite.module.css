@@ -11,9 +11,13 @@
     align-items: center;
     padding: 10px 0;
 }
+.ckeditor{
+    width: 70%;
+    margin-left: 145px;
+}
 
 .textPaper {
-    display: flex;
+    /*display: flex;*/
     height: 600px;
     margin: 10px 0;
     padding: 15px 0;
