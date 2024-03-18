@@ -1,6 +1,7 @@
 package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelDto;
+import dev.pinner.domain.dto.TravelShareDto;
 import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.TravelShareInfo;
 import dev.pinner.domain.entity.Traveler;
@@ -26,12 +27,29 @@ public class TravelShareService {
     private final TravelerRepository travelerRepository;
     private final TravelShareRepository travelShareRepository;
 
+    /**
+     * 여행 공유(공개)
+     *
+     * @param host
+     * @param travelId
+     * @param duration
+     * @return
+     */
     @Transactional
     public TravelShareInfo createTravelSharePublic(Traveler host, Long travelId, Optional<Duration> duration) {
         Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(host.getId(), travelId);
         return travel.sharePublic(duration);
     }
 
+    /**
+     * 여행 공유(특정 맴머)
+     *
+     * @param host
+     * @param travelId
+     * @param guestEmail
+     * @param duration
+     * @return
+     */
     @Transactional
     public TravelShareInfo createTravelShareForMember(Traveler host, Long travelId, String guestEmail, Optional<Duration> duration) {
 
@@ -48,10 +66,10 @@ public class TravelShareService {
         Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(host.getId(), travelId);
 
         Optional<TravelShareInfo> alreadyShared = travel
-                .getTravelShareInfos()
-                .stream()
-                .filter(info -> info.getGuest().getEmail().equals(guest.getEmail()))
-                .findFirst();
+            .getTravelShareInfos()
+            .stream()
+            .filter(info -> info.getGuest().getEmail().equals(guest.getEmail()))
+            .findFirst();
 
         // 이미 초대된 멤버일 경우 기존 초대를 반환하고 조용히 넘어간다.
         if (alreadyShared.isPresent()) {
@@ -61,6 +79,43 @@ public class TravelShareService {
         return travel.shareForMember(duration, guest);
     }
 
+    /**
+     * 특정 여행의 모든 공유 조회
+     *
+     * @param travelId
+     */
+    @Transactional
+    public TravelShareDto.GetShareOfTravelResponse getAllShareOfTravel(Traveler traveler,
+                                                                       Long travelId) {
+        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), travelId);
+        if (travel == null) {
+            throw new CustomException(
+                HttpStatus.NOT_FOUND,
+                "failed to retrieve shares of travel: can not find travel"
+            );
+        }
+
+        List<TravelShareInfo> infos = travel.getTravelShareInfos();
+
+        List<TravelShareDto.GetShareOfTravelItem> items = infos
+            .stream().map(
+                info -> new TravelShareDto.GetShareOfTravelItem(
+                    info.getGuest().getEmail(),
+                    info.getGuest().getNickname(),
+                    info.getShareCode()
+                )
+            )
+            .toList();
+
+        return new TravelShareDto.GetShareOfTravelResponse(items);
+    }
+
+    /**
+     * 자신이 공유 받은 모든 여행 조회
+     *
+     * @param guest
+     * @return
+     */
     @Transactional
     public List<Travel> getAllInvitedSharedTravel(Traveler guest) {
         return travelShareRepository
@@ -69,6 +124,12 @@ public class TravelShareService {
             .toList();
     }
 
+    /**
+     * 공유 코드로 여행 조회
+     *
+     * @param shareCode
+     * @return
+     */
     @Transactional
     public TravelDto.Response getPublicSharedTravel(String shareCode) {
         Optional<TravelShareInfo> shareInfo = travelShareRepository.findByShareCode(shareCode);
@@ -89,6 +150,12 @@ public class TravelShareService {
         return new TravelDto.Response(shareInfo.get().getTravel());
     }
 
+    /**
+     * 공유 코드로 자신의 여행 공유 취소
+     *
+     * @param host
+     * @param travelShareCode
+     */
     @Transactional
     public void deleteTravelShare(Traveler host, String travelShareCode) {
         Optional<TravelShareInfo> shareInfo = travelShareRepository.findByShareCode(travelShareCode);

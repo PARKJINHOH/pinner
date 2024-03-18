@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useEffect, useState } from "react";
 
 // api
-import { HTTPStatus, useAPIv1 } from "apis/apiv1";
+import { useAPIv1 } from "apis/apiv1";
 
 // css
+import CloseIcon from "@mui/icons-material/Close";
 import style from "./ShareModal.module.css";
 
 // component
-import { errorAlert } from "components/alert/AlertComponent";
 
 // mui
+import { Table } from "@mui/joy";
 import {
-  Modal,
-  Button,
-  Stack,
   Box,
+  Button,
+  Modal,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-  TextField,
-  IconButton,
-  Divider,
-  CircularProgress,
-  MenuItem,
 } from "@mui/material";
-import { Select } from "@mui/joy";
 import { wrapShareCodeWithHostname } from "common/share";
+
+/**
+ * @typedef {object} GetShareOfTravelResponse
+ * @property {object[]} guests
+ * @property {string} guests.email
+ * @property {string} guests.nickname
+ * @property {string} guests.shareCode
+ */
 
 export default function ShareModal({ travelId, isOpen, setIsOpen }) {
   const apiv1 = useAPIv1();
@@ -32,27 +39,39 @@ export default function ShareModal({ travelId, isOpen, setIsOpen }) {
   const [duration, setDuration] = useState(null);
   const [guestEmail, setGuestEmail] = useState("");
   const [shareCode, setShareCode] = useState(null);
-  const [sharedMemberList, setSharedMemberList] = useState([]);
+  const [sharedMemberList, setSharedMemberList] = useState(/** @type {GetShareOfTravelResponse[]} */ []);
 
   useEffect(() => {
     // Get shared member list
-    // apiv1.get("/travel/shared/");
+    apiv1.get(`/travel/${travelId}/share`).then(
+      //
+      (response) => {
+        console.log(response.data);
+
+        setSharedMemberList(response.data.guests);
+      }
+    );
   }, []);
 
   async function onCreateMemberShare(travelId, guestEmail, duration) {
     try {
-      const response = await apiv1.post(`/travel/share`, {
+      await apiv1.post(`/travel/share`, {
         shareType: "MEMBER",
         travelId,
-        guestEmail, 
+        guestEmail,
       });
 
       alert(`${guestEmail}을 초대했습니다.`);
       setIsOpen(false);
-        
     } catch (error) {
       alert(error.message);
     }
+  }
+
+  async function onCancelShare(shareCode) {
+    await apiv1.delete(`/travel/share/${shareCode}`);
+    apiv1.get(`/travel/${travelId}/share`).then((response) => setSharedMemberList(response.data.guests));
+    alert("공유를 취소했습니다.");
   }
 
   async function onCreatePublicShare(travelId, duration) {
@@ -75,6 +94,32 @@ export default function ShareModal({ travelId, isOpen, setIsOpen }) {
           </Typography>
 
           {/* 공유된 목록 - 맴버*/}
+          {
+            <div>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 300 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">이메일</TableCell>
+                      <TableCell align="center">닉네임</TableCell>
+                      <TableCell align="center">공유 취소</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sharedMemberList.map((member) => (
+                      <TableRow key={member.shareCode} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableCell align="center">{member.guestEmail}</TableCell>
+                        <TableCell align="center">{member.guestNickname}</TableCell>
+                        <TableCell align="center">
+                          <CloseIcon onClick={() => onCancelShare(member.shareCode)}></CloseIcon>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          }
           {/* 공유된 목록 - 공개*/}
 
           {/* 공유하기 - 맴버 */}
@@ -92,8 +137,7 @@ export default function ShareModal({ travelId, isOpen, setIsOpen }) {
           }
 
           {/* 공유하기 - 공개 */}
-          {
-            false && 
+          {false &&
             // 공유 코드가 발급되면 복사 화면을 보여줌
             (shareCode === null ? (
               <div>
@@ -121,8 +165,7 @@ export default function ShareModal({ travelId, isOpen, setIsOpen }) {
                   복사
                 </Button>
               </div>
-            ))
-          }
+            ))}
         </Box>
       </Modal>
     </div>

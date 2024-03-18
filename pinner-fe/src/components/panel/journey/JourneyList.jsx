@@ -160,7 +160,7 @@ export default function JourneyList({ travel }) {
             {/* 툴셋, 오른정렬, 공유 받은게 아닐 경우에만 보여줌 */}
             {travel.sharedInfo ? (
               <p>{`${travel.sharedInfo.hostNickname}이(가) 공유`}</p>
-            ): (
+            ) : (
               <div className={style.journeys_tool_right}>
                 <Tooltip title="공유" variant="outlined" size="lg">
                   <Share
@@ -243,7 +243,9 @@ export default function JourneyList({ travel }) {
       }
 
       {/* 공유 모달 */}
-      <ShareModal travelId={travel.id} isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen}></ShareModal>
+      {isShareModalOpen && (
+        <ShareModal travelId={travel.id} isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen}></ShareModal>
+      )}
     </>
   );
 }

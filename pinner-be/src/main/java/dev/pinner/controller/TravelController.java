@@ -86,10 +86,11 @@ public class TravelController {
      * 여행 공유한 사용자들 조회
      */
     @GetMapping("/{travelId}/share")
-    public ResponseEntity<?> getMemberShared(@PathVariable String travelId) {
+    public ResponseEntity<?> getMemberShared(@AuthenticationPrincipal Traveler traveler,
+                                             @PathVariable Long travelId) {
 
-        TravelDto.Response sharedTravel = travelShareService.getPublicSharedTravel(travelId);
-        return ResponseEntity.ok(sharedTravel);
+        TravelShareDto.GetShareOfTravelResponse shares = travelShareService.getAllShareOfTravel(traveler, travelId);
+        return ResponseEntity.ok(shares);
     }
 
 
@@ -98,7 +99,7 @@ public class TravelController {
      */
     @PostMapping("/share")
     public ResponseEntity<?> createTravelShare(@AuthenticationPrincipal Traveler traveler,
-                                               @RequestBody @Valid TravelShareDto.Request shareReq) {
+                                               @RequestBody @Valid TravelShareDto.CreateRequest shareReq) {
 
         Optional<Duration> duration = shareReq
             .getDurationInSec()
@@ -116,21 +117,21 @@ public class TravelController {
     /**
      * 여행 공개 공유 조회
      */
-    @GetMapping("/share/{travelShareId}")
-    public ResponseEntity<?> getTravelShare(@PathVariable String travelShareId) {
+    @GetMapping("/share/{travelShareCode}")
+    public ResponseEntity<?> getTravelShare(@PathVariable String travelShareCode) {
 
-        TravelDto.Response sharedTravel = travelShareService.getPublicSharedTravel(travelShareId);
+        TravelDto.Response sharedTravel = travelShareService.getPublicSharedTravel(travelShareCode);
         return ResponseEntity.ok(sharedTravel);
     }
 
     /**
      * 여행 공유 삭제
      */
-    @DeleteMapping("/share/{travelShareId}")
+    @DeleteMapping("/share/{travelShareCode}")
     public ResponseEntity<?> deleteTravelShare(@AuthenticationPrincipal Traveler traveler,
-                                               @PathVariable String travelShareId) {
+                                               @PathVariable String travelShareCode) {
 
-        travelShareService.deleteTravelShare(traveler, travelShareId);
+        travelShareService.deleteTravelShare(traveler, travelShareCode);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
