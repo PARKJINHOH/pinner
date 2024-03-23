@@ -54,6 +54,11 @@ export default function ShareModal({ travelId, isOpen, setIsOpen }) {
   }, []);
 
   async function onCreateMemberShare(travelId, guestEmail, duration) {
+    if (guestEmail === window.sessionStorage.getItem("email")) {
+      alert("본인은 초대할 수 없습니다.");
+      return;
+    }
+
     try {
       await apiv1.post(`/travel/share`, {
         shareType: "MEMBER",
