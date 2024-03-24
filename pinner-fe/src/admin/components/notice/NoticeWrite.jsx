@@ -85,6 +85,34 @@ export default function NoticeWrite() {
             });
     }
 
+    function uploadPlugin(editor) {
+        editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+            return customUploadAdapter(loader);
+        };
+    }
+
+    // Todo : 이미지 업로드 기능 추가
+    const customUploadAdapter = (loader) => {
+        return {
+            upload() {
+                return new Promise((resolve, reject) => {
+                    const formData = new FormData();
+                    loader.file.then((file) => {
+                        formData.append("file", file);
+
+                        apiv1.post("/file/upload", formData)
+                            .then((res) => {
+                                resolve({
+                                    default: res.data.data.uri,
+                                });
+                            })
+                            .catch((err) => reject(err));
+                    });
+                });
+            },
+        };
+    };
+
     return (
         <Box sx={{width: '100%'}}>
             <Paper className={style.titlePaper}>
@@ -101,6 +129,7 @@ export default function NoticeWrite() {
                         data={content}
                         config={{
                             placeholder: "내용을 입력하세요.",
+                            extraPlugins: [uploadPlugin]
                         }}
                         onReady={(editor) => {
                             // console.log( 'Editor is ready to use!', editor );
