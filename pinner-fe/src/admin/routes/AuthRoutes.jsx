@@ -12,7 +12,6 @@ import NoticeWrite from "admin/components/notice/NoticeWrite";
 import Users from "admin/components/users/Users";
 import MainApp from "components/panel/travel/MainApp";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
-import NoticeView from "../components/notice/NoticeView";
 
 export default function AuthRoutes() {
 
@@ -54,7 +53,7 @@ export default function AuthRoutes() {
                 },
                 {
                     path: "/admin/notice/:idx",
-                    element: <NoticeView/>,
+                    element: <NoticeWrite/>,
                 },
                 {
                     path: "/admin/notice/write",
@@ -66,7 +65,7 @@ export default function AuthRoutes() {
                 },
                 {
                     path: "/admin/users",
-                    element: <Users/>,
+                    element: <Users/>
                 },
             ],
         },

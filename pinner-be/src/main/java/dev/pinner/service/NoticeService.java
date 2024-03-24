@@ -35,8 +35,13 @@ public class NoticeService {
     /**
      * 수정
      */
-    public boolean modifyNotice() {
-        return false;
+    public boolean modifyNotice(Long noticeId, NoticeDto.Request noticeDto) {
+        noticeRepository.findById(noticeId).ifPresent(notice -> {
+            notice.update(noticeDto);
+            noticeRepository.save(notice);
+        });
+
+        return true;
     }
 
     /**

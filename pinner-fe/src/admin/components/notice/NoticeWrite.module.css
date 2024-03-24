@@ -25,7 +25,10 @@
 
 .controlArea {
     display: flex;
-    width: 150px;
     float: right;
     justify-content: space-between;
+}
+
+.cancelBtn{
+    margin-right: 5px !important;
 }

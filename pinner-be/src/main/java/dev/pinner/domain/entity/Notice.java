@@ -1,5 +1,6 @@
 package dev.pinner.domain.entity;
 
+import dev.pinner.domain.dto.NoticeDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,5 +47,11 @@ public class Notice extends AuditEntity {
         this.title = title;
         this.content = content;
         this.writer = writer;
+    }
+
+    public void update(NoticeDto.Request noticeDto) {
+        this.title = noticeDto.getTitle();
+        this.content = noticeDto.getContent();
+        this.writer = noticeDto.getWriter();
     }
 }

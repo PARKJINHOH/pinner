@@ -43,4 +43,13 @@ public class NoticeController {
         return ResponseEntity.ok().body(response);
     }
 
+    /**
+     * 공지사항 수정
+     */
+    @PatchMapping("/{noticeId}")
+    public ResponseEntity<?> editNotice(@PathVariable Long noticeId, @RequestBody NoticeDto.Request request) {
+        boolean response = noticeService.modifyNotice(noticeId, request);
+        return ResponseEntity.ok().body(response);
+    }
+
 }
