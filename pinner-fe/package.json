@@ -33,6 +33,7 @@
     "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.9",
     "exif-js": "^2.3.0",
+    "html-react-parser": "^5.1.9",
     "http-proxy-middleware": "^2.0.6",
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
