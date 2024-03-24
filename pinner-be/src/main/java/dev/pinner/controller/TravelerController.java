@@ -1,7 +1,7 @@
 package dev.pinner.controller;
 
 import dev.pinner.domain.dto.TravelerDto;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.service.TravelerService;
 import dev.pinner.service.oauth.OAuthAfterLoginService;
 import lombok.RequiredArgsConstructor;
@@ -54,12 +54,12 @@ public class TravelerController {
     public ResponseEntity<?> afterOauth(@PathVariable String jwtTicket) {
         Long travelerId = afterLoginService.get(jwtTicket);
         if (travelerId == null) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to longin via OAuth: afteroauth entry(%s) are does not exists or expired".formatted(jwtTicket));
         }
 
         TravelerDto.Response getResult = travelerService.doLoginBySocial(travelerId);
         if (getResult == null) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to login via OAuth: no user found who has id(%d)".formatted(travelerId));
         }
 
         return ResponseEntity.ok().body(getResult);
@@ -109,7 +109,7 @@ public class TravelerController {
         boolean isSuccess = travelerService.deleteTraveler(travelerDto);
 
         if(!isSuccess){
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "탈퇴에 실패했습니다. 관리자에게 문의하세요");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "탈퇴에 실패했습니다. 관리자에게 문의하세요");
         }
 
         return ResponseEntity.ok().body("정상적으로 탈퇴되었습니다.");
@@ -122,7 +122,7 @@ public class TravelerController {
     public ResponseEntity<?> deleteOauthTraveler(@RequestBody TravelerDto.Request travelerDto) {
         boolean isSuccess = travelerService.deleteTraveler(travelerDto);
         if(!isSuccess){
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "탈퇴에 실패했습니다. 관리자에게 문의하세요");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "탈퇴에 실패했습니다. 관리자에게 문의하세요");
         }
 
         return ResponseEntity.ok().body("정상적으로 소셜로그인 탈퇴되었습니다.");

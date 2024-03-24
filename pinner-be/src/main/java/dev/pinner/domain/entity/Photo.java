@@ -1,6 +1,6 @@
 package dev.pinner.domain.entity;
 
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -80,7 +80,7 @@ public class Photo extends AuditEntity {
             String absolutePath = new File("").getAbsolutePath() + File.separator;
             File fileToDelete = new File(absolutePath + fullPath);
             if (!fileToDelete.delete()) {
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "사진 삭제 진행중 문제가 발생했습니다.");
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "사진 삭제 진행중 문제가 발생했습니다.");
             }
         }
     }

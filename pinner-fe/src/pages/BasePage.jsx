@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from 'apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // component
 import LoginModal from 'components/modals/LoginModal.jsx';

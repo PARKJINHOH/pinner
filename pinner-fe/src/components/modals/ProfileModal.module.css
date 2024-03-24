@@ -13,7 +13,7 @@
     display: flex;
     gap: 100px;
 }
-.title{
+.titlePaper{
     flex-direction: column;
 }
 .myProfile {

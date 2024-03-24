@@ -1,7 +1,9 @@
 package dev.pinner;
 
+import dev.pinner.domain.entity.Admin;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.enums.RoleEnum;
+import dev.pinner.repository.AdminRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +28,12 @@ public class TestIdDataLoader implements ApplicationRunner {
     private String imagePath;
 
     private final TravelerRepository travelerRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public TestIdDataLoader(TravelerRepository travelerRepository, PasswordEncoder passwordEncoder) {
+    public TestIdDataLoader(TravelerRepository travelerRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.travelerRepository = travelerRepository;
+        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,15 +43,42 @@ public class TestIdDataLoader implements ApplicationRunner {
             // Test 계정 생성
             Traveler testId = Traveler.builder()
                     .email("test@naver.com")
-                    .nickname("test")
+                    .nickname("테스트계정")
                     .password(passwordEncoder.encode("test"))
                     .roleEnum(RoleEnum.USER)
-                    .signupServices("Web")
+                    .signupServices("web")
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
 
             if (travelerRepository.findByEmail(testId.getEmail()).isEmpty()) {
                 travelerRepository.save(testId);
+            }
+
+            Traveler testId2 = Traveler.builder()
+                    .email("test2@naver.com")
+                    .nickname("테스트계정2")
+                    .password(passwordEncoder.encode("test"))
+                    .roleEnum(RoleEnum.USER)
+                    .signupServices("web")
+                    .state(false)
+                    .lastLoginIpAddress("127.0.0.1")
+                    .build();
+
+            if (travelerRepository.findByEmail(testId2.getEmail()).isEmpty()) {
+                travelerRepository.save(testId2);
+            }
+
+            // Test Admin 계정 생성
+            Admin testAdminId = Admin.builder()
+                    .email("admin@naver.com")
+                    .adminName("테스트관리자")
+                    .password(passwordEncoder.encode("admin"))
+                    .roleEnum(RoleEnum.ADMIN)
+                    .lastLoginIpAddress("127.0.0.1")
+                    .build();
+
+            if (adminRepository.findByEmail(testAdminId.getEmail()).isEmpty()) {
+                adminRepository.save(testAdminId);
             }
 
             // 기존 이미지 폴더 삭제

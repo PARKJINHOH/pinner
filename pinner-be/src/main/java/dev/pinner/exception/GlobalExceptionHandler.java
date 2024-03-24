@@ -13,13 +13,23 @@ import java.io.IOException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // @RestControllerAdvice는 Spring Dispatcher 이후에 발생하는 예외만 처리.(Filter, Interceptor는 처리 안함)
 
     /**
-     * CustomException
+     * BusinessException
      */
-    @ExceptionHandler({CustomException.class})
-    public ResponseEntity<Object> handleException(CustomException ex) {
-        log.error("CustomException ===> ", ex);
+    @ExceptionHandler({BusinessException.class})
+    public ResponseEntity<Object> handleException(BusinessException ex) {
+        log.error("BusinessException ===> ", ex);
+        return new ResponseEntity<>(new ErrorRecord(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
+    }
+
+    /**
+     * SystemException
+     */
+    @ExceptionHandler({SystemException.class})
+    public ResponseEntity<Object> handleException(SystemException ex) {
+        log.error("SystemException ===> ", ex.getEx());
         return new ResponseEntity<>(new ErrorRecord(ex.getHttpStatus().value(), ex.getMessage()), ex.getHttpStatus());
     }
 

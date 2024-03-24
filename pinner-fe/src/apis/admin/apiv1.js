@@ -1,8 +1,8 @@
 import axios from "axios";
-import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import { travelerState, useDoLogout } from "states/traveler";
-import {clearTraveler, loadTraveler} from "states/webstore";
-import { renewalToken } from "./auth";
+import {useSetRecoilState} from "recoil";
+import {adminState} from "states/admin";
+import {clearAdmin, loadAdmin} from "states/adminWebstore";
+import {renewalToken} from "apis/admin/auth";
 
 
 // Generated file. Do not edit
@@ -79,35 +79,43 @@ export const rawAxiosInstance = axios.create({
 // 모든 요청에 액세스 토큰을 포함하도록 구성
 rawAxiosInstance.interceptors.request.use(
     (config) => {
-        const traveler = loadTraveler();
-        if (traveler) {
-            config.headers["Authorization"] = `Bearer ${traveler.accessToken}`;
+        const admin = loadAdmin();
+        if (admin) {
+            config.headers["Authorization"] = `Bearer ${admin.accessToken}`;
         }
         return config;
     },
     (error) => {
-        console.error({ "request-interceptors-error": error.response.data.message });
+        console.error({"request-interceptors-error": error.response.data.message});
         return Promise.reject(error);
     }
 );
 
 export const useAPIv1 = function () {
-    const setTraveler = useSetRecoilState(travelerState);
+    const setAdmin = useSetRecoilState(adminState);
 
     // 토큰 갱신 후 재시도 하는 함수
     async function handleTokenExpired(config) {
         try {
             const res = await renewalToken();
-            const { accessToken, refreshToken } = res.data;
+            const {accessToken, refreshToken} = res.data;
             window.sessionStorage.setItem("accessToken", accessToken);
             window.sessionStorage.setItem("refreshToken", refreshToken);
 
             return rawAxiosInstance.request(config);
         } catch (error) {
-            setTraveler(null);
-            clearTraveler();
+            setAdmin(null);
+            clearAdmin();
             alert(error.response.data.message);
         }
+    }
+
+    // 접근 권한이 없는 403 Error 사용.
+    function forbiddenError() {
+        setAdmin(null);
+        clearAdmin();
+        alert("접근 권한이 없습니다. 다시 로그인해주세요.");
+        window.location.reload();
     }
 
     return {
@@ -147,6 +155,8 @@ export const useAPIv1 = function () {
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
+                } else if (error.response.data.status === 9998) {
+                    forbiddenError();
                 }
                 throw error.response.data;
             }
@@ -157,6 +167,8 @@ export const useAPIv1 = function () {
             } catch (error) {
                 if (error.response.status === HTTPStatus.UNAUTHORIZED && error.response.data.status === 9999) {
                     return await handleTokenExpired(error.config);
+                } else if (error.response.data.status === 9998) {
+                    forbiddenError();
                 }
                 throw error.response.data;
             }

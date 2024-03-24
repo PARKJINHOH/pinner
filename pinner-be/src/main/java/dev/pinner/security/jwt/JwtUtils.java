@@ -1,6 +1,5 @@
 package dev.pinner.security.jwt;
 
-import dev.pinner.domain.entity.Traveler;
 import dev.pinner.global.enums.JwtCodeEnum;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,20 +18,23 @@ public class JwtUtils {
     @Value("${token.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Traveler traveler) {
-        return generateTokenFromUsername(traveler.getUsername());
-    }
+    /**
+     * JWT Token 생성
+     */
+    public String generateToken(String email) {
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // Header의 Type 지정
+                .setIssuer("pinner") // Token 발급자
+                .setIssuedAt(new Date()) // 발급 시간
+                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs)) // 만료 시간
+                .setSubject(email); // Token 제목(대상)
 
-    public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+        return jwtBuilder
+                .signWith(SignatureAlgorithm.HS256, jwtSecret) // 해싱 알고리즘 및 시크릿 키
                 .compact();
     }
 
-    public String getUserNameFromJwtToken(String token) {
+    public String getEmailFromJwtToken(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)

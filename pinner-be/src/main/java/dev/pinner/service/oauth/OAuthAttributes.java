@@ -1,7 +1,7 @@
 package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.global.enums.RoleEnum;
 import lombok.Builder;
@@ -37,7 +37,7 @@ public class OAuthAttributes {
             return ofGoogle(userNameAttributeName, attributes);
         }
 
-        throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + socialType + "] 허용되지 않은 OauthService입니다.");
+        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + socialType + "] 허용되지 않은 OauthService입니다.");
     }
 
     public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {

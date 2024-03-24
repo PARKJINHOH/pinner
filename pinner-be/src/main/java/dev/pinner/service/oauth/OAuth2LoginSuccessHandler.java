@@ -1,6 +1,6 @@
 package dev.pinner.service.oauth;
 
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .build(true);
 
             response.sendRedirect(build.toUriString());
-        } catch (Exception e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "OAuth2 Login에 실패했습니다.");
+        } catch (Exception ex) {
+            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "OAuth2 Login에 실패했습니다.", ex);
         }
     }
 }

@@ -5,8 +5,8 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {HTTPStatus, useAPIv1} from "apis/apiv1";
-import {clearTraveler} from "states/webstore";
+import {HTTPStatus, useAPIv1} from "apis/traveler/apiv1";
+import {clearTraveler} from "states/travelerWebstore";
 import {travelerState, useDoLogin} from "states/traveler";
 import {errorAlert, infoAlert} from "components/alert/AlertComponent";
 import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
@@ -187,7 +187,7 @@ export default function ProfileModal() {
                 }}
             >
                 {
-                    signupServices === 'Web' ?
+                    signupServices === 'web' ?
                         /* 홈페이지 가입자 */
                         <Box className={style.profile_box}>
 
