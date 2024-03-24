@@ -14,6 +14,7 @@ import MainApp from "components/panel/travel/MainApp";
 import ErrorPage from "components/error/ErrorPage";
 import ErrorPageAdmin from "admin/components/error/ErrorPageAdmin";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
+import PublicShared from "pages/PublicSharedPage";
 
 export default function AuthRoutes() {
 
@@ -29,6 +30,10 @@ export default function AuthRoutes() {
         {
             path: "/afteroauth",
             element: <AfterOAuthHandler/>,
+        },
+        {
+            path: "/shared/:shareCode",
+            element: <PublicShared />,
         },
     ];
 

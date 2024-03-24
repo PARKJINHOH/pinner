@@ -10,7 +10,7 @@ import style from './JourneyView.module.css';
 // component
 import { NewJourneyStep, newJourneyStepState, newLocationState } from "states/modal";
 import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
-import { travelState } from "states/travel";
+import { selectedTravelState, travelState } from "states/travel";
 import LightBoxPill from "components/panel/journey/LightBoxPill.jsx";
 
 // mui
@@ -42,7 +42,7 @@ import iso3166_1 from "apis/iso3166_1.json";
  * Journey 보기 및 수정
  * @param travel
  */
-export default function JourneyView({ travelId, journey, viewCancel }) {
+export default function JourneyView({ readOnly, travelId, journey, viewCancel }) {
     const apiv1 = useAPIv1();
     const inputRef = useRef(null);
 
@@ -52,6 +52,8 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
         DELETE: 'DELETE',
     }
     const [editMode, setEditMode] = useState(EditMode.DEFAULT);
+
+    const selectedTravel = useRecoilValue(selectedTravelState);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -435,26 +437,28 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
                                 </Tooltip>
                             </div>
                             :
-                            <div className={style.view_tool}>
-                                <IconButton
-                                    className={style.arrow_icon_btn}
-                                    onClick={() => {
-                                        viewCancel();
-                                    }}
-                                >
-                                    <ArrowBackIosOutlinedIcon
-                                        sx={{ fontSize: '30px' }}
-                                    />
-                                </IconButton>
-                                <Tooltip title="여정 수정" variant="outlined" size="lg">
-                                    <EditIcon
-                                        className={style.edit_icon}
+                            // 공유 받은 트레블이 아닐 경우에만 수정 가능
+                            !selectedTravel.sharedInfo &&
+                                <div className={style.view_tool}>
+                                    <IconButton
+                                        className={style.arrow_icon_btn}
                                         onClick={() => {
-                                            setEditMode(EditMode.EDIT);
+                                            viewCancel();
                                         }}
-                                    />
-                                </Tooltip>
-                            </div>
+                                    >
+                                        <ArrowBackIosOutlinedIcon
+                                            sx={{ fontSize: '30px' }}
+                                        />
+                                    </IconButton>
+                                    <Tooltip title="여정 수정" variant="outlined" size="lg">
+                                        <EditIcon
+                                            className={style.edit_icon}
+                                            onClick={() => {
+                                                setEditMode(EditMode.EDIT);
+                                            }}
+                                        />
+                                    </Tooltip>
+                                </div>
                     }
                 </Box>
 

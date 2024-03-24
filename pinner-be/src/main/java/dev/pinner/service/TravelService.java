@@ -1,9 +1,11 @@
 package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelDto;
+import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.TravelRepository;
+import dev.pinner.repository.TravelShareRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,13 +25,26 @@ public class TravelService {
 
     private final TravelRepository travelRepository;
     private final TravelerRepository travelerRepository;
+    private final TravelShareRepository travelShareRepository;
 
     public List<TravelDto.Response> getTravel(Traveler traveler) {
         travelRepository.flush(); // 없을 경우 insert된 여정이 2번 들어감
-        return travelRepository.findByTravelerIdOrderByOrderKeyAsc(traveler.getId())
-                .stream()
-                .map(TravelDto.Response::new)
-                .collect(Collectors.toList());
+
+        List<TravelDto.Response> travels = new ArrayList<>();
+
+        // 내가 소유한 트레블 검색
+        travels.addAll(travelRepository.findByTravelerIdOrderByOrderKeyAsc(traveler.getId())
+            .stream()
+            .map(TravelDto.Response::new)
+            .toList());
+
+        // 공유 받은 트레블 검색
+        travels.addAll(travelShareRepository.findAllInvitedTravelInfos(traveler.getId())
+            .stream()
+            .map(TravelDto.Response::new)
+            .toList());
+
+        return travels;
     }
 
     private Traveler getTraveler(Long travelerId) {
