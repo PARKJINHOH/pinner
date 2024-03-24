@@ -11,6 +11,8 @@ import NoticeWrite from "admin/components/notice/NoticeWrite";
 
 import Users from "admin/components/users/Users";
 import MainApp from "components/panel/travel/MainApp";
+import ErrorPage from "components/error/ErrorPage";
+import ErrorPageAdmin from "admin/components/error/ErrorPageAdmin";
 import AfterOAuthHandler from "pages/AfterOAuthHandler";
 
 export default function AuthRoutes() {
@@ -22,6 +24,7 @@ export default function AuthRoutes() {
         {
             path: "/",
             element: <MainApp/>,
+            errorElement: <ErrorPage />, // 전역 Error Page
         },
         {
             path: "/afteroauth",
@@ -43,6 +46,10 @@ export default function AuthRoutes() {
             path: "/admin",
             element: <ProtectedRoute/>,
             children: [
+                {
+                    path: "*",
+                    element: <ErrorPageAdmin/>,
+                },
                 {
                     path: "/admin",
                     element: <Dashboard/>,
