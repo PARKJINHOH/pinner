@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {HTTPStatus, useAPIv1} from "apis/admin/apiv1";
 import {Navigate, useNavigate} from "react-router-dom";
+import {Link as ReactRouterLink} from 'react-router-dom';
+import Link from '@mui/material/Link';
 
 // component
 
@@ -71,7 +73,7 @@ export default function Notice() {
                                 noticeList.map((notice, index) => (
                                     <TableRow key={index}>
                                         <TableCell component="th" scope="row">{notice.id}</TableCell>
-                                        <TableCell align="left">{notice.title}</TableCell>
+                                        <TableCell align="left"><Link component={ReactRouterLink} to={`/admin/notice/${notice.id}`}>{notice.title}</Link></TableCell>
                                         <TableCell align="left">{notice.viewCount}</TableCell>
                                         <TableCell align="left">{notice.startDate}</TableCell>
                                         <TableCell align="left">{notice.endDate}</TableCell>

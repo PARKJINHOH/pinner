@@ -78,8 +78,8 @@ export default function NoticeWrite() {
 
             </Paper>
             <div className={style.controlArea}>
-                <Button className={style.cancelBtn} onClick={() => navigate('/admin/notice', {replace: true})}>취소</Button>
-                <Button className={style.writeBtn} onClick={onSubmit}>글쓰기</Button>
+                <Button onClick={() => navigate('/admin/notice', {replace: true})}>취소</Button>
+                <Button onClick={onSubmit}>글쓰기</Button>
             </div>
 
         </Box>

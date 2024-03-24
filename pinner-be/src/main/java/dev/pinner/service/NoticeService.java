@@ -1,6 +1,8 @@
 package dev.pinner.service;
 
 import dev.pinner.domain.dto.NoticeDto;
+import dev.pinner.domain.entity.Notice;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -62,7 +67,13 @@ public class NoticeService {
     /**
      * 상세 조회
      */
-    public boolean getNoticeDetail() {
-        return false;
+    public NoticeDto.Response getNoticeDetail(Long noticeId) {
+        Optional<Notice> byId = noticeRepository.findById(noticeId);
+        if (byId.isPresent()) {
+            Notice notice = byId.get();
+            return new NoticeDto.Response(notice);
+        } else {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "공지사항이 존재하지 않습니다.");
+        }
     }
 }
