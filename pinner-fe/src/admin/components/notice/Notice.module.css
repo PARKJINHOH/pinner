@@ -1,0 +1,21 @@
+.search{
+    height: 220px;
+    margin-bottom: 10px;
+}
+
+.noticeList{
+    height: 500px;
+    margin: 10px auto;
+}
+
+.notice{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border: black 1px solid;
+}
+
+.writeMoveBtn{
+    float: right
+}

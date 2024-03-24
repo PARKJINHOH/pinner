@@ -1,27 +1,22 @@
 import React from 'react';
 
-// css
-import './style/globals.css';
-
 // component
-import BasePage from './pages/BasePage';
-import Sidebar from "./components/panel/sidebar/Sidebar";
+import 'pages/BasePage';
+import MainApp from "components/panel/travel/MainApp";
 
 // mui
-import { Box, CssBaseline } from "@mui/material";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import AfterOAuthHandler from "./pages/AfterOAuthHandler";
+import AuthProvider from "./admin/provider/AuthProvider";
+import AuthRoutes from "./admin/routes/AuthRoutes";
 
-function App() {
+export default function App() {
+
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <Sidebar />
-            <Box
-                sx={{ flexGrow: 1 }}
-            >
-                <BasePage />
-            </Box>
-        </Box>
+        <>
+            <AuthProvider>
+                <AuthRoutes/>
+            </AuthProvider>
+        </>
     );
 }
-
-export default App;

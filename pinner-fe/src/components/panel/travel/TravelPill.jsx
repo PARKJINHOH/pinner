@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './TravelPill.module.css';
 
 // component
-import { representPhotoIdOfTravel } from '../../../common/travelutils';
-import { googleMapState } from '../../../states/map';
-import { newJourneyStepState } from '../../../states/modal';
-import { selectedTravelIdState, travelState } from '../../../states/travel';
-import { centerOfPoints } from '../../../utils';
-import JourneyList from "../journey/JourneyList";
-import RepresentImage from '../RepresentImage';
+import { representPhotoIdOfTravel } from 'common/travelutils';
+import { googleMapState } from 'states/map';
+import { newJourneyStepState } from 'states/modal';
+import { selectedTravelIdState, travelState } from 'states/travel';
+import { centerOfPoints } from 'utils';
+import JourneyList from "components/panel/journey/JourneyList";
+import RepresentImage from 'components/panel/RepresentImage';
 
 // mui
 import { Box, Chip, IconButton, Typography } from '@mui/material';
@@ -101,10 +101,7 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
 
                 await apiv1.patch("/travel/" + travel.id, titleJson)
                     .then((response) => {
-                        if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data);
-
-                        }
+                        setTravels(response.data);
                     });
             }
             setIsRenaming(false);
@@ -126,12 +123,10 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
         if (window.confirm(`"${travel.title}" 여행을 정말 삭제하실건가요?`)) {
             await apiv1.delete(`/travel/${travel.id}`)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        if (response.data.length === 0) {
-                            setEditMode('');
-                        }
-                        setTravels(response.data);
+                    if (response.data.length === 0) {
+                        setEditMode('');
                     }
+                    setTravels(response.data);
                 });
         }
     }

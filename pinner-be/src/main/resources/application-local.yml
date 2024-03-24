@@ -11,10 +11,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-      # 개발(validate , none) 운영 : none
-  #    properties:
-  #      hibernate.format_sql: true
-  #    show-sql: true
 
   security:
     oauth2:
@@ -29,6 +25,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
@@ -38,10 +35,8 @@ spring:
 
 logging:
   level:
-    #    org.hibernate.SQL: debug
-    #    org.hibernate.type: trace
-    org.springframework.web: TRACE
-    org.springframework.security: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
 
 path:
   image: images

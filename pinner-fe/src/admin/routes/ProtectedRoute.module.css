@@ -1,0 +1,11 @@
+.sidebar{
+    display: flex;
+}
+
+.container {
+    flex: 4;
+    padding: 20px;
+    margin-right: 20px;
+    border-radius: 12px 12px;
+    background-color: #f2f6f8;
+}

@@ -2,16 +2,16 @@ import React, {useState} from 'react';
 import {useSetRecoilState} from "recoil";
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1'
+import {HTTPStatus, useAPIv1} from 'apis/traveler/apiv1'
 
 // css
 import style from './JourneyPill.module.css';
 
 // component
-import {travelState} from "../../../states/travel";
-import {representPhotoIdOfJourney} from '../../../common/travelutils';
-import RepresentImage from '../RepresentImage';
-import JourneyView from "./JourneyView";
+import {travelState} from 'states/travel';
+import {representPhotoIdOfJourney} from 'common/travelutils';
+import RepresentImage from 'components/panel/RepresentImage';
+import JourneyView from 'components/panel/journey/JourneyView';
 
 // mui
 import {Box, Chip, Typography, IconButton} from "@mui/material";
@@ -50,10 +50,8 @@ export default function JourneyPill({travelId, editMode, setEditMode, journey}) 
         if(window.confirm(`"${journey.geoLocationDto.name}" 여정을 정말 삭제하실건가요?`)){
             await apiv1.delete(`/journey/${journey.id}`)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setEditMode('');
-                        setTravels(response.data);
-                    }
+                    setEditMode('');
+                    setTravels(response.data);
                 });
         }
     }

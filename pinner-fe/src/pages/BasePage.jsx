@@ -2,18 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../apis/apiv1';
-
-// css
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // component
-import LoginModal from '../components/modals/LoginModal';
-import RegisterModal from '../components/modals/RegisterModal';
-import ProfileModal from "../components/modals/ProfileModal";
+import LoginModal from 'components/modals/LoginModal.jsx';
+import RegisterModal from 'components/modals/RegisterModal';
+import ProfileModal from "components/modals/ProfileModal";
+import FindPasswordModal from "components/modals/FindPasswordModal";
+import FindNicknameModal from "components/modals/FindNicknameModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
-import { googleMapState } from '../states/map';
-import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from '../states/modal';
-import { selectedTravelBoundsState, selectedTravelState } from '../states/travel';
+import { googleMapState } from 'states/map';
+import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
+import { selectedTravelBoundsState, selectedTravelState } from 'states/travel';
 
 // etc
 import "@yaireo/tagify/dist/tagify.css";
@@ -204,6 +204,8 @@ export default function BasePage() {
             {modalVisibility === AuthModalVisibility.SHOW_REGISTER && <RegisterModal />}
             {modalVisibility === AuthModalVisibility.SHOW_LOGIN && <LoginModal />}
             {modalVisibility === AuthModalVisibility.SHOW_PROFILE && <ProfileModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_FINDPW && <FindPasswordModal />}
+            {modalVisibility === AuthModalVisibility.SHOW_FINDNICKNAME && <FindNicknameModal />}
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
@@ -234,27 +236,20 @@ export default function BasePage() {
                             name: "",
                         };
 
-                        console.log(e.latLng.toString());
-
                         // Locating 모드일 때만 역 지오코딩 API 요청
                         if (newJourneyStep === NewJourneyStep.LOCATING) {
-                            const resp = await apiv1.get(
+                            await apiv1.get(
                                 '/geocoding',
-                                { params: { lat: loc.lat, lng: loc.lng, reverse: true } }
-                            );
-                            console.log(resp);
-
-
-                            if (resp.status === HTTPStatus.NOT_FOUND || resp.status === HTTPStatus.INTERNAL_SERVER_ERROR) {
+                                {params: {lat: loc.lat, lng: loc.lng, reverse: true}}
+                            ).then(response => {
+                                loc.name = response.data.name;
+                                loc.countryCd = response.data.countryCd;
+                                setNewLocationState(loc);
+                                setNewJourneyStep(NewJourneyStep.EDITTING);
+                            }).catch(error => {
                                 toast.error("지정한 장소의 이름을 가져 올 수 없어요. 직접 입력해 주세요.")
                                 setNewJourneyStep(NewJourneyStep.EDITTING);
-                            } else {
-                                loc.name = resp.data.name;
-                                loc.countryCd = resp.data.countryCd;
-                            }
-
-                            setNewLocationState(loc);
-                            setNewJourneyStep(NewJourneyStep.EDITTING);
+                            });
                         }
                     }}
                 >
@@ -448,5 +443,5 @@ function PhotoMarker(props) {
 
 function InfoWindowImage(img) {
     // TODO: fix style
-    return <img src={`/photo/${img}`} alt={img} width={100} />;
+    return <img src={img.src} alt={img} width={100} />;
 }

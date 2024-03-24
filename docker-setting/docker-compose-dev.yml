@@ -12,21 +12,21 @@ services:
       - DB_ID=
       - DB_PW=
       - GOOGLE_API_KEY=
+      - NAVER_CLIENT_ID=
+      - NAVER_CLIENT_SECRET=
+      - GOOGLE_CLIENT_ID=
+      - GOOGLE_CLIENT_SECRET=
+      - GMAIL_ID=
+      - GMAIL_PW=
       - SPRING_PROFILES_ACTIVE=dev
       - TZ=Asia/Seoul
 
   frontend-dev:
     image: adg0609/pinner-fe-dev:latest
     container_name: frontend-dev
-    expose:
-      - 80
+    ports:
+      - "80:80"
     environment:
-      - VIRTUAL_HOST=dev.pinner.dev
       - TZ=Asia/Seoul
     depends_on:
       - backend-dev
-
-networks:
-  default:
-    external:
-      name: webproxy

@@ -5,10 +5,10 @@ import { useRecoilState } from 'recoil';
 import style from './LoginModal.module.css';
 
 // component
-import { useDoLogin } from '../../states/traveler';
-import {errorAlert} from "../alert/AlertComponent";
-import { postLogin } from '../../apis/auth';
-import { AuthModalVisibility, authModalVisibilityState } from '../../states/modal';
+import { useDoLogin } from 'states/traveler';
+import {errorAlert} from "components/alert/AlertComponent";
+import { postLogin } from 'apis/traveler/auth';
+import { AuthModalVisibility, authModalVisibilityState } from 'states/modal';
 
 // mui
 import {Box, Modal, Stack, TextField, Typography, Button, IconButton} from "@mui/material";
@@ -52,7 +52,7 @@ export default function LoginModal() {
 
         postLogin(data)
             .then((response) => {
-                const payload = response.data.data.payload;
+                const payload = response.data;
 
                 doLogin({
                     email: payload.email,
@@ -70,6 +70,14 @@ export default function LoginModal() {
             });
     };
 
+    function findPw(){
+        setModalVisibility(AuthModalVisibility.SHOW_FINDPW);
+    }
+
+    function findNickname(){
+        setModalVisibility(AuthModalVisibility.SHOW_FINDNICKNAME);
+    }
+
     return (
         <div>
             <Modal
@@ -81,7 +89,7 @@ export default function LoginModal() {
                         Pinner에 오신것을 환영합니다.
                     </Typography>
                     <Divider sx={{marginBottom: 2}}>아이디 로그인</Divider>
-                    <Stack spacing={2} sx={{marginBottom: 7}}>
+                    <Stack spacing={2} sx={{marginBottom: 5}}>
                         <TextField label="이메일" variant="outlined"
                                    value={email} onChange={onEmailHandler} type="email" placeholder="Email" />
                         <TextField label="비밀번호" variant="outlined"
@@ -91,12 +99,16 @@ export default function LoginModal() {
                                            onSubmit();
                                        }
                                    }}/>
-                        {
-                            errorMessage && errorAlert(errorMessage)
-                        }
                         <Button onClick={onSubmit} variant="contained" type="button" sx={{ backgroundColor: '#33a4ff'}}>
                             로그인
                         </Button>
+                        <div style={{display: 'flex', marginLeft: 'auto', marginRight: 'auto'}}>
+                            <Button onClick={findNickname}>닉네임 찾기</Button>
+                            <Button onClick={findPw}>비밀번호 찾기</Button>
+                        </div>
+                        {
+                            errorMessage && errorAlert(errorMessage)
+                        }
                     </Stack>
                     <Divider sx={{marginBottom: 2}}>소셜 계정으로 간편 로그인</Divider>
                     <Stack spacing={2} direction="row" justifyContent="center">

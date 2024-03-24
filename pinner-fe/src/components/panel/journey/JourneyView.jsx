@@ -2,16 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './JourneyView.module.css';
 
 // component
-import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { travelState } from "../../../states/travel";
-import LightBoxPill from "./LightBoxPill";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { selectedTravelState, travelState } from "states/travel";
+import LightBoxPill from "components/panel/journey/LightBoxPill.jsx";
 
 // mui
 import { Input, Tooltip } from "@mui/joy";
@@ -36,13 +36,13 @@ import Tags from "@yaireo/tagify/dist/react.tagify";
 import dayjs from "dayjs";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import iso3166_1 from "../../../apis/iso3166_1.json";
+import iso3166_1 from "apis/iso3166_1.json";
 
 /**
  * Journey 보기 및 수정
  * @param travel
  */
-export default function JourneyView({ travelId, journey, viewCancel }) {
+export default function JourneyView({ readOnly, travelId, journey, viewCancel }) {
     const apiv1 = useAPIv1();
     const inputRef = useRef(null);
 
@@ -52,6 +52,8 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
         DELETE: 'DELETE',
     }
     const [editMode, setEditMode] = useState(EditMode.DEFAULT);
+
+    const selectedTravel = useRecoilValue(selectedTravelState);
 
     // Panel Width
     const _sidebarWidth = useRecoilValue(sidebarWidth);
@@ -69,7 +71,9 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
 
     const [saving, setSaving] = useState(false);
 
-    const [countries, setCountries] = useState(iso3166_1);
+    // const [countries, setCountries] = useState(iso3166_1);
+    const countries = iso3166_1;
+
 
     const [lightBoxOpen, setLightBoxOpen] = useState(false);
     const [lightBoxPhotos, setLightBoxPhotos] = useState([]);
@@ -86,11 +90,10 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
             setCountryKrNm(hasCountry.country_nm);
         }
 
-        journey.photos.map((photo) => {
+        journey.photos.map(async (photo) => {
             const imageUrl = photo.src;
-
             // 이미지 URL을 Blob 객체로 가져오기
-            fetch(imageUrl)
+            await fetch(imageUrl)
                 .then((response) => response.blob())
                 .then((blob) => {
                     // const objectUrl = URL.createObjectURL(blob);
@@ -157,14 +160,11 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
 
             await apiv1.put(`/journey/${journey.id}`, formData)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setTravels(response.data);
-                        viewCancel();
-                    }
+                    setTravels(response.data);
+                    viewCancel();
                 });
 
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 수정하지 못했습니다.');
         } finally {
             setSaving(false);
@@ -437,26 +437,28 @@ export default function JourneyView({ travelId, journey, viewCancel }) {
                                 </Tooltip>
                             </div>
                             :
-                            <div className={style.view_tool}>
-                                <IconButton
-                                    className={style.arrow_icon_btn}
-                                    onClick={() => {
-                                        viewCancel();
-                                    }}
-                                >
-                                    <ArrowBackIosOutlinedIcon
-                                        sx={{ fontSize: '30px' }}
-                                    />
-                                </IconButton>
-                                <Tooltip title="여정 수정" variant="outlined" size="lg">
-                                    <EditIcon
-                                        className={style.edit_icon}
+                            // 공유 받은 트레블이 아닐 경우에만 수정 가능
+                            !selectedTravel.sharedInfo &&
+                                <div className={style.view_tool}>
+                                    <IconButton
+                                        className={style.arrow_icon_btn}
                                         onClick={() => {
-                                            setEditMode(EditMode.EDIT);
+                                            viewCancel();
                                         }}
-                                    />
-                                </Tooltip>
-                            </div>
+                                    >
+                                        <ArrowBackIosOutlinedIcon
+                                            sx={{ fontSize: '30px' }}
+                                        />
+                                    </IconButton>
+                                    <Tooltip title="여정 수정" variant="outlined" size="lg">
+                                        <EditIcon
+                                            className={style.edit_icon}
+                                            onClick={() => {
+                                                setEditMode(EditMode.EDIT);
+                                            }}
+                                        />
+                                    </Tooltip>
+                                </div>
                     }
                 </Box>
 

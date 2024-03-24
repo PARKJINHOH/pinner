@@ -1,11 +1,14 @@
 package dev.pinner.global.utils;
 
+import dev.pinner.exception.BusinessException;
+import org.springframework.http.HttpStatus;
+
 import java.security.SecureRandom;
 
 public class RandomHexStringGenerator {
     public String generate(int numBytes) {
         if (numBytes <= 0) {
-            throw new IllegalArgumentException("Number of bytes must be positive");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "Number of bytes must be positive");
         }
 
         SecureRandom random = new SecureRandom();

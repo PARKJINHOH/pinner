@@ -24,6 +24,9 @@ public class PhotoController {
 
     private final PhotoService photoService;
 
+    /**
+     * 사진 불러오기
+     */
     @GetMapping(value = "/photo/{fileName}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getPhoto(@PathVariable String fileName) throws IOException {
         String pullPath = photoService.findPhotoByFileName(fileName);
@@ -33,7 +36,7 @@ public class PhotoController {
         byte[] imageByteArray = Files.readAllBytes(imagePath);
 
         return ResponseEntity.ok()
-            .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
-            .body(imageByteArray);
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic())
+                .body(imageByteArray);
     }
 }

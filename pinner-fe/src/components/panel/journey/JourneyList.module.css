@@ -18,8 +18,13 @@
 .journeys_tool {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: 60px;
     padding: 5px 10px 5px 0;
+}
+
+.journeys_tool_right {
+    display: flex;
     gap: 20px;
 }
 

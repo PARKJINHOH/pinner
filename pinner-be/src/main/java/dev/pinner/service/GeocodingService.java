@@ -2,10 +2,12 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.GeoLocationDto;
 import dev.pinner.domain.dto.GeocodingApiDto;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.global.enums.GeocodingStatusEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -192,7 +194,7 @@ public class GeocodingService {
 
             default:
                 log.error("역지오코딩 API를 사용 할 수 없습니다: {}, {}", response.getStatus(), response.getErrorMessage());
-                throw new RuntimeException("역지오코딩 API를 사용 할 수 없습니다");
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "역지오코딩 API를 사용 할 수 없습니다");
         }
     }
 

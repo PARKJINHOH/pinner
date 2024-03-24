@@ -5,11 +5,11 @@ import {useRecoilState} from 'recoil';
 import style from './ProfileModal.module.css';
 
 // component
-import {HTTPStatus, useAPIv1} from "../../apis/apiv1";
-import {clearTraveler} from "../../states/webstore";
-import {travelerState, useDoLogin} from "../../states/traveler";
-import {errorAlert, infoAlert} from "../alert/AlertComponent";
-import {AuthModalVisibility, authModalVisibilityState} from '../../states/modal';
+import {HTTPStatus, useAPIv1} from "apis/traveler/apiv1";
+import {clearTraveler} from "states/travelerWebstore";
+import {travelerState, useDoLogin} from "states/traveler";
+import {errorAlert, infoAlert} from "components/alert/AlertComponent";
+import {AuthModalVisibility, authModalVisibilityState} from 'states/modal';
 
 // mui
 import {Modal, Box, Typography, TextField} from "@mui/material";
@@ -80,11 +80,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 탈퇴하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
                 .then(response => {
-                    alert(response.data.message);
+                    alert(response.data);
                     return response.status;
                 })
                 .catch(error => {
-                    alert(error.data.message);
+                    alert(error.message);
                     return error.status;
                 });
 
@@ -100,11 +100,11 @@ export default function ProfileModal() {
         if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
             let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
                 .then(response => {
-                    alert(response.data.message);
+                    alert(response.data);
                     return response.status;
                 })
                 .catch(error => {
-                    alert(error.data.message);
+                    alert(error.message);
                     return error.status;
                 });
 
@@ -132,21 +132,18 @@ export default function ProfileModal() {
             password: oldPassword,
         });
 
-        const newVar = await apiv1.post("/traveler/password/check", nowPasswordData)
+        let pwResult = await apiv1.post("/traveler/password/check", nowPasswordData)
             .then(response => {
-                return response.status;
+                setErrorMessage('');
+                return true;
             })
             .catch(error => {
-                if (error.response.status === HTTPStatus.UNAUTHORIZED) {
-                    return error.response.status;
-                }
+                setErrorMessage(error.message);
+                return false;
             });
 
-        if (newVar !== HTTPStatus.OK) {
-            setErrorMessage('현재 비밀번호가 일치하지 않습니다.');
+        if (!pwResult) {
             return;
-        } else {
-            setErrorMessage('');
         }
 
         const data = {
@@ -163,16 +160,16 @@ export default function ProfileModal() {
 
         await apiv1.put('/traveler', newData)
             .then(response => {
-                console.log(response);
                 toast.info('수정에 성공했습니다.');
                 setModalVisibility(AuthModalVisibility.HIDE_ALL);
                 setErrorMessage("");
 
                 doLogin({
-                    email: response.data.data.payload.email,
-                    nickname: response.data.data.payload.nickname,
-                    accessToken: response.data.data.payload.accessToken,
-                    refreshToken: response.data.data.payload.refreshToken,
+                    email: response.data.email,
+                    nickname: response.data.nickname,
+                    accessToken: response.data.accessToken,
+                    refreshToken: response.data.refreshToken,
+                    signupServices: response.data.signupServices,
                 });
             })
             .catch(error => {
@@ -190,7 +187,7 @@ export default function ProfileModal() {
                 }}
             >
                 {
-                    signupServices === 'Web' ?
+                    signupServices === 'web' ?
                         /* 홈페이지 가입자 */
                         <Box className={style.profile_box}>
 

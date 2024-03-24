@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -22,45 +21,36 @@ public class JourneyController {
 
     private final JourneyService journeyService;
 
+    /**
+     * 여정 추가
+     */
     @PostMapping()
-    public ResponseEntity<?> postJourney(@AuthenticationPrincipal Traveler traveler,
-                                         @RequestPart("newJourney") JourneyDto.Request newJourney,
-                                         @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
-        try {
-            log.info("traveler : {}, postJourney", traveler.getNickname());
-            List<TravelDto.Response> travels = journeyService.addJourney(traveler, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body("생성에 실패했습니다.");
-        }
+    public ResponseEntity<?> createJourney(@AuthenticationPrincipal Traveler traveler,
+                                           @RequestPart("newJourney") JourneyDto.Request newJourney,
+                                           @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
+        List<TravelDto.Response> travels = journeyService.addJourney(traveler, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 
+    /**
+     * 여정 삭제
+     */
     @DeleteMapping("/{journeyId}")
     public ResponseEntity<?> deleteJourney(@AuthenticationPrincipal Traveler traveler,
                                            @PathVariable Long journeyId) {
-        try {
-            log.info("traveler : {}, deleteJourney : {}", traveler.getNickname(), journeyId);
-            List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body("삭제에 실패했습니다.");
-        }
+        List<TravelDto.Response> travels = journeyService.deleteJourney(traveler, journeyId);
+        return ResponseEntity.ok(travels);
     }
 
+    /**
+     * 여정 수정
+     */
     @PutMapping("/{journeyId}")
-    public ResponseEntity<?> pathJourney(@AuthenticationPrincipal Traveler traveler,
-                                         @PathVariable Long journeyId,
-                                         @RequestPart("newJourney") JourneyDto.Request newJourney,
-                                         @RequestPart(value = "photo", required = false) List<MultipartFile> photos) throws IOException {
-        try {
-            log.info("traveler : {}, pathJourney : {}", traveler.getNickname(), journeyId);
-            List<TravelDto.Response> travels = journeyService.putJourney(traveler, journeyId, newJourney, photos);
-            return ResponseEntity.ok(travels);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body("수정에 실패했습니다.");
-        }
+    public ResponseEntity<?> updateJourney(@AuthenticationPrincipal Traveler traveler,
+                                           @PathVariable Long journeyId,
+                                           @RequestPart("newJourney") JourneyDto.Request newJourney,
+                                           @RequestPart(value = "photo", required = false) List<MultipartFile> photos) {
+        List<TravelDto.Response> travels = journeyService.updateJourney(traveler, journeyId, newJourney, photos);
+        return ResponseEntity.ok(travels);
     }
 }

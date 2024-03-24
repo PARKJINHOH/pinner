@@ -1,9 +1,12 @@
 package dev.pinner.domain.entity;
 
+import dev.pinner.exception.BusinessException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.springframework.http.HttpStatus;
 
 import javax.persistence.*;
 import java.io.File;
@@ -12,30 +15,38 @@ import java.io.File;
 @Getter
 @Table(name = "PHOTO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Photo {
+public class Photo extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Comment("사진이름(암호화)")
     @Column(nullable = false)
     private String fileName;
 
+    @Comment("사진이름(실제)")
     @Column(nullable = false)
     private String originFileName;
 
+    @Comment("사진 경로")
     @Column(nullable = false)
     private String fullPath;
 
+    @Comment("사진 URI")
     @Column(nullable = false)
     private String src;
 
+    @Comment("사진 사이즈(kb)")
     private Long fileSize;
 
+    @Comment("사진 가로 길이")
     private int width;
 
+    @Comment("사진 세로 길이")
     private int height;
 
+    @Comment("여정")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOURNEY_ID")
     private Journey journey;
@@ -66,17 +77,10 @@ public class Photo {
 
     public void deleteImageFile() {
         if (fullPath != null) {
-            try {
-                String absolutePath = new File("").getAbsolutePath() + File.separator;
-                File fileToDelete = new File(absolutePath + fullPath);
-                if (fileToDelete.delete()) {
-                    System.out.println("Image file deleted successfully: " + absolutePath + fullPath);
-                } else {
-                    System.out.println("Failed to delete image file: " + absolutePath + fullPath);
-                }
-            } catch (Exception e) {
-                System.out.println("Error deleting image file");
-                e.printStackTrace();
+            String absolutePath = new File("").getAbsolutePath() + File.separator;
+            File fileToDelete = new File(absolutePath + fullPath);
+            if (!fileToDelete.delete()) {
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "사진 삭제 진행중 문제가 발생했습니다.");
             }
         }
     }

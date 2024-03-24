@@ -5,9 +5,26 @@ spring:
     multipart:
       max-file-size: 10MB # 개별 이미지에 최대 용량 제한
       max-request-size: 110MB # 요청에 대한 최대 용량 제한
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_ID} # GOOGLE EMAIL
+    password: ${GMAIL_PW} # 위 계정으로 SMTP 발급 받은 CODE
+    properties:
+      mail:
+        smtp:
+          auth: true # 사용자 인증 시도 여부
+          starttls:
+            enable: true #StartTLS 활성화 여부
 token:
   app:
-    jwtSecret: travelSecretKey
+    jwtSecret: ${JWT_SECRET_KEY}
     jwtExpirationMs: 3600000  # Access Token (3600000 = 1시간)
     jwtRefreshExpirationMs: 604800000 # Refresh Token (604800000 = 7일)
 google-api-key: ${GOOGLE_API_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

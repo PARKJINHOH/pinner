@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum OauthServiceCodeEnum {
-    GOOGLE("Google"),
-    NAVER("Naver");
+    GOOGLE("google"),
+    NAVER("naver");
 
     private final String signupServices;
 }

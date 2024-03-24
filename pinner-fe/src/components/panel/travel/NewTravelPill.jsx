@@ -2,13 +2,13 @@ import { useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 // api
-import {HTTPStatus, useAPIv1} from '../../../apis/apiv1';
+import {HTTPStatus, useAPIv1} from 'apis/traveler/apiv1';
 
 // css
 import style from './NewTravelPill.module.css';
 
 // component
-import { travelState } from '../../../states/travel';
+import { travelState } from 'states/travel';
 
 // mui
 import { AspectRatio } from "@mui/joy";
@@ -69,9 +69,7 @@ export default function NewTravelPill({ onCancel }) {
             if (isEnter || isMouseClick) {
                 await apiv1.post("/travel", JSON.stringify({ title: title.trim() }))
                     .then((response) => {
-                        if (response.status === HTTPStatus.OK) {
-                            setTravels(response.data);
-                        }
+                        setTravels(response.data);
                     });
             }
             onCancel();

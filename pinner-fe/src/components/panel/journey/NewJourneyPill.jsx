@@ -3,15 +3,15 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 // api
 import iso3166_1 from 'apis/iso3166_1.json';
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './NewJourneyPill.module.css';
 
 // component
-import { NewJourneyStep, newJourneyStepState, newLocationState } from "../../../states/modal";
-import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { travelState } from "../../../states/travel";
+import { NewJourneyStep, newJourneyStepState, newLocationState } from "states/modal";
+import { journeyListViewWidth, sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { travelState } from "states/travel";
 import { extractExifDataFromFile } from 'utils';
 
 // mui
@@ -67,7 +67,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
     const [saving, setSaving] = useState(false);
 
-    const [countries, setCountries] = useState(iso3166_1);
+    const countries = iso3166_1;
 
     const removePhoto = (idx) => _setPhotos([...photos.slice(0, idx), ...photos.slice(idx + 1, photos.length)]);
 
@@ -127,13 +127,10 @@ export default function NewJourneyPill({ travel, editingCancel }) {
 
             await apiv1.post(`/journey`, formData)
                 .then((response) => {
-                    if (response.status === HTTPStatus.OK) {
-                        setTravels(response.data);
-                        editingCancel();
-                    }
+                    setTravels(response.data);
+                    editingCancel();
                 });
         } catch (error) {
-            console.error('error : ', error);
             toast.error('여정을 저장하지 못했습니다.');
         } finally {
             setSaving(false);
@@ -172,6 +169,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 return;
             }
 
+            // 사진의 경도,위도를 저장한다.
             for (const newPhoto of newPhotos) {
                 const data = await extractExifDataFromFile(newPhoto);
                 if (data) {
@@ -182,22 +180,18 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                     // 위치 설정
                     let loc = { ...newLocation, ...data };
 
-                    const resp = await apiv1.get(
+                    await apiv1.get(
                         '/geocoding',
-                        { params: { lat: data.lat, lng: data.lng, reverse: true } }
-                    )
-
-                    if (resp.status === 200) {
-                        loc.name = resp.data.name;
-                        loc.countryCd = resp.data.countryCd;
-                    }
-
-                    setNewLocation(loc);
-                    break;
+                        {params: {lat: data.lat, lng: data.lng, reverse: true}}
+                    ).then(response => {
+                        loc.name = response.data.name;
+                        loc.countryCd = response.data.countryCd;
+                        setNewLocation(loc);
+                    });
                 }
             }
 
-
+            // 사진 파일 압축
             try {
                 /** @type {File[]} */
                 let compressedPhotos = [];
@@ -209,7 +203,7 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                 const combinedPhotos = [...photos, ...compressedPhotos];
                 _setPhotos(combinedPhotos);
             } catch (error) {
-                console.log(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
+                console.warn(`이미지 리사이징 실패, 원본 사진을 사용합니다: ${error}`);
                 const combinedPhotos = [...photos, ...newPhotos];
                 _setPhotos(combinedPhotos);
             }
@@ -409,7 +403,6 @@ export default function NewJourneyPill({ travel, editingCancel }) {
                         photos.length > 0 ?
                             <ImageList variant="masonry" cols={2} gap={8}>
                                 {photos.map((photo, index) => {
-                                    console.log(photo);
                                     const tmpPhotoUrl = URL.createObjectURL(photo);
                                     return (
                                         <ImageListItem key={index}>

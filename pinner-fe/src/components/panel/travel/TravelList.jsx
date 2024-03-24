@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 // api
-import { HTTPStatus, useAPIv1 } from '../../../apis/apiv1';
+import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // css
 import style from './TravelList.module.css';
 
 // component
-import { sidebarWidth, travelListViewWidth } from "../../../states/panel/panelWidth";
-import { selectedTravelIdState, travelState } from '../../../states/travel';
-import { isLoggedInState, travelerState } from '../../../states/traveler';
-import NewTravelPill from './NewTravelPill';
-import TravelPill from './TravelPill';
+import { sidebarWidth, travelListViewWidth } from "states/panel/panelWidth";
+import { selectedTravelIdState, travelState } from 'states/travel';
+import { isLoggedInState, travelerState } from 'states/traveler';
+import NewTravelPill from 'components/panel/travel/NewTravelPill';
+import TravelPill from 'components/panel/travel/TravelPill';
 
 // mui
 import { Divider } from "@mantine/core";
@@ -62,12 +62,10 @@ export default function TravelList() {
         }
 
         apiv1.get("/travel")
-            .then(resp => {
-                console.log(resp.data);
-                setTravelData(resp.data);
+            .then(response => {
+                setTravelData(response.data);
             })
             .catch(error => {
-                console.error(`can not load data: ${error}`);
                 setTravelData([]);
             });
     }, [traveler]);
@@ -86,12 +84,9 @@ export default function TravelList() {
         const newTravelData = workValue.map((t, i) => ({ ...t, "orderKey": i }));
         setTravelData(newTravelData);
 
-        // PUT /api/v1/travel/orderKey
         apiv1.put("/travel/orderKey", newTravelData)
             .then((response) => {
-                if (!response.status === HTTPStatus.OK) {
-                    setTravelData(response.data);
-                }
+                setTravelData(response.data);
             });
 
     }

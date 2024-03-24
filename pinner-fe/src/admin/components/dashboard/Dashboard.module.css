@@ -1,0 +1,79 @@
+:root {
+    --summary_1_height: 130px;
+    --summary_2_height: 45px;
+}
+
+.container_top {
+    display: flex;
+    height: 160px;
+    justify-content: space-between;
+}
+
+.container_top_left {
+    display: flex;
+    width: 65%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.container_top_right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 35%;
+}
+
+.container_middle {
+    margin-top: 20px;
+    background-color: #ffffff;
+    height: calc(100vh - 302px);
+    border-radius: 15px;
+}
+
+.summary_traveler {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.summary_traveler > * {
+    width: 100%;
+}
+
+.summary_traveler > :first-child {
+    flex: 0 0 40%;
+}
+
+.summary_traveler > :nth-child(2) {
+    flex: 0 0 40%;
+}
+
+.summary_traveler > :last-child {
+    flex: 0 0 20%;
+}
+
+.summary_1 {
+    height: var(--summary_1_height);
+    margin-right: 20px;
+    width: 100%;
+    background-color: #5d2a77;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.summary_2 {
+    height: var(--summary_2_height);
+    background-color: #1e88e5;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.container_charts_container {
+    height: 90% !important;
+}
+
+.problem_cnt {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
