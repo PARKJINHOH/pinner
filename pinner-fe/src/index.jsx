@@ -1,23 +1,13 @@
-import AfterOAuthHandler from 'pages/AfterOAuthHandler';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
-import App from 'App';
+import {RecoilRoot} from 'recoil';
+import "./index.css";
 
-const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <App />,
-    },
-    {
-      path: "/afteroauth",
-      element: <AfterOAuthHandler />,
-    },
-  ]);
+// component
+import App from 'App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <RecoilRoot>
-    <RouterProvider router={router} />
-  </RecoilRoot>
+    <RecoilRoot>
+        <App />
+    </RecoilRoot>
 );

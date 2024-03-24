@@ -3,7 +3,7 @@ package dev.pinner.service;
 import dev.pinner.domain.dto.EmailSMTPDto;
 import dev.pinner.domain.entity.EmailSMTP;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.global.enums.EmailSmtpEnum;
 import dev.pinner.repository.EmailSmtpRepository;
 import dev.pinner.repository.TravelerRepository;
@@ -51,7 +51,7 @@ public class EmailService {
         if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.EMAIL_CERTIFIED.getType())){
             // 회원가입 - 이메일 인증
             if (travelerRepository.findByEmail(emailSmtpDto.getEmail()).isPresent()) {
-                throw new CustomException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
+                throw new BusinessException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
             }
 
             context.setVariable("emailTitle", "이메일 인증 코드");
@@ -64,16 +64,16 @@ public class EmailService {
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
 
             if (getTraveler.isEmpty()) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
+                throw new BusinessException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
             if (!getTraveler.get().getNickname().equals(emailSmtpDto.getNickname())) {
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
             }
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
             if (!isChangePassword) {
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
             }
 
             context.setVariable("emailTitle", "임시 비밀번호");
@@ -85,7 +85,7 @@ public class EmailService {
             // 닉네임 찾기 - 닉네임
             Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
             if (getTraveler.isEmpty()) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
+                throw new BusinessException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
 
             context.setVariable("emailTitle", emailSmtpDto.getEmail() + "님의 닉네임입니다.");
@@ -131,7 +131,7 @@ public class EmailService {
             // 현재 시간과 비교하여 3분이 지났는지 체크
             LocalDateTime currentTime = LocalDateTime.now();
             if (createdDate.isBefore(currentTime.minusMinutes(3))) {
-                throw new CustomException(HttpStatus.GONE, "이메일 인증시간이 만료되었습니다.");
+                throw new BusinessException(HttpStatus.GONE, "이메일 인증시간이 만료되었습니다.");
             }
         }
 

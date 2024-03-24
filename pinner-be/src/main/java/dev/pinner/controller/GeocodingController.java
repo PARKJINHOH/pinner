@@ -1,7 +1,7 @@
 package dev.pinner.controller;
 
 import dev.pinner.domain.dto.GeoLocationDto;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.service.GeocodingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +38,12 @@ public class GeocodingController {
             @RequestParam("reverse") boolean reverse
     ) throws IOException, InterruptedException {
         if (!reverse) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "this api only accept reverse geocoding");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "this api only accept reverse geocoding");
         }
 
         GeoLocationDto.Response geoResponse = geocodingService.reverseGeocoding(lat, lng);
         if (geoResponse == null) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Google Map APi Error");
+            throw new BusinessException(HttpStatus.NOT_FOUND, "Google Map APi Error");
         }
 
         return ResponseEntity.ok(geoResponse);

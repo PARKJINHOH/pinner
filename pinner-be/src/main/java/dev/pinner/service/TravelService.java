@@ -2,7 +2,7 @@ package dev.pinner.service;
 
 import dev.pinner.domain.dto.TravelDto;
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class TravelService {
     private Traveler getTraveler(Long travelerId) {
         Optional<Traveler> traveler = travelerRepository.findById(travelerId);
         if (traveler.isEmpty()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
+            throw new BusinessException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
         }
         return traveler.get();
     }

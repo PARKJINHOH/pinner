@@ -1,0 +1,93 @@
+.topbar {
+    height: 50px;
+    padding: 16px;
+
+    top: 0;
+    z-index: 999;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbarWrapper {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topLeft{
+    display: flex;
+    align-items: center;
+}
+
+.logo_group {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.logo_img {
+    max-width: 30px;
+    max-height: 30px;
+    margin-right: 5px;
+}
+
+.logo_font {
+    color: black;
+}
+
+.topRight {
+    display: flex;
+    align-items: center;
+}
+
+.topbarIconContainer {
+    margin-right: 20px !important;
+    color: #5e35b1 !important;
+    background-color: #ede7f6 !important;
+    border-radius: 10px !important;
+}
+
+.topIconBadge {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+
+    background-color: red;
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+    color: white;
+}
+
+
+.topAvatarContainer {
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #E9EDF1;
+    border-radius: 27px;
+}
+
+.topAvatar {
+    height: 35px;
+    width: 35px;
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.settingIcon{
+    color: #2196f3;
+    padding: 3px;
+}

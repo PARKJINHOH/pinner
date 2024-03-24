@@ -2,11 +2,12 @@ package dev.pinner.config;
 
 import dev.pinner.filter.AuthTokenFilter;
 import dev.pinner.security.AuthenticationEntryPointImpl;
+import dev.pinner.security.CustomAccessDeniedHandler;
 import dev.pinner.security.jwt.JwtUtils;
-import dev.pinner.service.oauth.OAuth2LoginSuccessHandler;
+import dev.pinner.service.CustomDetailsServiceImpl;
 import dev.pinner.service.oauth.CustomOAuth2UserService;
 import dev.pinner.service.oauth.OAuth2LoginFailureHandler;
-import dev.pinner.service.UserDetailsServiceImpl;
+import dev.pinner.service.oauth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -27,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomDetailsServiceImpl customDetailsService;
     private final JwtUtils jwtUtils;
     private final AuthenticationEntryPointImpl unauthorizedHandler;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -62,13 +64,17 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 비활성화
 
-        // 권한 부여 규칙 Settings
+        // 권한 부여 규칙 Settings (antMatchers 순서 유의하기)
         http
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-//                .antMatchers("/actuator/**").permitAll() // 모니터링 관련
-                .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console, favicon.ico 요청 인증 무시
-                .anyRequest().authenticated();
+                    .antMatchers("/api/v1/admin/login").permitAll()
+                    .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .antMatchers("/api/v1/travel/**", "/api/v1/journey/**").hasRole("USER")
+                    .antMatchers("/**").permitAll()
+                    .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console, favicon.ico 요청 인증 무시
+                .and()
+                    .exceptionHandling()
+                    .accessDeniedHandler(accessDeniedHandler());
 
         // oAuth Settings
         http
@@ -81,7 +87,10 @@ public class SecurityConfig {
 
         // JWT Filter Setting
         http
-                .addFilterBefore(new AuthTokenFilter(jwtUtils, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new AuthTokenFilter(jwtUtils, customDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers("/api/v1/admin/**").permitAll()
+        ;
 
         return http.build();
         // @formatter:on
@@ -95,5 +104,10 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 }

@@ -1,7 +1,7 @@
 package dev.pinner.service.oauth;
 
 import dev.pinner.domain.entity.Traveler;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (OauthServiceCodeEnum.GOOGLE.getSignupServices().equals(registrationId)) {
             return OauthServiceCodeEnum.GOOGLE.getSignupServices();
         }
-        throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + registrationId + "] 허용되지 않은 OauthService입니다.");
+        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "[" + registrationId + "] 허용되지 않은 OauthService입니다.");
     }
 
     private Traveler getUser(OAuthAttributes attributes, String socialType, OAuth2AccessToken oAuth2AccessToken) {

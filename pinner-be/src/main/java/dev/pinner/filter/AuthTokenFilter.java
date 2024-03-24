@@ -1,8 +1,8 @@
 package dev.pinner.filter;
 
 import dev.pinner.global.enums.JwtCodeEnum;
-import dev.pinner.service.UserDetailsServiceImpl;
 import dev.pinner.security.jwt.JwtUtils;
+import dev.pinner.service.CustomDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -25,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     static final String _MDC_KEY = "user";
 
     private final JwtUtils jwtUtils;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomDetailsServiceImpl customDetailsService;
 
     // Spring Security 흐름
     // https://www.bezkoder.com/spring-boot-login-example-mysql/
@@ -34,21 +34,20 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            log.info("요청을 인증 중");
+            log.info("요청을 인증 중 : {}", request.getRequestURI());
             String jwt = parseJwt(request);
             String key = jwtUtils.validateJwtToken(jwt).getKey();
             String requestURI = request.getRequestURI();
 
             if (jwt != null && key.equals(JwtCodeEnum.ACCESS.getKey())) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-                MDC.put(_MDC_KEY, username);
+                String email = jwtUtils.getEmailFromJwtToken(jwt);
+                MDC.put(_MDC_KEY, email);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = customDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getMessage());

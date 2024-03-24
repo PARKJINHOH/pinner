@@ -1,7 +1,7 @@
 package dev.pinner.controller;
 
 import dev.pinner.domain.dto.EmailSMTPDto;
-import dev.pinner.exception.CustomException;
+import dev.pinner.exception.BusinessException;
 import dev.pinner.global.enums.EmailSmtpEnum;
 import dev.pinner.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class EmailController {
         boolean isEmailSend = emailService.sendMail(request);
 
         if (!isEmailSend) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 인증을 다시 해주세요.");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 인증을 다시 해주세요.");
         }
 
         return ResponseEntity.ok().body("이메일을 확인해주세요.");
@@ -48,7 +48,7 @@ public class EmailController {
         boolean isAuthentication = emailService.emailCheck(request);
 
         if (!isAuthentication) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "이메일 인증에 실패했습니다. 이메일 인증코드를 다시 확인해주세요.");
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "이메일 인증에 실패했습니다. 이메일 인증코드를 다시 확인해주세요.");
         }
 
         return ResponseEntity.ok().body("이메일 인증에 성공했습니다.");
@@ -66,7 +66,7 @@ public class EmailController {
         boolean isEmailSend = emailService.sendMail(request);
 
         if (!isEmailSend) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 인증을 다시 해주세요.");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 인증을 다시 해주세요.");
         }
 
         return ResponseEntity.ok().body("이메일 인증이 완료되었습니다.");
@@ -83,7 +83,7 @@ public class EmailController {
         boolean isEmailSend = emailService.sendMail(request);
 
         if (!isEmailSend) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "닉네임을 다시 찾아주세요.");
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "닉네임을 다시 찾아주세요.");
         }
 
         return ResponseEntity.ok().body("이메일을 확인해주세요.");
