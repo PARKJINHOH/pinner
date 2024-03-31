@@ -1,4 +1,4 @@
-name: Spring & React - docker
+name: pinner-prod - docker
 
 on:
   push:
@@ -94,7 +94,9 @@ jobs:
   backend-docker:
     needs: backend
     runs-on: ubuntu-22.04
-      
+    permissions:
+      contents: read
+      actions: read
     steps:
     - name: docker pull
       uses: appleboy/ssh-action@master
@@ -106,6 +108,15 @@ jobs:
         key: ${{ secrets.SSH_RSA }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}
+    - name: action-slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        author_name: pinner-be-prod
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
 
   frontend:
     needs: changes
@@ -136,6 +147,7 @@ jobs:
       working-directory: ${{ env.working-directory-fe }}
       run: |
         echo "REACT_APP_GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
+        echo "GENERATE_SOURCEMAP=false" >> .env
         pwd
         ls -al .
 
@@ -153,7 +165,9 @@ jobs:
   frontend-docker:
     needs: frontend
     runs-on: ubuntu-22.04
-      
+    permissions:
+      contents: read
+      actions: read
     steps:
     - name: docker pull
       uses: appleboy/ssh-action@master
@@ -165,3 +179,12 @@ jobs:
         key: ${{ secrets.SSH_RSA }}
         script: |
           sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-fe }}
+    - name: action-slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        author_name: pinner-fe0prod
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      if: always() # Pick up events even if the job fails or is canceled.
