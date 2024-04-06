@@ -265,6 +265,6 @@ public class TravelerService {
     }
 
     public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
-        return travelerQueryRepository.getTravelerGroupByYearMonth();
+        return travelerQueryRepository.findTravelerGroupByYearMonth();
     }
 }

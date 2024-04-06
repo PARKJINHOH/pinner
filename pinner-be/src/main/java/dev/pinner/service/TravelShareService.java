@@ -9,6 +9,7 @@ import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelShareRepository;
 import dev.pinner.repository.TravelerRepository;
+import dev.pinner.repository.querydslImpl.TravelQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TravelShareService {
     private final TravelRepository travelRepository;
+    private final TravelQueryRepository travelQueryRepository;
     private final TravelerRepository travelerRepository;
     private final TravelShareRepository travelShareRepository;
 
@@ -37,7 +39,7 @@ public class TravelShareService {
      */
     @Transactional
     public TravelShareInfo createTravelSharePublic(Traveler host, Long travelId, Optional<Duration> duration) {
-        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(host.getId(), travelId);
+        Travel travel = travelQueryRepository.findTravel(host.getId(), travelId);
         return travel.sharePublic(duration);
     }
 
@@ -63,7 +65,7 @@ public class TravelShareService {
 
         Traveler guest = guestOrNull.get();
 
-        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(host.getId(), travelId);
+        Travel travel = travelQueryRepository.findTravel(host.getId(), travelId);
 
         Optional<TravelShareInfo> alreadyShared = travel
             .getTravelShareInfos()
@@ -87,7 +89,7 @@ public class TravelShareService {
     @Transactional
     public TravelShareDto.GetShareOfTravelResponse getAllShareOfTravel(Traveler traveler,
                                                                        Long travelId) {
-        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), travelId);
+        Travel travel = travelQueryRepository.findTravel(traveler.getId(), travelId);
         if (travel == null) {
             throw new BusinessException(
                 HttpStatus.NOT_FOUND,

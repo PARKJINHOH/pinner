@@ -59,6 +59,15 @@ public class Travel extends AuditEntity {
         this.orderKey = orderKey;
     }
 
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateOrderKey(int orderKey) {
+        this.orderKey = orderKey;
+    }
+
     /**
      * 공개 공유
      *

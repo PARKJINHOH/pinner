@@ -8,6 +8,7 @@ import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.repository.JourneyRepository;
 import dev.pinner.repository.TravelRepository;
+import dev.pinner.repository.querydslImpl.TravelQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,14 @@ import java.util.Optional;
 public class JourneyService {
 
     private final TravelRepository travelRepository;
+    private final TravelQueryRepository travelQueryRepository;
     private final JourneyRepository journeyRepository;
     private final PhotoService photoService;
     private final TravelService travelService;
 
     @Transactional
     public List<TravelDto.Response> addJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) {
-        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), newJourney.getTravelId());
+        Travel travel = travelQueryRepository.findTravel(traveler.getId(), newJourney.getTravelId());
 
         Journey newJourneyEntity = newJourney.toEntity();
         newJourneyEntity.setTravel(travel);

@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.pinner.domain.dto.TravelerDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -18,15 +19,12 @@ import java.util.TreeMap;
 import static dev.pinner.domain.entity.QTraveler.traveler;
 
 @Repository
+@RequiredArgsConstructor
 public class TravelerQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public TravelerQueryRepository(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
-
     // 년월 회원추이 조회
-    public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
+    public List<TravelerDto.SummaryResponse> findTravelerGroupByYearMonth() {
 
         LocalDate now = LocalDate.now();
         LocalDateTime startOfDay = now.minusMonths(12).withDayOfMonth(1).atStartOfDay();
@@ -69,11 +67,11 @@ public class TravelerQueryRepository {
     }
 
     private BooleanExpression createdDateGoe(LocalDateTime createdDate) {
-        return createdDate != null ? traveler.createdDate.goe(createdDate) : null; // goe >=
+        return (createdDate == null) ? null : traveler.createdDate.goe(createdDate); // goe >=
     }
 
     private BooleanExpression createdDateLoe(LocalDateTime createdDate) {
-        return createdDate != null ? traveler.createdDate.loe(createdDate) : null; // loe <=
+        return (createdDate == null) ? null : traveler.createdDate.loe(createdDate); // loe <=
     }
 
     private BooleanExpression createdDateBetween(LocalDateTime createdDateLoe, LocalDateTime createdDateGoe) {
