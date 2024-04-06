@@ -45,12 +45,13 @@ public class EmailService {
     public boolean sendMail(EmailSMTPDto.Request emailSmtpDto) throws Exception {
 
         String randomCode = generateRandomCode();
-
         Context context = new Context();
+
+        Optional<Traveler> travelerOpt = travelerRepository.findByEmail(emailSmtpDto.getEmail());
 
         if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.EMAIL_CERTIFIED.getType())){
             // 회원가입 - 이메일 인증
-            if (travelerRepository.findByEmail(emailSmtpDto.getEmail()).isPresent()) {
+            if (travelerOpt.isPresent()) {
                 throw new BusinessException(HttpStatus.CONFLICT, "이미 등록된 이메일 주소입니다. 다른 이메일 주소를 사용해주세요.");
             }
 
@@ -61,20 +62,15 @@ public class EmailService {
             emailSmtpDto.setMessage(htmlContent);
         } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.TEMPORARY_PASSWORD.getType())){
             // 비밀번호 찾기 - 임시 비밀번호
-            Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
-
-            if (getTraveler.isEmpty()) {
+            if (travelerOpt.isEmpty()) {
                 throw new BusinessException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
-            if (!getTraveler.get().getNickname().equals(emailSmtpDto.getNickname())) {
+            if (!travelerOpt.get().getNickname().equals(emailSmtpDto.getNickname())) {
                 throw new BusinessException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
             }
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            boolean isChangePassword = travelerRepository.updateTravelerPasswordByTravelerEmail(emailSmtpDto.getEmail(), encoder.encode(randomCode));
-            if (!isChangePassword) {
-                throw new BusinessException(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자입니다.");
-            }
+            travelerOpt.get().updatePassword(encoder.encode(randomCode));
 
             context.setVariable("emailTitle", "임시 비밀번호");
             context.setVariable("emailCode", randomCode);
@@ -83,13 +79,12 @@ public class EmailService {
             emailSmtpDto.setMessage(htmlContent);
         } else if(emailSmtpDto.getEmailType().equals(EmailSmtpEnum.FIND_NICKNAME.getType())){
             // 닉네임 찾기 - 닉네임
-            Optional<Traveler> getTraveler = travelerRepository.findByEmail(emailSmtpDto.getEmail());
-            if (getTraveler.isEmpty()) {
+            if (travelerOpt.isEmpty()) {
                 throw new BusinessException(HttpStatus.BAD_REQUEST, "등록되지 않은 이메일 입니다.");
             }
 
             context.setVariable("emailTitle", emailSmtpDto.getEmail() + "님의 닉네임입니다.");
-            context.setVariable("emailCode", getTraveler.get().getNickname());
+            context.setVariable("emailCode", travelerOpt.get().getNickname());
             String htmlContent = templateEngine.process("email-auth", context);
 
             emailSmtpDto.setMessage(htmlContent);
@@ -121,11 +116,17 @@ public class EmailService {
         return true;
     }
 
+    /**
+     * 이메일 인증 확인
+     */
     public boolean emailCheck(EmailSMTPDto.Request emailSmtpDto) {
-        Optional<EmailSMTP> getFindCode = emailSmtpRepository.findByCode(emailSmtpDto.getEmailCode());
+        Optional<EmailSMTP> emailOpt = emailSmtpRepository.findByCode(emailSmtpDto.getEmailCode());
+        if(emailOpt.isEmpty()){
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증코드입니다.");
+        }
 
-        if (getFindCode.isPresent()) {
-            EmailSMTP emailSMTP = getFindCode.get();
+        if (emailOpt.isPresent()) {
+            EmailSMTP emailSMTP = emailOpt.get();
             LocalDateTime createdDate = emailSMTP.getCreatedDate();
 
             // 현재 시간과 비교하여 3분이 지났는지 체크
@@ -135,7 +136,7 @@ public class EmailService {
             }
         }
 
-        return getFindCode.map(emailSMTP ->
+        return emailOpt.map(emailSMTP ->
                 emailSMTP.getRecipient().equals(emailSmtpDto.getEmail())).orElse(false);
     }
 

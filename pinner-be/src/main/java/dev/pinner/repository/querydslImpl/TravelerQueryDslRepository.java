@@ -1,12 +1,11 @@
-package dev.pinner.repository.impl;
+package dev.pinner.repository.querydslImpl;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.pinner.domain.dto.TravelerDto;
-import dev.pinner.repository.TravelerRepositoryCustom;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,50 +17,27 @@ import java.util.TreeMap;
 
 import static dev.pinner.domain.entity.QTraveler.traveler;
 
-@Slf4j
-public class TravelerRepositoryImpl implements TravelerRepositoryCustom {
+@Repository
+public class TravelerQueryDslRepository {
     private final JPAQueryFactory queryFactory;
 
-    public TravelerRepositoryImpl(EntityManager entityManager) {
-        this.queryFactory = new JPAQueryFactory(entityManager);
+    public TravelerQueryDslRepository(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
     }
 
-    @Override
-    public boolean updateTravelerStateByTravelerEmail(Long travelerId) {
-        log.info("updateTravelerStateByTravelerEmail");
-
-        long updatedRows = queryFactory
-                .update(traveler)
-                .set(traveler.state, false)
-                .where(traveler.id.eq(travelerId))
-                .execute();
-        return updatedRows == 1;
-    }
-
-    @Override
-    public boolean updateTravelerPasswordByTravelerEmail(String email, String password) {
-        log.info("updateTravelerPasswordByTravelerEmail");
-
-        long updatedRows = queryFactory
-                .update(traveler)
-                .set(traveler.password, password)
-                .where(traveler.email.eq(email))
-                .execute();
-        return updatedRows == 1;
-    }
-
-    @Override
+    // 년월 회원추이 조회
     public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
-        log.info("getTravelerGroupByYearMonth");
 
         LocalDate now = LocalDate.now();
         LocalDateTime startOfDay = now.minusMonths(12).withDayOfMonth(1).atStartOfDay();
         LocalDateTime endOfDay = now.withDayOfMonth(now.lengthOfMonth()).atTime(LocalTime.MAX);
 
         List<Tuple> results = queryFactory
-                .select(traveler.createdDate.yearMonth(), traveler.count())
+                .select(
+                        traveler.createdDate.yearMonth(), traveler.count()
+                )
                 .from(traveler)
-                .where(traveler.createdDate.between(startOfDay, endOfDay))
+                .where(createdDateBetween(startOfDay, endOfDay))
                 .groupBy(traveler.createdDate.yearMonth())
                 .fetch();
 
@@ -75,15 +51,34 @@ public class TravelerRepositoryImpl implements TravelerRepositoryCustom {
         // DB에서 조회한 년월 데이터 세팅
         for (Tuple result : results) {
             Integer monthYearInt = result.get(0, Integer.class);
-            YearMonth monthYear = YearMonth.of(monthYearInt / 100, monthYearInt % 100); // 202101 -> 2021-01
+            YearMonth monthYear = YearMonth.of(monthYearInt / 100, monthYearInt % 100);
             String month = monthYear.format(DateTimeFormatter.ofPattern("yy.MM"));
-            Long count = result.get(1, Long.class);
-            countByMonth.put(month, count);
+            countByMonth.put(month, result.get(1, Long.class));
         }
 
-        return countByMonth.entrySet()
-                .stream()
+        // 누적 회원수 계산
+        Long cumulativeCount = 0L;
+        for (Map.Entry<String, Long> entry : countByMonth.entrySet()) {
+            cumulativeCount += entry.getValue();
+            entry.setValue(cumulativeCount);
+        }
+
+        return countByMonth.entrySet().stream()
                 .map(entry -> new TravelerDto.SummaryResponse(entry.getKey(), entry.getValue()))
                 .toList();
     }
+
+    private BooleanExpression createdDateGoe(LocalDateTime createdDate) {
+        return createdDate != null ? traveler.createdDate.goe(createdDate) : null; // goe >=
+    }
+
+    private BooleanExpression createdDateLoe(LocalDateTime createdDate) {
+        return createdDate != null ? traveler.createdDate.loe(createdDate) : null; // loe <=
+    }
+
+    private BooleanExpression createdDateBetween(LocalDateTime createdDateLoe, LocalDateTime createdDateGoe) {
+        return createdDateGoe(createdDateLoe).and(createdDateLoe(createdDateGoe));
+    }
+
+
 }
