@@ -6,10 +6,10 @@ import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.TravelShareInfo;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.BusinessException;
-import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelShareRepository;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.repository.querydslImpl.TravelQueryRepository;
+import dev.pinner.repository.querydslImpl.TravelShareQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,10 +24,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TravelShareService {
-    private final TravelRepository travelRepository;
     private final TravelQueryRepository travelQueryRepository;
     private final TravelerRepository travelerRepository;
     private final TravelShareRepository travelShareRepository;
+    private final TravelShareQueryRepository travelShareQueryRepository;
 
     /**
      * 여행 공유(공개)
@@ -55,23 +55,20 @@ public class TravelShareService {
     @Transactional
     public TravelShareInfo createTravelShareForMember(Traveler host, Long travelId, String guestEmail, Optional<Duration> duration) {
 
-        Optional<Traveler> guestOrNull = travelerRepository.findByEmail(guestEmail);
-        if (guestOrNull.isEmpty()) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "can not find guest"
-            );
+        Optional<Traveler> guestOpt = travelerRepository.findByEmail(guestEmail);
+        if (guestOpt.isEmpty()) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "can not find guest");
         }
 
-        Traveler guest = guestOrNull.get();
+        Traveler guest = guestOpt.get();
 
         Travel travel = travelQueryRepository.findTravel(host.getId(), travelId);
 
         Optional<TravelShareInfo> alreadyShared = travel
-            .getTravelShareInfos()
-            .stream()
-            .filter(info -> info.getGuest().getEmail().equals(guest.getEmail()))
-            .findFirst();
+                .getTravelShareInfos()
+                .stream()
+                .filter(info -> info.getGuest().getEmail().equals(guest.getEmail()))
+                .findFirst();
 
         // 이미 초대된 멤버일 경우 기존 초대를 반환하고 조용히 넘어간다.
         if (alreadyShared.isPresent()) {
@@ -91,23 +88,20 @@ public class TravelShareService {
                                                                        Long travelId) {
         Travel travel = travelQueryRepository.findTravel(traveler.getId(), travelId);
         if (travel == null) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "failed to retrieve shares of travel: can not find travel"
-            );
+            throw new BusinessException(HttpStatus.NOT_FOUND, "failed to retrieve shares of travel: can not find travel");
         }
 
         List<TravelShareInfo> infos = travel.getTravelShareInfos();
 
         List<TravelShareDto.GetShareOfTravelItem> items = infos
-            .stream().map(
-                info -> new TravelShareDto.GetShareOfTravelItem(
-                    info.getGuest().getEmail(),
-                    info.getGuest().getNickname(),
-                    info.getShareCode()
+                .stream().map(
+                        info -> new TravelShareDto.GetShareOfTravelItem(
+                                info.getGuest().getEmail(),
+                                info.getGuest().getNickname(),
+                                info.getShareCode()
+                        )
                 )
-            )
-            .toList();
+                .toList();
 
         return new TravelShareDto.GetShareOfTravelResponse(items);
     }
@@ -120,10 +114,10 @@ public class TravelShareService {
      */
     @Transactional
     public List<Travel> getAllInvitedSharedTravel(Traveler guest) {
-        return travelShareRepository
-            .findAllInvitedTravelInfos(guest.getId())
-            .stream().map(TravelShareInfo::getTravel)
-            .toList();
+        return travelShareQueryRepository
+                .findAllInvitedTravelInfos(guest.getId())
+                .stream().map(TravelShareInfo::getTravel)
+                .toList();
     }
 
     /**
@@ -136,17 +130,11 @@ public class TravelShareService {
     public TravelDto.Response getPublicSharedTravel(String shareCode) {
         Optional<TravelShareInfo> shareInfo = travelShareRepository.findByShareCode(shareCode);
         if (shareInfo.isEmpty()) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "can not find shared travel"
-            );
+            throw new BusinessException(HttpStatus.NOT_FOUND, "can not find shared travel");
         }
 
         if (shareInfo.get().isExpired()) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "expired share"
-            );
+            throw new BusinessException(HttpStatus.NOT_FOUND, "expired share");
         }
 
         return new TravelDto.Response(shareInfo.get().getTravel());
@@ -162,19 +150,13 @@ public class TravelShareService {
     public void deleteTravelShare(Traveler host, String travelShareCode) {
         Optional<TravelShareInfo> shareInfo = travelShareRepository.findByShareCode(travelShareCode);
         if (shareInfo.isEmpty()) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "failed to delete travel share: can not find travel share by id."
-            );
+            throw new BusinessException(HttpStatus.NOT_FOUND, "failed to delete travel share: can not find travel share by id.");
         }
 
         Long travelOwnerId = shareInfo.get().getTravel().getTraveler().getId();
         Boolean isOwnerOfTravel = travelOwnerId.equals(host.getId());
         if (!isOwnerOfTravel) {
-            throw new BusinessException(
-                HttpStatus.NOT_FOUND,
-                "failed to delete travel share: does not have proper authority."
-            );
+            throw new BusinessException(HttpStatus.NOT_FOUND, "failed to delete travel share: does not have proper authority.");
         }
 
         travelShareRepository.deleteById(shareInfo.get().getId());

@@ -5,9 +5,9 @@ import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.exception.BusinessException;
 import dev.pinner.repository.TravelRepository;
-import dev.pinner.repository.TravelShareRepository;
 import dev.pinner.repository.TravelerRepository;
 import dev.pinner.repository.querydslImpl.TravelQueryRepository;
+import dev.pinner.repository.querydslImpl.TravelShareQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final TravelQueryRepository travelQueryRepository;
     private final TravelerRepository travelerRepository;
-    private final TravelShareRepository travelShareRepository;
+    private final TravelShareQueryRepository travelShareQueryRepository;
 
     public List<TravelDto.Response> getTravel(Traveler traveler) {
         travelRepository.flush(); // 없을 경우 insert된 여정이 2번 들어감
@@ -40,7 +40,7 @@ public class TravelService {
             .toList());
 
         // 공유 받은 트레블 검색
-        travels.addAll(travelShareRepository.findAllInvitedTravelInfos(traveler.getId())
+        travels.addAll(travelShareQueryRepository.findAllInvitedTravelInfos(traveler.getId())
             .stream()
             .map(TravelDto.Response::new)
             .toList());
@@ -49,11 +49,11 @@ public class TravelService {
     }
 
     private Traveler getTraveler(Long travelerId) {
-        Optional<Traveler> traveler = travelerRepository.findById(travelerId);
-        if (traveler.isEmpty()) {
+        Optional<Traveler> travelerOpt = travelerRepository.findById(travelerId);
+        if (travelerOpt.isEmpty()) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
         }
-        return traveler.get();
+        return travelerOpt.get();
     }
 
     @Transactional
