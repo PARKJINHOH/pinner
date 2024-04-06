@@ -18,10 +18,10 @@ import java.util.TreeMap;
 import static dev.pinner.domain.entity.QTraveler.traveler;
 
 @Repository
-public class TravelerQueryDslRepository {
+public class TravelerQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public TravelerQueryDslRepository(JPAQueryFactory queryFactory) {
+    public TravelerQueryRepository(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
 

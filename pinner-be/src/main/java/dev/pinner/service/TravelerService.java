@@ -11,7 +11,7 @@ import dev.pinner.global.enums.OauthServiceCodeEnum;
 import dev.pinner.global.utils.CommonUtil;
 import dev.pinner.repository.TravelRepository;
 import dev.pinner.repository.TravelerRepository;
-import dev.pinner.repository.querydslImpl.TravelerQueryDslRepository;
+import dev.pinner.repository.querydslImpl.TravelerQueryRepository;
 import dev.pinner.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class TravelerService {
 
     private final TravelerRepository travelerRepository;
-    private final TravelerQueryDslRepository travelerQueryDslRepository;
+    private final TravelerQueryRepository travelerQueryRepository;
     private final TravelRepository travelRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
@@ -265,6 +265,6 @@ public class TravelerService {
     }
 
     public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
-        return travelerQueryDslRepository.getTravelerGroupByYearMonth();
+        return travelerQueryRepository.getTravelerGroupByYearMonth();
     }
 }
