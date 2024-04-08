@@ -1,5 +1,6 @@
 package dev.pinner;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,12 +9,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.persistence.EntityManager;
+
 @EnableJpaAuditing
 @SpringBootApplication
 public class PinnerBeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PinnerBeApplication.class, args);
+    }
+
+    @Bean
+    JPAQueryFactory jpaQueryFactory(EntityManager em) {
+        return new JPAQueryFactory(em);
     }
 
     @Value("${spring.profiles.active}")

@@ -88,10 +88,6 @@ public class Traveler extends AuditEntity implements UserDetails {
         this.lastLoginDate = LocalDateTime.now();
     }
 
-    public void updateOauthAccessToken(String accessToken) {
-        this.oauthAccessToken = accessToken;
-    }
-
     public void updateLastLoginIpAddress(String ipAddress) {
         this.lastLoginIpAddress = ipAddress;
     }

@@ -7,7 +7,8 @@ import dev.pinner.domain.entity.Photo;
 import dev.pinner.domain.entity.Travel;
 import dev.pinner.domain.entity.Traveler;
 import dev.pinner.repository.JourneyRepository;
-import dev.pinner.repository.TravelRepository;
+import dev.pinner.repository.querydslImpl.JourneyQueryRepository;
+import dev.pinner.repository.querydslImpl.TravelQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JourneyService {
 
-    private final TravelRepository travelRepository;
+    private final TravelQueryRepository travelQueryRepository;
     private final JourneyRepository journeyRepository;
+    private final JourneyQueryRepository journeyQueryRepository;
     private final PhotoService photoService;
     private final TravelService travelService;
 
     @Transactional
     public List<TravelDto.Response> addJourney(Traveler traveler, JourneyDto.Request newJourney, List<MultipartFile> photos) {
-        Travel travel = travelRepository.findTravelByTravelerIdAndTravelId(traveler.getId(), newJourney.getTravelId());
+        Travel travel = travelQueryRepository.findTravel(traveler.getId(), newJourney.getTravelId());
 
         Journey newJourneyEntity = newJourney.toEntity();
         newJourneyEntity.setTravel(travel);
@@ -46,7 +48,7 @@ public class JourneyService {
 
     @Transactional
     public List<TravelDto.Response> deleteJourney(Traveler traveler, Long journeyId) {
-        Journey journey = journeyRepository.findJourneyByJourneyId(journeyId);
+        Journey journey = journeyQueryRepository.findJourney(journeyId);
         if (journey != null) {
             Travel travel = journey.getTravel();
             if (travel != null) {
@@ -60,22 +62,22 @@ public class JourneyService {
 
     @Transactional
     public List<TravelDto.Response> updateJourney(Traveler traveler, Long journeyId, JourneyDto.Request newJourney, List<MultipartFile> photos) {
-        Optional<Journey> findJourney = journeyRepository.findById(journeyId);
+        Optional<Journey> journeyOpt = journeyRepository.findById(journeyId);
 
-        if (findJourney.isPresent()) {
+        if (journeyOpt.isPresent()) {
             // 필요시 Journey, Travel 삭제 시에도 추가하기
-            List<Photo> existingPhotos = findJourney.get().getPhotos();
+            List<Photo> existingPhotos = journeyOpt.get().getPhotos();
             for (Photo existingPhoto : existingPhotos) {
-                findJourney.get().removePhoto(existingPhoto);
+                journeyOpt.get().removePhoto(existingPhoto);
             }
 
             List<Photo> photoList = photoService.processPhotosForJourney(photos);
             if (photoList != null) {
                 for (Photo photo : photoList) {
-                    photo.setJourney(findJourney.get());
+                    photo.setJourney(journeyOpt.get());
                 }
             }
-            findJourney.get().updateJourney(newJourney, photoList);
+            journeyOpt.get().updateJourney(newJourney, photoList);
         }
 
         return travelService.getTravel(traveler);

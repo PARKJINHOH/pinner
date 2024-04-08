@@ -69,10 +69,13 @@ public class RefreshTokenService {
 
     @Transactional
     public void deleteByEmail(String email) {
-        travelerRepository.findByEmail(email).ifPresentOrElse(refreshTokenRepository::deleteByTraveler,
-                () -> {
-                    throw new BusinessException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
-                });
+        Optional<Traveler> travelerOpt = travelerRepository.findByEmail(email);
+        if(travelerOpt.isPresent()){
+            refreshTokenRepository.deleteById(travelerOpt.get().getId());
+        } else {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
+        }
+
     }
 }
 

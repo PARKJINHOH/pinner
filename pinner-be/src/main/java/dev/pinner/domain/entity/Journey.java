@@ -42,7 +42,7 @@ public class Journey extends AuditEntity {
     private Travel travel;
 
     @Comment("여정 위치")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "GEOLOCATION_ID")
     private GeoLocation geoLocation;
 
