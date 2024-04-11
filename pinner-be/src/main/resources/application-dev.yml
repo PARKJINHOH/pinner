@@ -38,5 +38,5 @@ logging:
 
 path:
   image: images
-  url: https://pinner.dev
+  url: https://dev.pinner.dev
   
