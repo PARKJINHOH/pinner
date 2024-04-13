@@ -24,7 +24,7 @@ import java.util.Set;
 public class Journey extends AuditEntity {
 
     @Id
-    @JoinColumn(name = "JOURNEY_ID")
+    @Column(name = "JOURNEY_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

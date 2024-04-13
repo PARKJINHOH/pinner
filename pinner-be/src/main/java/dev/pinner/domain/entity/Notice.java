@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class Notice extends AuditEntity {
 
     @Id
-    @JoinColumn(name = "NOTICE_ID")
+    @Column(name = "NOTICE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -23,7 +23,7 @@ import java.util.List;
 public class Traveler extends AuditEntity implements UserDetails {
 
     @Id
-    @JoinColumn(name = "TRAVELER_ID")
+    @Column(name = "TRAVELER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

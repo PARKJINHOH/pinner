@@ -21,7 +21,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class Admin extends AuditEntity implements UserDetails {
     @Id
-    @JoinColumn(name = "ADMIN_ID")
+    @Column(name = "ADMIN_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
