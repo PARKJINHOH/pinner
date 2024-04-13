@@ -25,33 +25,45 @@ public class Admin extends AuditEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(length = 320, unique = true)
     @Comment("이메일")
     private String email;
 
+    @NotNull
+    @Column(length = 225)
     @Comment("비밀번호")
     private String password;
 
+    @NotNull
+    @Column(length = 30)
     @Comment("이름")
     private String adminName;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Comment("권한")
     private RoleEnum roleEnum;
 
-    @Comment("계정 상태")
     @NotNull
+    @Comment("계정 상태")
     @Builder.Default // 객체생성시 초기값(@ColumnDefault는 DDL에 포함될 컬럼의 기본값을 지정하고 싶을때 사용), 혹은 유저 생성시 builder 로 넣는게 좋아보이며 여러 방법이 있음.
     private Boolean state = true;
 
+    @NotNull
+    @Column(length = 10)
     @Comment("로그인 실패 횟수")
     private int loginFailureCount;
 
+    @NotNull
     @Comment("마지막 로그인 날짜")
     private LocalDateTime lastLoginDate;
 
+    @NotNull
     @Comment("마지막 비밀번호 변경 날짜")
     private LocalDateTime lastChangePasswordDate;
 
+    @NotNull
     @Comment("마지막 로그인 IP 주소")
     private String lastLoginIpAddress;
 

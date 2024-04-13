@@ -17,18 +17,18 @@ public class TravelShareInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("여행")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVEL_ID")
+    @Comment("여행")
     private Travel travel;
 
-    @Comment("공유 받은 사람, 이 필드가 있으면 특정 맴버를 위한 공유임")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVELER_ID")
+    @Comment("공유 받은 사람, 이 필드가 있으면 특정 맴버를 위한 공유임")
     private Traveler guest;
 
-    @Comment("공유 코드, 이 필드가 있으면 공개 공유임")
     @Column(unique = true)
+    @Comment("공유 코드, 이 필드가 있으면 공개 공유임")
     private String shareCode;
     
     @Comment("만료 시간, NULL일 경우 만료하지 않음")

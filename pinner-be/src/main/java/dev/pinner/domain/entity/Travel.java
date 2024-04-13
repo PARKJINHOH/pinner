@@ -26,10 +26,12 @@ public class Travel extends AuditEntity {
     private Long id;
 
     @NotNull
+    @Column(length = 50)
     @Comment("여행 순서")
     private int orderKey;
 
     @NotNull
+    @Column(length = 100)
     @Comment("여행 제목")
     private String title;
 

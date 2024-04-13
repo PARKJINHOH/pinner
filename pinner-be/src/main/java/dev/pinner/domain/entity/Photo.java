@@ -21,20 +21,20 @@ public class Photo extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("사진이름(암호화)")
     @Column(nullable = false)
+    @Comment("사진이름(암호화)")
     private String fileName;
 
-    @Comment("사진이름(실제)")
     @Column(nullable = false)
+    @Comment("사진이름(실제)")
     private String originFileName;
 
     @Comment("사진 경로")
     @Column(nullable = false)
     private String fullPath;
 
-    @Comment("사진 URI")
     @Column(nullable = false)
+    @Comment("사진 URI")
     private String src;
 
     @Comment("사진 사이즈(kb)")

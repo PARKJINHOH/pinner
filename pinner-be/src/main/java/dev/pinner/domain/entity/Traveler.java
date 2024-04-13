@@ -28,9 +28,11 @@ public class Traveler extends AuditEntity implements UserDetails {
     private Long id;
 
     @NotNull
+    @Column(length = 320, unique = true)
     @Comment("이메일")
     private String email;
 
+    @Column(length = 225)
     @Comment("비밀번호")
     private String password;
 
@@ -38,6 +40,7 @@ public class Traveler extends AuditEntity implements UserDetails {
     private String oauthAccessToken;
 
     @NotNull
+    @Column(length = 30)
     @Comment("닉네임")
     private String nickname;
 

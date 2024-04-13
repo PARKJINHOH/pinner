@@ -28,32 +28,33 @@ public class Journey extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Comment("여정 순서")
     @NotNull
+    @Column(length = 50)
+    @Comment("여정 순서")
     private int orderKey;
 
-    @Comment("여정 날짜")
     @NotNull
+    @Comment("여정 날짜")
     private LocalDate date;
 
-    @Comment("여행")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVEL_ID")
+    @Comment("여행")
     private Travel travel;
 
-    @Comment("여정 위치")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "GEOLOCATION_ID")
+    @Comment("여정 위치")
     private GeoLocation geoLocation;
 
-    @Comment("여정 해시태그")
     @ElementCollection
     @JoinColumn(name = "HASHTAG")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Comment("여정 해시태그")
     private Set<String> hashtags;
 
-    @Comment("여정 사진")
     @OneToMany(mappedBy = "journey", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Comment("여정 사진")
     private List<Photo> photos = new ArrayList<>();
 
     public void setTravel(Travel travel) {

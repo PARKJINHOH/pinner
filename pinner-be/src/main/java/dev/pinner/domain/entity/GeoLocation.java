@@ -20,18 +20,20 @@ public class GeoLocation extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Comment("위도")
     private double lat;
 
+    @NotNull
     @Comment("경도")
     private double lng;
 
-    @Comment("위치 정보")
     @NotNull
+    @Comment("위치 정보")
     private String name;
 
-    @Comment("국가")
     @NotNull
+    @Comment("국가")
     private String countryCd;
 
     @Comment("여정")

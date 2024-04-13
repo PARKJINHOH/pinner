@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -19,13 +20,18 @@ public class EmailSMTP extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(length = 320)
     @Comment("수신자")
     private String recipient;
 
+    @NotNull
+    @Column(length = 100)
     @Comment("메일 제목")
     private String subject;
 
     @Lob
+    @NotNull
     @Comment("메일 내용")
     private String message;
 

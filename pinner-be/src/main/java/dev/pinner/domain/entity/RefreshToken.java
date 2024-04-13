@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Data
@@ -15,22 +16,26 @@ public class RefreshToken extends AuditEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Comment("여행자")
+  @NotNull
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "TRAVELER_ID", referencedColumnName = "id")
+  @Comment("여행자")
   private Traveler traveler;
 
-  @Comment("관리자")
+  @NotNull
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ADMIN_ID" , referencedColumnName = "id")
+  @Comment("관리자")
   private Admin admin;
 
-  @Comment("토근")
+  @NotNull
   @Column(nullable = false, unique = true)
+  @Comment("토큰")
   private String token;
 
-  @Comment("만료시간")
+  @NotNull
   @Column(nullable = false)
+  @Comment("만료시간")
   private Instant expiryDate;
 
   public RefreshToken() {

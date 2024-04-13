@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -20,6 +21,8 @@ public class Notice extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(length = 50)
     @Comment("제목")
     private String title;
 
@@ -27,9 +30,12 @@ public class Notice extends AuditEntity {
     @Comment("내용")
     private String content;
 
+    @NotNull
+    @Column(length = 50)
     @Comment("작성자")
     private String writer;
 
+    @Column(length = 1000)
     @Comment("조회수")
     private int viewCount;
 
