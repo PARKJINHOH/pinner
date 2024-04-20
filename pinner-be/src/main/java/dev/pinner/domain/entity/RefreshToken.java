@@ -18,13 +18,13 @@ public class RefreshToken extends AuditEntity {
 
   @NotNull
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "TRAVELER_ID", referencedColumnName = "id")
+  @JoinColumn(name = "TRAVELER_ID", referencedColumnName = "TRAVELER_ID")
   @Comment("여행자")
   private Traveler traveler;
 
   @NotNull
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ADMIN_ID" , referencedColumnName = "id")
+  @JoinColumn(name = "ADMIN_ID" , referencedColumnName = "ADMIN_ID")
   @Comment("관리자")
   private Admin admin;
 
