@@ -72,53 +72,6 @@ export default function BasePage() {
     // 검색창
     const placeRef = useRef(null);
 
-    /**
-    * @typedef {Object} Place
-    * @type Object
-    *
-    * @property {string} formatted_address
-    * @property {Geometry} geometry
-    * @property {string} name
-    **/
-
-    /**
-    * @typedef {Object} Geometry
-    * @type Object
-    *
-    * @property {Location} location
-    * @property {Viewport} viewport
-    **/
-
-    /**
-    * @typedef {Object} Location
-    * @type Object
-    *
-    **/
-
-    /**
-    * @typedef {Object} Viewport
-    * @type Object
-    *
-    * @property {Ua} Ua
-    * @property {Ia} Ga
-    **/
-
-    /**
-    * @typedef {Object} Ua
-    * @type Object
-    *
-    * @property {number} lo
-    * @property {number} hi
-    **/
-
-    /**
-    * @typedef {Object} Ia
-    * @type Object
-    *
-    * @property {number} lo
-    * @property {number} hi
-    **/
-
 
     /**
      * 주어진 Viewport의 중간 좌표를 구한다.
@@ -126,62 +79,13 @@ export default function BasePage() {
      */
     function middleOfViewport(viewport) {
         return {
-            "ua": (viewport.mb.lo + viewport.mb.hi) / 2,
-            "ga": (viewport.Oa.lo + viewport.Oa.hi) / 2,
+            "ua": (viewport.Wh.lo + viewport.Wh.hi) / 2,
+            "ga": (viewport.Gh.lo + viewport.Gh.hi) / 2,
         };
     }
 
     /**
      * 사용자가 검색을 시도하면 호출되는 함수
-     *
-     * 알파카월드를 검색했을때의 응답은 아래와 같다.
-     *
-     * ```json
-     * {
-     *     "formatted_address": "대한민국 강원도 홍천군 화촌면 풍천리 310",
-     *     "geometry": {
-     *       "location": {},
-     *       "viewport": {
-     *         "Ua": {
-     *           "lo": 37.82656461970851,
-     *           "hi": 37.82926258029151
-     *         },
-     *         "Ia": {
-     *           "lo": 127.8817504197085,
-     *           "hi": 127.8844483802915
-     *         }
-     *       }
-     *     },
-     *     "name": "알파카월드",
-     *     "plus_code": {
-     *       "compound_code": "RVHM+56 대한민국 강원도 춘천시",
-     *       "global_code": "8Q99RVHM+56"
-     *     },
-     *     "vicinity": "홍천군 화촌면 풍천리 310",
-     * }
-     * ```
-     *
-     * 카파도키아의 결과는 아래와 같다.
-     *
-     * ```json
-     * {
-     *     "formatted_address": "터키 카파도키아",
-     *     "geometry": {
-     *       "location": {},
-     *       "viewport": {
-     *         "Ua": {
-     *           "lo": 37.3665329,
-     *           "hi": 39.3872799
-     *         },
-     *         "Ia": {
-     *           "lo": 33.1742381,
-     *           "hi": 36.9598169
-     *         }
-     *       }
-     *     },
-     *     "name": "카파도키아",
-     * }
-     * ```
      */
     function onPlacesChanged() {
         /**
@@ -192,7 +96,7 @@ export default function BasePage() {
         const place = places[0];
 
         const ua_ia = middleOfViewport(place.geometry.viewport);
-        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga } })
+        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga }, zoom: 13})
     }
 
     return (
