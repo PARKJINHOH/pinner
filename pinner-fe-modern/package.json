@@ -10,14 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
+    "exif-js": "^2.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recoil": "^0.7.7",
+    "sort-by": "^1.2.0",
+    "yet-another-react-lightbox": "^3.17.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
+    "@vanilla-extract/vite-plugin": "^4.0.6",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
