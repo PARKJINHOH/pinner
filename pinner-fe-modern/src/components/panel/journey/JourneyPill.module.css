@@ -1,0 +1,55 @@
+.root_box {
+    position: relative;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.journey_delete_iconBtn {
+    z-index: 9;
+    top: -15px;
+    left: -10px;
+}
+
+@keyframes bounce {
+    0% {transform: translateY(0);}
+    50% {transform: translateY(-7px);}  /*  높이 조절 */
+    100% {transform: translateY(0);}
+}
+.journey_delete_icon {
+    animation: bounce 1.5s infinite; /* 애니메이션 효과 시간 조절 */
+}
+
+.preview_box{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid #cbcbcb;
+    aspect-ratio: 16 / 10;
+    background-color: #eeeeee;
+    overflow: hidden;
+}
+
+.preview {
+    display: contents;
+}
+
+.journey_info {
+    display: flex;
+    position: absolute;
+    bottom: 8px;
+    opacity: 0.9;
+}
+
+.journey_tags {
+    display: inline-block;
+    padding: 4px;
+    margin-right: 4px;
+    border-radius: 7px;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 13px;
+    font-weight: bold;
+}
+

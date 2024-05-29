@@ -1,0 +1,68 @@
+.root_paper {
+    position: fixed;
+    padding: 10px 20px 0 20px;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow-y: auto;
+}
+
+.travel_title_group {
+    margin-top: 20px;
+}
+.arrow_icon_btn{
+    cursor: pointer;
+    margin-right: auto;
+}
+.journeys_tool {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    padding: 5px 10px 5px 0;
+}
+
+.journeys_tool_right {
+    display: flex;
+    gap: 20px;
+}
+
+.add_icon{
+    margin-left: auto;
+    cursor: pointer;
+}
+.edit_icon{
+    height: 30px;
+    cursor: pointer;
+}
+.del_icon{
+    color: #a94e4e;
+    cursor: pointer;
+}
+
+.add_icon:hover {
+    color: #c2c2c2;
+    transition: color 0.3s ease;
+}
+.edit_icon:hover {
+    fill: #c2c2c2;
+    transition: fill 0.3s ease;
+}
+.del_icon:hover {
+    color: #f61245;
+    transition: color 0.3s ease;
+}
+
+.main_preview {
+    margin-top: 10px;
+    aspect-ratio: 16 / 10;
+    border-radius: 5px;
+    background-color: #c2c2c2;
+}
+
+.no_journeys{
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
+}

@@ -1,0 +1,80 @@
+.root_paper {
+    position: fixed;
+    padding: 10px 25px 0 25px;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    z-index: 9;
+    overflow-y: auto;
+}
+.title_box{
+    display: flex;
+    margin-bottom: 10px;
+    padding: 5px 10px 5px 10px;
+
+}
+.sidebar_list_div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.travel_box{
+    display: flex;
+    height: 130px;
+    border-radius: 5px;
+    margin-top: 10px;
+    background-color: #b4dede;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login_title_box{
+    padding: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: grey;
+}
+
+.travel_tool{
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 5px 0 5px 0;
+    gap: 20px;
+}
+
+.add_icon {
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.add_icon:hover {
+    color: #c2c2c2;
+    transition: color 0.3s ease;
+}
+
+.drag_icon {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.del_icon {
+    color: #a94e4e;
+    cursor: pointer;
+}
+
+.del_icon:hover {
+    color: #f61245;
+    transition: color 0.3s ease;
+}
+
+.no_travels {
+    display: flex;
+    margin-top: 30%;
+    justify-content: center;
+}
