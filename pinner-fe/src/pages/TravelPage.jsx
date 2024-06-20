@@ -25,7 +25,7 @@ import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBo
 
 
 
-export default function BasePage() {
+export default function TravelPage() {
     const containerStyle = {
         width: '100%',
         height: '100vh',

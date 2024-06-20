@@ -1,7 +1,7 @@
 import React from 'react';
 
 // component
-import 'pages/BasePage';
+import 'pages/TravelPage';
 import MainApp from "components/panel/travel/MainApp";
 
 // mui

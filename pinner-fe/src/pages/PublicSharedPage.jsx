@@ -6,7 +6,7 @@ import { useSetRecoilState } from "recoil";
 // component
 import { selectedTravelIdState, travelState } from "states/travel";
 import Sidebar from "components/panel/sidebar/Sidebar";
-import BasePage from "pages/BasePage";
+import TravelPage from "pages/TravelPage";
 
 // mui
 import { Box, CssBaseline } from "@mui/material";
@@ -32,7 +32,7 @@ function PublicShared() {
       <CssBaseline />
       <Sidebar />
       <Box sx={{ flexGrow: 1 }}>
-        <BasePage />
+        <TravelPage />
       </Box>
     </Box>
   );

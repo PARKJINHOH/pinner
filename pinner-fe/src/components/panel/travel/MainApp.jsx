@@ -3,7 +3,8 @@ import React from "react";
 
 // components
 import Sidebar from "components/panel/sidebar/Sidebar";
-import BasePage from "pages/BasePage";
+import CommunityPage from "components/panel/community/CommunityPage";
+import TravelPage from "pages/TravelPage";
 
 
 import {useRecoilValue} from "recoil";
@@ -27,11 +28,11 @@ export default function MainApp() {
                     (() => {
                         switch (sidebar) {
                             case 'TRAVEL':
-                                return <BasePage/>;
+                                return <TravelPage/>;
                             case 'COMMUNITY':
-                                return <div>커뮤니티</div>;
+                                return <CommunityPage/>;
                             default:
-                                return <BasePage/>;
+                                return <TravelPage/>;
                         }
                     })()
                 }
