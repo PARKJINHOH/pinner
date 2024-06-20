@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 
 // css
 import style from './Sidebar.module.css'
@@ -9,6 +9,7 @@ import TravelList from 'components/panel/travel/TravelList.jsx'
 import {isLoggedInState, travelerState, useDoLogout} from "states/traveler";
 import {AuthModalVisibility, authModalVisibilityState} from "states/modal";
 import {sidebarWidth} from "states/panel/panelWidth";
+import {sidebarStateKeys, sidebarState} from "states/sidebar";
 
 // mui
 import { Button, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Typography, Menu, MenuItem} from "@mui/material";
@@ -27,7 +28,7 @@ export default function Sidebar() {
     const _sidebarWidth = useRecoilValue(sidebarWidth);
 
     // Travel 메뉴
-    const [selectedDrawer, setSelectedDrawer] = useState(null);
+    const [sidebarSelector, setSidebarSelector] = useRecoilState(sidebarState);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -64,11 +65,11 @@ export default function Sidebar() {
     };
 
     const handleItemClick = (pageNm) => {
-        if (selectedDrawer !== null && selectedDrawer === pageNm) {
-            setSelectedDrawer(null);
+        if (sidebarSelector !== null && sidebarSelector === pageNm) {
+            setSidebarSelector(null);
             return;
         }
-        setSelectedDrawer(pageNm);
+        setSidebarSelector(pageNm);
     };
 
 
@@ -130,9 +131,9 @@ export default function Sidebar() {
                 <List>
                     <ListItem disablePadding>
                         <ListItemButton
-                            selected={selectedDrawer === 'main'}
+                            selected={sidebarSelector === sidebarStateKeys.MAIN}
                             className={style.list_item}
-                            onClick={() => handleItemClick('main')}
+                            onClick={() => handleItemClick(sidebarStateKeys.MAIN)}
                         >
                             <ListItemIcon className={style.list_item_icon}>
                                 <MapIcon className={style.icon_size}/>
@@ -141,9 +142,9 @@ export default function Sidebar() {
                     </ListItem>
                     <ListItem disablePadding>
                         <ListItemButton
-                            selected={selectedDrawer === 'TravelList'}
+                            selected={sidebarSelector === sidebarStateKeys.TRAVEL}
                             className={style.list_item}
-                            onClick={() => handleItemClick('TravelList')}
+                            onClick={() => handleItemClick(sidebarStateKeys.TRAVEL)}
                         >
                             <ListItemIcon className={style.list_item_icon}>
                                 <LanguageIcon className={style.icon_size}/>
@@ -152,6 +153,24 @@ export default function Sidebar() {
                                 primary={
                                     <Typography variant="subtitle2" noWrap>
                                         내 여행
+                                    </Typography>
+                                }
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            selected={sidebarSelector === sidebarStateKeys.COMMUNITY}
+                            className={style.list_item}
+                            onClick={() => handleItemClick(sidebarStateKeys.COMMUNITY)}
+                        >
+                            < ListItemIcon className={style.list_item_icon}>
+                                <LanguageIcon className={style.icon_size}/>
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={
+                                    <Typography variant="subtitle2" noWrap>
+                                        커뮤니티
                                     </Typography>
                                 }
                             />
@@ -169,9 +188,7 @@ export default function Sidebar() {
 
             {
                 /* 여행(Travel)목록 리스트 패널 */
-                selectedDrawer === 'TravelList' && (
-                    <TravelList/>
-                )
+                sidebarSelector === sidebarStateKeys.TRAVEL && (<TravelList/>)
             }
 
             {
