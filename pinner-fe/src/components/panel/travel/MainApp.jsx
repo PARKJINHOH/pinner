@@ -3,7 +3,7 @@ import React from "react";
 
 // components
 import Sidebar from "components/panel/sidebar/Sidebar";
-import CommunityPage from "components/panel/community/CommunityPage";
+import CommunityPage from "components/panel/community";
 import TravelPage from "pages/TravelPage";
 
 

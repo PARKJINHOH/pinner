@@ -1,0 +1,11 @@
+.wrap {
+    width: 70%;
+    overflow: hidden;
+    margin: 0 auto; /*div 요소 중앙 정렬*/
+    min-height: 40rem;
+    padding-top: 5rem;
+}
+
+.body{
+
+}

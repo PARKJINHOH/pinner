@@ -1,0 +1,19 @@
+.wrap {
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    height: 4rem;
+    background-color: #f5f5f5;
+    padding-left: 100px;
+}
+
+.menu_item{
+    margin-left: 30px;
+}
