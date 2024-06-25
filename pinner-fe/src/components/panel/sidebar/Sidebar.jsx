@@ -178,11 +178,12 @@ export default function Sidebar() {
                     </ListItem>
                 </List>
 
-                <Divider sx={{marginTop: 'auto'}}/>
+                <div style={{marginTop: 'auto'}}>
+                    <Button onClick={travelerClick} sx={{width: '100%'}}>
+                        <Avatar {...stringAvatar(traveler ? traveler.nickname : '')} />
+                    </Button>
+                </div>
 
-                <Button onClick={travelerClick}>
-                    <Avatar {...stringAvatar(traveler ? traveler.nickname : '')} />
-                </Button>
             </Drawer>
 
 
