@@ -20,13 +20,12 @@
     display: flex;
 }
 
+.info_travel{
+    color: #2a7bff;
+}
+
 .title{
     margin-top: 2px;
-
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .box_row {
@@ -44,4 +43,6 @@
     max-width: 30rem;
     min-height: 15rem;
     height: 100%;
+
+    margin-bottom: auto;
 }
