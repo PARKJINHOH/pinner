@@ -58,4 +58,19 @@ public class NoticeDto {
         int pageSize; // 페이지 사이즈
         int totalPageCnt; // 총 페이지 수
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class CommunitySummaryResponse {
+        private Long id;
+        private String title;
+        private String writer;
+
+        public CommunitySummaryResponse(Notice notice) {
+            id = notice.getId();
+            title = notice.getTitle();
+            writer = notice.getWriter();
+        }
+    }
 }

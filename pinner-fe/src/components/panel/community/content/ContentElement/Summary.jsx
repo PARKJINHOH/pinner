@@ -1,9 +1,32 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import style from "./Summary.module.css";
 import Divider from "@mui/material/Divider";
 import {Typography} from "@mui/material";
+import {useAPIv1} from "apis/traveler/apiv1";
+import {HTTPStatus} from "apis/admin/apiv1";
 
 export default function Content() {
+    const apiv1 = useAPIv1();
+
+    const [noticeList, setNoticeList] = useState([]);
+    const [travelList, setTravelList] = useState([]);
+    const [communityList, setCommunityList] = useState([]);
+    const [qnaList, setQnaList] = useState([]);
+
+
+    useEffect(() => {
+        const params = {page: 0, size: 3};
+        apiv1.get("/community/summary", {params})
+            .then((response) => {
+                console.log(response);
+                if (response.status === HTTPStatus.OK) {
+                    setNoticeList(response.data.noticeList);
+                }
+            })
+            .catch((error) => {
+                console.error("summary데이터를 불러오는데 실패했습니다." + error);
+            });
+    }, []);
 
     return (
         <div className={style.wrap}>
