@@ -39,4 +39,9 @@ logging:
 path:
   image: images
   url: https://dev.pinner.dev
-  
+
+# Grafana 설정(JVM (Micrometer) Template)
+management:
+  metrics:
+    tags:
+      application: backend-dev
