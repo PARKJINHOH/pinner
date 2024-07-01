@@ -22,10 +22,11 @@ rule_files:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "backend-dev"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
+  - job_name: "pinner_dev"
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ['backend-dev:8081']
+      - targets: ['10.0.0.165:8081'] #10.0.0.165 = private IP
+  - job_name: "pinner_prod"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ['10.0.0.165:8080']
