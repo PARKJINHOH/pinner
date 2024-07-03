@@ -12,12 +12,12 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
-@Table(name = "NOTICE")
+@Table(name = "RECOMM_TRAVEL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice extends AuditEntity {
+public class RecommTravel extends AuditEntity {
 
     @Id
-    @Column(name = "NOTICE_ID")
+    @Column(name = "RECOMM_TRAVEL_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -42,22 +42,10 @@ public class Notice extends AuditEntity {
     @Comment("상태(N : 미노출, Y : 노출)")
     private String status;
 
-    @Comment("공지사항 시작일")
-    private String startDate;
-
-    @Comment("공지사항 종료일")
-    private String endDate;
-
     @Builder
-    public Notice(String title, String content, String writer) {
+    public RecommTravel(String title, String content, String writer) {
         this.title = title;
         this.content = content;
         this.writer = writer;
-    }
-
-    public void update(NoticeDto.Request noticeDto) {
-        this.title = noticeDto.getTitle();
-        this.content = noticeDto.getContent();
-        this.writer = noticeDto.getWriter();
     }
 }

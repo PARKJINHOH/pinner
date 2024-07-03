@@ -14,7 +14,7 @@ public class CommunityDto {
     @AllArgsConstructor
     public static class Response {
         List<NoticeDto.CommunitySummaryResponse> noticeList;
-//        List<Community> communityList = new arrayList<>();
+        List<RecommTravelDto.CommunitySummaryResponse> communityList;
 //        List<RecommTravel> recommTravelList = new ArrayList<>();
 //        List<Qna> qnaList = new ArrayList<>();
     }
