@@ -1,8 +1,10 @@
 package dev.pinner.service;
 
 import dev.pinner.domain.dto.CommunityDto;
+import dev.pinner.domain.dto.CommunitySummaryDto;
 import dev.pinner.domain.dto.NoticeDto;
 import dev.pinner.domain.dto.RecommTravelDto;
+import dev.pinner.repository.CommunityRepository;
 import dev.pinner.repository.NoticeRepository;
 import dev.pinner.repository.RecommTravelRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,11 +22,11 @@ public class CommunityService {
 
     private final NoticeRepository noticeRepository;
     private final RecommTravelRepository recommTravelRepository;
-//    private final CommunityRepository communityRepository;
+    private final CommunityRepository communityRepository;
 //    private final QnaRepository qnaRepository;
 
 
-    public CommunityDto.Response getSummaryData(int pageNo, int pageSize) {
+    public CommunitySummaryDto.Response getSummaryData(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
         // 공지사항
@@ -36,10 +35,14 @@ public class CommunityService {
         // 추천 여행지
         Page<RecommTravelDto.CommunitySummaryResponse> recommTravelList = recommTravelRepository.findAll(pageable).map(RecommTravelDto.CommunitySummaryResponse::new);
 
+        // 커뮤니티
+        Page<CommunityDto.CommunitySummaryResponse> communityList = communityRepository.findAll(pageable).map(CommunityDto.CommunitySummaryResponse::new);
 
-        CommunityDto.Response response = CommunityDto.Response.builder()
+
+        CommunitySummaryDto.Response response = CommunitySummaryDto.Response.builder()
                 .noticeList(noticeList.getContent())
-                .communityList(recommTravelList.getContent())
+                .recommTravelList(recommTravelList.getContent())
+                .communityList(communityList.getContent())
                 .build();
 
         return response;
