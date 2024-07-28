@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -167,19 +166,20 @@ public class PhotoService {
         return fileList;
     }
 
-    private String getFileExtension(MultipartFile multipartFile) {
-        String contentType = multipartFile.getContentType();
-        String originalFileExtension = null;
-
-        if (!ObjectUtils.isEmpty(contentType)) {
-            if (contentType.contains("image/jpeg")) {
-                originalFileExtension = ".jpg";
-            } else if (contentType.contains("image/png")) {
-                originalFileExtension = ".png";
-            }
+    public static String getFileExtension(MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.getOriginalFilename() == null) {
+            return "";
         }
 
-        return originalFileExtension;
+        String originalFilename = multipartFile.getOriginalFilename();
+        int dotIndex = originalFilename.lastIndexOf('.');
+
+        if (dotIndex == -1 || dotIndex == originalFilename.length() - 1) {
+            return "";
+        }
+
+        // return .jpg, .png, .gif
+        return originalFilename.substring(dotIndex);
     }
 
     private String createImagePath() {
