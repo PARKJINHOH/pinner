@@ -30,7 +30,6 @@ public class Community extends AuditEntity {
     private String content;
 
     @NotNull
-    @Column(length = 50)
     @Comment("작성자")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVELER_ID")
