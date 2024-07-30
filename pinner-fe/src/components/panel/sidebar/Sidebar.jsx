@@ -158,24 +158,6 @@ export default function Sidebar() {
                             />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            selected={sidebarSelector === sidebarStateKeys.COMMUNITY}
-                            className={style.list_item}
-                            onClick={() => handleItemClick(sidebarStateKeys.COMMUNITY)}
-                        >
-                            < ListItemIcon className={style.list_item_icon}>
-                                <LanguageIcon className={style.icon_size}/>
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={
-                                    <Typography variant="subtitle2" noWrap>
-                                        커뮤니티
-                                    </Typography>
-                                }
-                            />
-                        </ListItemButton>
-                    </ListItem>
                 </List>
 
                 <Divider sx={{marginTop: 'auto'}}/>
