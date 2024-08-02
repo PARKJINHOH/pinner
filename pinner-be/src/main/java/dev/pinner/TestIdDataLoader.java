@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 
 @Slf4j
@@ -61,6 +62,7 @@ public class TestIdDataLoader implements ApplicationRunner {
                     .roleEnum(RoleEnum.USER)
                     .signupServices("web")
                     .state(false)
+                    .lockedDate(LocalDateTime.now())
                     .lastLoginIpAddress("127.0.0.1")
                     .build();
 

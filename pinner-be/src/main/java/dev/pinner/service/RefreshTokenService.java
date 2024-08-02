@@ -8,6 +8,7 @@ import dev.pinner.repository.AdminRepository;
 import dev.pinner.repository.RefreshTokenRepository;
 import dev.pinner.repository.TravelerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
@@ -68,12 +70,12 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public void deleteByEmail(String email) {
+    public void deleteRefreshTokenByEmail(String email) {
         Optional<Traveler> travelerOpt = travelerRepository.findByEmail(email);
         if(travelerOpt.isPresent()){
-            refreshTokenRepository.deleteById(travelerOpt.get().getId());
+            refreshTokenRepository.deleteByTravelerId(travelerOpt.get().getId());
         } else {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "사용자가 없습니다.");
+            log.warn("[RefreshToken] Traveler not found with email: {}", email);
         }
 
     }

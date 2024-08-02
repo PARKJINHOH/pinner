@@ -77,7 +77,7 @@ export default function ProfileModal() {
     }
 
     async function deleteTraveler() {
-        if (window.confirm('정말 탈퇴하실건가요?')) {
+        if (window.confirm('정말 탈퇴하실건가요?\n해당 이메일은 잠김상태가 되며 6개월 뒤에 삭제됩니다.\n복구를 원하시면 6개월 이내에 관리자에게 문의해주세요.')) {
             let resultStatus = await apiv1.post("/traveler/delete", JSON.stringify(traveler))
                 .then(response => {
                     alert(response.data);
@@ -97,7 +97,7 @@ export default function ProfileModal() {
     }
 
     async function deleteOauthTraveler() {
-        if (window.confirm('정말 연동해제(탈퇴)하실건가요?')) {
+        if (window.confirm('정말 연동해제(탈퇴)하실건가요?\n해당 이메일은 잠김상태가 되며 6개월 뒤에 삭제됩니다.\n복구를 원하시면 6개월 이내에 관리자에게 문의해주세요.')) {
             let resultStatus = await apiv1.post("/traveler/delete/afteroauth", JSON.stringify(traveler))
                 .then(response => {
                     alert(response.data);

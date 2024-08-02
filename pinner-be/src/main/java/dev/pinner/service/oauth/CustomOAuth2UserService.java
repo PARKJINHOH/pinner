@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -73,15 +74,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private Traveler getUser(OAuthAttributes attributes, String socialType, OAuth2AccessToken oAuth2AccessToken) {
         String email = attributes.getOauth2UserInfo().getEmail();
-        Traveler findUser = travelerRepository.findByEmail(email).orElse(null);
+        Optional<Traveler> findUser = travelerRepository.findByEmail(email);
 
-        if (findUser == null) {
-            log.info("[{}]{} 소셜회원을 가입합니다.", socialType, email);
-            return saveUser(attributes, socialType, oAuth2AccessToken);
+        if (findUser.isPresent()) {
+            Traveler user = findUser.get();
+            if (!user.getState()) {
+                log.error("탈퇴한 사용자입니다.");
+            }
+            log.error("이미 가입된 사용자입니다.");
+
+            return user;
         }
 
-        log.info("[{}]{} 소셜회원 로그인.", socialType, email);
-        return findUser;
+        return saveUser(attributes, socialType, oAuth2AccessToken);
     }
 
     private Traveler saveUser(OAuthAttributes attributes, String socialType, OAuth2AccessToken oAuth2AccessToken) {

@@ -58,6 +58,9 @@ public class Traveler extends AuditEntity implements UserDetails {
     @Builder.Default // 객체생성시 초기값(@ColumnDefault는 DDL에 포함될 컬럼의 기본값을 지정하고 싶을때 사용), 혹은 유저 생성시 builder 로 넣는게 좋아보이며 여러 방법이 있음.
     private Boolean state = true;
 
+    @Comment("잠김 날짜")
+    private LocalDateTime lockedDate;
+
     @Comment("로그인 실패 횟수")
     private int loginFailureCount;
 
