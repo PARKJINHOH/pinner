@@ -4,6 +4,8 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dev.pinner.domain.dto.TravelerDto;
+import dev.pinner.domain.entity.Travel;
+import dev.pinner.domain.entity.Traveler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -74,6 +76,15 @@ public class TravelerQueryRepository {
                 .set(traveler.lockedDate, state ? null : LocalDateTime.now())
                 .where(traveler.id.eq(travelerId))
                 .execute();
+    }
+
+    // 회원 삭제(스케줄러)
+    public List<Traveler> deleteLockedTravelersOlderThan(LocalDateTime date) {
+        return queryFactory
+                .selectFrom(traveler)
+                .where(traveler.lockedDate.loe(date)
+                        .and(traveler.state.eq(false)))
+                .fetch();
     }
 
     private BooleanExpression createdDateGoe(LocalDateTime createdDate) {
