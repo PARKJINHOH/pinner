@@ -66,10 +66,12 @@ public class TravelerQueryRepository {
                 .toList();
     }
 
+    // 회원 비활성화
     public void updateTravelerState(Long travelerId, Boolean state) {
         queryFactory
                 .update(traveler)
                 .set(traveler.state, state)
+                .set(traveler.lockedDate, state ? null : LocalDateTime.now())
                 .where(traveler.id.eq(travelerId))
                 .execute();
     }
