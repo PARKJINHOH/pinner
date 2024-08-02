@@ -66,6 +66,14 @@ public class TravelerQueryRepository {
                 .toList();
     }
 
+    public void updateTravelerState(Long travelerId, Boolean state) {
+        queryFactory
+                .update(traveler)
+                .set(traveler.state, state)
+                .where(traveler.id.eq(travelerId))
+                .execute();
+    }
+
     private BooleanExpression createdDateGoe(LocalDateTime createdDate) {
         return (createdDate == null) ? null : traveler.createdDate.goe(createdDate); // goe >=
     }
