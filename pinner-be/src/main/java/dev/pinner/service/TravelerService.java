@@ -173,7 +173,7 @@ public class TravelerService {
     @Transactional
     public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
-        refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
+        refreshToken.ifPresent(token -> refreshTokenService.deleteRefreshTokenByEmail(token.getTraveler().getEmail()));
     }
 
     @Transactional
