@@ -23,8 +23,16 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
-            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-            String ticket = afterLoginService.put(oAuth2User.getId());
+            String ticket;
+            if (authentication.getPrincipal() instanceof CustomOAuth2User) {
+                CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+                ticket = afterLoginService.put(oAuth2User.getId());
+            } else {
+                // 예외 처리 로직
+                // getprincipal()이 어떤건지 보고싶어서 추가한 로그
+                log.error("authentication.getPrincipal() : " + authentication.getPrincipal());
+                ticket = "";
+            }
 
             UriComponents build = UriComponentsBuilder
                     .fromUri(URI.create("/afteroauth"))
