@@ -28,12 +28,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             String ticket;
             if (authentication.getPrincipal() instanceof CustomOAuth2User oAuth2User) {
-                ticket = afterLoginService.put(oAuth2User.getId());
+                ticket = afterLoginService.put(oAuth2User.getId().toString());
             } else if (authentication.getPrincipal() instanceof DefaultOAuth2User oAuth2User) {
-                ticket = afterLoginService.put(Long.parseLong(oAuth2User.getAttribute("sub").toString()));
-            } else if (authentication.getPrincipal() instanceof User) {
-                User user = (User) authentication.getPrincipal();
-                ticket = afterLoginService.put(Long.parseLong(user.getUsername()));
+                ticket = afterLoginService.put(oAuth2User.getAttribute("sub"));
+            } else if (authentication.getPrincipal() instanceof User user) {
+                ticket = afterLoginService.put(user.getUsername());
             } else {
                 // 예외 처리 로직
                 log.error("authentication.getPrincipal() : {}", authentication.getPrincipal());
