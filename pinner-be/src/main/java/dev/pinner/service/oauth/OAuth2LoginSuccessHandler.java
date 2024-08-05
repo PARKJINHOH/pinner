@@ -23,7 +23,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
-            log.info("OAuth2 Login 성공!");
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             String ticket = afterLoginService.put(oAuth2User.getId());
 
@@ -32,9 +31,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                     .queryParam("ticket", ticket)
                     .build(true);
 
+            log.info("OAuth2 Login 성공!");
             response.sendRedirect(build.toUriString());
-        } catch (Exception ex) {
-            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "OAuth2 Login에 실패했습니다.", ex);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new SystemException(HttpStatus.INTERNAL_SERVER_ERROR, "OAuth2 Login에 실패했습니다.", e);
         }
     }
 }
