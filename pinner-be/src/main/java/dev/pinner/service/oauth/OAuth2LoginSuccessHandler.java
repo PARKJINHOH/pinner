@@ -1,10 +1,13 @@
 package dev.pinner.service.oauth;
 
+import dev.pinner.exception.BusinessException;
 import dev.pinner.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
@@ -24,14 +27,17 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
             String ticket;
-            if (authentication.getPrincipal() instanceof CustomOAuth2User) {
-                CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            if (authentication.getPrincipal() instanceof CustomOAuth2User oAuth2User) {
                 ticket = afterLoginService.put(oAuth2User.getId());
+            } else if (authentication.getPrincipal() instanceof DefaultOAuth2User oAuth2User) {
+                ticket = afterLoginService.put(Long.parseLong(oAuth2User.getAttribute("id").toString()));
+            } else if (authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+                ticket = afterLoginService.put(Long.parseLong(user.getUsername()));
             } else {
                 // 예외 처리 로직
-                // getprincipal()이 어떤건지 보고싶어서 추가한 로그
-                log.error("authentication.getPrincipal() : " + authentication.getPrincipal());
-                ticket = "";
+                log.error("authentication.getPrincipal() : {}", authentication.getPrincipal());
+                throw new BusinessException(HttpStatus.UNAUTHORIZED, "authentication.getPrincipal() 타입이 맞지 않습니다.");
             }
 
             UriComponents build = UriComponentsBuilder
