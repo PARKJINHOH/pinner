@@ -24,6 +24,7 @@ spring:
             redirect-uri: "https://pinner.dev/login/oauth2/code/google"
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
