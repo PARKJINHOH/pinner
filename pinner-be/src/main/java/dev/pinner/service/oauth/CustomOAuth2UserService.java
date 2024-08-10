@@ -50,6 +50,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
         Traveler createdUser = getUser(extractAttributes, socialType, accessToken);
+        log.info("createdUser{}", createdUser);
 
         // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
         return new CustomOAuth2User(
