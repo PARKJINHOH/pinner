@@ -5,14 +5,9 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { HTTPStatus, useAPIv1 } from 'apis/traveler/apiv1';
 
 // component
-import LoginModal from 'components/modals/LoginModal.jsx';
-import RegisterModal from 'components/modals/RegisterModal';
-import ProfileModal from "components/modals/ProfileModal";
-import FindPasswordModal from "components/modals/FindPasswordModal";
-import FindNicknameModal from "components/modals/FindNicknameModal";
 import { boundsHasInfo, is_journey_has_location } from 'utils';
 import { googleMapState } from 'states/map';
-import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
+import { NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from 'states/travel';
 
 // etc
@@ -37,7 +32,7 @@ export default function TravelPage() {
     const [libraries] = useState(['places']);
 
     const apiv1 = useAPIv1();
-    const [modalVisibility, setModalVisibility] = useRecoilState(authModalVisibilityState);
+
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
 
@@ -105,11 +100,6 @@ export default function TravelPage() {
                 autoClose={3000}
                 pauseOnFocusLoss={false}
             />
-            {modalVisibility === AuthModalVisibility.SHOW_REGISTER && <RegisterModal />}
-            {modalVisibility === AuthModalVisibility.SHOW_LOGIN && <LoginModal />}
-            {modalVisibility === AuthModalVisibility.SHOW_PROFILE && <ProfileModal />}
-            {modalVisibility === AuthModalVisibility.SHOW_FINDPW && <FindPasswordModal />}
-            {modalVisibility === AuthModalVisibility.SHOW_FINDNICKNAME && <FindNicknameModal />}
             {/*{*/}
             {/*    // selectedTravel가 undefinded인 상태가 있을 수 있음.*/}
             {/*    // 이는 TravelePill에서 setSelected를 사용해 초기화 됨.*/}
