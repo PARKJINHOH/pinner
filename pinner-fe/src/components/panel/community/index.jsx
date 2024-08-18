@@ -1,19 +1,22 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from "react";
 
 // component
 import Navbar from "./navbar/Navbar";
 import Content from "./content/Content";
 import Footer from "./footer/Footer";
 
+// css
+import style from "./Index.module.css";
 
-export default function index() {
+export default function Index() {
 
-
-    return (
-        <div style={{display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
-            <Navbar/>
-            <Content/>
-            <Footer/>
-        </div>
-    )
+  return (
+    <div className={style.wrap}>
+      <Navbar/>
+      <div className={style.content}>
+        <Content />
+      </div>
+      <Footer />
+    </div>
+  );
 }

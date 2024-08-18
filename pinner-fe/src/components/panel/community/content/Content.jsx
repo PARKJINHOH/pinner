@@ -1,7 +1,9 @@
 import React, {useState} from 'react'
 import {useRecoilState} from "recoil";
 import {commState, commStateKeys} from "states/community/sidebar";
+
 import Summary from "./ContentElement/Summary";
+import Community from "./ContentElement/Community";
 
 export default function Content() {
 
@@ -17,7 +19,7 @@ export default function Content() {
                         case commStateKeys.NOTICE:
                             return '11';
                         case commStateKeys.COMMUNITY:
-                            return '22';
+                            return <Community/>;
                         case commStateKeys.TRAVEL:
                             return '33';
                         case commStateKeys.QNA:

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react'
+
 import style from "./Summary.module.css";
 import Divider from "@mui/material/Divider";
 import {Typography} from "@mui/material";
 import {useAPIv1} from "apis/traveler/apiv1";
 import {HTTPStatus} from "apis/admin/apiv1";
 
-export default function Content() {
+export default function Summary() {
     const apiv1 = useAPIv1();
 
     const [noticeList, setNoticeList] = useState([]);
