@@ -173,7 +173,7 @@ public class TravelerService {
     @Transactional
     public void doLogout(TravelerDto.Request travelerDto) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(travelerDto.getRefreshToken());
-        refreshToken.ifPresent(token -> refreshTokenService.deleteByEmail(token.getTraveler().getEmail()));
+        refreshToken.ifPresent(token -> refreshTokenService.deleteRefreshTokenByEmail(token.getTraveler().getEmail()));
     }
 
     @Transactional
@@ -217,19 +217,25 @@ public class TravelerService {
                     "&client_secret=%s" +
                     "&access_token=%s" +
                     "&service_provider=NAVER").formatted(clientId_naver, clientSecret_naver, traveler.getOauthAccessToken());
-            return requestToServer(apiUrl, OauthServiceCodeEnum.NAVER.getSignupServices());
+            if(oauthRequestToServer(apiUrl, OauthServiceCodeEnum.NAVER.getSignupServices())){
+                updateStateByEmail(traveler);
+            }
         }
 
         if (traveler.getSignupServices().equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
             String apiUrl =("https://oauth2.googleapis.com/revoke?token=%s").formatted(traveler.getOauthAccessToken());
-            return requestToServer(apiUrl, OauthServiceCodeEnum.GOOGLE.getSignupServices());
+            if(oauthRequestToServer(apiUrl, OauthServiceCodeEnum.GOOGLE.getSignupServices())){
+                updateStateByEmail(traveler);
+            }
         }
+
+        updateStateByEmail(traveler);
 
         return true;
     }
 
 
-    private Boolean requestToServer(String apiURL, String signupServices) {
+    private boolean oauthRequestToServer(String apiURL, String signupServices) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -240,20 +246,20 @@ public class TravelerService {
         if (signupServices.equals(OauthServiceCodeEnum.NAVER.getSignupServices())) {
             ResponseEntity<NaverDto.NaverWithdrawalResponse> resultNaver = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, NaverDto.NaverWithdrawalResponse.class);
             log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultNaver.getStatusCode(), resultNaver.getBody());
-            if (resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success")) {
-                return true;
+            if (!(resultNaver.getStatusCode() == HttpStatus.OK && Objects.requireNonNull(resultNaver.getBody()).getResult().equals("success"))) {
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "네이버 회원탈퇴에 실패했습니다.");
             }
         }
 
         if (signupServices.equals(OauthServiceCodeEnum.GOOGLE.getSignupServices())) {
             ResponseEntity<String> resultGoogle = restTemplate.exchange(apiURL, HttpMethod.POST, requestEntity, String.class);
             log.info("{}({}) : ApiResponse : ({}){}", signupServices, apiURL, resultGoogle.getStatusCode(), resultGoogle.getBody());
-            if (resultGoogle.getStatusCode() == HttpStatus.OK) {
-                return true;
+            if (!(resultGoogle.getStatusCode() == HttpStatus.OK)) {
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "구글 회원탈퇴에 실패했습니다.");
             }
         }
 
-        return false;
+        return true;
     }
 
     public List<Traveler> getTotalTraveler() {
@@ -266,5 +272,10 @@ public class TravelerService {
 
     public List<TravelerDto.SummaryResponse> getTravelerGroupByYearMonth() {
         return travelerQueryRepository.findTravelerGroupByYearMonth();
+    }
+
+    private void updateStateByEmail(Traveler traveler){
+        refreshTokenService.deleteRefreshTokenByEmail(traveler.getEmail());
+        travelerQueryRepository.updateTravelerState(traveler.getId(), false);
     }
 }
