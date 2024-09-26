@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
 
   security:
     oauth2:
@@ -24,6 +24,7 @@ spring:
             redirect-uri: "https://dev.pinner.dev/login/oauth2/code/google"
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
         provider:
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
@@ -33,8 +34,8 @@ spring:
 
 logging:
   level:
-    org.springframework.web: INFO
-    org.springframework.security: INFO
+    org.springframework.web: debug
+    org.springframework.security: debug
 
 path:
   image: images
