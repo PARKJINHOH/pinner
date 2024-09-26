@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
@@ -54,7 +54,7 @@ jobs:
         distribution: 'temurin'
 
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
@@ -83,7 +83,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
     - name: web docker build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         file: ${{ env.working-directory-be }}/Dockerfile
         context: ${{ env.working-directory-be }}
@@ -125,7 +125,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
@@ -152,7 +152,7 @@ jobs:
         ls -al .
 
     - name: web docker build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         file: ${{ env.working-directory-fe }}/Dockerfile.dev
         context: ${{ env.working-directory-fe }}
