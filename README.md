@@ -45,8 +45,12 @@ https://pinner.dev
 ### CI/CD
 <img src="https://img.shields.io/badge/Github Actions-white?logo=githubactions"/>&nbsp;
 
+### 시스템 구성도
+![pinner](https://github.com/user-attachments/assets/32cede30-ad25-4127-b654-0db851bdbb55)
+
 ## Collaborator
 <img src="https://avatars.githubusercontent.com/u/58283564?v=4" title="ngryman" width="80" height="80" style="max-width: 100%;">
+
 
 <br/>
 <br/>
@@ -54,7 +58,7 @@ https://pinner.dev
 ## 목차
 - [홈페이지 설명](#홈페이지-설명)
 - [화면설명](#화면설명)
-
+- [프로젝트 개선](#프로젝트-개선)
 <br/>
 <br/>
 
@@ -62,8 +66,9 @@ https://pinner.dev
 회원가입 후 여정과 여정에 대한 날짜별 여행을 기록할 수 있는 웹사이트입니다.
 사진을 업로드 하면 마지막 사진의 정보를 가지고와 위도,경도 정보를 추출하여 지도에 마커로 표시하며 사진촬영 시간으로 정보를 기록합니다.
 
-여행 : 큰 틀의 여행입니다. (ex. 23년 2월 베트남 여행, 24년 5월 일본 여행)<br/>
-여정 : 여행 안에서의 날짜별 여정입니다. (ex. 2월 23일, 2월 24일, 2월 25일)
+### 용어 설명
+여행: 전체적인 여행을 의미합니다. (예: 2023년 2월 베트남 여행, 2024년 5월 일본 여행)<br/> 
+여정: 여행 내에서 날짜별로 계획된 일정입니다. (예: 2월 23일, 2월 24일, 2월 25일)
 
 ### 홈페이지 기능
 * 회원가입, 로그인, 소셜미디어 로그인(Naver, Google)
@@ -102,6 +107,3 @@ https://pinner.dev
 
 ### Server Monitoring
 > ![image](https://github.com/user-attachments/assets/648f0dd9-cb79-4078-8513-52aa171cf28a)
-
-
-
