@@ -1,6 +1,10 @@
-# Pinner
-https://pinner.dev
+# pinner
+pinner는 여행을 기록하고 추억을 남길 수 있는 웹사이트입니다. <br/>
+다녀온 여행지를 pin으로 표시하고, 여행을 남기는 사람이 되어 당신만의 특별한 여행 이야기를 만들어보세요!
+> https://pinner.dev
 
+<br/>
+ 
 ![pinner](https://github.com/user-attachments/assets/92d20520-b942-46f7-8991-6076ebd0276d)
 * Spring Boot와 React를 사용한 여행기록 웹사이트입니다.
 
@@ -39,14 +43,14 @@ https://pinner.dev
 <img src="https://img.shields.io/badge/mariadb(dev, prod)-003545?logo=mariadb"/>&nbsp;
 
 ### Monitoring
-<img src="https://img.shields.io/badge/Prometheus-white?logo=prometheus"/>&nbsp;  
+<img src="https://img.shields.io/badge/Prometheus-white?logo=prometheus"/>&nbsp;
 <img src="https://img.shields.io/badge/Grafana-white?logo=grafana"/>&nbsp;
 
 ### CI/CD
 <img src="https://img.shields.io/badge/Github Actions-white?logo=githubactions"/>&nbsp;
 
 ### 시스템 구성도
-![pinner](https://github.com/user-attachments/assets/32cede30-ad25-4127-b654-0db851bdbb55)
+![pinner](https://github.com/user-attachments/assets/354d3ea0-f517-4d52-be86-ea59f6ef84ee)
 
 ## Collaborator
 <img src="https://avatars.githubusercontent.com/u/58283564?v=4" title="ngryman" width="80" height="80" style="max-width: 100%;">
