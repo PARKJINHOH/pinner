@@ -41,6 +41,20 @@ export default function BasePage() {
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
 
+    const bounds = useRecoilValue(selectedTravelBoundsState);
+
+    useEffect(() => {
+        if (boundsHasInfo(bounds)) {
+            map.fitBounds(bounds, 300);
+        }
+    }, [bounds]);
+
+    useEffect(() => {
+        if (map) {
+            map.setZoom(13);
+        }
+    }, [gMap, map]);
+
     /**
      * NOTE: 위치 선택시 커서 모양 변경의 구현에 관하여
      *
@@ -57,30 +71,18 @@ export default function BasePage() {
     /** @type {Travel} */
     const selectedTravel = useRecoilValue(selectedTravelState);
 
-
-    const bounds = useRecoilValue(selectedTravelBoundsState);
-
-
-    useEffect(() => {
-        if (boundsHasInfo(bounds)) {
-            map.fitBounds(bounds, 300);
-        }
-    }, [bounds]);
-
-
-
     // 검색창
     const placeRef = useRef(null);
 
 
     /**
      * 주어진 Viewport의 중간 좌표를 구한다.
-     * @param {Viewport} viewport
+     * @param {Viewport} location
      */
-    function middleOfViewport(viewport) {
+    function middleOfViewport(location) {
         return {
-            "ua": (viewport.Wh.lo + viewport.Wh.hi) / 2,
-            "ga": (viewport.Gh.lo + viewport.Gh.hi) / 2,
+            "ua": location.lat(),
+            "ga": location.lng()
         };
     }
 
@@ -95,8 +97,11 @@ export default function BasePage() {
         if (places === undefined || places.length === 0) return;
         const place = places[0];
 
-        const ua_ia = middleOfViewport(place.geometry.viewport);
-        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga }, zoom: 13})
+        const ua_ia = middleOfViewport(place.geometry.location);
+        let lat = place.geometry.location.lat();
+        let lng = place.geometry.location.lng();
+
+        setGMap({ ...gMap, center: { lat: lat, lng: lng }, zoom: 13})
     }
 
     return (
