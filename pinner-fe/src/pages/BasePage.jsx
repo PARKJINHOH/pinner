@@ -45,6 +45,7 @@ export default function BasePage() {
 
     useEffect(() => {
         if (boundsHasInfo(bounds)) {
+            // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
             map.fitBounds(bounds, 300);
         }
     }, [bounds]);
