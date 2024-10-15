@@ -10,7 +10,7 @@ import RegisterModal from 'components/modals/RegisterModal';
 import ProfileModal from "components/modals/ProfileModal";
 import FindPasswordModal from "components/modals/FindPasswordModal";
 import FindNicknameModal from "components/modals/FindNicknameModal";
-import { boundsHasInfo, is_journey_has_location } from 'utils';
+import { isBounds, is_journey_has_location } from "utils";
 import { googleMapState } from 'states/map';
 import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from 'states/travel';
@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import { sidebarWidth, travelListViewWidth } from "../states/panel/panelWidth";
 
 
 
@@ -41,6 +42,23 @@ export default function BasePage() {
     const [newJourneyStep, setNewJourneyStep] = useRecoilState(newJourneyStepState);
     const setNewLocationState = useSetRecoilState(newLocationState);
 
+    const bounds = useRecoilValue(selectedTravelBoundsState);
+
+    useEffect(() => {
+        if (isBounds(bounds)) {
+            // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
+            // - 10으로 대략적인 유추.
+            map.fitBounds(bounds, 300);
+            map.setCenter({lng:map.getCenter().lng() - 10, lat: map.getCenter().lat()})
+        }
+    }, [bounds]);
+
+    useEffect(() => {
+        if (map) {
+            map.setZoom(13);
+        }
+    }, [gMap, map]);
+
     /**
      * NOTE: 위치 선택시 커서 모양 변경의 구현에 관하여
      *
@@ -57,32 +75,8 @@ export default function BasePage() {
     /** @type {Travel} */
     const selectedTravel = useRecoilValue(selectedTravelState);
 
-
-    const bounds = useRecoilValue(selectedTravelBoundsState);
-
-
-    useEffect(() => {
-        if (boundsHasInfo(bounds)) {
-            map.fitBounds(bounds, 300);
-        }
-    }, [bounds]);
-
-
-
     // 검색창
     const placeRef = useRef(null);
-
-
-    /**
-     * 주어진 Viewport의 중간 좌표를 구한다.
-     * @param {Viewport} viewport
-     */
-    function middleOfViewport(viewport) {
-        return {
-            "ua": (viewport.Wh.lo + viewport.Wh.hi) / 2,
-            "ga": (viewport.Gh.lo + viewport.Gh.hi) / 2,
-        };
-    }
 
     /**
      * 사용자가 검색을 시도하면 호출되는 함수
@@ -95,8 +89,10 @@ export default function BasePage() {
         if (places === undefined || places.length === 0) return;
         const place = places[0];
 
-        const ua_ia = middleOfViewport(place.geometry.viewport);
-        setGMap({ ...gMap, center: { lat: ua_ia.ua, lng: ua_ia.ga }, zoom: 13})
+        let lat = place.geometry.location.lat();
+        let lng = place.geometry.location.lng();
+
+        setGMap({ ...gMap, center: { lat: lat, lng: lng }, zoom: 13})
     }
 
     return (

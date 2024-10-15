@@ -88,12 +88,9 @@ export function boundsOfTravel(travel) {
 }
 
 /**
- * 여러 좌표들의 경계를 구한다.
- *
- * @param {google.maps.LatLngBoundsLiteral} bounds
- * @returns {boolean}
+ * 좌표의 누락이 있는지 확인
  */
-export function boundsHasInfo(bounds) {
+export function isBounds(bounds) {
     if (!bounds) {
         return false;
     }
