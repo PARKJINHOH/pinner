@@ -45,6 +45,7 @@ export default function BasePage() {
 
     useEffect(() => {
         if (boundsHasInfo(bounds)) {
+            // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
             map.fitBounds(bounds, 300);
         }
     }, [bounds]);
@@ -74,18 +75,6 @@ export default function BasePage() {
     // 검색창
     const placeRef = useRef(null);
 
-
-    /**
-     * 주어진 Viewport의 중간 좌표를 구한다.
-     * @param {Viewport} location
-     */
-    function middleOfViewport(location) {
-        return {
-            "ua": location.lat(),
-            "ga": location.lng()
-        };
-    }
-
     /**
      * 사용자가 검색을 시도하면 호출되는 함수
      */
@@ -97,7 +86,6 @@ export default function BasePage() {
         if (places === undefined || places.length === 0) return;
         const place = places[0];
 
-        const ua_ia = middleOfViewport(place.geometry.location);
         let lat = place.geometry.location.lat();
         let lng = place.geometry.location.lng();
 
