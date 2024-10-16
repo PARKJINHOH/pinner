@@ -49,7 +49,7 @@ export default function BasePage() {
             // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
             // - 10으로 대략적인 유추.
             map.fitBounds(bounds, 300);
-            map.setCenter({lng:map.getCenter().lng() - 10, lat: map.getCenter().lat()})
+            map.setCenter({lng:map.getCenter().lng() - 5, lat: map.getCenter().lat()})
         }
     }, [bounds]);
 
