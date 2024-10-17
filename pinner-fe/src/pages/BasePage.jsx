@@ -47,17 +47,16 @@ export default function BasePage() {
     useEffect(() => {
         if (isBounds(bounds)) {
             // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
-            // - 10으로 대략적인 유추.
             map.fitBounds(bounds, 300);
-            map.setCenter({lng:map.getCenter().lng() - 5, lat: map.getCenter().lat()})
+
+            if (map.getZoom() < 9) {
+                map.setCenter({ lng: map.getCenter().lng() - 5, lat: map.getCenter().lat() });
+            } else {
+                map.setZoom(map.getZoom() - 2);
+                map.setCenter({ lng: map.getCenter().lng() - 0.5, lat: map.getCenter().lat() });
+            }
         }
     }, [bounds]);
-
-    useEffect(() => {
-        if (map) {
-            map.setZoom(13);
-        }
-    }, [gMap, map]);
 
     /**
      * NOTE: 위치 선택시 커서 모양 변경의 구현에 관하여
