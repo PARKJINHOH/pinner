@@ -57,31 +57,18 @@ export default function TravelPill({ travel, editMode, setEditMode }) {
     const journeyCnt = travel.journeys.length;
     const journeyPhotoCnt = journeyList.reduce((acc, v) => v.photos.length + acc, 0);
 
-    // Journey를 클릭하게 되면 아래와 같은 행동을 수행함.
-    //
-    //   1. 선택된 Travel을 다시 클릭하면 선택을 해제함
-    //   2. 선택되지 않은 Travel을 클릭하면 해당 Travel을 SelectedTravelId로 설정하고,
-    //      지도를 해당 Travel의 중앙으로 이동함.
-    function onJourneyClick() {
-        setEditMode('');
+  /**
+   * 여행을 클릭했을 때의 이벤트 핸들러
+   * 화면이동은 BasePage.jsx의 map.fitBounds에서 처리
+   */
+  function onJourneyClick() {
+      setEditMode("");
 
-        // 1. 선택된 Travel을 다시 클릭하면 선택을 해제함
-        if (selectedTravelId === travel.id) {
-            setSelectedTravelId('');
-            return;
-        }
-
-        // 2. 선택되지 않은 Travel을 클릭하면 해당 Travel을 SelectedTravelId로 설정하고,
-        //    지도를 해당 Travel의 중앙으로 이동함.
-        setSelectedTravelId(travel.id);
-        const points = journeyList
-            .map(j => j.geoLocationDto)
-            .filter(point => point.lat !== 0 && point.lat !== 0);
-
-        if (points.length !== 0) {
-            const centerOfTravel = centerOfPoints(points);
-            setGMap({ center: centerOfTravel });
-        }
+      if (selectedTravelId === travel.id) {
+        setSelectedTravelId("");
+        return;
+      }
+      setSelectedTravelId(travel.id);
     }
 
     /**
