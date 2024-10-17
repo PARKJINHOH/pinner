@@ -10,7 +10,7 @@ import RegisterModal from 'components/modals/RegisterModal';
 import ProfileModal from "components/modals/ProfileModal";
 import FindPasswordModal from "components/modals/FindPasswordModal";
 import FindNicknameModal from "components/modals/FindNicknameModal";
-import { boundsHasInfo, is_journey_has_location } from 'utils';
+import { isBounds, is_journey_has_location } from "utils";
 import { googleMapState } from 'states/map';
 import { AuthModalVisibility, authModalVisibilityState, NewJourneyStep, newJourneyStepState, newLocationState } from 'states/modal';
 import { selectedTravelBoundsState, selectedTravelState } from 'states/travel';
@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // google map
 import { GoogleMap, InfoWindow, LoadScript, Marker, Polyline, StandaloneSearchBox } from '@react-google-maps/api';
+import { sidebarWidth, travelListViewWidth } from "../states/panel/panelWidth";
 
 
 
@@ -44,9 +45,11 @@ export default function BasePage() {
     const bounds = useRecoilValue(selectedTravelBoundsState);
 
     useEffect(() => {
-        if (boundsHasInfo(bounds)) {
+        if (isBounds(bounds)) {
             // fitBounds : 구글맵 중심점(Google maps Bounds) 자동으로 계산함
+            // - 10으로 대략적인 유추.
             map.fitBounds(bounds, 300);
+            map.setCenter({lng:map.getCenter().lng() - 5, lat: map.getCenter().lat()})
         }
     }, [bounds]);
 
