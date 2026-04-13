@@ -25,14 +25,14 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: develop
         repository: PARKJINHOH/${{ env.repo }}
         token: ${{ secrets.TOKEN_GITHUB }}
         
     - name : Run Paths Filter
-      uses: dorny/paths-filter@v3
+      uses: dorny/paths-filter@v4
       id: filter
       with:
         filters: |
