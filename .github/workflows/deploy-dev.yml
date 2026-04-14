@@ -83,7 +83,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
     - name: web docker build and push
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         file: ${{ env.working-directory-be }}/Dockerfile
         context: ${{ env.working-directory-be }}
@@ -142,7 +142,7 @@ jobs:
         ls -al .
 
     - name: web docker build and push
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         file: ${{ env.working-directory-fe }}/Dockerfile.dev
         context: ${{ env.working-directory-fe }}
