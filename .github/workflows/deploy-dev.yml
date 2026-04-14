@@ -98,16 +98,15 @@ jobs:
       contents: read
       actions: read
     steps:
-    - name: docker pull
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_IP }}
-        username: ubuntu
-        password: ${{ secrets.SSH_PASSWORD }}
-        port: 22
-        key: ${{ secrets.SSH_RSA }}
-        script: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}-dev
+      - name: docker pull on Synology
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_IP }}
+          username: ${{ secrets.SSH_ID }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo '${{ secrets.SSH_PASSWORD }}' | sudo -S -p '' /usr/local/bin/docker pull ${{ secrets.DOCKER_REPO }}/${{ env.docker-image-be }}-dev
 
   frontend:
     needs: changes
