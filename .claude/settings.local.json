@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gradle wrapper *)",
+      "PowerShell(Get-Command *)",
+      "Bash(xargs grep *)"
+    ]
+  }
+}

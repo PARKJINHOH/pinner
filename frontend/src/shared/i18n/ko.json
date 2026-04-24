@@ -1,0 +1,35 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "confirm": "확인",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정",
+    "add": "추가"
+  },
+  "auth": {
+    "login": "로그인",
+    "register": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "logout": "로그아웃"
+  },
+  "trip": {
+    "title": "여행",
+    "add": "여행 추가",
+    "edit": "여행 수정",
+    "delete": "여행 삭제"
+  },
+  "day": {
+    "title": "날짜",
+    "add": "날짜 추가",
+    "edit": "날짜 수정",
+    "delete": "날짜 삭제"
+  },
+  "photo": {
+    "upload": "사진 업로드",
+    "delete": "사진 삭제"
+  }
+}

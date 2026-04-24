@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    env_file: .env
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+    volumes:
+      - mariadb_prod_data:/var/lib/mysql
+    restart: always
+
+  redis:
+    image: redis:7.4-alpine
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - mariadb
+      - redis
+    volumes:
+      - uploads_prod:/app/uploads
+    restart: always
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mariadb_prod_data:
+  uploads_prod:

@@ -1,0 +1,35 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "logout": "Logout"
+  },
+  "trip": {
+    "title": "Trip",
+    "add": "Add Trip",
+    "edit": "Edit Trip",
+    "delete": "Delete Trip"
+  },
+  "day": {
+    "title": "Day",
+    "add": "Add Day",
+    "edit": "Edit Day",
+    "delete": "Delete Day"
+  },
+  "photo": {
+    "upload": "Upload Photo",
+    "delete": "Delete Photo"
+  }
+}
