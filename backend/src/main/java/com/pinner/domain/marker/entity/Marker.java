@@ -43,16 +43,24 @@ public class Marker extends BaseEntity {
     @Column(name = "label", length = 255)
     private String label;
 
-    private Marker(TripDay tripDay, User user, BigDecimal lat, BigDecimal lng, String label) {
+    @Column(name = "is_auto", nullable = false)
+    private boolean auto;
+
+    private Marker(TripDay tripDay, User user, BigDecimal lat, BigDecimal lng, String label, boolean auto) {
         this.tripDay = tripDay;
         this.user = user;
         this.lat = lat;
         this.lng = lng;
         this.label = label;
+        this.auto = auto;
     }
 
-    public static Marker of(TripDay tripDay, User user, BigDecimal lat, BigDecimal lng, String label) {
-        return new Marker(tripDay, user, lat, lng, label);
+    public static Marker ofAuto(TripDay tripDay, User user, BigDecimal lat, BigDecimal lng) {
+        return new Marker(tripDay, user, lat, lng, null, true);
+    }
+
+    public static Marker ofManual(TripDay tripDay, User user, BigDecimal lat, BigDecimal lng, String label) {
+        return new Marker(tripDay, user, lat, lng, label, false);
     }
 
     public void updateLocation(BigDecimal lat, BigDecimal lng) {
@@ -62,5 +70,9 @@ public class Marker extends BaseEntity {
 
     public void updateLabel(String label) {
         this.label = label;
+    }
+
+    public void setManual() {
+        this.auto = false;
     }
 }

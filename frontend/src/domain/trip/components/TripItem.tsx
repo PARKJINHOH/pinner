@@ -18,6 +18,7 @@ export default function TripItem({ trip }: Props) {
 
   const expandedTripIds = useTripStore((s) => s.expandedTripIds)
   const toggleExpanded = useTripStore((s) => s.toggleExpanded)
+  const setSelectedTrip = useTripStore((s) => s.setSelectedTrip)
   const isExpanded = expandedTripIds.includes(trip.tripId)
 
   const { updateTrip, isLoading: isUpdating } = useUpdateTrip()
@@ -50,7 +51,10 @@ export default function TripItem({ trip }: Props) {
       <div ref={setNodeRef} style={style}>
         <div
           className="flex items-center gap-1.5 px-2 py-2 hover:bg-gray-100 rounded-lg cursor-pointer group"
-          onClick={() => toggleExpanded(trip.tripId)}
+          onClick={() => {
+            toggleExpanded(trip.tripId)
+            setSelectedTrip(trip.tripId)
+          }}
         >
           <span
             {...attributes}

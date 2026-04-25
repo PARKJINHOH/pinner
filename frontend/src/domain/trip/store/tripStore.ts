@@ -6,6 +6,7 @@ interface TripState {
   selectedTripId: number | null
   selectedDayId: number | null
   expandedTripIds: number[]
+  markerRefreshKey: number
 
   setTrips: (trips: TripResponse[]) => void
   addTrip: (trip: TripResponse) => void
@@ -15,6 +16,7 @@ interface TripState {
   setSelectedTrip: (tripId: number | null) => void
   setSelectedDay: (dayId: number | null) => void
   toggleExpanded: (tripId: number) => void
+  incrementMarkerRefresh: () => void
 }
 
 export const useTripStore = create<TripState>((set) => ({
@@ -22,6 +24,7 @@ export const useTripStore = create<TripState>((set) => ({
   selectedTripId: null,
   selectedDayId: null,
   expandedTripIds: [],
+  markerRefreshKey: 0,
 
   setTrips: (trips) => set({ trips }),
 
@@ -55,4 +58,6 @@ export const useTripStore = create<TripState>((set) => ({
         ? s.expandedTripIds.filter((id) => id !== tripId)
         : [...s.expandedTripIds, tripId],
     })),
+
+  incrementMarkerRefresh: () => set((s) => ({ markerRefreshKey: s.markerRefreshKey + 1 })),
 }))

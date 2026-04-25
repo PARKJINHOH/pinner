@@ -25,6 +25,9 @@ public enum ErrorCode {
     // TripDay
     TRIP_DAY_NOT_FOUND(HttpStatus.NOT_FOUND, "날짜 기록을 찾을 수 없습니다"),
 
+    // Marker
+    MARKER_NOT_FOUND(HttpStatus.NOT_FOUND, "마커를 찾을 수 없습니다"),
+
     // Photo
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "사진을 찾을 수 없습니다"),
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "파일 크기가 허용 한도를 초과했습니다 (최대 5MB)"),

@@ -3,13 +3,19 @@ import { useAuthStore } from '../store/authStore'
 
 const axiosInstance = axios.create({
   baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' },
 })
 
 axiosInstance.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+  // FormData 전송 시 Content-Type을 완전히 제거해야
+  // 브라우저/fetch가 multipart/form-data; boundary=... 를 자동 설정함
+  // axios의 전역 기본값 headers.post['Content-Type'] = 'application/json'이
+  // axios.create() 설정 제거와 무관하게 POST 요청에 적용되므로 여기서 명시적으로 삭제
+  if (config.data instanceof FormData) {
+    config.headers.delete('Content-Type')
   }
   return config
 })

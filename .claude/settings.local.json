@@ -3,7 +3,10 @@
     "allow": [
       "Bash(gradle wrapper *)",
       "PowerShell(Get-Command *)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(npx vite *)",
+      "Bash(npm run *)",
+      "Read(//tmp/**)"
     ]
   }
 }

@@ -8,8 +8,18 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface MarkerRepository extends JpaRepository<Marker, Long> {
+
+    Optional<Marker> findByTripDay_IdAndDeletedAtIsNull(Long tripDayId);
+
+    boolean existsByTripDay_IdAndDeletedAtIsNull(Long tripDayId);
+
+    @Query("SELECT m FROM Marker m JOIN FETCH m.tripDay td " +
+           "WHERE td.trip.id = :tripId AND m.deletedAt IS NULL " +
+           "ORDER BY td.date ASC NULLS LAST, td.createdAt ASC")
+    List<Marker> findByTripIdWithDayAndDeletedAtIsNull(@Param("tripId") Long tripId);
 
     @Modifying
     @Query("UPDATE Marker m SET m.deletedAt = :now WHERE m.tripDay.id IN :dayIds AND m.deletedAt IS NULL")

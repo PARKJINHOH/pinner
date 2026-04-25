@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useAuthStore } from '../shared/store/authStore'
 import { useLogout } from '../domain/auth/hooks'
 import LeftPanel from '../domain/trip/components/LeftPanel'
+import { MapArea } from '../domain/map/components'
+import { PhotoPanel } from '../domain/photo/components'
 
 export default function MainPage() {
   const nickname = useAuthStore((s) => s.nickname)
@@ -62,12 +64,13 @@ export default function MainPage() {
         )}
 
         {/* Map Area */}
-        <main className="flex-1 bg-gray-100 flex items-center justify-center relative">
-          <p className="text-gray-400 text-sm">지도 영역 (Step 7에서 구현)</p>
+        <main className="flex-1 relative overflow-hidden">
+          <MapArea />
+          <PhotoPanel />
 
           {/* Mobile panel toggle button */}
           <button
-            className="md:hidden absolute bottom-6 left-4 bg-navy text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-semibold"
+            className="md:hidden absolute bottom-6 left-4 bg-navy text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-semibold z-10"
             onClick={() => setIsPanelOpen(true)}
           >
             내 여행 목록
