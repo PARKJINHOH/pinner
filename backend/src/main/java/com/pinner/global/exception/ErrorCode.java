@@ -20,6 +20,7 @@ public enum ErrorCode {
 
     // Trip
     TRIP_NOT_FOUND(HttpStatus.NOT_FOUND, "여행을 찾을 수 없습니다"),
+    INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "종료일은 시작일보다 빠를 수 없습니다"),
 
     // TripDay
     TRIP_DAY_NOT_FOUND(HttpStatus.NOT_FOUND, "날짜 기록을 찾을 수 없습니다"),

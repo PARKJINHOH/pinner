@@ -20,13 +20,22 @@
     "title": "Trip",
     "add": "Add Trip",
     "edit": "Edit Trip",
-    "delete": "Delete Trip"
+    "delete": "Delete Trip",
+    "deleteConfirm": "Deleting this trip will remove all days and photos. Are you sure?",
+    "titlePlaceholder": "Enter trip name",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "noTrips": "No trips yet. Add your first trip!"
   },
   "day": {
     "title": "Day",
     "add": "Add Day",
     "edit": "Edit Day",
-    "delete": "Delete Day"
+    "delete": "Delete Day",
+    "deleteConfirm": "Deleting this day will remove all photos. Are you sure?",
+    "namePlaceholder": "Enter day name (e.g. Istanbul Day 1)",
+    "date": "Date (optional)",
+    "noDays": "Add a day to get started!"
   },
   "photo": {
     "upload": "Upload Photo",
