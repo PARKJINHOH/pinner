@@ -13,6 +13,7 @@ interface Props {
 export default function DayItem({ day, onChanged }: Props) {
   const setSelectedDay = useTripStore((s) => s.setSelectedDay)
   const selectedDayId = useTripStore((s) => s.selectedDayId)
+  const incrementMarkerRefresh = useTripStore((s) => s.incrementMarkerRefresh)
   const { updateDay, isLoading: isUpdating } = useUpdateDay()
   const { deleteDay, isLoading: isDeleting } = useDeleteDay()
 
@@ -25,15 +26,18 @@ export default function DayItem({ day, onChanged }: Props) {
 
   const handleUpdate = async (data: { name: string; date: string | null }) => {
     await updateDay(day.tripId, day.dayId, data)
+    incrementMarkerRefresh()
     onChanged()
   }
 
   const handleDelete = async () => {
     await deleteDay(day.tripId, day.dayId)
+    incrementMarkerRefresh()
     onChanged()
     setShowConfirm(false)
   }
 
+  // MM.DD 형식
   const dateLabel = day.date
     ? `${day.date.slice(5, 7)}.${day.date.slice(8, 10)}`
     : null
@@ -42,17 +46,17 @@ export default function DayItem({ day, onChanged }: Props) {
     <>
       <div
         onClick={handleSelect}
-        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg cursor-pointer group transition-colors ${
+        className={`flex items-center gap-2 pl-5 pr-2 py-1.5 rounded-lg cursor-pointer group transition-colors ${
           isSelected ? 'bg-sky/10 text-navy font-medium' : 'hover:bg-gray-100 text-gray-700'
         }`}
       >
-        <span className="flex-1 text-sm truncate">
-          {day.name}
-          {dateLabel && (
-            <span className="ml-1 text-xs text-gray-400">· {dateLabel}</span>
-          )}
-        </span>
-        {day.hasMarker && <span className="text-xs">📍</span>}
+        {dateLabel && (
+          <span className="shrink-0 text-xs font-medium text-sky w-10 tabular-nums">
+            {dateLabel}
+          </span>
+        )}
+        <span className="flex-1 text-sm truncate">{day.name}</span>
+        {day.hasMarker && <span className="text-xs shrink-0">📍</span>}
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}

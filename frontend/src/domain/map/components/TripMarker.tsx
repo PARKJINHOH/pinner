@@ -28,7 +28,7 @@ export default function TripMarker({ marker, index, isSelected, onClick }: Props
         strokeWeight: 2,
       }}
       animation={isSelected ? google.maps.Animation.BOUNCE : undefined}
-      onClick={() => onClick(marker)}
+      onClick={(e) => { e?.stop(); onClick(marker) }}
       title={marker.label ?? marker.dayName}
     />
   )

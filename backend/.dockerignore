@@ -1,0 +1,7 @@
+build
+.gradle
+out
+uploads
+*.local
+.env
+.env.*

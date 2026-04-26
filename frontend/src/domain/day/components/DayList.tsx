@@ -22,7 +22,7 @@ export default function DayList({ tripId }: Props) {
   }
 
   return (
-    <div className="pl-4 pb-1">
+    <div className="pl-3 pb-1">
       {days.length === 0 ? (
         <p className="text-xs text-gray-400 px-3 py-2">날짜를 추가해보세요!</p>
       ) : (

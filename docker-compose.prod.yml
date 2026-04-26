@@ -1,44 +1,87 @@
 version: '3.8'
 
 services:
-  mariadb:
-    image: mariadb:11.4
-    env_file: .env
-    environment:
-      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
-      MARIADB_DATABASE: ${DB_NAME}
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+      # - "443:443"  # SSL 적용 시 주석 해제
     volumes:
-      - mariadb_prod_data:/var/lib/mysql
+      - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:ro  # SSL 적용 시 주석 해제
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    networks:
+      - pinner-prod-network
     restart: always
 
-  redis:
-    image: redis:7.4-alpine
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    networks:
+      - pinner-prod-network
     restart: always
 
   backend:
     build:
       context: ./backend
-    env_file: .env
+    env_file: .env.prod
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    depends_on:
-      - mariadb
-      - redis
     volumes:
-      - uploads_prod:/app/uploads
-    restart: always
-
-  nginx:
-    image: nginx:1.27-alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf
-      - ./frontend/dist:/usr/share/nginx/html
+      - /data/pinner/uploads:/app/uploads
     depends_on:
-      - backend
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - pinner-prod-network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
-volumes:
-  mariadb_prod_data:
-  uploads_prod:
+  mariadb:
+    image: mariadb:11.4
+    env_file: .env.prod
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - /data/pinner/mariadb:/var/lib/mysql
+    networks:
+      - pinner-prod-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  redis:
+    image: redis:7.4-alpine
+    networks:
+      - pinner-prod-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  pinner-prod-network:
+    driver: bridge

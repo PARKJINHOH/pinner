@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { GoogleMap, useJsApiLoader, Polyline } from '@react-google-maps/api'
 import { useTripStore } from '../../trip/store/tripStore'
 import { useMapStore } from '../store/mapStore'
 import { useMarkers } from '../hooks'
@@ -19,6 +19,8 @@ const BASE_OPTIONS: google.maps.MapOptions = {
 export default function MapArea() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? '',
+    language: 'ko',
+    region: 'KR',
   })
 
   const selectedTripId = useTripStore((s) => s.selectedTripId)
@@ -33,6 +35,18 @@ export default function MapArea() {
   const [selectedMarker, setSelectedMarker] = useState<TripMarkerData | null>(null)
   const [pendingLatLng, setPendingLatLng] = useState<{ lat: number; lng: number } | null>(null)
   const mapRef = useRef<google.maps.Map | null>(null)
+
+  // 날짜 오름차순 정렬, 동일 날짜는 markerId 순 — polyline과 index 색상에 함께 사용
+  const sortedMarkers = useMemo(() => {
+    return [...markers].sort((a, b) => {
+      if (a.date && b.date) {
+        if (a.date !== b.date) return a.date.localeCompare(b.date)
+      } else if (a.date) return -1
+      else if (b.date) return 1
+      return a.markerId - b.markerId
+    })
+  }, [markers])
+
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map
@@ -122,7 +136,24 @@ export default function MapArea() {
           draggableCursor: isMarkerRegisterMode ? 'crosshair' : undefined,
         }}
       >
-        {markers.map((marker, index) => (
+        {/* 날짜순 여정 연결선 — 인접 마커 쌍마다 개별 segment, 처음↔끝 미연결 */}
+        {sortedMarkers.slice(0, -1).map((marker, i) => (
+          <Polyline
+            key={`seg-${marker.markerId}-${sortedMarkers[i + 1].markerId}`}
+            path={[
+              { lat: marker.lat, lng: marker.lng },
+              { lat: sortedMarkers[i + 1].lat, lng: sortedMarkers[i + 1].lng },
+            ]}
+            options={{
+              strokeColor: '#2563EB',
+              strokeOpacity: 0.55,
+              strokeWeight: 2,
+              geodesic: true,
+            }}
+          />
+        ))}
+
+        {sortedMarkers.map((marker, index) => (
           <TripMarker
             key={marker.markerId}
             marker={marker}

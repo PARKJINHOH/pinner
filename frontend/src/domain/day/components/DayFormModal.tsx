@@ -17,9 +17,10 @@ export default function DayFormModal({ initial, onSave, onClose, isLoading }: Pr
     e.preventDefault()
     if (!name.trim()) { setError('이름을 입력하세요'); return }
     if (name.trim().length > 30) { setError('이름은 30자 이하여야 합니다'); return }
+    if (!date) { setError('날짜를 입력하세요'); return }
     setError(null)
     try {
-      await onSave({ name: name.trim(), date: date || null })
+      await onSave({ name: name.trim(), date })
       onClose()
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message
@@ -46,7 +47,7 @@ export default function DayFormModal({ initial, onSave, onClose, isLoading }: Pr
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">날짜 (선택)</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">날짜 *</label>
             <input
               type="date"
               value={date}

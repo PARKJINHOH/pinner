@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useTripStore } from '../store/tripStore'
@@ -10,6 +10,12 @@ import ConfirmModal from '../../../shared/components/ConfirmModal'
 
 interface Props {
   trip: TripResponse
+}
+
+function calcDuration(start: string | null, end: string | null): number {
+  if (!start || !end) return 0
+  const diff = new Date(end).getTime() - new Date(start).getTime()
+  return diff < 0 ? 0 : Math.round(diff / 86400000) + 1
 }
 
 export default function TripItem({ trip }: Props) {
@@ -26,6 +32,11 @@ export default function TripItem({ trip }: Props) {
 
   const [showEdit, setShowEdit] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+
+  const duration = useMemo(
+    () => calcDuration(trip.startDate, trip.endDate),
+    [trip.startDate, trip.endDate]
+  )
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -68,10 +79,10 @@ export default function TripItem({ trip }: Props) {
           <span className="text-xs text-gray-400 w-3">
             {isExpanded ? '▼' : '▶'}
           </span>
-          <span className="flex-1 text-sm font-medium text-gray-800 truncate">
+          <span className="flex-1 text-sm font-semibold text-gray-800 truncate">
             {trip.title}
           </span>
-          <span className="text-xs text-gray-400">{trip.dayCount}일</span>
+          <span className="text-xs text-gray-400 shrink-0">{duration}일</span>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
