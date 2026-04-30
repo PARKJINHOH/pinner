@@ -6,13 +6,7 @@
       "Bash(xargs grep *)",
       "Bash(npx vite *)",
       "Bash(npm run *)",
-      "Read(//tmp/**)",
-      "Bash(docker --version)",
-      "Bash(docker compose *)",
-      "PowerShell(docker version *)",
-      "Bash(docker info *)",
-      "PowerShell(Get-Process *)",
-      "Bash(npx tsc *)"
+      "Read(//tmp/**)"
     ]
   }
 }
