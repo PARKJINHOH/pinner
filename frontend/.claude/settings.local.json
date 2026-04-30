@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find D:/workspace/easymediaProject/pinner/frontend/src/domain/photo -name *.ts)"
+    ]
+  }
+}

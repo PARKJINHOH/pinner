@@ -38,8 +38,8 @@ export function useUploadPhotos() {
     try {
       return await photoService.uploadPhotos(tripId, dayId, files)
     } catch (e: unknown) {
-      const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message
-      setError(msg ?? '업로드에 실패했습니다.')
+      const msg = (e instanceof Error ? e.message : null) ?? '업로드에 실패했습니다.'
+      setError(msg)
       throw e
     } finally {
       setIsLoading(false)

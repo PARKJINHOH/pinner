@@ -20,8 +20,8 @@ export const photoService = {
       body: form,
     })
     if (!res.ok) {
-      const text = await res.text().catch(() => '')
-      throw new Error(`Upload failed: ${res.status} ${text}`)
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body?.message ?? `Upload failed: ${res.status}`)
     }
     const json = await res.json()
     return json.data
