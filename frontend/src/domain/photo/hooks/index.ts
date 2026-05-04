@@ -28,11 +28,20 @@ export function usePhotos(tripId: number | null, dayId: number | null) {
   return { photos, isLoading, refetch: fetchPhotos }
 }
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+
 export function useUploadPhotos() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const upload = async (tripId: number, dayId: number, files: File[]): Promise<PhotoData[]> => {
+    const oversized = files.find((f) => f.size > MAX_FILE_SIZE)
+    if (oversized) {
+      const msg = `파일 크기가 허용 한도를 초과했습니다 (최대 5MB): ${oversized.name}`
+      setError(msg)
+      throw new Error(msg)
+    }
+
     setIsLoading(true)
     setError(null)
     try {

@@ -50,7 +50,7 @@ export default function PhotoUploader({ onUpload, isLoading, disabled }: Props) 
         <>
           <p className="text-xl mb-1">📷</p>
           <p className="text-sm text-gray-500">클릭하거나 드래그하여 사진 추가</p>
-          <p className="text-xs text-gray-400 mt-0.5">최대 10장</p>
+          <p className="text-xs text-gray-400 mt-0.5">최대 10장 · 장당 5MB 이하</p>
         </>
       )}
     </div>

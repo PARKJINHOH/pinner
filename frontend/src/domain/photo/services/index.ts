@@ -18,6 +18,8 @@ export const photoService = {
       method: 'POST',
       headers,
       body: form,
+    }).catch(() => {
+      throw new Error('파일 크기가 허용 한도를 초과했습니다 (최대 5MB)')
     })
     if (!res.ok) {
       const body = await res.json().catch(() => ({}))
