@@ -27,6 +27,7 @@ export default function TripItem({ trip }: Props) {
   const expandedTripIds = useTripStore((s) => s.expandedTripIds)
   const toggleExpanded = useTripStore((s) => s.toggleExpanded)
   const setSelectedTrip = useTripStore((s) => s.setSelectedTrip)
+  const setSelectedDay = useTripStore((s) => s.setSelectedDay)
   const isExpanded = expandedTripIds.includes(trip.tripId)
 
   const { updateTrip, isLoading: isUpdating } = useUpdateTrip()
@@ -67,6 +68,7 @@ export default function TripItem({ trip }: Props) {
           onClick={() => {
             toggleExpanded(trip.tripId)
             setSelectedTrip(trip.tripId)
+            setSelectedDay(null)
           }}
         >
           <span

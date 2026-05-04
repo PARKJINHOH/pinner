@@ -5,7 +5,6 @@ import { useMapStore } from '../store/mapStore'
 import { useMarkers } from '../hooks'
 import type { TripMarkerData } from '../types'
 import TripMarker from './TripMarker'
-import MarkerInfoWindow from './MarkerInfoWindow'
 import MarkerPlaceModal from './MarkerPlaceModal'
 
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 }
@@ -24,6 +23,7 @@ export default function MapArea() {
   })
 
   const selectedTripId = useTripStore((s) => s.selectedTripId)
+  const selectedDayId = useTripStore((s) => s.selectedDayId)
   const setSelectedDay = useTripStore((s) => s.setSelectedDay)
 
   const markers = useMapStore((s) => s.markers)
@@ -72,6 +72,14 @@ export default function MapArea() {
   useEffect(() => {
     setSelectedMarker(null)
   }, [selectedTripId])
+
+  // pan to selected day's marker when day changes
+  useEffect(() => {
+    if (!selectedDayId || !mapRef.current || !isLoaded) return
+    const marker = markers.find((m) => m.dayId === selectedDayId)
+    if (!marker) return
+    mapRef.current.panTo({ lat: marker.lat, lng: marker.lng })
+  }, [selectedDayId, markers, isLoaded])
 
   // ESC exits register mode
   useEffect(() => {
@@ -158,18 +166,12 @@ export default function MapArea() {
             key={marker.markerId}
             marker={marker}
             index={index}
-            isSelected={selectedMarker?.markerId === marker.markerId}
+            isSelected={!isMarkerRegisterMode && selectedMarker?.markerId === marker.markerId}
             onClick={isMarkerRegisterMode ? () => {} : setSelectedMarker}
-          />
-        ))}
-
-        {selectedMarker && !isMarkerRegisterMode && (
-          <MarkerInfoWindow
-            marker={selectedMarker}
             onClose={() => setSelectedMarker(null)}
             onViewPhotos={handleViewPhotos}
           />
-        )}
+        ))}
       </GoogleMap>
 
       {/* Marker placement confirmation modal */}
