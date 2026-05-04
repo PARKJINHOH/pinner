@@ -15,16 +15,23 @@ public class RefreshTokenRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void save(Long userId, String refreshToken, Duration duration) {
-        redisTemplate.opsForValue().set(KEY_PREFIX + refreshToken, String.valueOf(userId), duration);
+    public void save(Long userId, String refreshToken, Duration duration, boolean isDemo) {
+        String value = userId + ":" + isDemo;
+        redisTemplate.opsForValue().set(KEY_PREFIX + refreshToken, value, duration);
     }
 
-    public Optional<String> find(String refreshToken) {
-        String userId = redisTemplate.opsForValue().get(KEY_PREFIX + refreshToken);
-        return Optional.ofNullable(userId);
+    public Optional<RefreshPayload> find(String refreshToken) {
+        String raw = redisTemplate.opsForValue().get(KEY_PREFIX + refreshToken);
+        if (raw == null) return Optional.empty();
+        String[] parts = raw.split(":", 2);
+        Long userId = Long.parseLong(parts[0]);
+        boolean isDemo = parts.length > 1 && Boolean.parseBoolean(parts[1]);
+        return Optional.of(new RefreshPayload(userId, isDemo));
     }
 
     public void delete(String refreshToken) {
         redisTemplate.delete(KEY_PREFIX + refreshToken);
     }
+
+    public record RefreshPayload(Long userId, boolean isDemo) {}
 }

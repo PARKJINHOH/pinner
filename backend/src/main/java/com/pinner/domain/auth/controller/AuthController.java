@@ -39,6 +39,11 @@ public class AuthController {
         return ApiResponse.success();
     }
 
+    @PostMapping("/demo")
+    public ApiResponse<AuthResponse> demoLogin() {
+        return ApiResponse.success(authService.demoLogin());
+    }
+
     @GetMapping("/me")
     public ApiResponse<UserInfoResponse> me(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ApiResponse.success(authService.getMyInfo(userDetails));

@@ -54,6 +54,49 @@ export function useRegister() {
   return { register, isLoading, error }
 }
 
+export function useDemoLogin() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { setAuth } = useAuthStore()
+  const navigate = useNavigate()
+
+  const demoLogin = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const res = await authService.demoLogin()
+      setAuth(res)
+      navigate('/main')
+    } catch {
+      setError('데모 로그인에 실패했습니다')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { demoLogin, isLoading, error }
+}
+
+export function useAdminUpgrade() {
+  const [isLoading, setIsLoading] = useState(false)
+  const { setAuth } = useAuthStore()
+
+  const upgrade = async (email: string, password: string): Promise<string | null> => {
+    setIsLoading(true)
+    try {
+      const res = await authService.login({ email, password })
+      setAuth(res)
+      return null
+    } catch {
+      return '비밀번호가 올바르지 않습니다'
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { upgrade, isLoading }
+}
+
 export function useLogout() {
   const { refreshToken, clearAuth } = useAuthStore()
   const navigate = useNavigate()

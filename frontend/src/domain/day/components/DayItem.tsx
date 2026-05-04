@@ -4,6 +4,7 @@ import { useDeleteDay, useUpdateDay } from '../hooks'
 import type { DayResponse } from '../types'
 import ConfirmModal from '../../../shared/components/ConfirmModal'
 import DayFormModal from './DayFormModal'
+import { useAuthStore } from '../../../shared/store/authStore'
 
 interface Props {
   day: DayResponse
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function DayItem({ day, onChanged }: Props) {
+  const isDemo = useAuthStore((s) => s.isDemo)
   const setSelectedDay = useTripStore((s) => s.setSelectedDay)
   const selectedDayId = useTripStore((s) => s.selectedDayId)
   const incrementMarkerRefresh = useTripStore((s) => s.incrementMarkerRefresh)
@@ -57,22 +59,24 @@ export default function DayItem({ day, onChanged }: Props) {
         )}
         <span className="flex-1 text-sm truncate">{day.name}</span>
         {day.hasMarker && <span className="text-xs shrink-0">📍</span>}
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
-            className="p-0.5 text-gray-400 hover:text-navy text-xs"
-            title="수정"
-          >
-            ✏️
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
-            className="p-0.5 text-gray-400 hover:text-red-500 text-xs"
-            title="삭제"
-          >
-            🗑️
-          </button>
-        </div>
+        {!isDemo && (
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
+              className="p-0.5 text-gray-400 hover:text-navy text-xs"
+              title="수정"
+            >
+              ✏️
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
+              className="p-0.5 text-gray-400 hover:text-red-500 text-xs"
+              title="삭제"
+            >
+              🗑️
+            </button>
+          </div>
+        )}
       </div>
 
       {showEdit && (

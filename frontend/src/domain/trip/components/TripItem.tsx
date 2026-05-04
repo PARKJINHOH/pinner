@@ -7,6 +7,7 @@ import type { TripResponse } from '../types'
 import DayList from '../../day/components/DayList'
 import TripFormModal from './TripFormModal'
 import ConfirmModal from '../../../shared/components/ConfirmModal'
+import { useAuthStore } from '../../../shared/store/authStore'
 
 interface Props {
   trip: TripResponse
@@ -19,6 +20,7 @@ function calcDuration(start: string | null, end: string | null): number {
 }
 
 export default function TripItem({ trip }: Props) {
+  const isDemo = useAuthStore((s) => s.isDemo)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: trip.tripId })
 
@@ -83,22 +85,24 @@ export default function TripItem({ trip }: Props) {
             {trip.title}
           </span>
           <span className="text-xs text-gray-400 shrink-0">{duration}일</span>
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
-              className="p-1 text-gray-400 hover:text-navy text-xs rounded"
-              title="수정"
-            >
-              ✏️
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
-              className="p-1 text-gray-400 hover:text-red-500 text-xs rounded"
-              title="삭제"
-            >
-              🗑️
-            </button>
-          </div>
+          {!isDemo && (
+            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowEdit(true) }}
+                className="p-1 text-gray-400 hover:text-navy text-xs rounded"
+                title="수정"
+              >
+                ✏️
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowConfirm(true) }}
+                className="p-1 text-gray-400 hover:text-red-500 text-xs rounded"
+                title="삭제"
+              >
+                🗑️
+              </button>
+            </div>
+          )}
         </div>
 
         {isExpanded && <DayList tripId={trip.tripId} />}

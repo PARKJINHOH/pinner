@@ -37,20 +37,28 @@ public class User extends BaseEntity {
     @Column(name = "provider_id", length = 255)
     private String providerId;
 
-    private User(String email, String password, String nickname, String provider, String providerId) {
+    @Column(name = "is_demo", nullable = false)
+    private boolean isDemo = false;
+
+    private User(String email, String password, String nickname, String provider, String providerId, boolean isDemo) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.provider = provider;
         this.providerId = providerId;
+        this.isDemo = isDemo;
     }
 
     public static User of(String email, String encodedPassword, String nickname) {
-        return new User(email, encodedPassword, nickname, "local", null);
+        return new User(email, encodedPassword, nickname, "local", null, false);
     }
 
     public static User ofOAuth(String email, String nickname, String provider, String providerId) {
-        return new User(email, null, nickname, provider, providerId);
+        return new User(email, null, nickname, provider, providerId, false);
+    }
+
+    public static User ofDemo(String email, String encodedPassword, String nickname) {
+        return new User(email, encodedPassword, nickname, "local", null, true);
     }
 
     public void updateNickname(String nickname) {

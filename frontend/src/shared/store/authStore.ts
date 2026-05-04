@@ -8,12 +8,14 @@ interface AuthState {
   email: string | null
   nickname: string | null
   isAuthenticated: boolean
+  isDemo: boolean
   setAuth: (data: {
     accessToken: string
     refreshToken: string
     userId: number
     email: string
     nickname: string
+    isDemo: boolean
   }) => void
   setAccessToken: (accessToken: string) => void
   clearAuth: () => void
@@ -28,6 +30,7 @@ export const useAuthStore = create<AuthState>()(
       email: null,
       nickname: null,
       isAuthenticated: false,
+      isDemo: false,
 
       setAuth: (data) => set({ ...data, isAuthenticated: true }),
       setAccessToken: (accessToken) => set({ accessToken }),
@@ -39,6 +42,7 @@ export const useAuthStore = create<AuthState>()(
           email: null,
           nickname: null,
           isAuthenticated: false,
+          isDemo: false,
         }),
     }),
     { name: 'pinner-auth' }

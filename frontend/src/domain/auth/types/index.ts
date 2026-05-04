@@ -29,6 +29,7 @@ export interface AuthResponse {
   userId: number
   email: string
   nickname: string
+  isDemo: boolean
 }
 
 export interface TokenResponse {

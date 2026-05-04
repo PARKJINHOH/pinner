@@ -4,6 +4,7 @@ import com.pinner.domain.auth.dto.*;
 import com.pinner.domain.user.entity.User;
 import com.pinner.domain.user.repository.UserRepository;
 import com.pinner.domain.user.service.UserDetailsImpl;
+import com.pinner.global.config.DemoProperties;
 import com.pinner.global.exception.BusinessException;
 import com.pinner.global.exception.ErrorCode;
 import com.pinner.global.jwt.JwtProvider;
@@ -23,6 +24,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final DemoProperties demoProperties;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -43,23 +45,36 @@ public class AuthService {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }
 
-        return issueTokens(user);
+        return issueTokens(user, false);
+    }
+
+    @Transactional
+    public AuthResponse demoLogin() {
+        User demoUser = userRepository.findByEmail(demoProperties.getEmail())
+                .orElseGet(() -> {
+                    User newDemo = User.ofDemo(
+                            demoProperties.getEmail(),
+                            passwordEncoder.encode(demoProperties.getPassword()),
+                            demoProperties.getNickname()
+                    );
+                    return userRepository.save(newDemo);
+                });
+        return issueTokens(demoUser, true);
     }
 
     public TokenResponse refresh(RefreshRequest request) {
-        String userIdStr = refreshTokenRepository.find(request.refreshToken())
+        RefreshTokenRepository.RefreshPayload payload = refreshTokenRepository.find(request.refreshToken())
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_TOKEN));
 
-        Long userId = Long.parseLong(userIdStr);
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(payload.userId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         refreshTokenRepository.delete(request.refreshToken());
 
         String newRefreshToken = jwtProvider.generateRefreshToken();
-        refreshTokenRepository.save(userId, newRefreshToken, Duration.ofMillis(jwtProvider.getRefreshExpiration()));
+        refreshTokenRepository.save(user.getId(), newRefreshToken, Duration.ofMillis(jwtProvider.getRefreshExpiration()), payload.isDemo());
 
-        String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getEmail());
+        String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getEmail(), payload.isDemo());
         return new TokenResponse(accessToken);
     }
 
@@ -74,10 +89,10 @@ public class AuthService {
         return new UserInfoResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProvider());
     }
 
-    private AuthResponse issueTokens(User user) {
-        String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getEmail());
+    private AuthResponse issueTokens(User user, boolean isDemo) {
+        String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getEmail(), isDemo);
         String refreshToken = jwtProvider.generateRefreshToken();
-        refreshTokenRepository.save(user.getId(), refreshToken, Duration.ofMillis(jwtProvider.getRefreshExpiration()));
-        return new AuthResponse(accessToken, refreshToken, user.getId(), user.getEmail(), user.getNickname());
+        refreshTokenRepository.save(user.getId(), refreshToken, Duration.ofMillis(jwtProvider.getRefreshExpiration()), isDemo);
+        return new AuthResponse(accessToken, refreshToken, user.getId(), user.getEmail(), user.getNickname(), isDemo);
     }
 }

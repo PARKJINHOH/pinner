@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { useCreateDay, useDays } from '../hooks'
 import DayItem from './DayItem'
 import DayFormModal from './DayFormModal'
+import { useAuthStore } from '../../../shared/store/authStore'
 
 interface Props {
   tripId: number
 }
 
 export default function DayList({ tripId }: Props) {
+  const isDemo = useAuthStore((s) => s.isDemo)
   const { days, isLoading, refetch } = useDays(tripId)
   const { createDay, isLoading: isCreating } = useCreateDay()
   const [showCreate, setShowCreate] = useState(false)
@@ -31,12 +33,14 @@ export default function DayList({ tripId }: Props) {
         ))
       )}
 
-      <button
-        onClick={() => setShowCreate(true)}
-        className="w-full text-left px-3 py-1.5 text-xs text-sky hover:text-navy hover:bg-gray-50 rounded-lg transition-colors"
-      >
-        + 날짜 추가
-      </button>
+      {!isDemo && (
+        <button
+          onClick={() => setShowCreate(true)}
+          className="w-full text-left px-3 py-1.5 text-xs text-sky hover:text-navy hover:bg-gray-50 rounded-lg transition-colors"
+        >
+          + 날짜 추가
+        </button>
+      )}
 
       {showCreate && (
         <DayFormModal

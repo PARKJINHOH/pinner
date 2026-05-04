@@ -34,4 +34,9 @@ export const authService = {
     const res = await axiosInstance.get('/auth/me')
     return res.data.data
   },
+
+  demoLogin: async (): Promise<AuthResponse> => {
+    const res = await axiosInstance.post('/auth/demo')
+    return res.data.data
+  },
 }

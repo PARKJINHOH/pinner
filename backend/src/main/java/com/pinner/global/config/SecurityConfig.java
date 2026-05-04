@@ -1,5 +1,6 @@
 package com.pinner.global.config;
 
+import com.pinner.global.filter.DemoGuardFilter;
 import com.pinner.global.jwt.JwtFilter;
 import com.pinner.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,16 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
+                                "/api/auth/demo",
                                 "/api/auth/refresh",
                                 "/api/health"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new DemoGuardFilter(),
+                        JwtFilter.class);
 
         return http.build();
     }

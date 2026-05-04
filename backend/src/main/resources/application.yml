@@ -25,3 +25,8 @@ storage:
 pinner:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+demo:
+  email: ${DEMO_EMAIL:demo@pinner.dev}
+  password: ${DEMO_PASSWORD:demo1234!}
+  nickname: ${DEMO_NICKNAME:데모 사용자}

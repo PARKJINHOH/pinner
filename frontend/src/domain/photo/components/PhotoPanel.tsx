@@ -8,8 +8,10 @@ import PhotoUploader from './PhotoUploader'
 import PhotoGrid from './PhotoGrid'
 import PhotoViewer from './PhotoViewer'
 import ConfirmModal from '../../../shared/components/ConfirmModal'
+import { useAuthStore } from '../../../shared/store/authStore'
 
 export default function PhotoPanel() {
+  const isDemo = useAuthStore((s) => s.isDemo)
   const selectedTripId = useTripStore((s) => s.selectedTripId)
   const selectedDayId = useTripStore((s) => s.selectedDayId)
   const setSelectedDay = useTripStore((s) => s.setSelectedDay)
@@ -119,32 +121,36 @@ export default function PhotoPanel() {
                   <p className="text-xs text-gray-400 mt-0.5">자동 (EXIF GPS)</p>
                 )}
               </div>
-              <div className="flex gap-1 shrink-0">
-                <button
-                  onClick={() => setMarkerRegisterMode(true)}
-                  style={{ backgroundColor: '#0F2D5E' }}
-                  className="text-xs text-white px-2.5 py-1.5 rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap"
-                >
-                  {currentMarker ? '위치 수정' : '마커 등록'}
-                </button>
-                {currentMarker && (
+              {!isDemo && (
+                <div className="flex gap-1 shrink-0">
                   <button
-                    onClick={() => setShowDeleteMarker(true)}
-                    className="text-xs text-red-500 px-2 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                    onClick={() => setMarkerRegisterMode(true)}
+                    style={{ backgroundColor: '#0F2D5E' }}
+                    className="text-xs text-white px-2.5 py-1.5 rounded-lg hover:opacity-90 transition-opacity whitespace-nowrap"
                   >
-                    삭제
+                    {currentMarker ? '위치 수정' : '마커 등록'}
                   </button>
-                )}
-              </div>
+                  {currentMarker && (
+                    <button
+                      onClick={() => setShowDeleteMarker(true)}
+                      className="text-xs text-red-500 px-2 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      삭제
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Photo uploader */}
-          <PhotoUploader
-            onUpload={handleUpload}
-            isLoading={isUploading}
-            disabled={photos.length >= 10}
-          />
+          {!isDemo && (
+            <PhotoUploader
+              onUpload={handleUpload}
+              isLoading={isUploading}
+              disabled={photos.length >= 10}
+            />
+          )}
 
           {isLoading ? (
             <p className="text-xs text-gray-400 text-center py-4">로딩 중...</p>
@@ -152,7 +158,7 @@ export default function PhotoPanel() {
             <PhotoGrid
               photos={photos}
               onPhotoClick={(index) => setViewerIndex(index)}
-              onPhotoDelete={(photo) => setPhotoToDelete(photo)}
+              onPhotoDelete={isDemo ? () => {} : (photo) => setPhotoToDelete(photo)}
             />
           )}
         </div>
@@ -167,7 +173,7 @@ export default function PhotoPanel() {
           onPrev={() => setViewerIndex((i) => Math.max(0, (i ?? 0) - 1))}
           onNext={() => setViewerIndex((i) => Math.min(photos.length - 1, (i ?? 0) + 1))}
           onGoTo={(i) => setViewerIndex(i)}
-          onDelete={(photo) => { setViewerIndex(null); setPhotoToDelete(photo) }}
+          onDelete={isDemo ? () => {} : (photo) => { setViewerIndex(null); setPhotoToDelete(photo) }}
         />
       )}
 

@@ -12,10 +12,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Long userId;
     private final String email;
+    private final boolean demo;
 
-    public UserDetailsImpl(Long userId, String email) {
+    public UserDetailsImpl(Long userId, String email, boolean demo) {
         this.userId = userId;
         this.email = email;
+        this.demo = demo;
     }
 
     @Override
