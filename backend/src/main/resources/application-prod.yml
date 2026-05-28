@@ -12,7 +12,6 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD}
 
 storage:
   path: ${STORAGE_PATH:/home/app/pinner/uploads}
