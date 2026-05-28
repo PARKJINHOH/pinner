@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gradle wrapper *)",
+      "PowerShell(Get-Command *)",
+      "Bash(xargs grep *)",
+      "Bash(npx vite *)",
+      "Bash(npm run *)",
+      "Read(//tmp/**)",
+      "Bash(npx tsc *)",
+      "Bash(./gradlew compileJava)",
+      "Bash(JAVA_HOME=\"C:/Program Files/Eclipse Adoptium/jdk-21.0.7.6-hotspot\" ./gradlew compileJava)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files/Java//**)",
+      "Bash(find /c -name \"java.exe\" -path \"*/jdk*\")",
+      "Bash(JAVA_HOME=\"/c/Users/EM_NB139/.jdks/corretto-17.0.15\" ./gradlew compileJava)"
+    ]
+  }
+}

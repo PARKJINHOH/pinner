@@ -1,0 +1,90 @@
+# =====================================================
+# Pinner .gitignore
+# =====================================================
+
+# =====================================================
+# 환경변수 / 시크릿 (절대 커밋 금지)
+# =====================================================
+.env
+.env.*
+!.env.example
+docker/**/.env
+!docker/**/.env.example
+
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# =====================================================
+# Java / Gradle (Backend)
+# =====================================================
+.gradle/
+build/
+out/
+*.class
+
+# jar는 모두 제외하되 Gradle Wrapper JAR는 포함
+*.jar
+!backend/gradle/wrapper/gradle-wrapper.jar
+
+# Spring Boot 자동 생성 파일
+HELP.md
+
+# =====================================================
+# Node / Frontend
+# =====================================================
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+*.local
+
+# =====================================================
+# IDE
+# =====================================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# =====================================================
+# OS
+# =====================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# =====================================================
+# 로그
+# =====================================================
+*.log
+logs/
+log/
+
+# =====================================================
+# 테스트 / 커버리지
+# =====================================================
+coverage/
+.nyc_output/
