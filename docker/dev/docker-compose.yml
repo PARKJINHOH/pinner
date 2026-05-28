@@ -1,0 +1,79 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: pinner-dev-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: pinner2_dev
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mariadb_dev_data:/var/lib/mysql
+    networks:
+      - pinner-dev
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: pinner-dev-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - pinner-dev
+
+  backend:
+    build:
+      context: ../../backend
+    image: pinner-backend:dev
+    container_name: pinner-dev-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: pinner2_dev
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+    volumes:
+      - uploads_dev:/home/app/pinner/uploads
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - pinner-dev
+
+  frontend:
+    build:
+      context: ../../frontend
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
+        VITE_DEMO_ENABLED: ${VITE_DEMO_ENABLED:-false}
+    image: pinner-frontend:dev
+    container_name: pinner-dev-frontend
+    restart: unless-stopped
+    ports:
+      - "30000:80"
+    depends_on:
+      - backend
+    networks:
+      - pinner-dev
+
+networks:
+  pinner-dev:
+    driver: bridge
+
+volumes:
+  mariadb_dev_data:
+  redis_dev_data:
+  uploads_dev:
